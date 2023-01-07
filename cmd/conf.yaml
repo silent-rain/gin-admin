@@ -1,0 +1,19 @@
+env: dev # 系统环境 prod/test/dev
+
+db: # 数据库
+  key: "db"
+  host: "127.0.0.1"
+  port: 3306
+  username: "one"
+  password: "pass"
+  db_name: "gin_admin"
+  url: "conf/data.dat"
+
+logger:
+  filename: "logs/all.log"
+  level: 7
+  max_lines: 1000000
+  max_size: 256
+  max_days: 30
+  daily: true
+  color: true

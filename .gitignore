@@ -1,0 +1,8 @@
+# tmp
+cmd/tmp
+
+# log
+logs/*
+
+# embed web
+internal/assets/dist
