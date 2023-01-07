@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 18:44:38
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 19:01:20
+ * @LastEditTime: 2023-01-08 00:42:30
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/handler.go

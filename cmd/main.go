@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 22:25:44
+ * @LastEditTime: 2023-01-08 00:27:58
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -21,6 +21,7 @@ import (
 	"gin-admin/internal/assets"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/database"
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
 	"gin-admin/internal/pkg/utils"
 	"gin-admin/internal/router"
@@ -29,10 +30,12 @@ import (
 )
 
 func main() {
-	// 初始化配置
+	// 配置初始化
 	conf.InitLoadConfig(conf.ConfigFile)
 	// 数据库初始化
 	database.Init()
+	// 日志初始化
+	log.Init()
 
 	// 调试模式
 	gin.SetMode(conf.Instance().EnvConfig.Env())

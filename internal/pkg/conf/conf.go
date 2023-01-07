@@ -55,13 +55,12 @@ type SqliteConfig struct {
 
 // LoggerConfig 日志配置
 type LoggerConfig struct {
-	FileName string `yaml:"filename"`
-	Level    int    `yaml:"level"`
-	MaxLines int    `yaml:"max_lines"`
-	MaxSize  int    `yaml:"max_size"`
-	MaxDays  int    `yaml:"max_days"`
-	Daily    bool   `yaml:"daily"`
-	Color    bool   `yaml:"color"`
+	Filename   string `yaml:"filename"`    // 日志文件路径
+	Level      string `yaml:"level"`       // 日志级别: debug/info/warn/error/panic
+	MaxSize    int    `yaml:"max_size"`    // 日志文件旋转之前的最大大小
+	MaxBackups int    `yaml:"max_backups"` // 保留的旧日志文件的最大数量
+	MaxAge     int    `yaml:"max_age"`     // 保留旧日志文件的最大天数
+	Color      bool   `yaml:"color"`
 }
 
 // EnvConfig 系统环境配置 prod/test/dev

@@ -3,6 +3,8 @@ cmd/tmp
 
 # log
 logs/*
+cmd/logs
+internal/pkg/log/logs
 
 # embed web
 internal/assets/dist

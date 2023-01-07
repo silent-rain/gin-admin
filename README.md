@@ -17,7 +17,7 @@
 - [x] 数据库 gorm
   - [x] 数据库类型 sqlite3/mysql
   - [x] DB 实例
-- [ ] 日志
+- [ ] 日志 zap
   - [ ] 结构化日志
   - [ ] 本地滚动日志
   - [ ] 数据库日志
@@ -86,5 +86,6 @@ air
 
 
 ## 参考文档
-- [gin框架基础](https://blog.csdn.net/qq_40229166/article/details/118807361)
-
+- [前端框架模板](https://github.com/jzfai/vue3-admin-plus)
+- [Gin框架基础](https://blog.csdn.net/qq_40229166/article/details/118807361)
+- [Gorm](https://gorm.io/zh_CN/)
