@@ -1,13 +1,15 @@
 env: dev # 系统环境 prod/test/dev
 
-db: # 数据库
+db: # mysql 数据库, 当 mysql 配置为空时，使用 sqlite3 数据库
   key: "db"
   host: "127.0.0.1"
   port: 3306
   username: "one"
   password: "pass"
   db_name: "gin_admin"
-  url: "conf/data.dat"
+
+sqlite: # sqlite3 数据库
+  filepath: "./data.dat"
 
 logger:
   filename: "logs/all.log"

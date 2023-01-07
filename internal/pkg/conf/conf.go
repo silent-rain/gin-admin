@@ -4,6 +4,7 @@ package conf
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"sync"
 
@@ -19,12 +20,14 @@ var (
 
 // Config 定义配置信息
 type Config struct {
-	*DBConfig     `yaml:"db"`     // 数据库配置
-	*LoggerConfig `yaml:"logger"` // 日志配置
-	*EnvConfig    `yaml:"env"`    // 系统环境
+	DBConfig     *DBConfig     `yaml:"db"`     // mysql 数据库配置
+	SqliteConfig *SqliteConfig `yaml:"sqlite"` // mysql 数据库配置
+	LoggerConfig *LoggerConfig `yaml:"logger"` // 日志配置
+	EnvConfig    *EnvConfig    `yaml:"env"`    // 系统环境
 }
 
-// DBConfig 数据库配置
+// DBConfig mysql 数据库配置;
+// 当 mysql 配置为空时，使用 sqlite3 数据库
 type DBConfig struct {
 	Key      string `yaml:"key"`      // db信息唯一标识
 	Host     string `yaml:"host"`     // db连接实例IP或域名
@@ -32,7 +35,22 @@ type DBConfig struct {
 	DbName   string `yaml:"db_name"`  // db库名
 	Username string `yaml:"username"` // db连接账号
 	Password string `yaml:"password"` // db连接密码
-	Url      string `yaml:"url"`      // url 链接
+}
+
+// Dsn 拼接 mysql 数据库 DSN 地址
+func (r DBConfig) Dsn() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		r.Username,
+		r.Password,
+		r.Host,
+		r.Port,
+		r.DbName,
+	)
+}
+
+// SqliteConfig sqlite3 数据库配置
+type SqliteConfig struct {
+	FilePath string `yaml:"filepath"` // sqlite3 文件路径
 }
 
 // LoggerConfig 日志配置

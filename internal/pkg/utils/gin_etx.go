@@ -1,3 +1,13 @@
+/*
+ * @Author: silent-rain
+ * @Date: 2023-01-06 01:22:41
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-07 21:28:41
+ * @company:
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/internal/pkg/utils/gin_etx.go
+ * @Descripttion:
+ */
 /**gin 服务扩展工具*/
 package utils
 
@@ -18,7 +28,7 @@ func init() {
 // 将 gin 服务产生的日志输出至文件
 func ginLogFile() {
 	// debug 模式输出至控制台
-	if conf.Instance().Env() == gin.DebugMode {
+	if conf.Instance().EnvConfig.Env() == gin.DebugMode {
 		return
 	}
 
