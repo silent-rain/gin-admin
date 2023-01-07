@@ -13,7 +13,7 @@ sqlite: # sqlite3 数据库
 
 logger:
   filename: "logs/all.log"
-  level: 7
+  level: "debug"
   max_lines: 1000000
   max_size: 256
   max_days: 30
