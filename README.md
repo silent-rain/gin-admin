@@ -14,10 +14,10 @@
   - [x] vue3+vite+ts+elementUI 项目
 - [x] API接口状态码
 - [x] 自定义API接口返回结构
-- [ ] 数据库
-  - [ ] 支持 gorm
-  - [ ] 数据库类型 sqlite3/mysql
-  - [ ] DB 实例
+- [x] 数据库
+  - [x] 支持 gorm
+  - [x] 数据库类型 sqlite3/mysql
+  - [x] DB 实例
 - [ ] 日志
   - [ ] 结构化日志
   - [ ] 本地滚动日志
