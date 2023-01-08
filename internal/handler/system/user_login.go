@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:00:40
+ * @LastEditTime: 2023-01-08 21:03:47
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -130,7 +130,6 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 	value := ctx.Param("value")
 	session := sessions.Default(ctx)
-
 	captchaId := session.Get("captcha")
 	if captchaId == nil {
 		zap.S().Errorf("code: %v, data: %v, err: %v", statuscode.SessionGetCaptchaEmptyError, captchaId, statuscode.SessionGetCaptchaEmptyError.Error())
