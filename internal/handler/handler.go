@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 18:44:38
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 00:42:30
+ * @LastEditTime: 2023-01-08 14:50:45
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/handler.go
@@ -19,12 +19,12 @@ import (
 )
 
 // Ping 服务健康检查
-func Ping(c *gin.Context) {
-	c.JSON(http.StatusOK, map[string]string{})
+func Ping(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, map[string]string{})
 }
 
 // SayHello 接口测试
-func SayHello(c *gin.Context) {
-	name := c.Param("name")
-	response.New(c).WithData("hello," + name).Json()
+func SayHello(ctx *gin.Context) {
+	name := ctx.Param("name")
+	response.New(ctx).WithData("hello," + name).Json()
 }

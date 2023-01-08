@@ -1,3 +1,13 @@
+<!--
+ * @Author: silent-rain
+ * @Date: 2023-01-06 23:20:54
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-08 16:15:48
+ * @company: 
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/web/src/views/dashboard/index.vue
+ * @Descripttion: 
+-->
 <template>
   <div class="scroll-y">
     <div v-lang class="mt-10px mb-10px font-bold">switch theme</div>
@@ -27,8 +37,11 @@
     <div class="mb-40px w-900px h-10px text-16px">
       <div>
         you can look
-        <el-link class="text-red" href="https://uno.antfu.me/" target="_blank">https://uno.antfu.me/</el-link>
-        to search you need such as "margin-left:10px" and then get the sortcut(ml-10px)
+        <el-link class="text-red" href="https://uno.antfu.me/" target="_blank"
+          >https://uno.antfu.me/</el-link
+        >
+        to search you need such as "margin-left:10px" and then get the
+        sortcut(ml-10px)
       </div>
     </div>
 
@@ -37,15 +50,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useConfigStore } from '@/store/config'
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { useConfigStore } from "@/store/config";
 
-const { setTheme, theme, setSize, size, setLanguage } = useConfigStore()
-const route = useRoute()
+const { setTheme, theme, setSize, size, setLanguage } = useConfigStore();
+const route = useRoute();
 const changeLanguage = (langParam) => {
-  setLanguage(langParam, route.meta?.title)
-}
-const count = ref(0)
-const showObj = ref(GLOBAL_VAR)
+  setLanguage(langParam, route.meta?.title);
+};
+const count = ref(0);
+const showObj = ref(GLOBAL_VAR);
 </script>

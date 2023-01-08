@@ -8,3 +8,4 @@ internal/pkg/log/logs
 
 # embed web
 internal/assets/dist
+web/node_modules

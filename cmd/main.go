@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 00:50:09
+ * @LastEditTime: 2023-01-08 15:12:36
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -32,10 +32,10 @@ import (
 func main() {
 	// 配置初始化
 	conf.InitLoadConfig(conf.ConfigFile)
-	// 数据库初始化
-	database.Init()
 	// 日志初始化
 	log.Init()
+	// 数据库初始化
+	database.Init()
 
 	// 调试模式
 	gin.SetMode(conf.Instance().EnvConfig.Env())

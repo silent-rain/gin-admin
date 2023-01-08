@@ -5,7 +5,7 @@ package conf
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -16,6 +16,9 @@ var (
 	once       sync.Once
 	config     *Config
 	ConfigFile = "./conf.yaml"
+
+	// 加密密匙
+	Secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg="
 )
 
 // Config 定义配置信息
@@ -93,13 +96,13 @@ func (r *LoggerConfig) String() string {
 func InitLoadConfig(filepath string) {
 	once.Do(func() {
 		// 读取配置文件
-		buf, err := ioutil.ReadFile(filepath)
+		buf, err := os.ReadFile(filepath)
 		if err != nil {
-			panic("配置文件读取失败! err: %v" + err.Error())
+			panic(fmt.Sprintf("配置文件读取失败! err: %v", err))
 		}
 		// 解析配置信息至配置结构体
 		if err := yaml.Unmarshal(buf, &config); err != nil {
-			panic("配置文件解析失败! err: %v" + err.Error())
+			panic(fmt.Sprintf("配置文件解析失败! err: %v", err))
 		}
 	})
 }
