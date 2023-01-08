@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 15:55:41
+ * @LastEditTime: 2023-01-08 16:38:57
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -43,6 +43,15 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 		return
 	}
 	roleIds := req.RoleIds
+
+	// 判断用户是否存在 邮件/手机号
+	if ok, err := systemDao.UserImpl.ExistUsername(user.Phone, user.Email); err != nil {
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	} else if ok {
+		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
+		return
+	}
 
 	// 数据入库
 	if err := systemDao.UserRegisterImpl.Add(user, roleIds); err != nil {
