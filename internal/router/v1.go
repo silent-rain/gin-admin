@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 14:28:31
+ * @LastEditTime: 2023-01-08 16:59:09
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -13,8 +13,6 @@
 package router
 
 import (
-	"net/http"
-
 	"gin-admin/internal/handler"
 	"gin-admin/internal/handler/system"
 
@@ -30,32 +28,12 @@ func NewApiV1(engine *gin.Engine) {
 	userLogin := v1.Group("/")
 	{
 		// 注册
-		userLogin.POST("/userRegister", system.UserRegisterHandlerImpl.Add)
+		userLogin.POST("/register", system.UserRegisterHandlerImpl.Add)
+		// 验证码 - pending
+		userLogin.GET("/captcha", system.UserLoginImpl.Captcha)
+		// 登录 - pending
+		userLogin.POST("/login", system.UserLoginImpl.Login)
+		// 登出
+		userLogin.POST("/logout", system.UserLoginImpl.Logout)
 	}
-
-	// 服务1
-	server1 := v1.Group("server1")
-	{
-		server1.GET("/sayHello/:name", SayHello)
-		server1.GET("/test/:id/:name", getUser)
-	}
-
-}
-
-//http://localhost:9090/test/1/dong
-func getUser(c *gin.Context) {
-	id := c.Param("id")
-	name := c.Param("name")
-	json := gin.H{
-		"data": id,
-		"name": name,
-	}
-	c.JSON(http.StatusOK, json)
-}
-
-//http://localhost:9090/sayHello/dong
-func SayHello(c *gin.Context) {
-	name := c.Param("name")
-	c.String(http.StatusOK, "hello,"+name)
-	//c.String(http.StatusOK, "change,"+name)
 }

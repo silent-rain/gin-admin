@@ -7,18 +7,29 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v2"
 )
 
 var (
-	once       sync.Once
-	config     *Config
+	once   sync.Once
+	config *Config
+	// 配置文件路径
 	ConfigFile = "./conf.yaml"
+)
 
+const (
 	// 加密密匙
 	Secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg="
+
+	// Token 过期时间
+	TokenExpireDuration = time.Hour * 24
+	// Token 签发人
+	TokenIssuer = "silent-rain"
+	// Token 前缀
+	TokenPrefix = "Token "
 )
 
 // Config 定义配置信息
