@@ -111,6 +111,11 @@ func (r *LoggerConfig) String() string {
 // InitLoadConfig 加载配置文件
 func InitLoadConfig(filepath string) {
 	once.Do(func() {
+		// 环境变量获取配置文件
+		envConfigPath := os.Getenv("config")
+		if envConfigPath != "" {
+			filepath = envConfigPath
+		}
 		// 读取配置文件
 		buf, err := os.ReadFile(filepath)
 		if err != nil {

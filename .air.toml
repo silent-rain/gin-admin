@@ -10,7 +10,7 @@ tmp_dir = "./tmp"
   # 二进制文件从 `cmd` 产生。
   bin = "./tmp/main"
   # 自定义二进制文件，可以在运行应用程序时设置环境变量。
-  full_bin = ""
+  full_bin = "config=./cmd/conf.yaml ./tmp/main"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata", "web", "internal/assets"]
   exclude_file = []
