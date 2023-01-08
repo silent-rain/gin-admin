@@ -52,7 +52,7 @@ func main() {
 	engine.Use(middleware.CheckLogin())
 
 	// 接口请求日志中间件，日志输出至数据库
-	// engine.Use(middleware.HttpLogger())
+	engine.Use(middleware.HttpLogger())
 	// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 	// engine.Use(gin.Logger())
 	// zap 接收 gin 框架默认的日志
