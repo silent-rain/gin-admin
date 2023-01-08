@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:38:57
+ * @LastEditTime: 2023-01-08 18:25:02
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -19,6 +19,7 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // 用户注册对象
@@ -32,6 +33,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 解析参数
 	req := new(systemDto.UserRegisterReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
+		zap.S().Errorf("code: %v, err: %v", statuscode.DbQueryError, err)
 		return
 	}
 	// 密码加密
@@ -40,21 +42,26 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 数据转换
 	user := new(systemModel.User)
 	if err := utils.JsonConvertJson(ctx, req, user); err != nil {
+		zap.S().Errorf("err: %v", err)
 		return
 	}
+	user.Status = 1
 	roleIds := req.RoleIds
 
 	// 判断用户是否存在 邮件/手机号
 	if ok, err := systemDao.UserImpl.ExistUsername(user.Phone, user.Email); err != nil {
+		zap.S().Errorf("code: %v, err: %v", statuscode.DbQueryError, err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	} else if ok {
+		zap.S().Infof("code: %v, err: %v", statuscode.DbDataExistError, statuscode.DbDataExistError.Error())
 		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
 		return
 	}
 
 	// 数据入库
 	if err := systemDao.UserRegisterImpl.Add(user, roleIds); err != nil {
+		zap.S().Errorf("code: %v, err: %v", statuscode.UserRegisterError, err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
 	}
