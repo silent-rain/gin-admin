@@ -90,3 +90,5 @@ air
 - [前端框架模板](https://github.com/jzfai/vue3-admin-plus)
 - [Gin框架基础](https://blog.csdn.net/qq_40229166/article/details/118807361)
 - [Gorm](https://gorm.io/zh_CN/)
+- [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
+
