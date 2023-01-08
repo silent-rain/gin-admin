@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 17:19:55
+ * @LastEditTime: 2023-01-08 18:40:43
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go
@@ -38,7 +38,7 @@ func (d *user) GetList() {
 
 // ExistUserName 判断用户是否存在 邮件/手机号
 func (d *user) ExistUsername(phone, email string) (bool, error) {
-	result := database.Instance().Debug().Where("phone = ? OR email = ?", phone, email).First(&systemModel.User{})
+	result := database.Instance().Where("phone = ? OR email = ?", phone, email).First(&systemModel.User{})
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, nil
 	}
@@ -51,7 +51,7 @@ func (d *user) ExistUsername(phone, email string) (bool, error) {
 // GetUsername 获取用户信息 邮件/手机号
 func (d *user) GetUsername(username, password string) (*systemModel.User, bool, error) {
 	bean := &systemModel.User{}
-	result := database.Instance().Debug().Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(bean)
+	result := database.Instance().Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, false, nil
 	}
