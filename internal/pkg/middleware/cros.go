@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 01:08:03
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:31:50
+ * @LastEditTime: 2023-01-08 22:00:17
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/cros.go
@@ -20,32 +20,32 @@ import (
 
 // Cros 处理跨域请求, 支持options访问
 func Cros() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		origin := c.GetHeader("Origin")
+	return func(ctx *gin.Context) {
+		origin := ctx.GetHeader("Origin")
 		if len(origin) == 0 {
-			c.Next()
+			ctx.Next()
 			return
 		}
 
 		// 同源直接过
-		host := c.GetHeader("Host")
+		host := ctx.GetHeader("Host")
 		if origin == "http://"+host || origin == "https://"+host {
-			c.Next()
+			ctx.Next()
 			return
 		}
 
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
-		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE")
-		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
-		c.Header("Access-Control-Allow-Credentials", "true")
+		ctx.Header("Access-Control-Allow-Origin", "*")
+		ctx.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+		ctx.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE")
+		ctx.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+		ctx.Header("Access-Control-Allow-Credentials", "true")
 
 		// OPTIONS 过
-		method := c.Request.Method
+		method := ctx.Request.Method
 		if method == "OPTIONS" {
-			c.AbortWithStatus(http.StatusNoContent)
-			c.Abort()
+			ctx.AbortWithStatus(http.StatusNoContent)
+			ctx.Abort()
 		}
-		c.Next()
+		ctx.Next()
 	}
 }

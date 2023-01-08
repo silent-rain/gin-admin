@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:33:51
+ * @LastEditTime: 2023-01-08 22:37:49
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -52,14 +52,17 @@ func GenerateToken(userId uint, phone, email, password string) (string, error) {
 
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*claims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &claims{}, func(token *jwt.Token) (interface{}, error) {
-		return conf.Secret, nil
+	token, _ := jwt.ParseWithClaims(tokenString, &claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(conf.Secret), nil
 	})
-	if err != nil {
-		return nil, statuscode.TokenParsingError.Error()
-	}
 	claims, ok := token.Claims.(*claims)
-	if !ok && !token.Valid {
+	if !ok {
+		return nil, statuscode.TokenInvalidError.Error()
+	} else if !claims.VerifyIssuer(conf.TokenIssuer, false) {
+		return nil, statuscode.TokenInvalidError.Error()
+	} else if !claims.VerifyExpiresAt(time.Now().Unix(), false) {
+		return nil, statuscode.TokenExpiredError.Error()
+	} else if !token.Valid {
 		return nil, statuscode.TokenInvalidError.Error()
 	}
 	return claims, nil

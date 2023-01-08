@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 15:34:09
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:33:08
+ * @LastEditTime: 2023-01-08 21:51:45
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/data.go
@@ -44,4 +44,14 @@ func JsonConvertJson(ctx *gin.Context, req interface{}, user interface{}) error 
 		return err
 	}
 	return nil
+}
+
+// IndexOfArray 元素在字符串切片中的未知
+func IndexOfArray(arr []string, target string) int {
+	for i, item := range arr {
+		if item == target {
+			return i
+		}
+	}
+	return -1
 }

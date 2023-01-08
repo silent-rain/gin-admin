@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:35:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:59:46
+ * @LastEditTime: 2023-01-08 22:36:18
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/status_code/status_code.go
@@ -41,10 +41,11 @@ const (
 
 // 鉴权
 const (
-	TokenGenerateError         StatuScode = iota + 10400 // 生成 Token 失败
-	TokenParsingError                                    // 解析 Token 失败
-	TokenInvalidError                                    // 无效鉴权
-	TokenExpiredSignatureError                           // 鉴权过期
+	TokenGenerateError StatuScode = iota + 10400 // 生成 Token 失败
+	TokenParsingError                            // 解析 Token 失败
+	TokeConvertError                             // 转换 Token 失败
+	TokenInvalidError                            // 无效鉴权
+	TokenExpiredError                            // 鉴权过期
 )
 
 // 上游服务
@@ -56,6 +57,7 @@ const (
 	UserLogoutError                                       // 用户注销失败
 	UserDisableError                                      // 您的账号已被禁用,请联系管理员
 	CaptchaEtxNotFoundError                               // 验证码格式异常
+	CaptchaNotFoundError                                  // 验证码不存在
 	CaptchaGenerateError                                  // 生成验证码失败
 	CaptchaVerifyError                                    // 验证码错误
 	SessionGetCaptchaEmptyError                           // 验证码为空
@@ -76,16 +78,18 @@ var statusCodeMsg = map[StatuScode]error{
 	DbQueryEmptyError: errors.New("数据查询空"),
 	DbDataExistError:  errors.New("数据已存在"),
 	// 鉴权
-	TokenGenerateError:         errors.New("生成 Token 失败"),
-	TokenParsingError:          errors.New("解析 Token 失败"),
-	TokenInvalidError:          errors.New("无效鉴权"),
-	TokenExpiredSignatureError: errors.New("鉴权过期"),
+	TokenGenerateError: errors.New("生成 Token 失败"),
+	TokenParsingError:  errors.New("解析 Token 失败"),
+	TokeConvertError:   errors.New("转换 Token 失败"),
+	TokenInvalidError:  errors.New("无效鉴权"),
+	TokenExpiredError:  errors.New("鉴权过期"),
 	// 系统管理
 	UserRegisterError:           errors.New("用户注册失败"),
 	UserLoginError:              errors.New("用户登录失败"),
 	UserLogoutError:             errors.New("用户注销失败"),
 	UserDisableError:            errors.New("您的账号已被禁用,请联系管理员"),
 	CaptchaEtxNotFoundError:     errors.New("验证码格式异常"),
+	CaptchaNotFoundError:        errors.New("验证码不存在"),
 	CaptchaGenerateError:        errors.New("生成验证码失败"),
 	CaptchaVerifyError:          errors.New("验证码错误"),
 	SessionGetCaptchaEmptyError: errors.New("验证码为空"),

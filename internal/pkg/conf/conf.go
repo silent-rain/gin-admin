@@ -29,7 +29,7 @@ const (
 	// Token 签发人
 	TokenIssuer = "silent-rain"
 	// Token 前缀
-	TokenPrefix = "Token "
+	TokenPrefix = "Bearer "
 
 	// Session 最大过期时间
 	SessionMaxAge = time.Hour * 24

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:51:40
+ * @LastEditTime: 2023-01-08 22:07:55
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -50,6 +50,8 @@ func main() {
 	engine.Use(middleware.GinLogger(), gin.Recovery())
 	// Session 中间件
 	engine.Use(middleware.Session(), gin.Recovery())
+	// 登录验证中间件
+	engine.Use(middleware.CheckLogin(), gin.Recovery())
 	// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 	engine.Use(gin.Logger(), gin.Recovery())
 

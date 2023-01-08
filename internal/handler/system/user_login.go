@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:29:03
+ * @LastEditTime: 2023-01-08 21:59:23
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -118,13 +118,20 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 
 // CaptchaVerify 验证码验证
 func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
-	value := ctx.Param("value")
+	value := ctx.DefaultQuery("captchaId", "")
+	if value == "" {
+		zap.S().Errorf("code: %v, data: %v, err: %v", statuscode.SessionGetCaptchaEmptyError, value,
+			statuscode.SessionGetCaptchaEmptyError.Error())
+		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		return
+	}
+
 	session := sessions.Default(ctx)
 	captchaId := session.Get("captcha")
 	if captchaId == nil {
-		zap.S().Errorf("code: %v, data: %v, err: %v", statuscode.SessionGetCaptchaEmptyError, captchaId,
-			statuscode.SessionGetCaptchaEmptyError.Error())
-		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		zap.S().Errorf("code: %v, data: %v, err: %v", statuscode.CaptchaNotFoundError, captchaId,
+			statuscode.CaptchaNotFoundError.Error())
+		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
 		return
 	}
 	session.Delete("captcha")
