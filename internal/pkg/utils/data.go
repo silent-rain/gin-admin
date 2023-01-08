@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 15:34:09
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:51:45
+ * @LastEditTime: 2023-01-09 00:40:06
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/data.go
@@ -30,8 +30,8 @@ func ParsingReqParams(ctx *gin.Context, req interface{}) error {
 	return nil
 }
 
-// JsonConvertJson 结构体转换
-func JsonConvertJson(ctx *gin.Context, req interface{}, user interface{}) error {
+// ApiJsonConvertJson 结构体转换
+func ApiJsonConvertJson(ctx *gin.Context, req interface{}, user interface{}) error {
 	bytes, err := json.Marshal(req)
 	if err != nil {
 		zap.S().Errorf("数据编码失败, data: %v, err: %v", req, err)

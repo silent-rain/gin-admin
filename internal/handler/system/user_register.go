@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:29:30
+ * @LastEditTime: 2023-01-09 00:40:12
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -41,7 +41,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 
 	// 数据转换
 	user := new(systemModel.User)
-	if err := utils.JsonConvertJson(ctx, req, user); err != nil {
+	if err := utils.ApiJsonConvertJson(ctx, req, user); err != nil {
 		zap.S().Errorf("err: %v", err)
 		return
 	}
