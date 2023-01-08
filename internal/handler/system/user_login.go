@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:13:27
+ * @LastEditTime: 2023-01-08 21:29:03
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -25,14 +25,14 @@ import (
 	"go.uber.org/zap"
 )
 
-// 用户登录注册对象
+// UserLoginImpl 用户登录注册对象
 var UserLoginImpl = new(userLoginHandler)
 
 // 用户登录/登出
 type userLoginHandler struct {
 }
 
-// 登录
+// Login 登录
 func (h *userLoginHandler) Login(ctx *gin.Context) {
 	req := new(systemDto.UserLoginReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
@@ -76,23 +76,13 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
 }
 
-/*
-   userInfo: {
-     headImgUrl: "logo_W2xEX_2x.jpg",
-     phone: "13302254696",
-     roleId: "[13]",
-     name: "panda",
-     id: 5,
-   },
-*/
-
-// 注销系统
+// Logout 注销系统
 func (h *userLoginHandler) Logout(ctx *gin.Context) {
 	result := systemDto.UserLoginRsp{}
 	response.New(ctx).WithMsg("注销成功").WithData(result).Json()
 }
 
-// 验证码
+// Captcha 验证码
 func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Header("Pragma", "no-cache")
@@ -126,7 +116,7 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 	ctx.Writer.Write(content.Bytes())
 }
 
-// 验证码验证
+// CaptchaVerify 验证码验证
 func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 	value := ctx.Param("value")
 	session := sessions.Default(ctx)

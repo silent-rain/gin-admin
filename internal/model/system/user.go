@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 12:41:32
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 14:35:11
+ * @LastEditTime: 2023-01-08 21:29:54
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/user.go
@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// User 用户表
 type User struct {
 	ID        uint      `gorm:"column:id;primaryKey"`                   // 用户ID
 	Realname  string    `gorm:"column:realname"`                        // 真实姓名

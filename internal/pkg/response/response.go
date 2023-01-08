@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 17:45:55
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 19:16:38
+ * @LastEditTime: 2023-01-08 21:32:17
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/response/response.go
@@ -24,7 +24,7 @@ type ResponseAPI struct {
 	context *gin.Context          `json:"-"`    // gin Context
 }
 
-// 返回 API 响应结构对象
+// New 返回 API 响应结构对象
 //
 // 返回默认 Ok 状态码及对应的状态码信息
 func New(c *gin.Context) *ResponseAPI {
@@ -35,7 +35,7 @@ func New(c *gin.Context) *ResponseAPI {
 	}
 }
 
-// WithMsg 添加响应状态码及状态码对应的信息
+// WithCode 添加响应状态码及状态码对应的信息
 func (r *ResponseAPI) WithCode(code statuscode.StatuScode) *ResponseAPI {
 	r.Code = code
 	r.Msg = code.Msg()
@@ -48,7 +48,7 @@ func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
 	return r
 }
 
-// WithMsg 添加响应数据
+// WithData 添加响应数据
 func (r *ResponseAPI) WithData(data interface{}) *ResponseAPI {
 	r.Data = data
 	return r

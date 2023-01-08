@@ -16,12 +16,12 @@ import (
 var (
 	once   sync.Once
 	config *Config
-	// 配置文件路径
+	// ConfigFile 配置文件路径
 	ConfigFile = "./conf.yaml"
 )
 
 const (
-	// 加密密匙
+	// Secret 加密密匙
 	Secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg="
 
 	// Token 过期时间
@@ -99,7 +99,7 @@ func (r EnvConfig) Env() string {
 	return mode
 }
 
-// 将日志配置结构体转换为字符串
+// String 将日志配置结构体转换为字符串
 func (r *LoggerConfig) String() string {
 	buf, err := json.Marshal(r)
 	if err != nil {

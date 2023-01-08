@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 00:41:40
+ * @LastEditTime: 2023-01-08 21:31:35
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -24,7 +24,7 @@ const (
 	logTmFmt = "2006-01-02 15:04:05.000"
 )
 
-// 初始化日志输出配置
+// Init 初始化日志输出配置
 func Init() {
 	getLogger()
 }

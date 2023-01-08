@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:04:45
+ * @LastEditTime: 2023-01-08 21:35:00
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -19,12 +19,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// NewApiV1 API V1 路由
 func NewApiV1(engine *gin.Engine) {
 	v1 := engine.Group("api/v1")
 	// 接口测试
 	v1.GET("/sayHello/:name", handler.SayHello)
 
-	// 注册/登录/登出
+	// 注册/登录/登出/验证码
 	userLogin := v1.Group("/")
 	{
 		// 注册
@@ -37,5 +38,14 @@ func NewApiV1(engine *gin.Engine) {
 		userLogin.POST("/login", system.UserLoginImpl.Login)
 		// 登出
 		userLogin.POST("/logout", system.UserLoginImpl.Logout)
+	}
+
+	// 用户管理
+	user := v1.Group("/user")
+	{
+		// 获取用户信息
+		user.GET("/userInfo", system.UserManageImpl.UserInfo)
+		// 添加用户
+		user.POST("/add", system.UserRegisterHandlerImpl.Add)
 	}
 }

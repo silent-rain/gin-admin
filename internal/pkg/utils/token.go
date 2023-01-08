@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:39:33
+ * @LastEditTime: 2023-01-08 21:33:51
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -19,6 +19,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// 加密声明
 type claims struct {
 	UserId   uint
 	Phone    string

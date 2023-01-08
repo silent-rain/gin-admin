@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 20:54:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 13:46:52
+ * @LastEditTime: 2023-01-08 21:31:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/database/database.go
@@ -24,7 +24,7 @@ var (
 	db *gorm.DB
 )
 
-// 数据库初始化
+// Init 数据库初始化
 func Init() {
 	// 获取 db 实例
 	if conf.Instance().DBConfig == nil {
@@ -83,7 +83,7 @@ func initsqlite() *gorm.DB {
 	return db
 }
 
-// 获取 gorm db 对象，其他包需要执行数据库查询的时候，
+// Instance 获取 gorm db 对象，其他包需要执行数据库查询的时候，
 // 不用担心协程并发使用同样的 db 对象会共用同一个连接，
 // db 对象在调用他的方法的时候会从数据库连接池中获取新的连接
 func Instance() *gorm.DB {

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 18:40:43
+ * @LastEditTime: 2023-01-08 21:27:56
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go
@@ -19,10 +19,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// 用户对象
+// UserImpl 用户对象
 var UserImpl = new(user)
 
-// 用户接口
+// User 用户接口
 type User interface {
 	ExistUsername(phone, email string) (bool, error)
 	GetUsername(username, password string) (*systemModel.User, bool, error)

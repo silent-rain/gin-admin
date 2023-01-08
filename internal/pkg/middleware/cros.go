@@ -1,3 +1,13 @@
+/*
+ * @Author: silent-rain
+ * @Date: 2023-01-06 01:08:03
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-08 21:31:50
+ * @company:
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/internal/pkg/middleware/cros.go
+ * @Descripttion:
+ */
 /**跨域
  */
 package middleware
@@ -8,7 +18,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 处理跨域请求, 支持options访问
+// Cros 处理跨域请求, 支持options访问
 func Cros() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.GetHeader("Origin")

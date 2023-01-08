@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 18:25:02
+ * @LastEditTime: 2023-01-08 21:29:30
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -22,13 +22,13 @@ import (
 	"go.uber.org/zap"
 )
 
-// 用户注册对象
+// UserRegisterHandlerImpl 用户注册对象
 var UserRegisterHandlerImpl = new(userRegisterHandler)
 
 // 用户注册结构
 type userRegisterHandler struct{}
 
-// 添加用户
+// Add 添加用户
 func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 解析参数
 	req := new(systemDto.UserRegisterReq)

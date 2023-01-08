@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:51:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:16:40
+ * @LastEditTime: 2023-01-08 21:27:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/dao.go
@@ -16,7 +16,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 事务
+// Transaction 事务
 type Transaction struct {
 	tx *gorm.DB
 }

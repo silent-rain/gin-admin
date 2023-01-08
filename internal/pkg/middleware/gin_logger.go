@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 00:48:53
+ * @LastEditTime: 2023-01-08 21:31:58
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/gin_logger.go
@@ -17,7 +17,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// 日志中间件
+// GinLogger 日志中间件
 // 日志输出至数据库
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {

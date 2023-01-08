@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 15:52:19
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:04:31
+ * @LastEditTime: 2023-01-08 21:33:33
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/md5.go
@@ -27,7 +27,7 @@ import (
 	"gin-admin/internal/pkg/conf"
 )
 
-// MD5 加密
+// Md5 加密
 func Md5(v string) string {
 	m := md5.New()
 	m.Write([]byte(conf.Secret))

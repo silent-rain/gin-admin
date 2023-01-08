@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:43:50
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 15:32:54
+ * @LastEditTime: 2023-01-08 21:26:51
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user_register.go
@@ -17,13 +17,13 @@ import (
 	"go.uber.org/zap"
 )
 
-// 用户注册对象
+// UserRegisterImpl 用户注册对象
 var UserRegisterImpl = &userRegister{
 	Transaction: dao.NewTransaction(),
 }
 
-// 用户接口
-type UserRegiste interface {
+// UserRegister 用户接口
+type UserRegister interface {
 	Add(user *systemModel.User, roleIds []uint) error
 }
 
