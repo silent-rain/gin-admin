@@ -30,6 +30,11 @@ const (
 	TokenIssuer = "silent-rain"
 	// Token 前缀
 	TokenPrefix = "Token "
+
+	// Session 最大过期时间
+	SessionMaxAge = time.Hour * 24
+	// Session 密匙对
+	SessionKeyPairs = "silent-rain"
 )
 
 // Config 定义配置信息

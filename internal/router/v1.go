@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:59:09
+ * @LastEditTime: 2023-01-08 20:43:11
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -29,9 +29,11 @@ func NewApiV1(engine *gin.Engine) {
 	{
 		// 注册
 		userLogin.POST("/register", system.UserRegisterHandlerImpl.Add)
-		// 验证码 - pending
+		// 验证码
 		userLogin.GET("/captcha", system.UserLoginImpl.Captcha)
-		// 登录 - pending
+		// 验证码
+		userLogin.GET("/captcha/verify/:value", system.UserLoginImpl.CaptchaVerify)
+		// 登录
 		userLogin.POST("/login", system.UserLoginImpl.Login)
 		// 登出
 		userLogin.POST("/logout", system.UserLoginImpl.Logout)

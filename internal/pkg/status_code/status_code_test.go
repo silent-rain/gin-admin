@@ -2,10 +2,10 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:56:09
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 18:01:47
+ * @LastEditTime: 2023-01-08 20:39:26
  * @company:
  * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/status_code/status_code_test.go
+ * @FilePath: /gin-admin/internal/pkg/status_code/status_code_test.go
  * @Descripttion:
  */
 /**业务状态码
@@ -68,7 +68,7 @@ func Test_statuScode_Error(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "ok", r: Ok, msg: "Ok", wantErr: true},
-		{name: "Unknown", r: Unknown, msg: "Unknown", wantErr: true},
+		{name: "Unknown", r: UnknownError, msg: "Unknown", wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

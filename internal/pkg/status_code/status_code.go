@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:35:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 18:14:01
+ * @LastEditTime: 2023-01-08 20:59:46
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/status_code/status_code.go
@@ -18,7 +18,7 @@ type StatuScode uint
 const (
 	Ok            StatuScode = iota + 10000 // 访问正常
 	InternalError                           // 内部错误
-	Unknown                                 // 未知错误
+	UnknownError                            // 未知错误
 )
 
 // 请求解析
@@ -41,27 +41,31 @@ const (
 
 // 鉴权
 const (
-	TokenGenerateError    StatuScode = iota + 10400 // 生成 Token 失败
-	TokenParsingError                               // 解析 Token 失败
-	TokenInvalid                                    // 无效鉴权
-	TokenExpiredSignature                           // 鉴权过期
+	TokenGenerateError         StatuScode = iota + 10400 // 生成 Token 失败
+	TokenParsingError                                    // 解析 Token 失败
+	TokenInvalidError                                    // 无效鉴权
+	TokenExpiredSignatureError                           // 鉴权过期
 )
 
 // 上游服务
 
 // 系统管理
 const (
-	UserRegisterError StatuScode = iota + 11000 // 用户注册失败
-	UserLoginError                              // 用户登录失败
-	UserLogoutError                             // 用户注销失败
-	UserDisableError                            // 您的账号已被禁用,请联系管理员
+	UserRegisterError           StatuScode = iota + 11000 // 用户注册失败
+	UserLoginError                                        // 用户登录失败
+	UserLogoutError                                       // 用户注销失败
+	UserDisableError                                      // 您的账号已被禁用,请联系管理员
+	CaptchaEtxNotFoundError                               // 验证码格式异常
+	CaptchaGenerateError                                  // 生成验证码失败
+	CaptchaVerifyError                                    // 验证码错误
+	SessionGetCaptchaEmptyError                           // 验证码为空
 )
 
 // 状态码映射具体消息
 var statusCodeMsg = map[StatuScode]error{
 	Ok:            errors.New("Ok"),
 	InternalError: errors.New("内部错误"),
-	Unknown:       errors.New("未知错误"),
+	UnknownError:  errors.New("未知错误"),
 	// 请求解析
 	ReqParameterParsingError: errors.New("请求参数解析错误"),
 	// 数据解析
@@ -72,22 +76,26 @@ var statusCodeMsg = map[StatuScode]error{
 	DbQueryEmptyError: errors.New("数据查询空"),
 	DbDataExistError:  errors.New("数据已存在"),
 	// 鉴权
-	TokenGenerateError:    errors.New("生成 Token 失败"),
-	TokenParsingError:     errors.New("解析 Token 失败"),
-	TokenInvalid:          errors.New("无效鉴权"),
-	TokenExpiredSignature: errors.New("鉴权过期"),
+	TokenGenerateError:         errors.New("生成 Token 失败"),
+	TokenParsingError:          errors.New("解析 Token 失败"),
+	TokenInvalidError:          errors.New("无效鉴权"),
+	TokenExpiredSignatureError: errors.New("鉴权过期"),
 	// 系统管理
-	UserRegisterError: errors.New("用户注册失败"),
-	UserLoginError:    errors.New("用户登录失败"),
-	UserLogoutError:   errors.New("用户注销失败"),
-	UserDisableError:  errors.New("您的账号已被禁用,请联系管理员"),
+	UserRegisterError:           errors.New("用户注册失败"),
+	UserLoginError:              errors.New("用户登录失败"),
+	UserLogoutError:             errors.New("用户注销失败"),
+	UserDisableError:            errors.New("您的账号已被禁用,请联系管理员"),
+	CaptchaEtxNotFoundError:     errors.New("验证码格式异常"),
+	CaptchaGenerateError:        errors.New("生成验证码失败"),
+	CaptchaVerifyError:          errors.New("验证码错误"),
+	SessionGetCaptchaEmptyError: errors.New("验证码为空"),
 }
 
 // Error 返回状态码错误信息
 func (r StatuScode) Error() error {
 	msg, ok := statusCodeMsg[r]
 	if !ok {
-		return statusCodeMsg[Unknown]
+		return statusCodeMsg[UnknownError]
 	}
 	return msg
 }
@@ -96,7 +104,7 @@ func (r StatuScode) Error() error {
 func (r StatuScode) Msg() string {
 	msg, ok := statusCodeMsg[r]
 	if !ok {
-		return statusCodeMsg[Unknown].Error()
+		return statusCodeMsg[UnknownError].Error()
 	}
 	return msg.Error()
 }

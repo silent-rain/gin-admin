@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 18:29:13
+ * @LastEditTime: 2023-01-08 20:39:33
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -59,7 +59,7 @@ func ParseToken(tokenString string) (*claims, error) {
 	}
 	claims, ok := token.Claims.(*claims)
 	if !ok && !token.Valid {
-		return nil, statuscode.TokenInvalid.Error()
+		return nil, statuscode.TokenInvalidError.Error()
 	}
 	return claims, nil
 }

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:14:54
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 17:32:50
+ * @LastEditTime: 2023-01-08 18:53:40
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/user.go
@@ -20,4 +20,10 @@ type UserLoginReq struct {
 // 登录响应
 type UserLoginRsp struct {
 	Token string `json:"token"` // 令牌
+}
+
+// 验证码响应
+type CaptchaRsp struct {
+	CaptchaId string `json:"captcha_id"`
+	ImageUrl  string `json:"image_url"`
 }
