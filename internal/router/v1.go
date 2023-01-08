@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:43:11
+ * @LastEditTime: 2023-01-08 21:04:45
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -31,7 +31,7 @@ func NewApiV1(engine *gin.Engine) {
 		userLogin.POST("/register", system.UserRegisterHandlerImpl.Add)
 		// 验证码
 		userLogin.GET("/captcha", system.UserLoginImpl.Captcha)
-		// 验证码
+		// 验证码验证
 		userLogin.GET("/captcha/verify/:value", system.UserLoginImpl.CaptchaVerify)
 		// 登录
 		userLogin.POST("/login", system.UserLoginImpl.Login)
