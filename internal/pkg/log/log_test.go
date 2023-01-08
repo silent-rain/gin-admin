@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 00:25:40
+ * @LastEditTime: 2023-01-08 21:16:19
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log_test.go
@@ -11,8 +11,9 @@
 package log
 
 import (
-	"gin-admin/internal/pkg/conf"
 	"testing"
+
+	"gin-admin/internal/pkg/conf"
 
 	"go.uber.org/zap"
 )
