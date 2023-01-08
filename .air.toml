@@ -3,20 +3,25 @@ testdata_dir = "testdata"
 tmp_dir = "./tmp"
 
 [build]
+  # 在运行二进制时添加额外的参数 (bin/full_bin)。将运行“./tmp/main hello world”。
   args_bin = []
-  bin = "./tmp/main"
+  # 只是普通的旧 shell 命令。您也可以使用 `make`
   cmd = "go build -o ./tmp/main ."
+  # 二进制文件从 `cmd` 产生。
+  bin = "./tmp/main"
+  # 自定义二进制文件，可以在运行应用程序时设置环境变量。
+  full_bin = ""
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "web", "internal/assets"]
   exclude_file = []
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
+  # 按照目录的符号链接
   follow_symlink = false
-  full_bin = ""
   include_dir = []
-  include_ext = ["go", "tpl", "tmpl", "html"]
+  include_ext = ["go", "tpl", "tmpl"]
   kill_delay = "0s"
-  log = "../logs/air.log"
+  log = "./logs/air.log"
   send_interrupt = false
   stop_on_error = true
 

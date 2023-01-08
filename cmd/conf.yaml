@@ -12,7 +12,7 @@ sqlite: # sqlite3 数据库
   filepath: "./data.dat"
 
 logger:
-  filename: "logs/all.log"
+  filename: "logs/log.log"
   level: "debug" # debug/info/warn/error/panic
   max_size: 256
   max_backups: 50
