@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 22:46:38
+ * @LastEditTime: 2023-01-09 01:08:11
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -33,7 +33,7 @@ var whiteList = []string{
 // CheckLogin 登录验证中间件
 func CheckLogin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if utils.IndexOfArray(whiteList, ctx.Request.RequestURI) != -1 {
+		if utils.IndexOfArray(whiteList, ctx.Request.URL.Path) != -1 {
 			ctx.Next()
 			return
 		}
