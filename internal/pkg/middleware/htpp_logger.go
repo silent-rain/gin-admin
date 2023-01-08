@@ -2,11 +2,11 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 22:01:04
+ * @LastEditTime: 2023-01-08 23:02:48
  * @company:
  * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/middleware/gin_logger.go
- * @Descripttion: gin 日志中间件，日志输出至数据库
+ * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
+ * @Descripttion: 接口请求日志中间件，日志输出至数据库
  */
 package middleware
 
@@ -17,9 +17,9 @@ import (
 	"go.uber.org/zap"
 )
 
-// GinLogger 日志中间件
+// HttpLogger 日志中间件
 // 日志输出至数据库
-func GinLogger() gin.HandlerFunc {
+func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		start := time.Now()
 		path := ctx.Request.URL.Path

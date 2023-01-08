@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 22:07:55
+ * @LastEditTime: 2023-01-08 23:07:11
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -45,15 +45,18 @@ func main() {
 	engine := gin.Default()
 	engine.Use(gin.Recovery())
 	// 跨域处理(要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404)
-	engine.Use(middleware.Cros(), gin.Recovery())
-	// 日志中间件，日志输出至数据库
-	engine.Use(middleware.GinLogger(), gin.Recovery())
+	engine.Use(middleware.Cros())
 	// Session 中间件
-	engine.Use(middleware.Session(), gin.Recovery())
+	engine.Use(middleware.Session())
 	// 登录验证中间件
-	engine.Use(middleware.CheckLogin(), gin.Recovery())
+	engine.Use(middleware.CheckLogin())
+
+	// 接口请求日志中间件，日志输出至数据库
+	// engine.Use(middleware.HttpLogger())
 	// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
-	engine.Use(gin.Logger(), gin.Recovery())
+	// engine.Use(gin.Logger())
+	// zap 接收 gin 框架默认的日志
+	engine.Use(middleware.GinZapLogger(), middleware.GinZapRecovery(true))
 
 	// 加载静态资源
 	engine.StaticFS("/static", http.FS(utils.NewResource()))
