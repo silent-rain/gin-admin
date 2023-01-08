@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 18:25:52
+ * @LastEditTime: 2023-01-08 18:31:47
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -81,7 +81,8 @@ func (c *userLoginHandler) Login(ctx *gin.Context) {
 
 // 注销系统
 func (c *userLoginHandler) Logout(ctx *gin.Context) {
-	response.New(ctx).WithMsg("注销成功").Json()
+	result := systemDto.UserLoginRsp{}
+	response.New(ctx).WithMsg("注销成功").WithData(result).Json()
 }
 
 // 验证码
