@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 22:37:49
+ * @LastEditTime: 2023-01-09 23:03:15
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -19,22 +19,22 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// 加密声明
-type claims struct {
-	UserId   uint
-	Phone    string
-	Email    string
-	Password string
+// Token 令牌
+type Token struct {
+	userId   uint
+	phone    string
+	email    string
+	password string
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, phone, email, password string) (string, error) {
-	cla := claims{
-		UserId:   userId,
-		Phone:    phone,
-		Email:    email,
-		Password: password,
+	cla := Token{
+		userId:   userId,
+		phone:    phone,
+		email:    email,
+		password: password,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(conf.TokenExpireDuration).Unix(), // 过期时间
 			Issuer:    conf.TokenIssuer,                                // 签发人
@@ -51,11 +51,11 @@ func GenerateToken(userId uint, phone, email, password string) (string, error) {
 }
 
 // ParseToken 解析 Token
-func ParseToken(tokenString string) (*claims, error) {
-	token, _ := jwt.ParseWithClaims(tokenString, &claims{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(tokenString string) (*Token, error) {
+	token, _ := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(conf.Secret), nil
 	})
-	claims, ok := token.Claims.(*claims)
+	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, statuscode.TokenInvalidError.Error()
 	} else if !claims.VerifyIssuer(conf.TokenIssuer, false) {
@@ -66,4 +66,9 @@ func ParseToken(tokenString string) (*claims, error) {
 		return nil, statuscode.TokenInvalidError.Error()
 	}
 	return claims, nil
+}
+
+// GetUserId 获取用户 ID
+func (t Token) GetUserId() uint {
+	return t.userId
 }
