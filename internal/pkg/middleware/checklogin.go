@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 23:25:29
+ * @LastEditTime: 2023-01-10 00:31:03
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -40,6 +40,11 @@ func CheckLogin() gin.HandlerFunc {
 
 		// 从请求头中获取Token
 		token := ctx.GetHeader("Authorization")
+		if token == "" {
+			response.New(ctx).WithCode(statuscode.TokenNotFound).Json()
+			ctx.Abort()
+			return
+		}
 		// 字符串替换
 		token = strings.Replace(token, "Bearer ", "", 1)
 		// Token 解析

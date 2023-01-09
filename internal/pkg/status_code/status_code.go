@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:35:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 22:36:18
+ * @LastEditTime: 2023-01-10 00:11:50
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/status_code/status_code.go
@@ -42,6 +42,7 @@ const (
 // 鉴权
 const (
 	TokenGenerateError StatuScode = iota + 10400 // 生成 Token 失败
+	TokenNotFound                                // 鉴权信息不存在
 	TokenParsingError                            // 解析 Token 失败
 	TokeConvertError                             // 转换 Token 失败
 	TokenInvalidError                            // 无效鉴权
@@ -79,6 +80,7 @@ var statusCodeMsg = map[StatuScode]error{
 	DbDataExistError:  errors.New("数据已存在"),
 	// 鉴权
 	TokenGenerateError: errors.New("生成 Token 失败"),
+	TokenNotFound:      errors.New("鉴权信息不存在"),
 	TokenParsingError:  errors.New("解析 Token 失败"),
 	TokeConvertError:   errors.New("转换 Token 失败"),
 	TokenInvalidError:  errors.New("无效鉴权"),

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 23:26:56
+ * @LastEditTime: 2023-01-10 00:30:48
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -22,7 +22,7 @@ import (
 
 // Token 令牌
 type Token struct {
-	userId   uint
+	UserId   int
 	phone    string
 	email    string
 	password string
@@ -32,7 +32,7 @@ type Token struct {
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, phone, email, password string) (string, error) {
 	cla := Token{
-		userId:   userId,
+		UserId:   int(userId),
 		phone:    phone,
 		email:    email,
 		password: password,
@@ -59,9 +59,9 @@ func ParseToken(tokenString string) (*Token, error) {
 	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, statuscode.TokenInvalidError.Error()
-	} else if !claims.VerifyIssuer(conf.TokenIssuer, false) {
+	} else if !claims.VerifyIssuer(conf.TokenIssuer, true) {
 		return nil, statuscode.TokenInvalidError.Error()
-	} else if !claims.VerifyExpiresAt(time.Now().Unix(), false) {
+	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return nil, statuscode.TokenExpiredError.Error()
 	} else if !token.Valid {
 		return nil, statuscode.TokenInvalidError.Error()
@@ -76,5 +76,5 @@ func GetUserId(ctx *gin.Context) uint {
 		return 0
 	}
 	token := v.(Token)
-	return token.userId
+	return uint(token.UserId)
 }
