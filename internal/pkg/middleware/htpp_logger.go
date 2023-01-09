@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 00:03:56
+ * @LastEditTime: 2023-01-10 01:27:23
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -26,6 +26,11 @@ import (
 // 日志输出至数据库
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		// 验证 Content-Type 是否为 json
+		if err := utils.VerifyContentTypeJson(ctx); err != nil {
+			return
+		}
+
 		// 响应
 		start := time.Now()
 		// 读取 body 数据

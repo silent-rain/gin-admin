@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:35:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 00:11:50
+ * @LastEditTime: 2023-01-10 01:23:58
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/status_code/status_code.go
@@ -21,9 +21,10 @@ const (
 	UnknownError                            // 未知错误
 )
 
-// 请求解析
+// 请求
 const (
 	ReqParameterParsingError StatuScode = iota + 10100 // 请求参数解析错误
+	ReqContentTypeNotJson                              // 请求参数解析错误
 )
 
 // 数据解析
@@ -69,8 +70,9 @@ var statusCodeMsg = map[StatuScode]error{
 	Ok:            errors.New("Ok"),
 	InternalError: errors.New("内部错误"),
 	UnknownError:  errors.New("未知错误"),
-	// 请求解析
+	// 请求
 	ReqParameterParsingError: errors.New("请求参数解析错误"),
+	ReqContentTypeNotJson:    errors.New("请求参数解析错误"),
 	// 数据解析
 	JsonDataEncodeError: errors.New("数据编码错误"),
 	JsonDataDecodeError: errors.New("数据解码错误"),
