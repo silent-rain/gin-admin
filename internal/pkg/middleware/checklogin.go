@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 01:08:11
+ * @LastEditTime: 2023-01-09 23:03:31
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -50,8 +50,7 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-
-		zap.S().Errorf("============== %#v", *claim)
+		ctx.Set("token", *claim)
 		ctx.Next()
 	}
 }
