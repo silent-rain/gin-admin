@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:34:33
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 23:03:15
+ * @LastEditTime: 2023-01-09 23:26:56
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/token.go
@@ -17,6 +17,7 @@ import (
 	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 // Token 令牌
@@ -69,6 +70,11 @@ func ParseToken(tokenString string) (*Token, error) {
 }
 
 // GetUserId 获取用户 ID
-func (t Token) GetUserId() uint {
-	return t.userId
+func GetUserId(ctx *gin.Context) uint {
+	v, ok := ctx.Get(GinContextToken)
+	if !ok {
+		return 0
+	}
+	token := v.(Token)
+	return token.userId
 }

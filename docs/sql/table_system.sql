@@ -72,16 +72,16 @@ CREATE TABLE user_login_token (
 -- 网络请求日志表
 CREATE TABLE http_log (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
-    `user_id` VARCHAR(10) NULL COMMENT '请求用户ID',
-    `status` VARCHAR(10) NOT NULL COMMENT '请求状态码',
+    `user_id` INT NULL COMMENT '请求用户ID',
+    `status_code` INT(10) NOT NULL COMMENT '请求状态码',
     `method` VARCHAR(10) NOT NULL COMMENT '请求方法',
     `path` VARCHAR(500) NOT NULL COMMENT '请求地址路径',
-    `query` VARCHAR(500) COMMENT '请求参数',
-    `body` VARCHAR(500) COMMENT '请求体/响应体',
+    `query` VARCHAR(500) NULL COMMENT '请求参数',
+    `body` VARCHAR(500) NULL COMMENT '请求体/响应体',
     `remote_addr` VARCHAR(64) NOT NULL COMMENT '请求IP',
-    `user_agent` VARCHAR(100) NOT NULL COMMENT '代理',
-    `cost` VARCHAR(10) NOT NULL COMMENT '耗时',
-    `type` VARCHAR(64) NOT NULL COMMENT '日志类型:req/rsp',
+    `user_agent` VARCHAR(100) NOT NULL COMMENT '用户代理',
+    `cost` INT(20) NOT NULL COMMENT '耗时,纳秒',
+    `htpp_type` VARCHAR(64) NOT NULL COMMENT '日志类型:REQ/RSP',
     `note` VARCHAR(255) NULL COMMENT '备注',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`)
