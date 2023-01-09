@@ -7,13 +7,13 @@ CREATE DATABASE `gin_admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_genera
 -- 用户表
 CREATE TABLE user (
     `id` INT AUTO_INCREMENT COMMENT '用户ID',
-    `realname` VARCHAR(32) NOT NULL COMMENT '真实姓名',
+    `realname` VARCHAR(32) NULL COMMENT '真实姓名',
     `nickname` VARCHAR(32) NOT NULL COMMENT '昵称',
-    `gender` TINYINT(1) NOT NULL COMMENT '性别: 0:女,1:男',
+    `gender` TINYINT(1) NULL COMMENT '性别: 0:女,1:男',
     `age` INT(11) NULL COMMENT '年龄',
     `birthday` VARCHAR(20) NULL COMMENT '出生日期',
     `avatar` VARCHAR(50) NULL COMMENT '用户头像URL',
-    `phone` VARCHAR(20) NULL COMMENT '手机号码',
+    `phone` VARCHAR(20) NOT NULL COMMENT '手机号码',
     `email` VARCHAR(50) NULL COMMENT '邮件',
     `intro` VARCHAR(200) NULL COMMENT '介绍',
     `note` VARCHAR(200) NULL COMMENT '备注',

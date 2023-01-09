@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:31:45
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:28:19
+ * @LastEditTime: 2023-01-09 22:52:24
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/user_register.go
@@ -12,7 +12,7 @@ package systemDto
 
 // UserRegisterReq 用户注册
 type UserRegisterReq struct {
-	Realname string `form:"realname" binding:"required"` // 真实姓名
+	Realname string `form:"realname"`                    // 真实姓名
 	Nickname string `form:"nickname" binding:"required"` // 昵称
 	Gender   uint   `form:"gender" binding:"required"`   // 性别: 0:女,1:男
 	Age      uint8  `form:"age" binding:"required"`      // 年龄
