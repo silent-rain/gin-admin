@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 01:27:03
+ * @LastEditTime: 2023-01-10 22:00:05
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -34,10 +34,8 @@ var whiteList = []string{
 // CheckLogin 登录验证中间件
 func CheckLogin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 验证 Content-Type 是否为 json
-		if err := utils.VerifyContentTypeJson(ctx); err != nil {
-			return
-		}
+		// 验证 API 的 Content-Type 是否为 json
+		utils.LoginVerifyContentTypeJson(ctx)
 
 		// 请求过滤
 		if utils.IndexOfArray(whiteList, ctx.Request.URL.Path) != -1 {

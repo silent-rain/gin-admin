@@ -6,7 +6,7 @@ ALTER TABLE avatar
 -- 修改字段名称
 alter table user_token change user_id `user_id` INT(20) NOT NULL COMMENT '用户ID';
 -- 添加字段
-ALTER TABLE http_logs ADD `note` VARCHAR(255) NULL COMMENT '备注';
+ALTER TABLE http_log ADD `trace_id` VARCHAR(32) NULL COMMENT '请求traceId';
 -- 添加唯一约束
 ALTER TABLE okx_order.okx_main_order ADD CONSTRAINT okx_main_order_uni_api_key UNIQUE KEY (api_key);
 -- 添加主键约束

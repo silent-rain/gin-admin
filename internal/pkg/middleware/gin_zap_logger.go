@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 22:58:17
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 23:06:10
+ * @LastEditTime: 2023-01-10 22:26:15
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/gin_zap_logger.go
@@ -11,6 +11,7 @@
 package middleware
 
 import (
+	"gin-admin/internal/pkg/utils"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -38,9 +39,10 @@ func GinZapLogger() gin.HandlerFunc {
 			zap.String("path", path),
 			zap.String("query", query),
 			zap.String("ip", ctx.ClientIP()),
-			zap.String("user-agent", ctx.Request.UserAgent()),
+			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
+			zap.String("trace_id", utils.GetTraceId(ctx)),
 		)
 	}
 }

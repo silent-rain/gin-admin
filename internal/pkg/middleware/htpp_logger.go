@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 01:27:23
+ * @LastEditTime: 2023-01-10 22:12:05
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -12,11 +12,12 @@ package middleware
 
 import (
 	"bytes"
+	"io"
+	"time"
+
 	systemDao "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/utils"
-	"io"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -26,7 +27,7 @@ import (
 // 日志输出至数据库
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 验证 Content-Type 是否为 json
+		// 验证 API 的 Content-Type 是否为 json
 		if err := utils.VerifyContentTypeJson(ctx); err != nil {
 			return
 		}
@@ -48,6 +49,7 @@ func HttpLogger() gin.HandlerFunc {
 
 		htppLog := systemModel.HttpLog{
 			UserId:     utils.GetUserId(ctx),
+			TraceId:    utils.GetTraceId(ctx),
 			StatusCode: ctx.Writer.Status(),
 			Method:     ctx.Request.Method,
 			Path:       ctx.Request.URL.Path,

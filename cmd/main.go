@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 23:07:09
+ * @LastEditTime: 2023-01-10 21:47:50
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -44,6 +44,8 @@ func main() {
 
 	engine := gin.Default()
 	engine.Use(gin.Recovery())
+	// 日志链路跟踪中间件
+	engine.Use(middleware.TraceLogger())
 	// 跨域处理(要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404)
 	engine.Use(middleware.Cros())
 	// Session 中间件

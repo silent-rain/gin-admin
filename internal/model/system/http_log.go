@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-09 23:09:04
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 23:54:32
+ * @LastEditTime: 2023-01-10 22:15:59
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/http_log.go
@@ -16,6 +16,7 @@ import "time"
 type HttpLog struct {
 	ID         uint      `gorm:"column:id;primaryKey"`                   // 自增ID
 	UserId     uint      `gorm:"column:user_id"`                         // 请求用户ID
+	TraceId    string    `gorm:"column:trace_id"`                        // 请求traceId
 	StatusCode int       `gorm:"column:status_code"`                     // 请求状态码
 	Method     string    `gorm:"column:method"`                          // 请求方法
 	Path       string    `gorm:"column:path"`                            // 请求地址路径
