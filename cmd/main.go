@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 21:47:50
+ * @LastEditTime: 2023-01-11 00:11:00
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -44,14 +44,14 @@ func main() {
 
 	engine := gin.Default()
 	engine.Use(gin.Recovery())
+	// 登录验证中间件
+	engine.Use(middleware.CheckLogin())
 	// 日志链路跟踪中间件
 	engine.Use(middleware.TraceLogger())
 	// 跨域处理(要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404)
 	engine.Use(middleware.Cros())
 	// Session 中间件
 	engine.Use(middleware.Session())
-	// 登录验证中间件
-	engine.Use(middleware.CheckLogin())
 
 	// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 	// engine.Use(gin.Logger())

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:25:27
+ * @LastEditTime: 2023-01-11 00:45:16
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -11,10 +11,13 @@
 package log
 
 import (
+	"fmt"
 	"os"
 
 	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/utils"
 
+	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -32,21 +35,21 @@ func Init() {
 // 获取日志配置
 func getLogger() {
 	consoleEncoder := getConsoleEncoder()
-	fileEncoder := getFileEncoder()
-	writeSyncer := getWriteSyncer()
+	jsonEncoder := getJsonEncoder()
 	levelEnabler := getLevelEnabler()
 	newCore := zapcore.NewTee(
-		zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), levelEnabler), // 写入控制台
-		zapcore.NewCore(fileEncoder, writeSyncer, levelEnabler),                // 写入文件
+		zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), levelEnabler),     // 写入控制台
+		zapcore.NewCore(jsonEncoder, newWriteFileSyncer(), levelEnabler),           // 写入文件
+		zapcore.NewCore(getDbJsonEncoder(), newDbZapLoggerAsyncer(), levelEnabler), // 写入数据库
 	)
 	logger := zap.New(newCore, zap.AddCaller())
 	// 重新配置全局变量
 	zap.ReplaceGlobals(logger)
 }
 
-// 输出日志到文件
-func getFileEncoder() zapcore.Encoder {
-	return zapcore.NewConsoleEncoder(
+// zapcore 输出配置
+func getJsonEncoder() zapcore.Encoder {
+	return zapcore.NewJSONEncoder(
 		zapcore.EncoderConfig{
 			TimeKey:       "ts",
 			LevelKey:      "level",
@@ -77,14 +80,15 @@ func getConsoleEncoder() zapcore.Encoder {
 }
 
 // 日志写入文件日志配置
-func getWriteSyncer() zapcore.WriteSyncer {
+func newWriteFileSyncer() zapcore.WriteSyncer {
 	config := conf.Instance().LoggerConfig
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   config.Filename,
-		MaxSize:    config.MaxSize,
-		MaxBackups: config.MaxBackups,
-		MaxAge:     config.MaxAge,
-		Compress:   false,
+		Filename:   config.Filename,   // 日志文件位置
+		MaxSize:    config.MaxSize,    // 进行切割之前，日志文件最大值(单位：MB)，默认100MB
+		MaxBackups: config.MaxBackups, // 保留旧文件的最大个数
+		MaxAge:     config.MaxAge,     // 保留旧文件的最大天数
+		Compress:   false,             // 是否压缩/归档旧文件
+		LocalTime:  true,
 	}
 	return zapcore.AddSync(lumberJackLogger)
 }
@@ -121,3 +125,67 @@ func getLevelEnabler() zapcore.Level {
 // func cEncodeCaller(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder) {
 // 	enc.AppendString("[" + caller.TrimmedPath() + "]")
 // }
+
+// 数据库异步日志
+type dbZapLoggerAsyncer struct {
+	*zap.Logger
+}
+
+// zapcore 输出配置
+func getDbJsonEncoder() zapcore.Encoder {
+	return zapcore.NewJSONEncoder(
+		zapcore.EncoderConfig{
+			TimeKey:       "ts",
+			LevelKey:      "level",
+			NameKey:       "dblogger",
+			CallerKey:     "caller_line",
+			FunctionKey:   zapcore.OmitKey,
+			MessageKey:    "msg",
+			StacktraceKey: "stacktrace",
+			// 默认换行符 \n
+			LineEnding: zapcore.DefaultLineEnding,
+			// 日志等级
+			EncodeLevel: zapcore.CapitalLevelEncoder,
+			// 时间序列化成浮点秒数
+			EncodeTime:     zapcore.TimeEncoderOfLayout(logTmFmt),
+			EncodeDuration: zapcore.SecondsDurationEncoder,
+			// 路径编码器, 以 包名/文件名:行数 格式序列化
+			EncodeCaller: zapcore.ShortCallerEncoder,
+		})
+}
+
+// 创建数据库异步日志对象
+func newDbZapLoggerAsyncer() *dbZapLoggerAsyncer {
+	base := &dbZapLoggerAsyncer{
+		new(zap.Logger),
+	}
+	// base.WithOptions(zap.AddCaller(), zap.AddCallerSkip(2))
+	return base
+}
+
+// Write 字节从p写入底层数据流
+func (d dbZapLoggerAsyncer) Write(p []byte) (n int, err error) {
+	fmt.Printf("dbZapLoggerAsyncer ================ %#v", string(p))
+	return 0, nil
+}
+
+// Sync flushes any buffered log entries.
+func (d *dbZapLoggerAsyncer) Sync() error {
+	return d.Logger.Sync()
+}
+
+func Debug(ctx *gin.Context, msg string, fields ...zap.Field) {
+	traceId := utils.GetTraceId(ctx)
+	userId := utils.GetUserId(ctx)
+	zap.L().Debug(msg,
+		append(fields,
+			zap.String("trace_id", traceId),
+			zap.Uint("user_id", userId))...,
+	)
+}
+
+func Debugf(ctx *gin.Context, template string, args ...interface{}) {
+	// traceId := utils.GetTraceId(ctx)
+	// userId := utils.GetUserId(ctx)
+	zap.S().Debugf(template, args)
+}
