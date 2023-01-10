@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 22:58:17
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:26:15
+ * @LastEditTime: 2023-01-11 00:59:42
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/gin_zap_logger.go
@@ -42,7 +42,9 @@ func GinZapLogger() gin.HandlerFunc {
 			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
+			// 待替换
 			zap.String("trace_id", utils.GetTraceId(ctx)),
+			zap.Uint("user_id", utils.GetUserId(ctx)),
 		)
 	}
 }

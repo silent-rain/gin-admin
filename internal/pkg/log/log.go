@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 00:45:16
+ * @LastEditTime: 2023-01-11 00:55:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -163,15 +163,23 @@ func newDbZapLoggerAsyncer() *dbZapLoggerAsyncer {
 	return base
 }
 
-// Write 字节从p写入底层数据流
+// 定义Write方法以实现Sink接口
 func (d dbZapLoggerAsyncer) Write(p []byte) (n int, err error) {
 	fmt.Printf("dbZapLoggerAsyncer ================ %#v", string(p))
-	return 0, nil
+	// 返回写入日志的长度,以及错误
+	return len(p), nil
 }
 
-// Sync flushes any buffered log entries.
+// 定义Close方法以实现Sink接口
+func (d dbZapLoggerAsyncer) Close() error {
+	// 涉及不到关闭对象的问题, 所以return就可以
+	return nil
+}
+
+// 定义Sync方法以实现Sink接口
 func (d *dbZapLoggerAsyncer) Sync() error {
-	return d.Logger.Sync()
+	// 涉及不到缓存同步问题, 所以return就可以
+	return nil
 }
 
 func Debug(ctx *gin.Context, msg string, fields ...zap.Field) {
