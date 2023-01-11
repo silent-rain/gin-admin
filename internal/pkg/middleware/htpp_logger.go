@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:57:45
+ * @LastEditTime: 2023-01-11 22:08:31
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -60,9 +60,9 @@ func HttpLogger() gin.HandlerFunc {
 			Cost:       time.Since(start).Nanoseconds(),
 			HttpType:   "REQ",
 		}
-		go func() {
+		go func(htppLog systemModel.HttpLog) {
 			systemDao.HttpLogImpl.Add(htppLog)
-		}()
+		}(htppLog)
 
 		ctx.Next()
 
@@ -71,9 +71,9 @@ func HttpLogger() gin.HandlerFunc {
 		htppLog.Cost = time.Since(start).Nanoseconds()
 		htppLog.HttpType = "RSP"
 		htppLog.Body = blw.Body.String()
-		go func() {
+		go func(htppLog systemModel.HttpLog) {
 			systemDao.HttpLogImpl.Add(htppLog)
-		}()
+		}(htppLog)
 	}
 }
 

@@ -1,3 +1,13 @@
+<!--
+ * @Author: silent-rain
+ * @Date: 2023-01-05 00:20:01
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-11 22:01:39
+ * @company: 
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/README.md
+ * @Descripttion: 后台管理系统
+-->
 # Gin-Admin 后台管理系统
 
 ## 开发环境
@@ -29,6 +39,8 @@
   - [x] API 鉴权
   - [ ] API Token 鉴权
 - [ ] API 文档
+  - [ ] ApiPost 接口工具
+  - [ ] 内置在线接口文档
 - [ ] 定时任务调度
   - [ ] 即时任务
   - [ ] 定时任务
