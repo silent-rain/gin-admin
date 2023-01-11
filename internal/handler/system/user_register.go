@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:43:44
+ * @LastEditTime: 2023-01-12 00:43:09
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -33,7 +33,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 解析参数
 	req := new(systemDto.UserRegisterReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.New(ctx).WithAny("data", req).Errorf("参数解析失败, %v", err)
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 	// 密码加密
@@ -42,7 +42,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 数据转换
 	user := new(systemModel.User)
 	if err := utils.ApiJsonConvertJson(ctx, req, user); err != nil {
-		log.New(ctx).WithAny("data", req).Errorf("数据转换失败, %v", err)
+		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
 	user.Status = 1

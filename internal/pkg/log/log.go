@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:30:30
+ * @LastEditTime: 2023-01-12 00:45:51
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -185,9 +185,10 @@ func (d *dbZapLoggerAsyncer) Sync() error {
 
 // 日志结构
 type Logger struct {
-	ctx    *gin.Context
-	zapLog *zap.Logger
-	fields []zapcore.Field
+	ctx     *gin.Context
+	zapLog  *zap.Logger
+	fields  []zapcore.Field
+	extends map[string]interface{} // 消息扩展字段
 }
 
 // 创建日志对象
@@ -199,9 +200,10 @@ func New(ctx *gin.Context) *Logger {
 		zap.Uint("user_id", userId),
 	}
 	return &Logger{
-		ctx:    ctx,
-		zapLog: zap.L().WithOptions(zap.AddCallerSkip(1)),
-		fields: fields,
+		ctx:     ctx,
+		zapLog:  zap.L().WithOptions(zap.AddCallerSkip(1)),
+		fields:  fields,
+		extends: make(map[string]interface{}, 0),
 	}
 }
 
@@ -211,53 +213,58 @@ func (l *Logger) WithCode(code statuscode.StatuScode) *Logger {
 	return l
 }
 
-// WithCode 添加字段
-func (l *Logger) WithAny(key string, value interface{}) *Logger {
-	l.fields = append(l.fields, zap.Any(key, value))
+// WithAny 添加扩展字段
+func (l *Logger) WithField(key string, value interface{}) *Logger {
+	l.extends[key] = value
 	return l
 }
 
-func (l *Logger) Debug(msg string, fields ...zap.Field) {
-	l.fields = append(l.fields, fields...)
+func (l *Logger) Debug(msg string) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Debug(msg, l.fields...)
 }
 
 func (l *Logger) Debugf(template string, args ...interface{}) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Debug(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func (l *Logger) Info(msg string, fields ...zap.Field) {
-	l.fields = append(l.fields, fields...)
+func (l *Logger) Info(msg string) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Info(msg, l.fields...)
 }
 
 func (l *Logger) Infof(template string, args ...interface{}) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Info(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func (l *Logger) Warn(msg string, fields ...zap.Field) {
-	l.fields = append(l.fields, fields...)
+func (l *Logger) Warn(msg string) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Warn(msg, l.fields...)
 }
 
 func (l *Logger) Warnf(template string, args ...interface{}) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Warn(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func (l *Logger) Error(msg string, fields ...zap.Field) {
-	l.fields = append(l.fields, fields...)
+func (l *Logger) Error(msg string) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Error(msg, l.fields...)
 }
 
 func (l *Logger) Errorf(template string, args ...interface{}) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Error(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func (l *Logger) Panic(msg string, fields ...zap.Field) {
-	l.fields = append(l.fields, fields...)
+func (l *Logger) Panic(msg string) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Panic(msg, l.fields...)
 }
 
 func (l *Logger) Panicf(template string, args ...interface{}) {
+	l.fields = append(l.fields, zap.Any("extend", l.extends))
 	l.zapLog.Panic(fmt.Sprintf(template, args...), l.fields...)
 }

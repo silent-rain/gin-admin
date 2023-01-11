@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:42:41
+ * @LastEditTime: 2023-01-12 00:43:18
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -36,7 +36,7 @@ type userLoginHandler struct {
 func (h *userLoginHandler) Login(ctx *gin.Context) {
 	req := new(systemDto.UserLoginReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.New(ctx).WithAny("data", req).Errorf("参数解析失败, %v", err)
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 
