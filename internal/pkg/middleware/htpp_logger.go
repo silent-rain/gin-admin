@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:12:05
+ * @LastEditTime: 2023-01-11 20:49:27
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -17,10 +17,10 @@ import (
 
 	systemDao "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // HttpLogger 日志中间件
@@ -37,7 +37,7 @@ func HttpLogger() gin.HandlerFunc {
 		// 读取 body 数据
 		bodyBytes, err := ctx.GetRawData()
 		if err != nil {
-			zap.S().Errorf("读取 body 失败, err: %v", err)
+			log.Errorf(ctx, "读取 body 失败, err: %v", err)
 		} else {
 			// gin body 只能获取一次，上面获取之后，一定要 再次给 context 赋值 不然 后面接口就获取不到了。
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // 关键点

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:00:05
+ * @LastEditTime: 2023-01-11 20:49:20
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -14,12 +14,12 @@ import (
 	"errors"
 	"strings"
 
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // 放行白名单
@@ -56,7 +56,7 @@ func CheckLogin() gin.HandlerFunc {
 		claim, err := utils.ParseToken(token)
 		if err != nil {
 			parseTokenErr(ctx, err)
-			zap.S().Errorf("token 解析失败, err: %v", err)
+			log.Errorf(ctx, "token 解析失败, err: %v", err)
 			ctx.Abort()
 			return
 		}

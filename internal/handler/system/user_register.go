@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 00:40:12
+ * @LastEditTime: 2023-01-11 20:54:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -14,12 +14,12 @@ import (
 	systemDao "gin-admin/internal/dao/system"
 	systemDto "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // UserRegisterHandlerImpl 用户注册对象
@@ -33,7 +33,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 解析参数
 	req := new(systemDto.UserRegisterReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		zap.S().Errorf("code: %v, err: %v", statuscode.DbQueryError, err)
+		log.Errorf(ctx, "data: %v, err: %v", req, err)
 		return
 	}
 	// 密码加密
@@ -42,7 +42,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 数据转换
 	user := new(systemModel.User)
 	if err := utils.ApiJsonConvertJson(ctx, req, user); err != nil {
-		zap.S().Errorf("err: %v", err)
+		log.Errorf(ctx, "err: %v", err)
 		return
 	}
 	user.Status = 1
@@ -50,18 +50,18 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 
 	// 判断用户是否存在 邮件/手机号
 	if ok, err := systemDao.UserImpl.ExistUsername(user.Phone, user.Email); err != nil {
-		zap.S().Errorf("code: %v, err: %v", statuscode.DbQueryError, err)
+		log.Errorf(ctx, "code: %v, err: %v", statuscode.DbQueryError, err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	} else if ok {
-		zap.S().Infof("code: %v, err: %v", statuscode.DbDataExistError, statuscode.DbDataExistError.Error())
+		log.Infof(ctx, "code: %v, err: %v", statuscode.DbDataExistError, statuscode.DbDataExistError.Error())
 		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
 		return
 	}
 
 	// 数据入库
 	if err := systemDao.UserRegisterImpl.Add(user, roleIds); err != nil {
-		zap.S().Errorf("code: %v, err: %v", statuscode.UserRegisterError, err)
+		log.Errorf(ctx, "code: %v, err: %v", statuscode.UserRegisterError, err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
 	}
