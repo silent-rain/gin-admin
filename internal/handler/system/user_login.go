@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 16:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 20:47:59
+ * @LastEditTime: 2023-01-11 21:42:41
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_login.go
@@ -36,25 +36,25 @@ type userLoginHandler struct {
 func (h *userLoginHandler) Login(ctx *gin.Context) {
 	req := new(systemDto.UserLoginReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.Errorf(ctx, "data: %v, err: %v", req, err)
+		log.New(ctx).WithAny("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 
 	// 查询用户
 	user, ok, err := systemDao.UserImpl.GetUsername(req.Username, req.Password)
 	if err != nil {
-		log.Errorf(ctx, "code: %v, err: %v", statuscode.DbQueryError, err)
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	}
 	if !ok {
-		log.Infof(ctx, "code: %v, err: %v", statuscode.DbQueryError, "用户名或者密码不正确")
+		log.New(ctx).WithCode(statuscode.DbQueryEmptyError).Error("用户名或者密码不正确")
 		response.New(ctx).WithCode(statuscode.DbQueryEmptyError).WithMsg("用户名或者密码不正确").Json()
 		return
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
-		log.Infof(ctx, "code: %v, err: %v", statuscode.UserDisableError, statuscode.UserDisableError.Error())
+		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
 		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
 		return
 	}
@@ -62,7 +62,7 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 	// 生成 Token
 	token, err := utils.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
 	if err != nil {
-		log.Errorf(ctx, "code: %v, err: %v", statuscode.TokenGenerateError, err)
+		log.New(ctx).WithCode(statuscode.TokenGenerateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.TokenGenerateError).Json()
 		return
 	}
@@ -118,8 +118,7 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 	value := ctx.DefaultQuery("captchaId", "")
 	if value == "" {
-		log.Errorf(ctx, "code: %v, data: %v, err: %v", statuscode.SessionGetCaptchaEmptyError, value,
-			statuscode.SessionGetCaptchaEmptyError.Error())
+		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
 		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
 		return
 	}
@@ -127,15 +126,14 @@ func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 	session := sessions.Default(ctx)
 	captchaId := session.Get("captcha")
 	if captchaId == nil {
-		log.Errorf(ctx, "code: %v, data: %v, err: %v", statuscode.CaptchaNotFoundError, captchaId,
-			statuscode.CaptchaNotFoundError.Error())
+		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
 		return
 	}
 	session.Delete("captcha")
 	_ = session.Save()
 	if !captcha.VerifyString(captchaId.(string), value) {
-		log.Errorf(ctx, "code: %v, err: %v", statuscode.CaptchaVerifyError, statuscode.CaptchaVerifyError.Error())
+		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
 		return
 	}

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 20:49:27
+ * @LastEditTime: 2023-01-11 21:57:45
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -28,7 +28,7 @@ import (
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 验证 API 的 Content-Type 是否为 json
-		if err := utils.VerifyContentTypeJson(ctx); err != nil {
+		if ok := utils.VerifyContentTypeJson(ctx); !ok {
 			return
 		}
 
@@ -37,7 +37,7 @@ func HttpLogger() gin.HandlerFunc {
 		// 读取 body 数据
 		bodyBytes, err := ctx.GetRawData()
 		if err != nil {
-			log.Errorf(ctx, "读取 body 失败, err: %v", err)
+			log.New(ctx).Errorf("读取请求体失败, %v", err)
 		} else {
 			// gin body 只能获取一次，上面获取之后，一定要 再次给 context 赋值 不然 后面接口就获取不到了。
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // 关键点

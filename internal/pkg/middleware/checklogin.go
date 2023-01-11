@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 20:49:20
+ * @LastEditTime: 2023-01-11 21:58:54
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -35,7 +35,12 @@ var whiteList = []string{
 func CheckLogin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 验证 API 的 Content-Type 是否为 json
-		utils.LoginVerifyContentTypeJson(ctx)
+		if ok := utils.LoginVerifyContentTypeJson(ctx); !ok {
+			log.New(ctx).WithCode(statuscode.ReqContentTypeNotJson).Errorf("")
+			response.New(ctx).WithCode(statuscode.ReqContentTypeNotJson).Json()
+			ctx.Abort()
+			return
+		}
 
 		// 请求过滤
 		if utils.IndexOfArray(whiteList, ctx.Request.URL.Path) != -1 {
@@ -46,6 +51,7 @@ func CheckLogin() gin.HandlerFunc {
 		// 从请求头中获取Token
 		token := ctx.GetHeader("Authorization")
 		if token == "" {
+			log.New(ctx).WithCode(statuscode.TokenNotFound).Errorf("")
 			response.New(ctx).WithCode(statuscode.TokenNotFound).Json()
 			ctx.Abort()
 			return
@@ -56,7 +62,6 @@ func CheckLogin() gin.HandlerFunc {
 		claim, err := utils.ParseToken(token)
 		if err != nil {
 			parseTokenErr(ctx, err)
-			log.Errorf(ctx, "token 解析失败, err: %v", err)
 			ctx.Abort()
 			return
 		}
@@ -66,17 +71,22 @@ func CheckLogin() gin.HandlerFunc {
 }
 
 // Token 解析异常处理
-func parseTokenErr(ctx *gin.Context, err error) {
+func parseTokenErr(ctx *gin.Context, err error) error {
 	if err == nil {
-		return
+		return nil
 	}
 	if errors.Is(err, statuscode.TokenParsingError.Error()) {
 		response.New(ctx).WithCode(statuscode.TokenParsingError).Json()
+		log.New(ctx).WithCode(statuscode.TokenParsingError).Errorf("%v", err)
 	} else if errors.Is(err, statuscode.TokeConvertError.Error()) {
 		response.New(ctx).WithCode(statuscode.TokeConvertError).Json()
+		log.New(ctx).WithCode(statuscode.TokeConvertError).Errorf("%v", err)
 	} else if errors.Is(err, statuscode.TokenInvalidError.Error()) {
 		response.New(ctx).WithCode(statuscode.TokenInvalidError).Json()
+		log.New(ctx).WithCode(statuscode.TokenInvalidError).Errorf("%v", err)
 	} else if errors.Is(err, statuscode.TokenExpiredError.Error()) {
 		response.New(ctx).WithCode(statuscode.TokenExpiredError).Json()
+		log.New(ctx).WithCode(statuscode.TokenExpiredError).Errorf("%v", err)
 	}
+	return err
 }

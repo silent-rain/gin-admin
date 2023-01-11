@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:01:44
+ * @LastEditTime: 2023-01-11 21:30:30
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -15,6 +15,7 @@ import (
 	"os"
 
 	"gin-admin/internal/pkg/conf"
+	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
@@ -182,97 +183,81 @@ func (d *dbZapLoggerAsyncer) Sync() error {
 	return nil
 }
 
-func Debug(ctx *gin.Context, msg string, fields ...zap.Field) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Debug(msg,
-		append(fields,
-			zap.String("trace_id", traceId),
-			zap.Uint("user_id", userId))...,
-	)
+// 日志结构
+type Logger struct {
+	ctx    *gin.Context
+	zapLog *zap.Logger
+	fields []zapcore.Field
 }
 
-func Debugf(ctx *gin.Context, template string, args ...interface{}) {
+// 创建日志对象
+func New(ctx *gin.Context) *Logger {
 	traceId := utils.GetTraceId(ctx)
 	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Debug(fmt.Sprintf(template, args...),
+	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.Uint("user_id", userId),
-	)
+	}
+	return &Logger{
+		ctx:    ctx,
+		zapLog: zap.L().WithOptions(zap.AddCallerSkip(1)),
+		fields: fields,
+	}
 }
 
-func Info(ctx *gin.Context, msg string, fields ...zap.Field) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Info(msg,
-		append(fields,
-			zap.String("trace_id", traceId),
-			zap.Uint("user_id", userId))...,
-	)
+// WithCode 添加错误码
+func (l *Logger) WithCode(code statuscode.StatuScode) *Logger {
+	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.Error(code.Error()))
+	return l
 }
 
-func Infof(ctx *gin.Context, template string, args ...interface{}) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Info(fmt.Sprintf(template, args...),
-		zap.String("trace_id", traceId),
-		zap.Uint("user_id", userId),
-	)
+// WithCode 添加字段
+func (l *Logger) WithAny(key string, value interface{}) *Logger {
+	l.fields = append(l.fields, zap.Any(key, value))
+	return l
 }
 
-func Warn(ctx *gin.Context, msg string, fields ...zap.Field) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Warn(msg,
-		append(fields,
-			zap.String("trace_id", traceId),
-			zap.Uint("user_id", userId))...,
-	)
+func (l *Logger) Debug(msg string, fields ...zap.Field) {
+	l.fields = append(l.fields, fields...)
+	l.zapLog.Debug(msg, l.fields...)
 }
 
-func Warnf(ctx *gin.Context, template string, args ...interface{}) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Warn(fmt.Sprintf(template, args...),
-		zap.String("trace_id", traceId),
-		zap.Uint("user_id", userId),
-	)
+func (l *Logger) Debugf(template string, args ...interface{}) {
+	l.zapLog.Debug(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func Error(ctx *gin.Context, msg string, fields ...zap.Field) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Error(msg,
-		append(fields,
-			zap.String("trace_id", traceId),
-			zap.Uint("user_id", userId))...,
-	)
+func (l *Logger) Info(msg string, fields ...zap.Field) {
+	l.fields = append(l.fields, fields...)
+	l.zapLog.Info(msg, l.fields...)
 }
 
-func Errorf(ctx *gin.Context, template string, args ...interface{}) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Error(fmt.Sprintf(template, args...),
-		zap.String("trace_id", traceId),
-		zap.Uint("user_id", userId),
-	)
+func (l *Logger) Infof(template string, args ...interface{}) {
+	l.zapLog.Info(fmt.Sprintf(template, args...), l.fields...)
 }
 
-func Panic(ctx *gin.Context, msg string, fields ...zap.Field) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Panic(msg,
-		append(fields,
-			zap.String("trace_id", traceId),
-			zap.Uint("user_id", userId))...,
-	)
+func (l *Logger) Warn(msg string, fields ...zap.Field) {
+	l.fields = append(l.fields, fields...)
+	l.zapLog.Warn(msg, l.fields...)
 }
 
-func Panicf(ctx *gin.Context, template string, args ...interface{}) {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
-	zap.L().WithOptions(zap.AddCallerSkip(1)).Panic(fmt.Sprintf(template, args...),
-		zap.String("trace_id", traceId),
-		zap.Uint("user_id", userId),
-	)
+func (l *Logger) Warnf(template string, args ...interface{}) {
+	l.zapLog.Warn(fmt.Sprintf(template, args...), l.fields...)
+}
+
+func (l *Logger) Error(msg string, fields ...zap.Field) {
+	l.fields = append(l.fields, fields...)
+	l.zapLog.Error(msg, l.fields...)
+}
+
+func (l *Logger) Errorf(template string, args ...interface{}) {
+	l.zapLog.Error(fmt.Sprintf(template, args...), l.fields...)
+}
+
+func (l *Logger) Panic(msg string, fields ...zap.Field) {
+	l.fields = append(l.fields, fields...)
+	l.zapLog.Panic(msg, l.fields...)
+}
+
+func (l *Logger) Panicf(template string, args ...interface{}) {
+	l.zapLog.Panic(fmt.Sprintf(template, args...), l.fields...)
 }

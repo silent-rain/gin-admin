@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-10 21:26:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:24:09
+ * @LastEditTime: 2023-01-11 21:58:00
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/trace_log.go
@@ -20,7 +20,7 @@ import (
 func TraceLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 验证 API 的 Content-Type 是否为 json
-		if err := utils.VerifyContentTypeJson(ctx); err != nil {
+		if ok := utils.VerifyContentTypeJson(ctx); !ok {
 			return
 		}
 

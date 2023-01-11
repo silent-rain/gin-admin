@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 20:54:04
+ * @LastEditTime: 2023-01-11 21:43:44
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -33,7 +33,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 解析参数
 	req := new(systemDto.UserRegisterReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.Errorf(ctx, "data: %v, err: %v", req, err)
+		log.New(ctx).WithAny("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 	// 密码加密
@@ -42,7 +42,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	// 数据转换
 	user := new(systemModel.User)
 	if err := utils.ApiJsonConvertJson(ctx, req, user); err != nil {
-		log.Errorf(ctx, "err: %v", err)
+		log.New(ctx).WithAny("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
 	user.Status = 1
@@ -50,18 +50,18 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 
 	// 判断用户是否存在 邮件/手机号
 	if ok, err := systemDao.UserImpl.ExistUsername(user.Phone, user.Email); err != nil {
-		log.Errorf(ctx, "code: %v, err: %v", statuscode.DbQueryError, err)
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	} else if ok {
-		log.Infof(ctx, "code: %v, err: %v", statuscode.DbDataExistError, statuscode.DbDataExistError.Error())
+		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("用户已存在")
 		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
 		return
 	}
 
 	// 数据入库
 	if err := systemDao.UserRegisterImpl.Add(user, roleIds); err != nil {
-		log.Errorf(ctx, "code: %v, err: %v", statuscode.UserRegisterError, err)
+		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
 	}
