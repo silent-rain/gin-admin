@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 17:45:55
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:32:17
+ * @LastEditTime: 2023-01-13 01:02:12
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/response/response.go
@@ -51,6 +51,15 @@ func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
 // WithData 添加响应数据
 func (r *ResponseAPI) WithData(data interface{}) *ResponseAPI {
 	r.Data = data
+	return r
+}
+
+// WithData 添加列表响应数据及列表总数
+func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
+	r.Data = map[string]interface{}{
+		"data_list": data,
+		"tatol":     total,
+	}
 	return r
 }
 

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:35:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:00:54
+ * @LastEditTime: 2023-01-13 01:06:18
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/status_code/status_code.go
@@ -37,6 +37,9 @@ const (
 const (
 	DbQueryError      StatuScode = iota + 10300 // 数据查询错误
 	DbQueryEmptyError                           // 数据查询空
+	DbAddError                                  // 数据添加失败
+	DbUpdateError                               // 数据添加失败
+	DbDeleteError                               // 数据删除失败
 	DbDataExistError                            // 数据已存在
 )
 
@@ -79,6 +82,9 @@ var statusCodeMsg = map[StatuScode]error{
 	// 数据库
 	DbQueryError:      errors.New("数据查询错误"),
 	DbQueryEmptyError: errors.New("数据查询空"),
+	DbAddError:        errors.New("数据添加失败"),
+	DbUpdateError:     errors.New("数据添加失败"),
+	DbDeleteError:     errors.New("数据删除失败"),
 	DbDataExistError:  errors.New("数据已存在"),
 	// 鉴权
 	TokenGenerateError: errors.New("生成 Token 失败"),
