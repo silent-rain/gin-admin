@@ -114,6 +114,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       chunkSizeWarningLimit: 10000, // 消除触发警告的 chunk, 默认500k
       outDir: "../assets/dist", // 指定输出路径
+      emptyOutDir: "../assets/dist", // 指定清空路径
       assetsDir: "static/assets", // 指定生成静态文件目录
       rollupOptions: {
         output: {

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 00:47:40
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 22:08:31
+ * @LastEditTime: 2023-01-12 22:05:28
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
@@ -13,6 +13,7 @@ package middleware
 import (
 	"bytes"
 	"io"
+	"strings"
 	"time"
 
 	systemDao "gin-admin/internal/dao/system"
@@ -27,8 +28,13 @@ import (
 // 日志输出至数据库
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
+			ctx.Next()
+			return
+		}
 		// 验证 API 的 Content-Type 是否为 json
-		if ok := utils.VerifyContentTypeJson(ctx); !ok {
+		if strings.ToLower(ctx.Request.Header.Get("Content-Type")) != "application/json" {
+			ctx.Next()
 			return
 		}
 

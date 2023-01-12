@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-10 21:26:07
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:58:00
+ * @LastEditTime: 2023-01-12 22:04:31
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/trace_log.go
@@ -12,6 +12,7 @@ package middleware
 
 import (
 	"gin-admin/internal/pkg/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,13 @@ import (
 func TraceLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 验证 API 的 Content-Type 是否为 json
-		if ok := utils.VerifyContentTypeJson(ctx); !ok {
+		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
+			ctx.Next()
+			return
+		}
+		// 验证 API 的 Content-Type 是否为 json
+		if strings.ToLower(ctx.Request.Header.Get("Content-Type")) != "application/json" {
+			ctx.Next()
 			return
 		}
 

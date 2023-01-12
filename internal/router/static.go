@@ -1,4 +1,12 @@
-/**静态资源路由
+/*
+ * @Author: silent-rain
+ * @Date: 2023-01-07 16:24:58
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-12 22:19:46
+ * @company:
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/internal/router/static.go
+ * @Descripttion:静态资源路由
  */
 package router
 
