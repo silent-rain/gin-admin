@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 22:02:42
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 00:45:51
+ * @LastEditTime: 2023-01-12 21:15:11
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/log/log.go
@@ -11,9 +11,12 @@
 package log
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
+	systemDao "gin-admin/internal/dao/system"
+	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
@@ -23,6 +26,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+var dbLogger *zap.Logger
 
 const (
 	logTmFmt = "2006-01-02 15:04:05.000"
@@ -39,13 +44,19 @@ func getLogger() {
 	jsonEncoder := getJsonEncoder()
 	levelEnabler := getLevelEnabler()
 	newCore := zapcore.NewTee(
-		zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), levelEnabler),     // 写入控制台
-		zapcore.NewCore(jsonEncoder, newWriteFileSyncer(), levelEnabler),           // 写入文件
-		zapcore.NewCore(getDbJsonEncoder(), newDbZapLoggerAsyncer(), levelEnabler), // 写入数据库
+		zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), levelEnabler), // 写入控制台
+		zapcore.NewCore(jsonEncoder, newWriteFileSyncer(), levelEnabler),       // 写入文件
+
 	)
 	logger := zap.New(newCore, zap.AddCaller())
 	// 重新配置全局变量
 	zap.ReplaceGlobals(logger)
+
+	// 日志写入数据库
+	dbLogger = zap.New(zapcore.NewCore(jsonEncoder, newDbLoggerAsyncer(), levelEnabler),
+		zap.AddCaller(),
+		zap.AddCallerSkip(1),
+	)
 }
 
 // zapcore 输出配置
@@ -128,78 +139,60 @@ func getLevelEnabler() zapcore.Level {
 // }
 
 // 数据库异步日志
-type dbZapLoggerAsyncer struct {
+type dbLoggerAsyncer struct {
 	*zap.Logger
 }
 
-// zapcore 输出配置
-func getDbJsonEncoder() zapcore.Encoder {
-	return zapcore.NewJSONEncoder(
-		zapcore.EncoderConfig{
-			TimeKey:       "ts",
-			LevelKey:      "level",
-			NameKey:       "dblogger",
-			CallerKey:     "caller_line",
-			FunctionKey:   zapcore.OmitKey,
-			MessageKey:    "msg",
-			StacktraceKey: "stacktrace",
-			// 默认换行符 \n
-			LineEnding: zapcore.DefaultLineEnding,
-			// 日志等级
-			EncodeLevel: zapcore.CapitalLevelEncoder,
-			// 时间序列化成浮点秒数
-			EncodeTime:     zapcore.TimeEncoderOfLayout(logTmFmt),
-			EncodeDuration: zapcore.SecondsDurationEncoder,
-			// 路径编码器, 以 包名/文件名:行数 格式序列化
-			EncodeCaller: zapcore.ShortCallerEncoder,
-		})
-}
-
 // 创建数据库异步日志对象
-func newDbZapLoggerAsyncer() *dbZapLoggerAsyncer {
-	base := &dbZapLoggerAsyncer{
+func newDbLoggerAsyncer() *dbLoggerAsyncer {
+	base := &dbLoggerAsyncer{
 		new(zap.Logger),
 	}
-	// base.WithOptions(zap.AddCaller(), zap.AddCallerSkip(2))
 	return base
 }
 
 // 定义Write方法以实现Sink接口
-func (d dbZapLoggerAsyncer) Write(p []byte) (n int, err error) {
-	fmt.Printf("dbZapLoggerAsyncer ================ %#v", string(p))
+func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
+	sysLog := systemModel.SystemLog{}
+	if err := json.Unmarshal(p, &sysLog); err != nil {
+		return len(p), nil
+	}
+	go func() {
+		systemDao.SystemLogImpl.Add(sysLog)
+	}()
 	// 返回写入日志的长度,以及错误
 	return len(p), nil
 }
 
 // 定义Close方法以实现Sink接口
-func (d dbZapLoggerAsyncer) Close() error {
+func (d dbLoggerAsyncer) Close() error {
 	// 涉及不到关闭对象的问题, 所以return就可以
 	return nil
 }
 
 // 定义Sync方法以实现Sink接口
-func (d *dbZapLoggerAsyncer) Sync() error {
+func (d *dbLoggerAsyncer) Sync() error {
 	// 涉及不到缓存同步问题, 所以return就可以
 	return nil
 }
 
 // 日志结构
-type Logger struct {
+type logger struct {
 	ctx     *gin.Context
 	zapLog  *zap.Logger
 	fields  []zapcore.Field
 	extends map[string]interface{} // 消息扩展字段
 }
 
-// 创建日志对象
-func New(ctx *gin.Context) *Logger {
+// New 创建日志对象
+func New(ctx *gin.Context) *logger {
 	traceId := utils.GetTraceId(ctx)
 	userId := utils.GetUserId(ctx)
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.Uint("user_id", userId),
 	}
-	return &Logger{
+	return &logger{
 		ctx:     ctx,
 		zapLog:  zap.L().WithOptions(zap.AddCallerSkip(1)),
 		fields:  fields,
@@ -208,63 +201,63 @@ func New(ctx *gin.Context) *Logger {
 }
 
 // WithCode 添加错误码
-func (l *Logger) WithCode(code statuscode.StatuScode) *Logger {
-	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.Error(code.Error()))
+func (l *logger) WithCode(code statuscode.StatuScode) *logger {
+	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Msg()))
 	return l
 }
 
-// WithAny 添加扩展字段
-func (l *Logger) WithField(key string, value interface{}) *Logger {
+// WithField 添加扩展字段
+func (l *logger) WithField(key string, value interface{}) *logger {
 	l.extends[key] = value
 	return l
 }
 
-func (l *Logger) Debug(msg string) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Debug(msg, l.fields...)
+// 获取日志字段
+func (l *logger) getFields() []zap.Field {
+	buf, err := json.Marshal(l.extends)
+	if err != nil {
+		return l.fields
+	}
+	l.fields = append(l.fields, zap.String("extend", string(buf)))
+	return l.fields
 }
 
-func (l *Logger) Debugf(template string, args ...interface{}) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Debug(fmt.Sprintf(template, args...), l.fields...)
+func (l *logger) Debug(msg string) {
+	dbLogger.Debug(msg, l.getFields()...)
 }
 
-func (l *Logger) Info(msg string) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Info(msg, l.fields...)
+func (l *logger) Debugf(template string, args ...interface{}) {
+	dbLogger.Debug(fmt.Sprintf(template, args...), l.getFields()...)
 }
 
-func (l *Logger) Infof(template string, args ...interface{}) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Info(fmt.Sprintf(template, args...), l.fields...)
+func (l *logger) Info(msg string) {
+	dbLogger.Info(msg, l.getFields()...)
 }
 
-func (l *Logger) Warn(msg string) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Warn(msg, l.fields...)
+func (l *logger) Infof(template string, args ...interface{}) {
+	dbLogger.Info(fmt.Sprintf(template, args...), l.getFields()...)
 }
 
-func (l *Logger) Warnf(template string, args ...interface{}) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Warn(fmt.Sprintf(template, args...), l.fields...)
+func (l *logger) Warn(msg string) {
+	dbLogger.Warn(msg, l.getFields()...)
 }
 
-func (l *Logger) Error(msg string) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Error(msg, l.fields...)
+func (l *logger) Warnf(template string, args ...interface{}) {
+	dbLogger.Warn(fmt.Sprintf(template, args...), l.getFields()...)
 }
 
-func (l *Logger) Errorf(template string, args ...interface{}) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Error(fmt.Sprintf(template, args...), l.fields...)
+func (l *logger) Error(msg string) {
+	dbLogger.Error(msg, l.getFields()...)
 }
 
-func (l *Logger) Panic(msg string) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Panic(msg, l.fields...)
+func (l *logger) Errorf(template string, args ...interface{}) {
+	dbLogger.Error(fmt.Sprintf(template, args...), l.getFields()...)
 }
 
-func (l *Logger) Panicf(template string, args ...interface{}) {
-	l.fields = append(l.fields, zap.Any("extend", l.extends))
-	l.zapLog.Panic(fmt.Sprintf(template, args...), l.fields...)
+func (l *logger) Panic(msg string) {
+	dbLogger.Panic(msg, l.getFields()...)
+}
+
+func (l *logger) Panicf(template string, args ...interface{}) {
+	dbLogger.Panic(fmt.Sprintf(template, args...), l.getFields()...)
 }

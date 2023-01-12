@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:20:01
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 22:01:39
+ * @LastEditTime: 2023-01-12 21:22:25
  * @company: 
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/README.md
@@ -27,9 +27,11 @@
 - [x] 数据库 gorm
   - [x] 数据库类型 sqlite3/mysql
   - [x] DB 全局实例
-- [ ] 日志 zap
+- [x] 日志 zap
   - [x] 本地滚动日志 - 文本日志
-  - [ ] 数据库日志 - 结构化日志
+  - [x] 数据库日志 
+    - [x] 结构化日志
+    - [x] 单独封装入库
   - [x] trace 日志
   - [x] Gin 框架集成 zap日志库
 - [ ] 中间件

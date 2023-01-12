@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:58:54
+ * @LastEditTime: 2023-01-12 21:10:44
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -76,17 +76,17 @@ func parseTokenErr(ctx *gin.Context, err error) error {
 		return nil
 	}
 	if errors.Is(err, statuscode.TokenParsingError.Error()) {
-		response.New(ctx).WithCode(statuscode.TokenParsingError).Json()
 		log.New(ctx).WithCode(statuscode.TokenParsingError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.TokenParsingError).Json()
 	} else if errors.Is(err, statuscode.TokeConvertError.Error()) {
-		response.New(ctx).WithCode(statuscode.TokeConvertError).Json()
 		log.New(ctx).WithCode(statuscode.TokeConvertError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.TokeConvertError).Json()
 	} else if errors.Is(err, statuscode.TokenInvalidError.Error()) {
-		response.New(ctx).WithCode(statuscode.TokenInvalidError).Json()
 		log.New(ctx).WithCode(statuscode.TokenInvalidError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.TokenInvalidError).Json()
 	} else if errors.Is(err, statuscode.TokenExpiredError.Error()) {
-		response.New(ctx).WithCode(statuscode.TokenExpiredError).Json()
 		log.New(ctx).WithCode(statuscode.TokenExpiredError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.TokenExpiredError).Json()
 	}
 	return err
 }
