@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 16:22:35
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 14:50:15
+ * @LastEditTime: 2023-01-12 21:24:30
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/static/static.go
@@ -13,7 +13,7 @@ package static
 import (
 	"net/http"
 
-	"gin-admin/internal/assets"
+	"gin-admin/assets"
 
 	"github.com/gin-gonic/gin"
 )

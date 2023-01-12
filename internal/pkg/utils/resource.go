@@ -1,3 +1,13 @@
+/*
+ * @Author: silent-rain
+ * @Date: 2023-01-07 15:56:01
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-12 21:24:16
+ * @company:
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/internal/pkg/utils/resource.go
+ * @Descripttion:
+ */
 package utils
 
 import (
@@ -8,7 +18,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gin-admin/internal/assets"
+	"gin-admin/assets"
 )
 
 // Resource 静态内嵌资源

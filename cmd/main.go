@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 22:18:32
+ * @LastEditTime: 2023-01-12 21:24:38
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -18,7 +18,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"gin-admin/internal/assets"
+	"gin-admin/assets"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/database"
 	"gin-admin/internal/pkg/log"

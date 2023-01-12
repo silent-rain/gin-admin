@@ -8,5 +8,5 @@ cmd/logs
 internal/pkg/log/logs
 
 # embed web
-internal/assets/dist
+assets/dist/*
 web/node_modules
