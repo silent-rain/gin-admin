@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 15:56:01
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 21:24:16
+ * @LastEditTime: 2023-01-12 22:55:20
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/resource.go
