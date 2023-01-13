@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 12:41:32
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:11:22
+ * @LastEditTime: 2023-01-13 23:17:25
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/user.go
@@ -32,6 +32,7 @@ type User struct {
 	Status    uint      `gorm:"column:status"`                          // 是否启用,0:禁用,1:启用
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
 	UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
+	Roles     []Role    `gorm:"many2many:user_role_rel;"`               // Many To Many, 关联 role 表
 }
 
 // TableName 表名重写
@@ -42,8 +43,8 @@ func (User) TableName() string {
 // UserRoleRel 用户角色表
 type UserRoleRel struct {
 	ID        uint      `gorm:"column:id;primaryKey"`                   // 自增ID
-	UserId    string    `gorm:"column:user_id"`                         // 用户ID
-	RoleId    string    `gorm:"column:role_id"`                         // 角色ID
+	UserId    uint      `gorm:"column:user_id"`                         // 用户ID
+	RoleId    uint      `gorm:"column:role_id"`                         // 角色ID
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
 	UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
 }

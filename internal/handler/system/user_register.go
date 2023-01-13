@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:12:59
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 00:43:09
+ * @LastEditTime: 2023-01-13 23:38:16
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user_register.go
@@ -60,7 +60,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	}
 
 	// 数据入库
-	if err := systemDao.UserRegisterImpl.Add(user, roleIds); err != nil {
+	if err := systemDao.UserRegisterImpl.Add(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return

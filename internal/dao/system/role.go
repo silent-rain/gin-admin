@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:24:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:43:57
+ * @LastEditTime: 2023-01-13 22:55:22
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/role.go
@@ -44,7 +44,7 @@ func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, erro
 	}
 
 	bean := make([]systemModel.Role, 0)
-	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Find(&bean); result.Error != nil {
+	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0

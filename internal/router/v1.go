@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:36:11
+ * @LastEditTime: 2023-01-13 23:54:08
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -44,9 +44,15 @@ func NewApiV1(engine *gin.Engine) {
 	user := v1.Group("/user")
 	{
 		// 获取用户信息
-		user.GET("/userInfo", system.UserManageImpl.UserInfo)
+		user.GET("/userInfo", system.UserHandlerImpl.UserInfo)
+		// 获取用户列表
+		user.GET("/list", system.UserHandlerImpl.List)
 		// 添加用户
 		user.POST("/add", system.UserRegisterHandlerImpl.Add)
+		// 删除用户
+		user.DELETE("/delete", system.UserHandlerImpl.Delete)
+		// 更新用户状态
+		user.PUT("/status", system.UserHandlerImpl.Status)
 	}
 
 	// 角色管理

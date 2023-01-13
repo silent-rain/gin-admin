@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:55:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:36:06
+ * @LastEditTime: 2023-01-13 23:47:38
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/role.go
@@ -104,7 +104,7 @@ func (h *roleHandler) Delete(ctx *gin.Context) {
 	response.New(ctx).WithData(row).Json()
 }
 
-// Status 更新状态
+// Status 更新角色状态
 func (h *roleHandler) Status(ctx *gin.Context) {
 	req := new(systemDto.RoleStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {

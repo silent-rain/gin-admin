@@ -79,7 +79,9 @@ CREATE TABLE user_role_rel (
     `role_id` INT(10) NOT NULL COMMENT '角色ID',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `user_role_rel_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户角色表';
 
 -- 用户头像表 - 待定
@@ -118,7 +120,7 @@ CREATE TABLE http_log (
     `method` VARCHAR(10) NOT NULL COMMENT '请求方法',
     `path` VARCHAR(500) NOT NULL COMMENT '请求地址路径',
     `query` VARCHAR(500) NULL COMMENT '请求参数',
-    `body` VARCHAR(500) NULL COMMENT '请求体/响应体',
+    `body` TEXT NULL COMMENT '请求体/响应体',
     `remote_addr` VARCHAR(64) NOT NULL COMMENT '请求IP',
     `user_agent` VARCHAR(100) NOT NULL COMMENT '用户代理',
     `cost` INT(20) NOT NULL COMMENT '耗时,纳秒',
@@ -136,8 +138,8 @@ CREATE TABLE system_log (
     `level` VARCHAR(10) NOT NULL COMMENT '日志级别',
     `caller_line` VARCHAR(100) NOT NULL COMMENT '日志发生位置',
     `error_code` INT(10) NULL COMMENT '业务错误码',
-    `error_msg` VARCHAR(100) NOT NULL COMMENT '业务错误信息',
-    `msg` VARCHAR(100) NULL COMMENT '日志消息',
+    `error_msg` VARCHAR(500) NOT NULL COMMENT '业务错误信息',
+    `TEXT` VARCHAR(100) NULL COMMENT '日志消息',
     `extend` VARCHAR(500) NOT NULL COMMENT '日志扩展信息/json',
     `note` VARCHAR(255) NULL COMMENT '备注',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

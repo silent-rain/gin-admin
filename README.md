@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:20:01
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:00:57
+ * @LastEditTime: 2023-01-13 23:58:25
  * @company: 
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/README.md
@@ -49,6 +49,7 @@
 - [ ] 系统管理
   - [x] 注册/登录/退出/验证码
   - [ ] 用户管理
+    - [ ] 更新用户及角色
   - [x] 角色管理
   - [ ] 菜单管理
   - [ ] 角色菜单管理

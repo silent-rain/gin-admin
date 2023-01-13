@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:43:50
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:05:42
+ * @LastEditTime: 2023-01-13 23:42:24
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user_register.go
@@ -33,7 +33,7 @@ type userRegister struct {
 }
 
 // 注册用户
-func (d *userRegister) Add(user *systemModel.User, roleIds []uint) error {
+func (d *userRegister) Add(user systemModel.User, roleIds []uint) error {
 	d.Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -57,8 +57,8 @@ func (d *userRegister) Add(user *systemModel.User, roleIds []uint) error {
 }
 
 // 添加用户
-func (d *userRegister) addUser(bean *systemModel.User) (uint, error) {
-	result := d.Tx().Create(bean)
+func (d *userRegister) addUser(bean systemModel.User) (uint, error) {
+	result := d.Tx().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -70,7 +70,13 @@ func (d *userRegister) addUserRole(userId uint, roleIds []uint) error {
 	if len(roleIds) == 0 {
 		return nil
 	}
-	roles := make([]systemModel.Role, len(roleIds))
+	roles := make([]systemModel.UserRoleRel, 0)
+	for _, roleId := range roleIds {
+		roles = append(roles, systemModel.UserRoleRel{
+			UserId: userId,
+			RoleId: roleId,
+		})
+	}
 	result := d.Tx().Create(&roles)
 	return result.Error
 }
