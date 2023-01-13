@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:24:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:54:02
+ * @LastEditTime: 2023-01-13 22:43:57
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/role.go
@@ -14,6 +14,8 @@ import (
 	systemDto "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
+
+	"gorm.io/gorm"
 )
 
 // RoleImpl 角色对象
@@ -33,16 +35,20 @@ type role struct{}
 
 // List 查询角色列表
 func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error) {
-	var db = database.Instance()
-	if req.Name != "" {
-		db = db.Where("name = ?", req.Name)
+	var stats = func() *gorm.DB {
+		stats := database.Instance()
+		if req.Name != "" {
+			stats = stats.Where("name like ?", "%"+req.Name+"%")
+		}
+		return stats
 	}
+
 	bean := make([]systemModel.Role, 0)
-	if result := db.Find(&bean); result.Error != nil {
+	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	db.Count(&total)
+	stats().Model(&systemModel.Role{}).Count(&total)
 	return bean, total, nil
 }
 

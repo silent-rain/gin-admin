@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:55:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:45:19
+ * @LastEditTime: 2023-01-13 22:36:06
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/role.go

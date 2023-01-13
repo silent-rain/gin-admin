@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 15:34:09
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 21:34:32
+ * @LastEditTime: 2023-01-13 22:35:36
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/utils/data.go
@@ -21,7 +21,14 @@ import (
 
 // ParsingReqParams 将请求参数解析到结构体
 func ParsingReqParams(ctx *gin.Context, req interface{}) error {
-	if err := ctx.ShouldBind(&req); err != nil {
+	if ctx.Request.Method == "GET" {
+		if err := ctx.Bind(req); err != nil {
+			response.New(ctx).WithCode(statuscode.ReqParameterParsingError).Json()
+			return err
+		}
+		return nil
+	}
+	if err := ctx.ShouldBind(req); err != nil {
 		response.New(ctx).WithCode(statuscode.ReqParameterParsingError).Json()
 		return err
 	}
@@ -29,13 +36,13 @@ func ParsingReqParams(ctx *gin.Context, req interface{}) error {
 }
 
 // ApiJsonConvertJson 结构体转换
-func ApiJsonConvertJson(ctx *gin.Context, req interface{}, user interface{}) error {
-	bytes, err := json.Marshal(req)
+func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) error {
+	bytes, err := json.Marshal(src)
 	if err != nil {
 		response.New(ctx).WithCode(statuscode.JsonDataEncodeError).Json()
 		return err
 	}
-	if err := json.Unmarshal(bytes, user); err != nil {
+	if err := json.Unmarshal(bytes, dst); err != nil {
 		response.New(ctx).WithCode(statuscode.JsonDataDecodeError).Json()
 		return err
 	}

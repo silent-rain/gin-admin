@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 12:41:32
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:29:54
+ * @LastEditTime: 2023-01-13 22:11:22
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/user.go
@@ -37,4 +37,18 @@ type User struct {
 // TableName 表名重写
 func (User) TableName() string {
 	return "user"
+}
+
+// UserRoleRel 用户角色表
+type UserRoleRel struct {
+	ID        uint      `gorm:"column:id;primaryKey"`                   // 自增ID
+	UserId    string    `gorm:"column:user_id"`                         // 用户ID
+	RoleId    string    `gorm:"column:role_id"`                         // 角色ID
+	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
+	UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
+}
+
+// TableName 表名重写
+func (UserRoleRel) TableName() string {
+	return "user_role_rel"
 }

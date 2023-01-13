@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:43:50
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:26:51
+ * @LastEditTime: 2023-01-13 22:05:42
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user_register.go
@@ -70,10 +70,7 @@ func (d *userRegister) addUserRole(userId uint, roleIds []uint) error {
 	if len(roleIds) == 0 {
 		return nil
 	}
-	// bean := []int{}
-	// result := d.Tx().Create(&bean)
-	// if result.Error != nil {
-	// 	return result.Error
-	// }
-	return nil
+	roles := make([]systemModel.Role, len(roleIds))
+	result := d.Tx().Create(&roles)
+	return result.Error
 }
