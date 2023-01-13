@@ -1,5 +1,9 @@
 env: dev # 系统环境 prod/test/dev
 
+server: # 系统服务
+  address: "127.0.0.1"
+  port: 8080
+
 db: # mysql 数据库, 当 mysql 配置为空时，使用 sqlite3 数据库
   key: "db"
   host: "127.0.0.1"
@@ -11,7 +15,7 @@ db: # mysql 数据库, 当 mysql 配置为空时，使用 sqlite3 数据库
 sqlite: # sqlite3 数据库
   filepath: "./data.dat"
 
-logger:
+logger: # 日志
   filename: "logs/log.log"
   level: "debug" # debug/info/warn/error/panic
   max_size: 256

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 01:18:14
+ * @LastEditTime: 2023-01-13 21:36:11
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -23,7 +23,7 @@ import (
 func NewApiV1(engine *gin.Engine) {
 	v1 := engine.Group("/api/v1")
 	// 接口测试
-	v1.GET("/sayHello/:name", handler.SayHello)
+	v1.GET("/sayHello", handler.SayHello)
 
 	// 注册/登录/登出/验证码
 	userLogin := v1.Group("/")
@@ -52,15 +52,15 @@ func NewApiV1(engine *gin.Engine) {
 	// 角色管理
 	role := v1.Group("/role")
 	{
-		// 获取列表
+		// 获取角色列表
 		role.GET("/list", system.RoleHandlerImpl.List)
-		// 添加
+		// 添加角色
 		role.POST("/add", system.RoleHandlerImpl.Add)
-		// 更新
+		// 更新角色
 		role.PUT("/update", system.RoleHandlerImpl.Update)
-		// 删除
+		// 删除角色
 		role.DELETE("/delete", system.RoleHandlerImpl.Delete)
-		// 更新状态
+		// 更新角色状态
 		role.POST("/status", system.RoleHandlerImpl.Status)
 	}
 }

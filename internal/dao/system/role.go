@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:24:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 01:12:58
+ * @LastEditTime: 2023-01-13 21:54:02
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/role.go
@@ -57,7 +57,7 @@ func (d *role) Add(bean systemModel.Role) (uint, error) {
 
 // Update 更新角色
 func (d *role) Update(bean systemModel.Role) (int64, error) {
-	result := database.Instance().Updates(&bean)
+	result := database.Instance().Select("name", "status", "sort", "note").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
@@ -71,7 +71,7 @@ func (d *role) Delete(id uint) (int64, error) {
 
 // Status 更新状态
 func (d *role) Status(id uint, status uint) (int64, error) {
-	result := database.Instance().Updates(&systemModel.Role{
+	result := database.Instance().Select("status").Updates(&systemModel.Role{
 		ID:     id,
 		Status: status,
 	})

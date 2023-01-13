@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:43:52
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 22:05:20
+ * @LastEditTime: 2023-01-13 21:26:42
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
@@ -25,6 +25,7 @@ import (
 // 放行白名单
 var whiteList = []string{
 	// API
+	"/api/v1/sayHello",
 	"/api/v1/register",
 	"/api/v1/captcha",
 	"/api/v1/captcha/verify",

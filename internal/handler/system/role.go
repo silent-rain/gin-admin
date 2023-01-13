@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:55:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 01:16:22
+ * @LastEditTime: 2023-01-13 21:45:19
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/role.go
@@ -54,7 +54,10 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 		return
 	}
 	role := systemModel.Role{}
-	utils.ApiJsonConvertJson(ctx, req, &role)
+	if err := utils.ApiJsonConvertJson(ctx, req, &role); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+		return
+	}
 	_, err := systemDao.RoleImpl.Add(role)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
@@ -72,7 +75,10 @@ func (h *roleHandler) Update(ctx *gin.Context) {
 		return
 	}
 	role := systemModel.Role{}
-	utils.ApiJsonConvertJson(ctx, req, &role)
+	if err := utils.ApiJsonConvertJson(ctx, req, &role); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+		return
+	}
 	row, err := systemDao.RoleImpl.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 18:44:38
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 14:50:45
+ * @LastEditTime: 2023-01-13 21:25:46
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/handler.go
@@ -25,6 +25,6 @@ func Ping(ctx *gin.Context) {
 
 // SayHello 接口测试
 func SayHello(ctx *gin.Context) {
-	name := ctx.Param("name")
+	name := ctx.DefaultQuery("name", "")
 	response.New(ctx).WithData("hello," + name).Json()
 }

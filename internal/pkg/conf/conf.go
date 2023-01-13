@@ -39,10 +39,22 @@ const (
 
 // Config 定义配置信息
 type Config struct {
+	ServerConfig *ServerConfig `yaml:"server"` // 系统服务配置
 	DBConfig     *DBConfig     `yaml:"db"`     // mysql 数据库配置
-	SqliteConfig *SqliteConfig `yaml:"sqlite"` // mysql 数据库配置
+	SqliteConfig *SqliteConfig `yaml:"sqlite"` // sqlite 数据库配置
 	LoggerConfig *LoggerConfig `yaml:"logger"` // 日志配置
 	EnvConfig    *EnvConfig    `yaml:"env"`    // 系统环境
+}
+
+// ServerConfig 系统服务配置
+type ServerConfig struct {
+	Address string
+	Port    int
+}
+
+// ServerAddress 获取服务地址
+func (s ServerConfig) ServerAddress() string {
+	return fmt.Sprintf("%s:%d", s.Address, s.Port)
 }
 
 // DBConfig mysql 数据库配置;

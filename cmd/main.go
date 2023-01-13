@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 21:24:38
+ * @LastEditTime: 2023-01-13 21:05:57
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -70,7 +70,7 @@ func main() {
 	// 路由初始化
 	router.Init(engine)
 	// 服务运行
-	if err := engine.Run(":8080"); err != nil {
+	if err := engine.Run(conf.Instance().ServerConfig.ServerAddress()); err != nil {
 		panic(fmt.Sprintf("server run failed, err: %v", err))
 	}
 }

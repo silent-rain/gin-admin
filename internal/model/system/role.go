@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:20:26
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 00:37:05
+ * @LastEditTime: 2023-01-13 21:46:23
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/role.go
@@ -15,7 +15,7 @@ import "time"
 // Role 角色表
 type Role struct {
 	ID        uint      `json:"id" gorm:"column:id;primaryKey"`                           // 角色ID
-	Name      uint      `json:"name" gorm:"column:name"`                                  // 角色名称
+	Name      string    `json:"name" gorm:"column:name"`                                  // 角色名称
 	Sort      uint      `json:"sort" gorm:"column:sort"`                                  // 排序
 	Note      string    `json:"note" gorm:"column:note"`                                  // 备注
 	Status    uint      `json:"status" gorm:"column:status"`                              // 角色状态,0:停用,1:启用

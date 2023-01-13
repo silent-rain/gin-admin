@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 14:31:45
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-09 22:52:24
+ * @LastEditTime: 2023-01-13 21:38:19
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/user_register.go
@@ -18,7 +18,7 @@ type UserRegisterReq struct {
 	Age      uint8  `form:"age" binding:"required"`      // 年龄
 	Birthday string `form:"birthday" binding:"required"` // 出生日期
 	Avatar   string `form:"avatar"`                      // 用户头像URL
-	Phone    string `form:"phone"`                       // 手机号码
+	Phone    string `form:"phone" binding:"required"`    // 手机号码
 	Email    string `form:"email"`                       // 邮件
 	Intro    string `form:"intro"`                       // 介绍
 	Note     string `form:"note"`                        // 备注
