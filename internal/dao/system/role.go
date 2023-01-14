@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:24:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 22:55:22
+ * @LastEditTime: 2023-01-14 17:16:27
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/role.go
@@ -32,6 +32,22 @@ type Role interface {
 
 // 角色结构
 type role struct{}
+
+// All 获取所有角色列表
+func (d *role) All() ([]systemModel.Role, int64, error) {
+	var stats = func() *gorm.DB {
+		stats := database.Instance()
+		return stats
+	}
+
+	bean := make([]systemModel.Role, 0)
+	if result := stats().Order("updated_at DESC").Find(&bean); result.Error != nil {
+		return nil, 0, result.Error
+	}
+	var total int64 = 0
+	stats().Model(&systemModel.Role{}).Count(&total)
+	return bean, total, nil
+}
 
 // List 查询角色列表
 func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error) {

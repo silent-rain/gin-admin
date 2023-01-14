@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:55:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 00:59:26
+ * @LastEditTime: 2023-01-14 17:14:09
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/role.go
@@ -27,6 +27,17 @@ var RoleHandlerImpl = new(roleHandler)
 
 // 角色
 type roleHandler struct {
+}
+
+// All 获取所有角色列表
+func (h *roleHandler) All(ctx *gin.Context) {
+	roles, total, err := systemDao.RoleImpl.All()
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	response.New(ctx).WithDataList(roles, total).Json()
 }
 
 // List 获取用角色列表

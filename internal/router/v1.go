@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 16:09:55
+ * @LastEditTime: 2023-01-14 17:13:54
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -70,8 +70,10 @@ func NewApiV1(engine *gin.Engine) {
 	// 角色管理
 	role := v1.Group("/role")
 	{
+		// 获取所有角色列表
+		role.GET("/all", system.RoleHandlerImpl.All)
 		// 获取角色列表
-		role.GET("/list", system.RoleHandlerImpl.List) // all
+		role.GET("/list", system.RoleHandlerImpl.List)
 		// 添加角色
 		role.POST("/add", system.RoleHandlerImpl.Add)
 		// 更新角色
