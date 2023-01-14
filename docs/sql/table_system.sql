@@ -49,6 +49,29 @@ CREATE TABLE sys_user_role_rel (
     CONSTRAINT `user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户角色关联表';
 
+-- 菜单表
+CREATE TABLE sys_menu (
+    `id` INT AUTO_INCREMENT COMMENT '菜单ID',
+    `parent_id` INT(20) NULL COMMENT '父菜单ID',
+    `title` VARCHAR(20) NOT NULL COMMENT '菜单名称',
+    `icon` VARCHAR(20) NULL COMMENT '菜单图标',
+    `open_type` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '打开方式,0:组件,1:内链,2:外联',
+    `path` VARCHAR(500) NULL COMMENT '路由地址/外链地址',
+    `component` VARCHAR(500) NULL COMMENT '组件路径/内链地址',
+    `target` VARCHAR(500) NULL COMMENT '链接地址跳转方式, component/_blank/_self',
+    `permission` VARCHAR(200) NULL COMMENT '权限标识',
+    `menu_type` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '菜单类型,0:菜单,1:按钮',
+    `hide` TINYINT(1) NULL DEFAULT 1 COMMENT '菜单是否隐藏,0:隐藏,1:显示',
+    `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
+    `note` VARCHAR(200) NULL COMMENT '备注',
+    `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态,0:停用,1:启用',
+    `create_user_id` INT NULL COMMENT '创建菜单用户ID',
+    `update_user_id` INT NULL COMMENT '更新菜单用户ID',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '菜单表';
+
 -- user表触发器，更新其他表冗余字段
 /*
  CREATE TRIGGER trigger_update_user
