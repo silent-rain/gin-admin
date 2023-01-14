@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:14:54
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 16:54:47
+ * @LastEditTime: 2023-01-14 17:20:15
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/user.go
@@ -67,6 +67,11 @@ type UserDeleteReq struct {
 type UserStatusReq struct {
 	ID     uint `json:"id" form:"id" binding:"required"`
 	Status uint `json:"status" form:"status"`
+}
+
+// UserResetPasswordReq 重置用户密码
+type UserResetPasswordReq struct {
+	ID uint `json:"id" form:"id" binding:"required"`
 }
 
 // UserUpdatePasswordReq 用户密码更新

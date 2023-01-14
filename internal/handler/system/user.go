@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:24:21
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 16:51:36
+ * @LastEditTime: 2023-01-14 17:20:59
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user.go
@@ -149,10 +149,15 @@ func (h *userHandler) UpdatePassword(ctx *gin.Context) {
 
 // ResetPassword 重置密码
 func (h *userHandler) ResetPassword(ctx *gin.Context) {
+	req := new(systemDto.UserResetPasswordReq)
+	if err := utils.ParsingReqParams(ctx, req); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+		return
+	}
+
 	// 默认密码加密
 	password := utils.Md5(conf.ServerUserDefaultPwd)
-	userId := utils.GetUserId(ctx)
-	row, err := systemDao.UserImpl.ResetPassword(userId, password)
+	row, err := systemDao.UserImpl.ResetPassword(req.ID, password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbResetError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbResetError).Json()
