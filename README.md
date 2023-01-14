@@ -7,7 +7,7 @@
 - yarn 版本: v1.22.18
 - 数据库 MariaDB 版本: v10.3.36
 
-## 功能列表
+## 后端框架功能列表
 - [x] 热重启
 - [x] 内嵌文件
 - [x] 内嵌 web 服务
@@ -36,12 +36,19 @@
 - [ ] 定时任务调度
   - [ ] 即时任务
   - [ ] 定时任务
+
+## 系统功能列表
 - [ ] 系统管理
   - [x] 注册/登录/退出/验证码
   - [x] 用户管理
   - [x] 角色管理
   - [ ] 菜单管理
-    - [ ] 角色菜单管理
+    - [ ] 获取菜单列表 - 分页 排序 sort
+    - [ ] 获取所有菜单列表
+    - [ ] 添加
+    - [ ] 删除 -批量
+    - [ ] 修改
+  - [ ] 角色菜单管理
   - [ ] 系统配置管理
 
 
@@ -66,9 +73,12 @@ go run main.go
 cd cmd
 # 编译
 go build -o ./main .
-# 运行
+# 添加执行权限
 chmod 755 main
+# 运行
 ./main
+# 后端访问地址
+http://127.0.0.1:8080/ping
 ```
 ### 前端编译&运行
 - 安装依赖
@@ -82,6 +92,8 @@ yarn install
 ```shell
 cd web
 yarn run dev
+# 访问前端
+http://localhost:5005/
 ```
 - 编译
 
@@ -90,47 +102,9 @@ cd web
 yarn build
 ```
 
-
-
-
 ## API 接口文档
 本地API文档，需要联网加载资源
 [本地API文档](http://127.0.0.1:8080/docs/api/v1/index.html)
-
-## vscode 插件
-### koroFileHeader
-- 文档注释插件
-- 插件配置
-```
-// 自动添加文件头部注释
-"fileheader.configObj": {
-  "autoAdd": true, // 自动添加头部注释开启才能自动添加`
-  "autoAlready": true, // 默认开启`
-},
-// 文件头部注释
-"fileheader.customMade": {
-  "version": "V1.0.0", //版本号
-  "Author": "lilun", //作者
-  "Date": "Do not edit", //文件创建创建时间
-  "LastEditors": "lilun", //最后编辑作者
-  "LastEditTime": "Do not Edit", //最后编辑时间
-  "company": "轩田科技", //公司名称
-  "Mailbox": "lilun@sharetek.com.cn",//邮箱
-  "FilePath": "Do not edit", // 文件在项目中的相对路径 自动更新
-  "Descripttion": "", //文本描述
-}, 
-//函数注释
-"fileheader.cursorMode": {
-  "description": "", //方法描述
-  "param ": "", //参数
-  "return": ""
-},
-```
-- 使用快捷键
-  - 文件头部注释： 在当前编辑文件中使用快捷键即可生成文件头部注释。
-    - ctrl+alt+i
-  - 函数注释： 将光标放在函数行或者将光标放在函数上方的空白行 使用快捷键即可生成函数注释。
-    - ctrl+alt+t
 
 ## 热重启
 - install air
@@ -152,4 +126,5 @@ air
 - [Gin框架基础](https://blog.csdn.net/qq_40229166/article/details/118807361)
 - [Gorm](https://gorm.io/zh_CN/)
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
+- [参考项目](http://manage.pro.layui.javaweb.vip/index)
 
