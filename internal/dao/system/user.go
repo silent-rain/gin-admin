@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:12:44
+ * @LastEditTime: 2023-01-14 17:16:36
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go
@@ -56,7 +56,7 @@ func (d *user) All() ([]systemModel.User, int64, error) {
 	}
 
 	bean := make([]systemModel.User, 0)
-	result := stats().Model(&systemModel.User{}).Order("sort DESC").
+	result := stats().Model(&systemModel.User{}).Order("updated_at DESC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
