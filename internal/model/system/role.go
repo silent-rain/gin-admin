@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:20:26
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 16:48:54
+ * @LastEditTime: 2023-01-14 22:49:48
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/role.go
@@ -25,5 +25,5 @@ type Role struct {
 
 // TableName 表名重写
 func (Role) TableName() string {
-	return "role"
+	return "sys_role"
 }

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-09 23:09:04
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:15:59
+ * @LastEditTime: 2023-01-14 22:49:29
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/http_log.go
@@ -32,5 +32,5 @@ type HttpLog struct {
 
 // TableName 表名重写
 func (HttpLog) TableName() string {
-	return "http_log"
+	return "sys_http_log"
 }

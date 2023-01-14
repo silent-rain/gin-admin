@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 12:41:32
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:48:38
+ * @LastEditTime: 2023-01-14 22:48:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/user.go
@@ -37,7 +37,7 @@ type User struct {
 
 // TableName 表名重写
 func (User) TableName() string {
-	return "user"
+	return "sys_user"
 }
 
 // UserRoleRel 用户角色表
@@ -51,5 +51,5 @@ type UserRoleRel struct {
 
 // TableName 表名重写
 func (UserRoleRel) TableName() string {
-	return "user_role_rel"
+	return "sys_user_role_rel"
 }

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-12 00:00:25
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 21:17:35
+ * @LastEditTime: 2023-01-14 22:49:08
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/system_log.go
@@ -29,5 +29,5 @@ type SystemLog struct {
 
 // TableName 表名重写
 func (SystemLog) TableName() string {
-	return "system_log"
+	return "sys_system_log"
 }

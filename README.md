@@ -1,13 +1,3 @@
-<!--
- * @Author: silent-rain
- * @Date: 2023-01-05 00:20:01
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 19:03:48
- * @company: 
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/README.md
- * @Descripttion: 后台管理系统
--->
 # Gin-Admin 后台管理系统
 
 ## 开发环境
@@ -52,6 +42,7 @@
   - [x] 角色管理
   - [ ] 菜单管理
     - [ ] 角色菜单管理
+  - [ ] 系统配置管理
 
 
 ## 项目编译&运行
