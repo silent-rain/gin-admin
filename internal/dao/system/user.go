@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:39:48
+ * @LastEditTime: 2023-01-14 18:05:46
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go

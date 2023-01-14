@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 12:41:32
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 16:50:31
+ * @LastEditTime: 2023-01-14 17:48:38
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/user.go
@@ -32,7 +32,7 @@ type User struct {
 	Status    uint      `json:"status" gorm:"column:status"`                              // 是否启用,0:禁用,1:启用
 	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
 	UpdatedAt time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
-	Roles     []Role    `gorm:"many2many:user_role_rel;"`                                 // Many To Many, 关联 role 表
+	Roles     []Role    `json:"roles" gorm:"many2many:user_role_rel;"`                    // Many To Many, 关联 role 表
 }
 
 // TableName 表名重写

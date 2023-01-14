@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 17:14:54
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:20:15
+ * @LastEditTime: 2023-01-14 17:51:59
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/user.go
@@ -15,7 +15,6 @@ import "gin-admin/internal/dto"
 // UserLoginReq 登录请求
 type UserLoginReq struct {
 	Username string `json:"username" form:"username" binding:"required"` // 用户 手机号、邮箱
-	Captcha  string `json:"captcha" form:"captcha" binding:"required"`   // 验证码
 	Password string `json:"password" form:"password" binding:"required"` // 密码
 }
 
