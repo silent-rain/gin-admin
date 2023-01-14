@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:20:26
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:46:23
+ * @LastEditTime: 2023-01-14 16:48:54
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/model/system/role.go
@@ -20,7 +20,7 @@ type Role struct {
 	Note      string    `json:"note" gorm:"column:note"`                                  // 备注
 	Status    uint      `json:"status" gorm:"column:status"`                              // 角色状态,0:停用,1:启用
 	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
-	UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime:milli"`                   // 更新时间
+	UpdatedAt time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
 }
 
 // TableName 表名重写

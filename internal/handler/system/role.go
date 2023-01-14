@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:55:36
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 23:47:38
+ * @LastEditTime: 2023-01-14 00:59:26
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/role.go
@@ -81,8 +81,8 @@ func (h *roleHandler) Update(ctx *gin.Context) {
 	}
 	row, err := systemDao.RoleImpl.Update(role)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbAddError).Json()
+		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
 		return
 	}
 	response.New(ctx).WithData(row).Json()
@@ -113,8 +113,8 @@ func (h *roleHandler) Status(ctx *gin.Context) {
 	}
 	row, err := systemDao.RoleImpl.Status(req.ID, req.Status)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
+		log.New(ctx).WithCode(statuscode.DbSetStatusError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbSetStatusError).Json()
 		return
 	}
 	response.New(ctx).WithData(row).Json()

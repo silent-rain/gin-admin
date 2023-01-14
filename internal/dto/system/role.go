@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-13 00:20:26
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 23:51:47
+ * @LastEditTime: 2023-01-14 13:37:04
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dto/system/role.go
@@ -42,6 +42,6 @@ type RoleDeleteReq struct {
 
 // 更新角色状态
 type RoleStatusReq struct {
-	ID     uint `form:"id" binding:"required"`
-	Status uint `form:"status"`
+	ID     uint `json:"id" form:"id" binding:"required"`
+	Status uint `json:"status" form:"status"`
 }

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 23:54:08
+ * @LastEditTime: 2023-01-14 16:09:55
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -45,21 +45,33 @@ func NewApiV1(engine *gin.Engine) {
 	{
 		// 获取用户信息
 		user.GET("/userInfo", system.UserHandlerImpl.UserInfo)
+		// 获取所有用户列表
+		user.GET("/all", system.UserHandlerImpl.All)
 		// 获取用户列表
 		user.GET("/list", system.UserHandlerImpl.List)
 		// 添加用户
 		user.POST("/add", system.UserRegisterHandlerImpl.Add)
+		// 更新用户详情信息
+		user.PUT("/updateDetails", system.UserHandlerImpl.UpdateDetails)
 		// 删除用户
 		user.DELETE("/delete", system.UserHandlerImpl.Delete)
 		// 更新用户状态
 		user.PUT("/status", system.UserHandlerImpl.Status)
+		// 更新用户密码
+		user.PUT("/updatePwd", system.UserHandlerImpl.UpdatePassword)
+		// 重置用户密码
+		user.PUT("/resetPwd", system.UserHandlerImpl.ResetPassword)
+		// 更新用户手机号码
+		user.PUT("/updatePhone", system.UserHandlerImpl.UpdatePhone)
+		// 更新用户邮箱
+		user.PUT("/updateEmail", system.UserHandlerImpl.UpdateEmail)
 	}
 
 	// 角色管理
 	role := v1.Group("/role")
 	{
 		// 获取角色列表
-		role.GET("/list", system.RoleHandlerImpl.List)
+		role.GET("/list", system.RoleHandlerImpl.List) // all
 		// 添加角色
 		role.POST("/add", system.RoleHandlerImpl.Add)
 		// 更新角色

@@ -35,6 +35,9 @@ const (
 	SessionMaxAge = time.Hour * 24
 	// Session 密匙对
 	SessionKeyPairs = "silent-rain"
+
+	// ServerUserDefaultPwd 用户默认密码
+	ServerUserDefaultPwd = "888888"
 )
 
 // Config 定义配置信息
