@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:08:10
+ * @LastEditTime: 2023-01-14 17:10:37
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go
@@ -31,6 +31,7 @@ type User interface {
 	All() ([]systemModel.User, int64, error)
 	List(req systemDto.UserQueryReq) ([]systemModel.User, int64, error)
 	Info(id uint) (*systemModel.User, bool, error)
+	UpdateDetails(user systemModel.User, roles []uint)
 	Delete(id uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 	UpdatePassword(id uint, password string) (int64, error)
