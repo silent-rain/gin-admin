@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:24:21
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:42:41
+ * @LastEditTime: 2023-01-14 23:03:08
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user.go
@@ -200,12 +200,6 @@ func (h *userHandler) UpdateEmail(ctx *gin.Context) {
 
 // Info 获取用户信息
 func (h *userHandler) Info(ctx *gin.Context) {
-	// zap.S().Error("===================", "xxxxxxxxxxxxxxxx")
-	// log.Debug(ctx, "xxxxxxxx", zap.String("method", ctx.Request.Method))
-	// log.New(ctx).
-	// 	WithCode(statuscode.CaptchaNotFoundError).
-	// 	Debug("xxxxxxxxdebug", zap.String("method", ctx.Request.Method))
-
 	userId := utils.GetUserId(ctx)
 	user, ok, err := systemDao.UserImpl.Info(userId)
 	if err != nil {
@@ -216,6 +210,12 @@ func (h *userHandler) Info(ctx *gin.Context) {
 	if !ok {
 		log.New(ctx).WithCode(statuscode.DbQueryEmptyError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryEmptyError).Json()
+		return
+	}
+	// 判断当前用户状态
+	if user.Status != 1 {
+		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
+		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
 		return
 	}
 	response.New(ctx).WithData(user).Json()
