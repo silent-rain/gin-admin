@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:20:01
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:18:48
+ * @LastEditTime: 2023-01-14 19:03:48
  * @company: 
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/README.md
@@ -54,6 +54,58 @@
     - [ ] 角色菜单管理
 
 
+## 项目编译&运行
+### 后端
+此后端内嵌web静态资源，打包后可直接访问。
+- 热重启, 修改代码后自动编译运行
+
+```shell
+# 项目根目录
+air
+```
+- 项目调式运行
+
+```shell
+cd cmd
+go run main.go
+```
+- 项目编译&运行
+
+```shell
+cd cmd
+# 编译
+go build -o ./main .
+# 运行
+chmod 755 main
+./main
+```
+### 前端编译&运行
+- 安装依赖
+
+```shell
+cd web
+yarn install
+```
+- 调试运行
+
+```shell
+cd web
+yarn run dev
+```
+- 编译
+
+```shell
+cd web
+yarn build
+```
+
+
+
+
+## API 接口文档
+本地API文档，需要联网加载资源
+[本地API文档](http://127.0.0.1:8080/docs/api/v1/index.html)
+
 ## vscode 插件
 ### koroFileHeader
 - 文档注释插件
@@ -103,7 +155,6 @@ air init
 ```
 air
 ```
-
 
 ## 参考文档
 - [前端框架模板](https://github.com/jzfai/vue3-admin-plus)

@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-05 00:22:11
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:05:57
+ * @LastEditTime: 2023-01-14 18:47:40
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/cmd/main.go
@@ -63,6 +63,8 @@ func main() {
 
 	// 加载静态资源
 	engine.StaticFS("/static", http.FS(utils.NewResource()))
+	// Api Docs 静态内嵌资源
+	engine.StaticFS("/docs", http.FS(utils.NewDocsResource()))
 	// 首页模板
 	templ := template.Must(template.New("").ParseFS(assets.WebAssets, "dist/*.html"))
 	engine.SetHTMLTemplate(templ)
