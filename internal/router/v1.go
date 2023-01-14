@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-06 00:26:00
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:13:54
+ * @LastEditTime: 2023-01-14 17:38:49
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/router/v1.go
@@ -44,7 +44,7 @@ func NewApiV1(engine *gin.Engine) {
 	user := v1.Group("/user")
 	{
 		// 获取用户信息
-		user.GET("/userInfo", system.UserHandlerImpl.UserInfo)
+		user.GET("/info", system.UserHandlerImpl.Info)
 		// 获取所有用户列表
 		user.GET("/all", system.UserHandlerImpl.All)
 		// 获取用户列表

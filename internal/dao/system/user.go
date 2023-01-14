@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 13:19:16
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:16:36
+ * @LastEditTime: 2023-01-14 17:39:48
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/dao/system/user.go
@@ -97,9 +97,12 @@ func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, erro
 // Info 获取用户信息
 func (d *user) Info(id uint) (*systemModel.User, bool, error) {
 	bean := &systemModel.User{ID: id}
-	result := database.Instance().First(bean)
+	result := database.Instance().Model(&systemModel.User{}).Preload("Roles").First(bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, false, nil
+	}
+	if result.Error != nil {
+		return nil, false, result.Error
 	}
 	return bean, true, nil
 }

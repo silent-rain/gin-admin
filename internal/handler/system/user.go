@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-08 21:24:21
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:20:59
+ * @LastEditTime: 2023-01-14 17:42:41
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/handler/system/user.go
@@ -198,18 +198,25 @@ func (h *userHandler) UpdateEmail(ctx *gin.Context) {
 	response.New(ctx).WithData(row).Json()
 }
 
-// UserInfo 获取用户信息
-func (h *userHandler) UserInfo(ctx *gin.Context) {
+// Info 获取用户信息
+func (h *userHandler) Info(ctx *gin.Context) {
 	// zap.S().Error("===================", "xxxxxxxxxxxxxxxx")
 	// log.Debug(ctx, "xxxxxxxx", zap.String("method", ctx.Request.Method))
 	// log.New(ctx).
 	// 	WithCode(statuscode.CaptchaNotFoundError).
 	// 	Debug("xxxxxxxxdebug", zap.String("method", ctx.Request.Method))
 
-	log.New(ctx).
-		WithCode(statuscode.DbQueryEmptyError).
-		WithField("aaa", "AAAAAA").
-		WithField("xxx", 111).
-		Debugf("xxxxxxxxdebug:  %v", "xxxxxxxxxxxAAA")
-	response.New(ctx).Json()
+	userId := utils.GetUserId(ctx)
+	user, ok, err := systemDao.UserImpl.Info(userId)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	if !ok {
+		log.New(ctx).WithCode(statuscode.DbQueryEmptyError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryEmptyError).Json()
+		return
+	}
+	response.New(ctx).WithData(user).Json()
 }
