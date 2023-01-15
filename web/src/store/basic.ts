@@ -9,7 +9,7 @@ export const useBasicStore = defineStore('basic', {
       // router
       allRoutes: [] as RouterTypes,
       buttonCodes: [],
-      filterAsyncRoutes: [],
+      filterAsyncRoutes: [] as RouterTypes,
       // keep-alive
       cachedViews: [] as Array<string>,
       cachedViewsDeep: [] as Array<string>,
@@ -26,7 +26,7 @@ export const useBasicStore = defineStore('basic', {
   },
   actions: {
     // 设置过滤的异步路由
-    setFilterAsyncRoutes(routes) {
+    setFilterAsyncRoutes(routes: RouterTypes) {
       this.$patch((state) => {
         state.filterAsyncRoutes = routes;
         state.allRoutes = constantRoutes.concat(routes);

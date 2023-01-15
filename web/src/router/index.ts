@@ -1,4 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import Layout from '@/layout/index.vue';
+import type { RouterTypes } from '~/basic';
 import basicDemo from './modules/basic-demo';
 import charts from './modules/charts';
 import richText from './modules/rich-text';
@@ -7,8 +9,6 @@ import excel from './modules/excel';
 import directive from './modules/directive';
 import other from './modules/other';
 import guid from './modules/guid';
-import type { RouterTypes } from '~/basic';
-import Layout from '@/layout/index.vue';
 
 export const constantRoutes: RouterTypes = [
   {
@@ -22,7 +22,6 @@ export const constantRoutes: RouterTypes = [
       },
     ],
   },
-
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
@@ -53,7 +52,6 @@ export const constantRoutes: RouterTypes = [
     ],
   },
   guid,
-
   {
     path: '/RBAC',
     component: Layout,

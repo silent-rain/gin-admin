@@ -24,7 +24,7 @@ interface menuRow {
 }
 
 // 过滤菜单路由数组
-export const filterAsyncRoutesByMenuList = (menuList: any[]) => {
+export const filterAsyncRoutesByMenuList = (menuList: menuRow[]) => {
   const filterRouter: RouterTypes = [];
   menuList.forEach((route: menuRow) => {
     // button permission
@@ -58,7 +58,7 @@ const getRouteItemFromReqRouter = (route): RouteRawConfig => {
   const metaKeyArr = ['title', 'activeMenu', 'elSvgIcon', 'icon'];
   const modules = import.meta.glob('../views/**/**.vue');
   // generator routeKey
-  routeKeyArr.forEach((fItem) => {
+  routeKeyArr.forEach((fItem: string) => {
     if (fItem === 'component') {
       if (route[fItem] === 'Layout') {
         tmp[fItem] = Layout;
