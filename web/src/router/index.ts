@@ -10,6 +10,7 @@ import directive from './modules/directive';
 import other from './modules/other';
 import guid from './modules/guid';
 
+// 系统固定公开路由
 export const constantRoutes: RouterTypes = [
   {
     path: '/redirect',
@@ -48,6 +49,53 @@ export const constantRoutes: RouterTypes = [
         component: () => import('@/views/dashboard/index.vue'),
         // using el svg icon, the elSvgIcon first when at the same time using elSvgIcon and icon
         meta: { title: 'Dashboard', elSvgIcon: 'Fold', affix: true },
+      },
+    ],
+  },
+  {
+    path: '/system',
+    component: Layout,
+    meta: { title: '系统管理', elSvgIcon: 'Setting' },
+    alwaysShow: true,
+    children: [
+      {
+        path: '/system/user',
+        component: () => import('@/views/other/count-to.vue'),
+        name: '用户管理',
+        meta: { title: '用户管理', elSvgIcon: 'User' },
+      },
+      {
+        path: '/system/role',
+        component: () => import('@/views/system/role/index.vue'),
+        name: '角色管理',
+        meta: { title: '角色管理', elSvgIcon: 'Postcard' },
+      },
+      {
+        path: '/system/menu',
+        component: () => import('@/views/other/drag-pane.vue'),
+        name: '菜单管理',
+        meta: { title: '菜单管理', elSvgIcon: 'Operation' },
+      },
+      {
+        path: '/system/level',
+        component: () => import('@/views/other/signboard/index.vue'),
+        name: '职级管理',
+        hidden: true,
+        meta: { title: '职级管理', elSvgIcon: 'Histogram' },
+      },
+      {
+        path: '/system/position',
+        component: () => import('@/views/other/signboard/index.vue'),
+        name: '岗位管理',
+        hidden: true,
+        meta: { title: '岗位管理', elSvgIcon: 'MessageBox' },
+      },
+      {
+        path: '/system/dept',
+        component: () => import('@/views/other/signboard/index.vue'),
+        name: '部门管理',
+        hidden: true,
+        meta: { title: '部门管理', elSvgIcon: 'OfficeBuilding' },
       },
     ],
   },

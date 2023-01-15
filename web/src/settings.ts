@@ -104,7 +104,7 @@ export const settings: SettingsConfig = {
    * setting default defaultSize
    * large / default /small
    * */
-  defaultSize: 'small',
+  defaultSize: 'default',
   /*
    * vite.config.js base config
    * such as

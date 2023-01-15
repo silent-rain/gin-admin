@@ -48,7 +48,7 @@ app.component('SvgIcon', svgIcon);
 directive(app);
 
 // element-plus
-app.use(ElementPlus);
+app.use(ElementPlus, { size: 'small', zIndex: 3000 });
 app.use(VXETable);
 
 app.mount('#app');

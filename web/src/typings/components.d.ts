@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     ElSvgIcon: typeof import('./../components/ElSvgIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScreenFull: typeof import('./../components/ScreenFull.vue')['default']
     SvgIcon: typeof import('./../icons/SvgIcon.vue')['default']
     TestUnit: typeof import('./../components/TestUnit.vue')['default']
   }
