@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card id="role-manage">
     <!-- 过滤条件 -->
     <div class="filter">
       <label>角色名称: </label>
@@ -52,9 +52,7 @@
 
         <el-button :icon="Setting" @click="handleFilter" />
         <el-tooltip content="全屏" placement="top">
-          <el-button>
-            <ScreenFull />
-          </el-button>
+          <el-button :icon="FullScreen" @click="handleScreenFull" />
         </el-tooltip>
       </div>
     </div>
@@ -73,7 +71,6 @@ import {
 import { reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { useBasicStore } from '@/store/basic';
-import ScreenFull from '@/components/ScreenFull.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -109,6 +106,28 @@ const tableSize = ref(settings.value.defaultSize);
 // 表格尺寸选择事件
 const handleTableSizeCommand = (data: string) => {
   tableSize.value = data;
+};
+// 全屏
+const screenFullFlag = ref(false);
+const handleScreenFull = () => {
+  let element = document.getElementById('role-manage');
+  if (!element) {
+    return;
+  }
+  // 不全屏是null,返回false,
+  screenFullFlag.value = document.fullscreenElement === null ? false : true;
+  // false是进入全屏状态
+  if (screenFullFlag.value) {
+    // 退出全屏
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  } else {
+    // 全屏
+    element.requestFullscreen();
+  }
+  // 切换文本状态（只是用在文本上，文本不是动态可以忽略）
+  screenFullFlag.value = !screenFullFlag.value;
 };
 </script>
 
