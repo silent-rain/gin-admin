@@ -2,7 +2,7 @@
   <component :is="Component" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import LoginAlt from './login-alt.vue';
 import LoginBase from './login-basic.vue';
 import LoginLighting from './login-lighting.vue';

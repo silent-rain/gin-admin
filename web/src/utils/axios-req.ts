@@ -28,7 +28,11 @@ service.interceptors.request.use(
     });
     // 设置token到header
     // @ts-ignore
-    req.headers.Authorization = token;
+    req.headers['Authorization'] = token;
+    // @ts-ignore
+    req.headers['Content-Type'] = 'application/json';
+    // @ts-ignore
+    req.headers['Content-type'] = 'application/json;charset=UTF-8';
     // 如果req.method给get 请求参数设置为 ?name=xxx
     if ('get'.includes(req.method?.toLowerCase() as string))
       req.params = req.data;
@@ -79,4 +83,7 @@ export default function axiosReq(config: AxiosRequestConfig<any>) {
     timeout: 8000,
     ...config,
   });
+}
+function AxiosHeaderValue(): any {
+  throw new Error('Function not implemented.');
 }

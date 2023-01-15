@@ -44,6 +44,12 @@ func main() {
 
 	engine := gin.Default()
 	engine.Use(gin.Recovery())
+
+	// 跨域处理(要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404)
+	engine.Use(middleware.Cros())
+	// Session 中间件
+	engine.Use(middleware.Session())
+
 	// 登录验证中间件
 	engine.Use(middleware.CheckLogin())
 
@@ -55,11 +61,6 @@ func main() {
 	// engine.Use(middleware.GinZapLogger(), middleware.GinZapRecovery(true))
 	// 接口请求日志中间件，日志输出至数据库
 	engine.Use(middleware.HttpLogger())
-
-	// 跨域处理(要在路由组之前全局使用「跨域中间件」, 否则OPTIONS会返回404)
-	engine.Use(middleware.Cros())
-	// Session 中间件
-	engine.Use(middleware.Session())
 
 	// 加载静态资源
 	engine.StaticFS("/static", http.FS(utils.NewResource()))

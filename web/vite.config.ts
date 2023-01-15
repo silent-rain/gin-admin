@@ -1,21 +1,20 @@
-import { resolve } from 'path';
-import { defineConfig, loadEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import vueJsx from '@vitejs/plugin-vue-jsx';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
-import { viteMockServe } from 'vite-plugin-mock';
-import Components from 'unplugin-vue-components/vite';
-import UnoCSS from 'unocss/vite';
-import { presetAttributify, presetIcons, presetUno } from 'unocss';
-import mkcert from 'vite-plugin-mkcert';
-import AutoImport from 'unplugin-auto-import/vite';
-import setting from './src/settings';
-import vitePluginSetupExtend from './src/plugins/vite-plugin-setup-extend';
+import { resolve } from "path";
+import { defineConfig, loadEnv } from "vite";
+import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import { viteMockServe } from "vite-plugin-mock";
+import Components from "unplugin-vue-components/vite";
+import UnoCSS from "unocss/vite";
+import { presetAttributify, presetIcons, presetUno } from "unocss";
+import mkcert from "vite-plugin-mkcert";
+import AutoImport from "unplugin-auto-import/vite";
+import setting from "./src/settings";
+import vitePluginSetupExtend from "./src/plugins/vite-plugin-setup-extend";
 // import { visualizer } from 'rollup-plugin-visualizer'
-import eslintPlugin from 'vite-plugin-eslint';
 
 const prodMock = setting.openProdMock;
-const pathSrc = resolve(__dirname, 'src');
+const pathSrc = resolve(__dirname, "src");
 
 export default defineConfig(({ command }) => {
   //const env = loadEnv(mode, process.cwd(), '') //获取环境变量
@@ -24,9 +23,9 @@ export default defineConfig(({ command }) => {
     define: {
       //define global var
       GLOBAL_STRING: JSON.stringify(
-        'i am global var from vite.config.js define',
+        "i am global var from vite.config.js define"
       ),
-      GLOBAL_VAR: { test: 'i am global var from vite.config.js define' },
+      GLOBAL_VAR: { test: "i am global var from vite.config.js define" },
     },
     clearScreen: false, //设为 false 可以避免 Vite 清屏而错过在终端中打印某些关键信息
     server: {
@@ -55,16 +54,16 @@ export default defineConfig(({ command }) => {
       // }),
       createSvgIconsPlugin({
         iconDirs: [
-          resolve(process.cwd(), 'src/icons/common'),
-          resolve(process.cwd(), 'src/icons/nav-bar'),
+          resolve(process.cwd(), "src/icons/common"),
+          resolve(process.cwd(), "src/icons/nav-bar"),
         ],
-        symbolId: 'icon-[dir]-[name]',
+        symbolId: "icon-[dir]-[name]",
       }),
       //https://github.com/anncwb/vite-plugin-mock/blob/HEAD/README.zh_CN.md
       viteMockServe({
         supportTs: true,
-        mockPath: 'mock',
-        localEnabled: command === 'serve',
+        mockPath: "mock",
+        localEnabled: command === "serve",
         prodEnabled: prodMock,
         injectCode: `
           import { setupProdMockServer } from '../mock-prod-server';
@@ -75,33 +74,33 @@ export default defineConfig(({ command }) => {
       // VueSetupExtend(),using  DefineOptions instant of it
       //https://github.com/antfu/unplugin-auto-import/blob/HEAD/src/types.ts
       Components({
-        dirs: ['src/components', 'src/icons'],
-        extensions: ['vue'],
+        dirs: ["src/components", "src/icons"],
+        extensions: ["vue"],
         deep: true,
-        dts: './src/typings/components.d.ts',
+        dts: "./src/typings/components.d.ts",
       }),
       AutoImport({
         imports: [
-          'vue',
-          'vue-router',
+          "vue",
+          "vue-router",
           {
-            'pinia/dist/pinia': ['storeToRefs'],
+            "pinia/dist/pinia": ["storeToRefs"],
           },
         ],
         //配置后会自动扫描目录下的文件
         dirs: [
-          'src/hooks/**',
-          'src/utils/**',
-          'src/store/**',
-          'src/api/**',
-          'src/directives/**',
+          "src/hooks/**",
+          "src/utils/**",
+          "src/store/**",
+          "src/api/**",
+          "src/directives/**",
         ],
         eslintrc: {
           enabled: true, // Default `false`
-          filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
+          filepath: "./.eslintrc-auto-import.json", // Default `./.eslintrc-auto-import.json`
           globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
         },
-        dts: './src/typings/auto-imports.d.ts',
+        dts: "./src/typings/auto-imports.d.ts",
       }),
 
       vitePluginSetupExtend({ inject: { title: setting.title } }),
@@ -111,34 +110,29 @@ export default defineConfig(({ command }) => {
       //   gzipSize: true,
       //   brotliSize: true
       // })
-      eslintPlugin({
-        include: ['src/**/*.js', 'src/**/*.vue', 'src/**/*.jsx', 'src/**/*.ts'],
-        //  exclue: ['./node_modules/**'],
-        cache: false,
-      }),
     ],
     build: {
       chunkSizeWarningLimit: 10000, // 消除触发警告的 chunk, 默认500k
-      outDir: '../assets/dist', // 指定输出路径
-      emptyOutDir: '../assets/dist', // 指定清空路径
-      assetsDir: 'static/assets', // 指定生成静态文件目录
+      outDir: "../assets/dist", // 指定输出路径
+      emptyOutDir: true, // 指定清空路径
+      assetsDir: "static/assets", // 指定生成静态文件目录
       rollupOptions: {
         output: {
-          chunkFileNames: 'static/js/[name]-[hash].js',
-          entryFileNames: 'static/js/[name]-[hash].js',
-          assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+          chunkFileNames: "static/js/[name]-[hash].js",
+          entryFileNames: "static/js/[name]-[hash].js",
+          assetFileNames: "static/[ext]/[name]-[hash].[ext]",
         },
       },
     },
     resolve: {
       alias: {
-        '@/': `${pathSrc}/`,
-        'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js', //remove i18n waring
+        "@/": `${pathSrc}/`,
+        "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js", //remove i18n waring
       },
     },
     optimizeDeps: {
       //include: [...optimizeDependencies,...optimizeElementPlus] //on-demand element-plus use this
-      include: ['moment-mini'],
+      include: ["moment-mini"],
     },
   };
 });

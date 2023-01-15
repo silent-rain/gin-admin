@@ -1,22 +1,15 @@
-import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import type { RouterTypes } from '~/basic';
 import defaultSettings from '@/settings';
-import router, { constantRoutes } from '@/router';
+import { constantRoutes } from '@/router';
 
 export const useBasicStore = defineStore('basic', {
   state: () => {
     return {
-      token: '',
-      getUserInfo: false,
-      // user info
-      userInfo: { username: '', avatar: '' },
       // router
       allRoutes: [] as RouterTypes,
       buttonCodes: [],
       filterAsyncRoutes: [],
-      roles: [] as Array<string>,
-      codes: [] as Array<number>,
       // keep-alive
       cachedViews: [] as Array<string>,
       cachedViewsDeep: [] as Array<string>,
@@ -32,51 +25,21 @@ export const useBasicStore = defineStore('basic', {
     paths: ['token'],
   },
   actions: {
-    setToken(data) {
-      this.token = data;
-    },
+    // 设置过滤的异步路由
     setFilterAsyncRoutes(routes) {
       this.$patch((state) => {
         state.filterAsyncRoutes = routes;
         state.allRoutes = constantRoutes.concat(routes);
       });
     },
-    setUserInfo({ userInfo, roles, codes }) {
-      const { username, avatar } = userInfo;
-      this.$patch((state) => {
-        state.roles = roles;
-        state.codes = codes;
-        state.getUserInfo = true;
-        state.userInfo.username = username;
-        state.userInfo.avatar = avatar;
-      });
-    },
-    resetState() {
-      this.$patch((state) => {
-        state.token = ''; // reset token
-        state.roles = [];
-        state.codes = [];
-        // reset router
-        state.allRoutes = [];
-        state.buttonCodes = [];
-        state.filterAsyncRoutes = [];
-        // reset userInfo
-        state.userInfo.username = '';
-        state.userInfo.avatar = '';
-      });
-      this.getUserInfo = false;
-    },
-    resetStateAndToLogin() {
-      this.resetState();
-      nextTick(() => {
-        router.push({ path: '/login' });
-      });
-    },
-    setSidebarOpen(data) {
+
+    // 设置侧边栏，显示/隐藏
+    setSidebarOpen(data: any) {
       this.$patch((state) => {
         state.sidebar.opened = data;
       });
     },
+    // 点击侧边栏按钮，显示/隐藏
     setToggleSideBar() {
       this.$patch((state) => {
         state.sidebar.opened = !state.sidebar.opened;

@@ -206,6 +206,7 @@ export const roleCodeRoutes: RouterTypes = [
     ],
   },
 ];
+
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles

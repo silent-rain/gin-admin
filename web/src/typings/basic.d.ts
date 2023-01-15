@@ -25,7 +25,7 @@ export interface rawConfig {
     affix?: boolean;
     activeMenu?: string;
     breadcrumb?: boolean;
-    roles?: Array<string>;
+    roles?: Array<number>;
     elSvgIcon?: string;
     code?: number;
     cachePage?: boolean;

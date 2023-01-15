@@ -23,8 +23,9 @@ const (
 
 // 请求
 const (
-	ReqParameterParsingError StatuScode = iota + 10100 // 请求参数解析错误
-	ReqContentTypeNotJson                              // 请求 Content-Type 错误
+	ReqParameterParsingError    StatuScode = iota + 10100 // 请求参数解析错误
+	ReqContentTypeNotFoundError                           // 请求 Content-Type 参数不存在
+	ReqContentTypeParamsError                             // 请求 Content-Type 参数错误
 )
 
 // 数据解析
@@ -77,8 +78,9 @@ var statusCodeMsg = map[StatuScode]error{
 	InternalError: errors.New("内部错误"),
 	UnknownError:  errors.New("未知错误"),
 	// 请求
-	ReqParameterParsingError: errors.New("请求参数解析错误"),
-	ReqContentTypeNotJson:    errors.New("请求 Content-Type 参数错误"),
+	ReqParameterParsingError:    errors.New("请求参数解析错误"),
+	ReqContentTypeNotFoundError: errors.New("请求 Content-Type 参数不存在"),
+	ReqContentTypeParamsError:   errors.New("请求 Content-Type 参数错误"),
 	// 数据解析
 	JsonDataEncodeError: errors.New("数据编码错误"),
 	JsonDataDecodeError: errors.New("数据解码错误"),

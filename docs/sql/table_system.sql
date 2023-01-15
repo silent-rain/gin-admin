@@ -145,7 +145,7 @@ CREATE TABLE sys_http_log (
     `query` VARCHAR(500) NULL COMMENT '请求参数',
     `body` TEXT NULL COMMENT '请求体/响应体',
     `remote_addr` VARCHAR(64) NOT NULL COMMENT '请求IP',
-    `user_agent` VARCHAR(100) NOT NULL COMMENT '用户代理',
+    `user_agent` VARCHAR(256) NOT NULL COMMENT '用户代理',
     `cost` INT(20) NOT NULL COMMENT '耗时,纳秒',
     `htpp_type` VARCHAR(64) NOT NULL COMMENT '日志类型:REQ/RSP',
     `note` VARCHAR(255) NULL COMMENT '备注',

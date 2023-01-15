@@ -27,7 +27,10 @@
           <span class="svg-container">
             <ElSvgIcon name="User" :size="14" />
           </span>
-          <el-input v-model="subForm.keyword" placeholder="panda" />
+          <el-input
+            v-model="subForm.keyword"
+            placeholder="请输入手机号码/邮箱"
+          />
           <!--占位-->
         </el-form-item>
         <el-form-item prop="password" :rules="formRules.isNotNull('password')">
@@ -40,7 +43,7 @@
             v-model="subForm.password"
             :type="passwordType"
             name="password"
-            placeholder="密码(123456)"
+            placeholder="密码"
             @keyup.enter="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
@@ -69,8 +72,10 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBasicStore } from '@/store/basic';
+import { useUserStore } from '@/store/user';
 import { elMessage, useElement } from '@/hooks/use-element';
-import { loginReq } from '@/api/user';
+import { login } from '@/api/user';
+import { md5Encode } from '@/utils/md5';
 
 /* listen router change and set the query  */
 const { settings } = useBasicStore();
@@ -78,8 +83,8 @@ const { settings } = useBasicStore();
 const { formRules } = useElement();
 // form
 const subForm = reactive({
-  keyword: 'panda',
-  password: '123456',
+  keyword: '18312465088',
+  password: '888888',
 });
 const state: any = reactive({
   otherQuery: {},
@@ -120,13 +125,17 @@ const handleLogin = () => {
   });
 };
 const router = useRouter();
-const basicStore = useBasicStore();
+const userStore = useUserStore();
 
 const loginFunc = () => {
-  loginReq(subForm)
+  const data = {
+    username: subForm.keyword,
+    password: md5Encode(subForm.password),
+  };
+  login(data)
     .then(({ data }) => {
       elMessage('登录成功');
-      basicStore.setToken(data?.jwtToken);
+      userStore.setToken(data?.token);
       router.push('/');
     })
     .catch((err) => {
@@ -152,6 +161,7 @@ const showPwd = () => {
   });
 };
 </script>
+
 <style lang="scss" scoped>
 $bg: #ffe4b5;
 $dark_gray: #333;

@@ -57,15 +57,16 @@ import { reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBasicStore } from '@/store/basic';
 import { elMessage, useElement } from '@/hooks/use-element';
-import { loginReq } from '@/api/user';
+import { login } from '@/api/user';
+import { useUserStore } from '@/store/user';
 /* listen router change and set the query  */
 const { settings } = useBasicStore();
 // element valid
 const { formRules } = useElement();
 // form
 const subForm = reactive({
-  keyword: 'panda',
-  password: '123456',
+  keyword: '18312465088',
+  password: '888888',
 });
 const state: any = reactive({
   otherQuery: {},
@@ -106,13 +107,17 @@ const handleLogin = () => {
   });
 };
 const router = useRouter();
-const basicStore = useBasicStore();
+const userStore = useUserStore();
 
 const loginFunc = () => {
-  loginReq(subForm)
+  const data = {
+    username: subForm.keyword,
+    password: md5Encode(subForm.password),
+  };
+  login(data)
     .then(({ data }) => {
       elMessage('登录成功');
-      basicStore.setToken(data?.jwtToken);
+      userStore.setToken(data?.token);
       router.push('/');
     })
     .catch((err) => {

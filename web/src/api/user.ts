@@ -46,7 +46,7 @@ export const logout = async () => {
 };
 
 // 获取用户信息
-export const userInfo = async (params: any) => {
+export const getUserInfo = async (params: any) => {
   return axiosReq({
     url: '/user/info',
     method: 'get',

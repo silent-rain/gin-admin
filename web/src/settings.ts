@@ -63,7 +63,7 @@ export const settings: SettingsConfig = {
   /**
    * @type {string} 'rbac'| 'roles' | 'code'
    */
-  permissionMode: 'roles',
+  permissionMode: 'rbac',
   /**
    * @type {boolean} true | false
    * @description Whether  open prod mock

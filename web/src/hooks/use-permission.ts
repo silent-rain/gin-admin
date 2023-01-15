@@ -14,6 +14,7 @@ import router, { asyncRoutes, constantRoutes, roleCodeRoutes } from '@/router';
 // 进度条
 import 'nprogress/nprogress.css';
 import { useBasicStore } from '@/store/basic';
+import { useUserStore } from '@/store/user';
 
 const buttonCodes: Array<number> = []; // 按钮权限
 interface menuRow {
@@ -22,7 +23,8 @@ interface menuRow {
   children: RouterTypes;
 }
 
-export const filterAsyncRoutesByMenuList = (menuList) => {
+// 过滤菜单路由数组
+export const filterAsyncRoutesByMenuList = (menuList: any[]) => {
   const filterRouter: RouterTypes = [];
   menuList.forEach((route: menuRow) => {
     // button permission
@@ -98,7 +100,10 @@ const getRouteItemFromReqRouter = (route): RouteRawConfig => {
  * @param roles  角色数组
  * return 过滤后的异步路由
  */
-export function filterAsyncRoutesByRoles(routes, roles) {
+export function filterAsyncRoutesByRoles(
+  routes: RouteRawConfig[],
+  roles: number[],
+) {
   const res: RouterTypes = [];
   routes.forEach((route) => {
     const tmp: RouteRawConfig = { ...route };
@@ -112,9 +117,10 @@ export function filterAsyncRoutesByRoles(routes, roles) {
   return res;
 }
 
-function hasPermission(roles, route) {
+// 是否存在 role 权限
+function hasPermission(roles: number[], route: RouteRawConfig) {
   if (route?.meta?.roles) {
-    return roles?.some((role) => route.meta.roles.includes(role));
+    return roles?.some((role) => route.meta?.roles?.includes(role));
   }
   return true;
 }
@@ -125,7 +131,10 @@ function hasPermission(roles, route) {
  * @param codesRoutes 未过滤的异步路由
  * return 过滤后的异步路由
  */
-export function filterAsyncRouterByCodes(codesRoutes, codes) {
+export function filterAsyncRouterByCodes(
+  codesRoutes: RouteRawConfig[],
+  codes: number[],
+) {
   const filterRouter: RouterTypes = [];
   codesRoutes.forEach((routeItem: RouteRawConfig) => {
     if (hasCodePermission(codes, routeItem)) {
@@ -140,7 +149,8 @@ export function filterAsyncRouterByCodes(codesRoutes, codes) {
   return filterRouter;
 }
 
-function hasCodePermission(codes, routeItem) {
+// 是否存在 code
+function hasCodePermission(codes: number[], routeItem: RouteRawConfig) {
   if (routeItem.meta?.code) {
     return codes.includes(routeItem.meta.code) || routeItem.hidden;
   }
@@ -150,8 +160,9 @@ function hasCodePermission(codes, routeItem) {
 // 过滤异步路由
 export function filterAsyncRouter({ menuList, roles, codes }) {
   const basicStore = useBasicStore();
-  let accessRoutes: RouterTypes = [];
+  const userStore = useUserStore();
   const permissionMode = basicStore.settings?.permissionMode;
+  let accessRoutes: RouterTypes = [];
   if (permissionMode === 'rbac') {
     accessRoutes = filterAsyncRoutesByMenuList(menuList); // by menuList
   } else if (permissionMode === 'roles') {
@@ -179,11 +190,11 @@ export function resetRouter() {
 // 重置登录状态
 export function resetState() {
   resetRouter();
-  useBasicStore().resetState();
+  useUserStore().resetState();
 }
 
 // 刷新路由
-export function freshRouter(data) {
+export function freshRouter(data: any) {
   resetRouter();
   filterAsyncRouter(data);
   // location.reload()
