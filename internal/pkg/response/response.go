@@ -2,7 +2,7 @@
  * @Author: silent-rain
  * @Date: 2023-01-07 17:45:55
  * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 01:02:12
+ * @LastEditTime: 2023-01-15 01:35:38
  * @company:
  * @Mailbox: silent_rains@163.com
  * @FilePath: /gin-admin/internal/pkg/response/response.go
@@ -11,6 +11,8 @@
 package response
 
 import (
+	"net/http"
+
 	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
@@ -63,7 +65,7 @@ func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
 	return r
 }
 
-// Json gin json 返回值
+// Json 正常返回值
 func (r *ResponseAPI) Json() {
-	r.context.JSON(200, r)
+	r.context.JSON(http.StatusOK, r)
 }
