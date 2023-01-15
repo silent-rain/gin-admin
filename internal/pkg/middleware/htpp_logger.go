@@ -28,12 +28,13 @@ import (
 // 日志输出至数据库
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
+		// 验证 API 的 Content-Type 是否为空
+		if ctx.Request.Header.Get("Content-Type") == "" {
 			ctx.Next()
 			return
 		}
 		// 验证 API 的 Content-Type 是否为 json
-		if strings.ToLower(ctx.Request.Header.Get("Content-Type")) != "application/json" {
+		if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/json") {
 			ctx.Next()
 			return
 		}

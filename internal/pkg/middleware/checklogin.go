@@ -21,7 +21,6 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // 放行白名单
@@ -52,15 +51,14 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-
-		// 验证 API 的 Content-Type 是否为 json
-		zap.S().Errorln(ctx.Request.Method, ctx.Request.Header.Get("Content-Type"))
+		// 验证 API 的 Content-Type 是否为空
 		if ctx.Request.Header.Get("Content-Type") == "" {
 			log.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Errorf("")
 			response.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Json()
 			ctx.Abort()
 			return
 		}
+		// 验证 API 的 Content-Type 是否为 json
 		if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/json") {
 			log.New(ctx).WithCode(statuscode.ReqContentTypeParamsError).Errorf("")
 			response.New(ctx).WithCode(statuscode.ReqContentTypeParamsError).Json()

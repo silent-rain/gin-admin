@@ -11,7 +11,6 @@
 package middleware
 
 import (
-	"gin-admin/internal/pkg/utils"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -19,6 +18,8 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
+
+	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

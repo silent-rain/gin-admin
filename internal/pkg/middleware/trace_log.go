@@ -11,8 +11,9 @@
 package middleware
 
 import (
-	"gin-admin/internal/pkg/utils"
 	"strings"
+
+	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,13 +21,13 @@ import (
 // TraceLogger 日志链路跟踪中间件
 func TraceLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 验证 API 的 Content-Type 是否为 json
-		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
+		// 验证 API 的 Content-Type 是否为空
+		if ctx.Request.Header.Get("Content-Type") == "" {
 			ctx.Next()
 			return
 		}
 		// 验证 API 的 Content-Type 是否为 json
-		if strings.ToLower(ctx.Request.Header.Get("Content-Type")) != "application/json" {
+		if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/json") {
 			ctx.Next()
 			return
 		}
