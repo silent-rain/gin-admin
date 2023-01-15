@@ -11,21 +11,22 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from 'vue'
-import Sidebar from './sidebar/index.vue'
-import AppMain from './app-main/index.vue'
-import Navbar from './app-main/Navbar.vue'
-import TagsView from './app-main/TagsView.vue'
-import { useBasicStore } from '@/store/basic'
-import { resizeHandler } from '@/hooks/use-layout'
-const { sidebar, settings } = useBasicStore()
+import { computed } from 'vue';
+import Sidebar from './sidebar/index.vue';
+import AppMain from './app-main/index.vue';
+import Navbar from './app-main/Navbar.vue';
+import TagsView from './app-main/TagsView.vue';
+import { useBasicStore } from '@/store/basic';
+import { resizeHandler } from '@/hooks/use-layout';
+
+const { sidebar, settings } = useBasicStore();
 const classObj = computed(() => {
   return {
     closeSidebar: !sidebar.opened,
-    hideSidebar: !settings.showLeftMenu
-  }
-})
-resizeHandler()
+    hideSidebar: !settings.showLeftMenu,
+  };
+});
+resizeHandler();
 </script>
 
 <style lang="scss" scoped>

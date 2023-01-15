@@ -8,44 +8,45 @@
 </template>
 
 <script setup lang="ts">
-//@ts-ignore
-import { onMounted, onUnmounted, reactive, toRefs } from 'vue'
-import screenfull from 'screenfull'
-import { ElMessage } from 'element-plus'
-import SvgIcon from '@/icons/SvgIcon.vue'
+// @ts-ignore
+import { onMounted, onUnmounted, reactive, toRefs } from 'vue';
+import screenfull from 'screenfull';
+import { ElMessage } from 'element-plus';
+import SvgIcon from '@/icons/SvgIcon.vue';
+
 const state = reactive({
-  isFullscreen: false
-})
+  isFullscreen: false,
+});
 onMounted(() => {
-  init()
-})
+  init();
+});
 onUnmounted(() => {
-  destroy()
-})
+  destroy();
+});
 const toggleScreen = () => {
   if (!screenfull.isEnabled) {
     ElMessage({
       message: 'you browser can not work',
-      type: 'warning'
-    })
-    return false
+      type: 'warning',
+    });
+    return false;
   }
-  screenfull.toggle()
-}
+  screenfull.toggle();
+};
 const change = () => {
-  state.isFullscreen = screenfull.isFullscreen
-}
+  state.isFullscreen = screenfull.isFullscreen;
+};
 const init = () => {
   if (screenfull.isEnabled) {
-    screenfull.on('change', change)
+    screenfull.on('change', change);
   }
-}
+};
 const destroy = () => {
   if (screenfull.isEnabled) {
-    screenfull.off('change', change)
+    screenfull.off('change', change);
   }
-}
-const { isFullscreen } = toRefs(state)
+};
+const { isFullscreen } = toRefs(state);
 </script>
 
 <style lang="scss" scoped>

@@ -36,16 +36,16 @@ export default {
     'Permission Switch': '',
     'Role Index': '',
     'Code Index': '',
-    'Button Permission': ''
+    'Button Permission': '',
   },
   navbar: {
     Home: '',
     Github: '',
     Docs: '',
-    'login out': ''
+    'login out': '',
   },
 
-  //page
+  // page
   dashboard: {
     'switch theme': '',
     'switch size': '',
@@ -54,7 +54,7 @@ export default {
     zh: '中文',
     'Button Group': '',
     'unocss using': '',
-    'global var': ''
+    'global var': '',
   },
   'error-log': {
     log: '',
@@ -64,22 +64,22 @@ export default {
     github: '',
     search: '',
     reset: '',
-    multiDel: ''
+    multiDel: '',
   },
   permission: {
     addRole: '',
     editPermission: '',
     roles: '',
     switchRoles: '',
-    tips:
-      '在某些情况下，不适合使用 v-permission。例如：Element-UI 的 el-tab 或 el-table-column 以及其它动态渲染 dom 的场景。你只能通过手动设置 v-if 来实现。',
+    tips: '在某些情况下，不适合使用 v-permission。例如：Element-UI 的 el-tab 或 el-table-column 以及其它动态渲染 dom 的场景。你只能通过手动设置 v-if 来实现。',
     delete: '删除',
     confirm: '确定',
-    cancel: '取消'
+    cancel: '取消',
   },
   guide: {
-    description: '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',
-    button: '打开引导'
+    description:
+      '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',
+    button: '打开引导',
   },
   components: {
     documentation: '文档',
@@ -92,7 +92,7 @@ export default {
     backToTopTips2:
       '可自定义按钮的样式、show/hide、出现的高度、返回的位置 如需文字提示，可在外部使用Element的el-tooltip元素',
     imageUploadTips:
-      '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。'
+      '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。',
   },
   table: {
     dynamicTips1: '固定表头, 按照表头顺序排序',
@@ -118,6 +118,6 @@ export default {
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定'
-  }
-}
+    confirm: '确 定',
+  },
+};

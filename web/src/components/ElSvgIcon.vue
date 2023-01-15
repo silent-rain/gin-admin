@@ -5,24 +5,25 @@
 </template>
 
 <script setup lang="ts">
-import * as ElSvg from '@element-plus/icons-vue'
+import * as ElSvg from '@element-plus/icons-vue';
+
 const props = defineProps({
   name: {
     require: true,
     default: 'Fold',
-    type: String
+    type: String,
   },
   size: {
     require: false,
     default: 18,
-    type: Number
+    type: Number,
   },
   color: {
     require: false,
     default: '',
-    type: String
-  }
-})
+    type: String,
+  },
+});
 </script>
 
 <style scoped lang="scss">

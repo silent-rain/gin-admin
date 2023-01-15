@@ -1,14 +1,14 @@
 <template>
   <div>
-    <el-button v-longpress="setData">长按指令</el-button>
+    <el-button v-longpress="setData"> 长按指令 </el-button>
     <p>{{ data }}</p>
   </div>
 </template>
 
 <script setup>
-const data = ref("");
+const data = ref('');
 const setData = () => {
-  data.value = "执行长按指令";
+  data.value = '执行长按指令';
 };
 </script>
 

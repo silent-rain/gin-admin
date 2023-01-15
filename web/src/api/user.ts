@@ -1,32 +1,55 @@
-//获取用户信息
-import axiosReq from '@/utils/axios-req'
+/*
+ * @Author: silent-rain
+ * @Date: 2023-01-06 23:20:53
+ * @LastEditors: silent-rain
+ * @LastEditTime: 2023-01-15 01:49:04
+ * @company:
+ * @Mailbox: silent_rains@163.com
+ * @FilePath: /gin-admin/web/src/api/user.ts
+ * @Descripttion: 用户
+ */
+import axiosReq from '@/utils/axios-req';
 
-export const userInfoReq = (): Promise<any> => {
-  return new Promise((resolve) => {
-    const reqConfig = {
-      url: '/basis-func/user/getUserInfo',
-      params: { plateFormId: 2 },
-      method: 'post'
-    }
-    axiosReq(reqConfig).then(({ data }) => {
-      resolve(data)
-    })
-  })
-}
-
-//登录
-export const loginReq = (subForm) => {
+// 获取验证码
+export const captcha = async (params: any) => {
   return axiosReq({
-    url: '/basis-func/user/loginValid',
-    params: subForm,
-    method: 'post'
-  })
-}
+    url: '/captcha',
+    method: 'get',
+    params,
+  });
+};
 
-//退出登录
-export const loginOutReq = () => {
+// 验证码验证
+export const captchaVerify = async (params: any) => {
   return axiosReq({
-    url: '/basis-func/user/loginValid',
-    method: 'post'
-  })
-}
+    url: '/captcha/verify',
+    method: 'get',
+    params,
+  });
+};
+
+// 登录
+export const login = async (data: any) => {
+  return axiosReq({
+    url: '/login',
+    data,
+    method: 'post',
+  });
+};
+
+// 退出登录
+export const logout = async () => {
+  return axiosReq({
+    url: '/logout',
+    method: 'post',
+  });
+};
+
+// 获取用户信息
+export const userInfo = async (params: any) => {
+  return axiosReq({
+    url: '/user/info',
+    method: 'get',
+    params,
+  });
+};

@@ -8,31 +8,31 @@ const props = defineProps({
   name: {
     require: true,
     default: 'fai',
-    type: String
-  }
-})
+    type: String,
+  },
+});
 const state = reactive({
-  levelList: null
-})
+  levelList: null,
+});
 
-const routes = computed(() => 'value')
+const routes = computed(() => 'value');
 watch(
   () => props.name,
   (oldValue, newValue) => {},
-  { immediate: true }
-)
+  { immediate: true },
+);
 
-const router = useRouter()
+const router = useRouter();
 onMounted(() => {
-  console.log('页面挂载了')
-})
+  console.log('页面挂载了');
+});
 const helloFunc = () => {
-  console.log('helloFunc')
-}
+  console.log('helloFunc');
+};
 // 导出给父元素使用
-defineExpose({ helloFunc })
+defineExpose({ helloFunc });
 // 导出属性到页面中使用
-const { levelList } = toRefs(state)
+const { levelList } = toRefs(state);
 </script>
 
 <style scoped lang="scss"></style>

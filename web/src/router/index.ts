@@ -1,14 +1,14 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import basicDemo from './modules/basic-demo'
-import charts from './modules/charts'
-import richText from './modules/rich-text'
-import table from './modules/table'
-import excel from './modules/excel'
-import directive from './modules/directive'
-import other from './modules/other'
-import guid from './modules/guid'
-import type { RouterTypes } from '~/basic'
-import Layout from '@/layout/index.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import basicDemo from './modules/basic-demo';
+import charts from './modules/charts';
+import richText from './modules/rich-text';
+import table from './modules/table';
+import excel from './modules/excel';
+import directive from './modules/directive';
+import other from './modules/other';
+import guid from './modules/guid';
+import type { RouterTypes } from '~/basic';
+import Layout from '@/layout/index.vue';
 
 export const constantRoutes: RouterTypes = [
   {
@@ -18,25 +18,25 @@ export const constantRoutes: RouterTypes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect')
-      }
-    ]
+        component: () => import('@/views/redirect'),
+      },
+    ],
   },
 
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
-    hidden: true
+    hidden: true,
   },
   {
     path: '/404',
     component: () => import('@/views/error-page/404.vue'),
-    hidden: true
+    hidden: true,
   },
   {
     path: '/401',
     component: () => import('@/views/error-page/401.vue'),
-    hidden: true
+    hidden: true,
   },
   {
     path: '/',
@@ -47,10 +47,10 @@ export const constantRoutes: RouterTypes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index.vue'),
-        //using el svg icon, the elSvgIcon first when at the same time using elSvgIcon and icon
-        meta: { title: 'Dashboard', elSvgIcon: 'Fold', affix: true }
-      }
-    ]
+        // using el svg icon, the elSvgIcon first when at the same time using elSvgIcon and icon
+        meta: { title: 'Dashboard', elSvgIcon: 'Fold', affix: true },
+      },
+    ],
   },
   guid,
 
@@ -60,9 +60,9 @@ export const constantRoutes: RouterTypes = [
     children: [
       {
         path: 'https://github.jzfai.top/low-code-plateform/#/permission-center/user-table-query',
-        meta: { title: 'RBAC', icon: 'skill' }
-      }
-    ]
+        meta: { title: 'RBAC', icon: 'skill' },
+      },
+    ],
   },
   basicDemo,
   richText,
@@ -79,9 +79,9 @@ export const constantRoutes: RouterTypes = [
         path: 'index',
         component: () => import('@/views/setting-switch/index.vue'),
         name: 'SettingSwitch',
-        meta: { title: 'Setting Switch', icon: 'example' }
-      }
-    ]
+        meta: { title: 'Setting Switch', icon: 'example' },
+      },
+    ],
   },
   {
     path: '/error-log',
@@ -93,15 +93,15 @@ export const constantRoutes: RouterTypes = [
         path: 'error-log',
         component: () => import('@/views/error-log/index.vue'),
         name: 'ErrorLog',
-        meta: { title: 'Error Index' }
+        meta: { title: 'Error Index' },
       },
       {
         path: 'error-generator',
         component: () => import('@/views/error-log/error-generator.vue'),
         name: 'ErrorGenerator',
-        meta: { title: 'Error Generator' }
-      }
-    ]
+        meta: { title: 'Error Generator' },
+      },
+    ],
   },
   {
     path: '/nested',
@@ -110,7 +110,7 @@ export const constantRoutes: RouterTypes = [
     name: 'Nested',
     meta: {
       title: 'Nested',
-      icon: 'nested'
+      icon: 'nested',
     },
     children: [
       {
@@ -123,7 +123,7 @@ export const constantRoutes: RouterTypes = [
             path: 'menu1-1',
             component: () => import('@/views/nested/menu1/menu1-1/index.vue'),
             name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
+            meta: { title: 'Menu1-1' },
           },
           {
             path: 'menu1-2',
@@ -133,37 +133,39 @@ export const constantRoutes: RouterTypes = [
             children: [
               {
                 path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1/index.vue'),
+                component: () =>
+                  import('@/views/nested/menu1/menu1-2/menu1-2-1/index.vue'),
                 name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
+                meta: { title: 'Menu1-2-1' },
               },
               {
                 path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2/index.vue'),
+                component: () =>
+                  import('@/views/nested/menu1/menu1-2/menu1-2-2/index.vue'),
                 name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
+                meta: { title: 'Menu1-2-2' },
+              },
+            ],
           },
           {
             path: 'menu1-3',
             component: () => import('@/views/nested/menu1/menu1-3/index.vue'),
             name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+            meta: { title: 'Menu1-3' },
+          },
+        ],
       },
       {
         path: 'menu2',
         component: () => import('@/views/nested/menu2/index.vue'),
         name: 'Menu2',
-        meta: { title: 'menu2' }
-      }
-    ]
-  }
-]
+        meta: { title: 'menu2' },
+      },
+    ],
+  },
+];
 
-//角色和code数组动态路由
+// 角色和code数组动态路由
 export const roleCodeRoutes: RouterTypes = [
   {
     path: '/roles-codes',
@@ -174,49 +176,54 @@ export const roleCodeRoutes: RouterTypes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['admin', 'editor'], // you can set roles in root nav
     },
     children: [
       {
         path: 'index',
         component: () => import('@/views/roles-codes/index.vue'),
         name: 'RolesCodes',
-        meta: { title: 'Permission Switch' }
+        meta: { title: 'Permission Switch' },
       },
       {
         path: 'roleIndex',
         component: () => import('@/views/roles-codes/role-index.vue'),
         name: 'RoleIndex',
-        meta: { title: 'Role Index', roles: ['admin'] }
+        meta: { title: 'Role Index', roles: ['admin'] },
       },
       {
         path: 'code-index',
         component: () => import('@/views/roles-codes/code-index.vue'),
         name: 'CodeIndex',
-        meta: { title: 'Code Index', code: 16 }
+        meta: { title: 'Code Index', code: 16 },
       },
       {
         path: 'button-permission',
         component: () => import('@/views/roles-codes/button-permission.vue'),
         name: 'ButtonPermission',
-        meta: { title: 'Button Permission' }
-      }
-    ]
-  }
-]
+        meta: { title: 'Button Permission' },
+      },
+    ],
+  },
+];
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes: RouterTypes = [
   // 404 page must be placed at the end !!!
-  { path: '/:catchAll(.*)', name: 'CatchAll', redirect: '/404', hidden: true }
-]
+  {
+    path: '/:catchAll(.*)',
+    name: 'CatchAll',
+    redirect: '/404',
+    hidden: true,
+  },
+];
 
 const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior: () => ({ top: 0 }),
-  routes: constantRoutes
-})
+  routes: constantRoutes,
+});
 
-export default router
+export default router;

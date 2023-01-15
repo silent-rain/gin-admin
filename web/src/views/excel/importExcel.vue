@@ -17,38 +17,43 @@
       </template>
     </el-upload>
     <el-table v-loading="listLoading" :data="list" border highlight-current-row>
-      <el-table-column v-for="item of headers" :key="item" :prop="item" :label="item" />
+      <el-table-column
+        v-for="item of headers"
+        :key="item"
+        :prop="item"
+        :label="item"
+      />
     </el-table>
   </div>
 </template>
 
 <script setup>
-import { Upload } from '@element-plus/icons-vue'
-import { toRefs } from 'vue'
-import { importsExcel } from './excel'
+import { Upload } from '@element-plus/icons-vue';
+import { toRefs } from 'vue';
+import { importsExcel } from './excel';
 
 const state = reactive({
   list: null,
   headers: null,
-  listLoading: false
-})
+  listLoading: false,
+});
 
 const handleOnChange = (uploadFile) => {
-  state.listLoading = true
+  state.listLoading = true;
   importsExcel(uploadFile)
     .then((res) => {
-      state.list = res.tableData
-      state.headers = res.headers
-      state.listLoading = false
+      state.list = res.tableData;
+      state.headers = res.headers;
+      state.listLoading = false;
     })
     .catch((err) => {
-      console.log(err)
-      state.listLoading = false
-    })
-}
+      console.log(err);
+      state.listLoading = false;
+    });
+};
 
-//导出属性到页面中使用
-const { list, headers, listLoading } = toRefs(state)
+// 导出属性到页面中使用
+const { list, headers, listLoading } = toRefs(state);
 </script>
 
 <style scoped lang="scss"></style>

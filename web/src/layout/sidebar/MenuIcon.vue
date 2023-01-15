@@ -7,10 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import * as ElSvg from '@element-plus/icons-vue'
+import * as ElSvg from '@element-plus/icons-vue';
+
 defineProps({
-  meta: { type: Object, default: null }
-})
+  meta: { type: Object, default: null },
+});
 </script>
 
 <style scoped lang="scss">

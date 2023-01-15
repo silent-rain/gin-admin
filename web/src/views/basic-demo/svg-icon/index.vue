@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-//配置了 Components.dirs自动扫描组件，无需引入
+// 配置了 Components.dirs自动扫描组件，无需引入
 // import SvgIcon from '@/icons/SvgIcon.vue'
 </script>
 

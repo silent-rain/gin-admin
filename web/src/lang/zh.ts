@@ -42,22 +42,22 @@ export default {
     'Rich Text': '富文本',
     Table: '表格',
     Guid: '使用引导',
-    Other: '其他'
+    Other: '其他',
   },
 
   tagsView: {
     Refresh: '刷新',
     Close: '关闭当前',
     'Close Others': '关闭其他',
-    'Close All': '关闭所有'
+    'Close All': '关闭所有',
   },
   navbar: {
     Home: '首页',
     Github: '项目git地址',
     Docs: '官方文档',
-    'login out': '退出登录'
+    'login out': '退出登录',
   },
-  //page
+  // page
   dashboard: {
     'switch theme': '切换主题色',
     'switch size': '切换尺寸',
@@ -66,7 +66,7 @@ export default {
     zh: '中文',
     'Button Group': '按钮组',
     'unocss using': 'unocss使用',
-    'global var': '全局静态变量'
+    'global var': '全局静态变量',
   },
   'error-log': {
     log: '错误日志',
@@ -76,8 +76,8 @@ export default {
     github: 'Github 地址',
     search: '查询',
     reset: '重置',
-    multiDel: '批量删除'
-  }
+    multiDel: '批量删除',
+  },
   // permission: {
   //   addRole: '新增角色',
   //   editPermission: '编辑权限',
@@ -172,4 +172,4 @@ export default {
   //   fixedHeader: '固定 Header',
   //   sidebarLogo: '侧边栏 Logo'
   // }
-}
+};

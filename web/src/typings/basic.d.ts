@@ -9,58 +9,59 @@
  * 实例：instance
  * */
 
-/*router*/
-import type { RouteRecordRaw } from 'vue-router'
+/* router */
+import type { RouteRecordRaw } from 'vue-router';
+
 export interface rawConfig {
-  hidden?: boolean
-  alwaysShow?: boolean
-  code?: number
-  name?: string
-  fullPath?: string
-  path?: string
+  hidden?: boolean;
+  alwaysShow?: boolean;
+  code?: number;
+  name?: string;
+  fullPath?: string;
+  path?: string;
   meta?: {
-    title: string
-    icon?: string
-    affix?: boolean
-    activeMenu?: string
-    breadcrumb?: boolean
-    roles?: Array<string>
-    elSvgIcon?: string
-    code?: number
-    cachePage?: boolean
-    leaveRmCachePage?: boolean
-    closeTabRmCache?: boolean
-  }
-  children?: RouterOptions
-  redirect?: string
+    title: string;
+    icon?: string;
+    affix?: boolean;
+    activeMenu?: string;
+    breadcrumb?: boolean;
+    roles?: Array<string>;
+    elSvgIcon?: string;
+    code?: number;
+    cachePage?: boolean;
+    leaveRmCachePage?: boolean;
+    closeTabRmCache?: boolean;
+  };
+  children?: RouterOptions;
+  redirect?: string;
 }
-export type RouteRawConfig = RouteRecordRaw & rawConfig
-export type RouterTypes = Array<rawProp>
+export type RouteRawConfig = RouteRecordRaw & rawConfig;
+export type RouterTypes = Array<rawProp>;
 
-/*settings*/
+/* settings */
 export interface SettingsConfig {
-  title: string
-  sidebarLogo: boolean
-  showLeftMenu: boolean
-  ShowDropDown: boolean
-  showHamburger: boolean
-  isNeedLogin: boolean
-  isNeedNprogress: boolean
-  showTagsView: boolean
-  tagsViewNum: number
-  openProdMock: boolean
-  errorLog: string | Array<string>
-  permissionMode: string
-  delWindowHeight: string
-  tmpToken: string
-  showNavbarTitle: boolean
-  showTopNavbar: boolean
-  mainNeedAnimation: boolean
-  viteBasePath: string
-  defaultLanguage: string
-  defaultSize: string
-  defaultTheme: string
-  plateFormId: number
+  title: string;
+  sidebarLogo: boolean;
+  showLeftMenu: boolean;
+  ShowDropDown: boolean;
+  showHamburger: boolean;
+  isNeedLogin: boolean;
+  isNeedNprogress: boolean;
+  showTagsView: boolean;
+  tagsViewNum: number;
+  openProdMock: boolean;
+  errorLog: string | Array<string>;
+  permissionMode: string;
+  delWindowHeight: string;
+  tmpToken: string;
+  showNavbarTitle: boolean;
+  showTopNavbar: boolean;
+  mainNeedAnimation: boolean;
+  viteBasePath: string;
+  defaultLanguage: string;
+  defaultSize: string;
+  defaultTheme: string;
+  plateFormId: number;
 }
 
-export {}
+export {};

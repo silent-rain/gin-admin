@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { Pane, Splitpanes } from "splitpanes";
-import "splitpanes/dist/splitpanes.css";
+import { Pane, Splitpanes } from 'splitpanes';
+import 'splitpanes/dist/splitpanes.css';
 </script>
 
 <style lang="scss" scoped>

@@ -1,4 +1,5 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue';
+
 const richText = {
   path: '/rich-text',
   component: Layout,
@@ -9,9 +10,9 @@ const richText = {
       path: 'tinymce',
       name: 'Tinymce',
       component: () => import('@/views/rich-text/TinymceExample.vue'),
-      meta: { title: 'Tinymce', icon: 'nested' }
-    }
-  ]
-}
+      meta: { title: 'Tinymce', icon: 'nested' },
+    },
+  ],
+};
 
-export default richText
+export default richText;

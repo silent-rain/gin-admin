@@ -35,7 +35,9 @@
       </div>
       <div class="mb-10px ml-60px">
         <div class="font-bold text-20px">page animation related</div>
-        <div class="mt-20px">mainNeedAnimation：places to "settings file" for setting</div>
+        <div class="mt-20px">
+          mainNeedAnimation：places to "settings file" for setting
+        </div>
         <div class="mt-30px">
           isNeedNprogress：
           <el-switch v-model="settings.isNeedNprogress" />
@@ -46,5 +48,5 @@
 </template>
 
 <script setup>
-const { settings } = storeToRefs(useBasicStore())
+const { settings } = storeToRefs(useBasicStore());
 </script>

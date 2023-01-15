@@ -1,4 +1,5 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue';
+
 const guid = {
   path: '/guide',
   component: Layout,
@@ -7,8 +8,8 @@ const guid = {
       path: 'index',
       component: () => import('@/views/guide/index.vue'),
       name: 'Guide',
-      meta: { title: 'Guide', icon: 'guide' }
-    }
-  ]
-}
-export default guid
+      meta: { title: 'Guide', icon: 'guide' },
+    },
+  ],
+};
+export default guid;

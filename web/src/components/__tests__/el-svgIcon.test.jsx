@@ -1,18 +1,20 @@
-import { markRaw, nextTick, ref } from 'vue'
-import { mount } from '@vue/test-utils'
-import { describe, expect, it, test } from 'vitest'
-import { Loading, Search } from '@element-plus/icons-vue'
+import { markRaw, nextTick, ref } from 'vue';
+import { mount } from '@vue/test-utils';
+import { describe, expect, it, test } from 'vitest';
+import { Loading, Search } from '@element-plus/icons-vue';
 
-import ElSvgIcon from '../ElSvgIcon.vue'
+import ElSvgIcon from '../ElSvgIcon.vue';
 
 // const AXIOM = 'Rem is the best girl'
 
 describe('ElSvgIcon.vue', () => {
   it('create', () => {
-    const wrapper = mount(() => <ElSvgIcon name="Edit" size={30} color={'red'} />)
+    const wrapper = mount(() => (
+      <ElSvgIcon name="Edit" size={30} color={'red'} />
+    ));
     // console.log(111111, wrapper.classes())
     // expect(wrapper.classes()).toContain('el-icon')
-  })
+  });
 
   // it('icon', () => {
   //   const wrapper = mount(() => <ElSvgIcon icon={markRaw(Search)} />)
@@ -162,7 +164,7 @@ describe('ElSvgIcon.vue', () => {
   //
   //   expect(wrapper.find('.custom-loading').exists()).toBeTruthy()
   // })
-})
+});
 // describe('ElSvgIcon Group', () => {
 //   it('create', () => {
 //     const wrapper = mount({

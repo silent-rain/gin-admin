@@ -53,20 +53,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useBasicStore } from "@/store/basic";
-import { elMessage, useElement } from "@/hooks/use-element";
-import { loginReq } from "@/api/user";
+import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useBasicStore } from '@/store/basic';
+import { elMessage, useElement } from '@/hooks/use-element';
+import { loginReq } from '@/api/user';
 
 /* listen router change and set the query  */
 const { settings } = useBasicStore();
-//element valid
-const formRules = useElement().formRules;
-//form
+// element valid
+const { formRules } = useElement();
+// form
 const subForm = reactive({
-  keyword: "panda",
-  password: "123456",
+  keyword: 'panda',
+  password: '123456',
 });
 const state: any = reactive({
   otherQuery: {},
@@ -75,7 +75,7 @@ const state: any = reactive({
 const route = useRoute();
 const getOtherQuery = (query) => {
   return Object.keys(query).reduce((acc, cur) => {
-    if (cur !== "redirect") {
+    if (cur !== 'redirect') {
       acc[cur] = query[cur];
     }
     return acc;
@@ -89,16 +89,16 @@ watch(
       state.otherQuery = getOtherQuery(query);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 /*
  *  login relative
  * */
 let subLoading = $ref(false);
-//tip message
-let tipMessage = $ref("");
-//sub form
+// tip message
+let tipMessage = $ref('');
+// sub form
 const refLoginForm = $ref(null);
 const handleLogin = () => {
   refLoginForm.validate((valid) => {
@@ -112,9 +112,9 @@ const basicStore = useBasicStore();
 const loginFunc = () => {
   loginReq(subForm)
     .then(({ data }) => {
-      elMessage("登录成功");
+      elMessage('登录成功');
       basicStore.setToken(data?.jwtToken);
-      router.push("/");
+      router.push('/');
     })
     .catch((err) => {
       tipMessage = err?.msg;
@@ -126,13 +126,13 @@ const loginFunc = () => {
 /*
  *  password show or hidden
  * */
-const passwordType = ref("password");
+const passwordType = ref('password');
 const refPassword = ref();
 const showPwd = () => {
-  if (passwordType.value === "password") {
-    passwordType.value = "";
+  if (passwordType.value === 'password') {
+    passwordType.value = '';
   } else {
-    passwordType.value = "password";
+    passwordType.value = 'password';
   }
   nextTick(() => {
     refPassword.value.focus();

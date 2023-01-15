@@ -4,36 +4,41 @@
       <!--  折叠显示   -->
       <router-link v-if="collapse" class="sidebar-logo-link" to="/">
         <svg-icon v-if="logo" :icon-class="logo" class="sidebar-logo" />
-        <h1 v-else class="sidebar-title">{{ title }}</h1>
+        <h1 v-else class="sidebar-title">
+          {{ title }}
+        </h1>
       </router-link>
       <!--  正常显示   -->
       <router-link v-else class="sidebar-logo-link" to="/">
         <svg-icon v-if="logo" :icon-class="logo" class="sidebar-logo" />
-        <h1 class="sidebar-title">{{ title }}</h1>
+        <h1 class="sidebar-title">
+          {{ title }}
+        </h1>
       </router-link>
     </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, toRefs } from 'vue'
-import { useBasicStore } from '@/store/basic'
-import SvgIcon from '@/icons/SvgIcon.vue'
-const { settings } = useBasicStore()
+import { reactive, toRefs } from 'vue';
+import { useBasicStore } from '@/store/basic';
+import SvgIcon from '@/icons/SvgIcon.vue';
+
+const { settings } = useBasicStore();
 defineProps({
-  //是否折叠
+  // 是否折叠
   collapse: {
     type: Boolean,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 const state = reactive({
   title: settings.title,
-  //src/icons/common/sidebar-logo.svg
-  logo: 'sidebar-logo'
-})
-//export to page for use
-const { title, logo } = toRefs(state)
+  // src/icons/common/sidebar-logo.svg
+  logo: 'sidebar-logo',
+});
+// export to page for use
+const { title, logo } = toRefs(state);
 </script>
 
 <style lang="scss">

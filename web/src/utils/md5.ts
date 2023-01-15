@@ -8,8 +8,8 @@
  * @FilePath: /gin-admin/web/src/utils/md5.ts
  * @Descripttion: MD5 加密
  */
-import { secret } from "@/utils/constant";
-import md5 from "js-md5";
+import md5 from 'js-md5';
+import { secret } from '@/utils/constant';
 
 // MD5 加密
 export const md5Encode = (v: string) => {

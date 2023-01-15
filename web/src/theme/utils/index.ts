@@ -1,1 +1,1 @@
-export * from './change-theme'
+export * from './change-theme';

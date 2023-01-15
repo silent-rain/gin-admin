@@ -2,68 +2,67 @@
   <div :id="id" :class="className" :style="{ height: height, width: width }" />
 </template>
 
-<script setup>
-import * as echarts from 'echarts'
+<script setup lang="ts">
+import * as echarts from 'echarts';
 
 const props = defineProps({
   className: {
     type: String,
-    default: 'chart'
+    default: 'chart',
   },
   id: {
     type: String,
-    default: 'chart'
+    default: 'chart',
   },
   width: {
     type: String,
-    default: '200px'
+    default: '200px',
   },
   height: {
     type: String,
-    default: '200px'
-  }
-})
+    default: '200px',
+  },
+});
 const state = reactive({
-  chart: null
-})
+  chart: null,
+});
 onMounted(() => {
-  initChart()
-})
+  initChart();
+});
 
 onBeforeUnmount(() => {
   if (!state.chart) {
-    return
+    return;
   }
-  state.chart.dispose()
-  state.chart = null
-})
+  state.chart.dispose();
+  state.chart = null;
+});
 
 const initChart = () => {
-  // eslint-disable-next-line unicorn/prefer-query-selector
-  state.chart = echarts.init(document.getElementById(props.id))
-  const xAxisData = []
-  const data = []
-  const data2 = []
+  state.chart = echarts.init(document.getElementById(props.id));
+  const xAxisData = [];
+  const data = [];
+  const data2 = [];
   for (let i = 0; i < 50; i++) {
-    xAxisData.push(i)
-    data.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5)
-    data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3)
+    xAxisData.push(i);
+    data.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
+    data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3);
   }
   state.chart.setOption({
     backgroundColor: '#08263a',
     grid: {
       left: '5%',
-      right: '5%'
+      right: '5%',
     },
     xAxis: [
       {
         show: false,
-        data: xAxisData
+        data: xAxisData,
       },
       {
         show: false,
-        data: xAxisData
-      }
+        data: xAxisData,
+      },
     ],
     visualMap: {
       show: false,
@@ -71,27 +70,34 @@ const initChart = () => {
       max: 50,
       dimension: 0,
       inRange: {
-        color: ['#4a657a', '#308e92', '#b1cfa5', '#f5d69f', '#f5898b', '#ef5055']
-      }
+        color: [
+          '#4a657a',
+          '#308e92',
+          '#b1cfa5',
+          '#f5d69f',
+          '#f5898b',
+          '#ef5055',
+        ],
+      },
     },
     yAxis: {
       axisLine: {
-        show: false
+        show: false,
       },
       axisLabel: {
         textStyle: {
-          color: '#4a657a'
-        }
+          color: '#4a657a',
+        },
       },
       splitLine: {
         show: true,
         lineStyle: {
-          color: '#08263f'
-        }
+          color: '#08263f',
+        },
       },
       axisTick: {
-        show: false
-      }
+        show: false,
+      },
     },
     series: [
       {
@@ -104,9 +110,9 @@ const initChart = () => {
             opacity: 0.4,
             barBorderRadius: 5,
             shadowBlur: 3,
-            shadowColor: '#111'
-          }
-        }
+            shadowColor: '#111',
+          },
+        },
       },
       {
         name: 'Simulate Shadow',
@@ -119,16 +125,16 @@ const initChart = () => {
         animationDuration: 1200,
         lineStyle: {
           normal: {
-            color: 'transparent'
-          }
+            color: 'transparent',
+          },
         },
         areaStyle: {
           normal: {
             color: '#08263a',
             shadowBlur: 50,
-            shadowColor: '#000'
-          }
-        }
+            shadowColor: '#000',
+          },
+        },
       },
       {
         name: 'front',
@@ -138,21 +144,21 @@ const initChart = () => {
         z: 3,
         itemStyle: {
           normal: {
-            barBorderRadius: 5
-          }
-        }
-      }
+            barBorderRadius: 5,
+          },
+        },
+      },
     ],
     animationEasing: 'elasticOut',
     animationEasingUpdate: 'elasticOut',
     animationDelay(idx) {
-      return idx * 20
+      return idx * 20;
     },
     animationDelayUpdate(idx) {
-      return idx * 20
-    }
-  })
-}
+      return idx * 20;
+    },
+  });
+};
 </script>
 
 <style scoped lang="scss"></style>

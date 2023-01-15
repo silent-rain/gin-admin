@@ -1,53 +1,54 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import ElementPlus from "element-plus";
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import ElementPlus from 'element-plus';
 
-import App from "./App.vue";
-import router from "./router";
+import VXETable from 'vxe-table';
+import App from './App.vue';
+import router from './router';
 
-//import theme
-import "./theme/index.scss";
+// import theme
+import './theme/index.scss';
 
-//import unocss
-import "uno.css";
+// import unocss
+import 'uno.css';
 
-//i18n
-import { setupI18n } from "@/lang";
+// i18n
+import { setupI18n } from '@/lang';
 
-import "@/styles/index.scss"; // global css
+import '@/styles/index.scss'; // global css
 
-//svg-icon
-import "virtual:svg-icons-register";
-import svgIcon from "@/icons/SvgIcon.vue";
-import directive from "@/directives";
+// svg-icon
+import 'virtual:svg-icons-register';
+import svgIcon from '@/icons/SvgIcon.vue';
+import directive from '@/directives';
 
-//import router intercept
-import "./permission";
+// import router intercept
+import './permission';
 
-//import element-plus
-import "element-plus/dist/index.css";
+// import element-plus
+import 'element-plus/dist/index.css';
+
+// import vxe-table
+import 'vxe-table/lib/style.css';
+
 const app = createApp(App);
 
-//router
+// router
 app.use(router);
 
-//pinia
+// pinia
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
-//i18n
+// i18n
 app.use(setupI18n);
-app.component("SvgIcon", svgIcon);
+app.component('SvgIcon', svgIcon);
 directive(app);
 
-//element-plus
+// element-plus
 app.use(ElementPlus);
-
-//import vxe-table
-import VXETable from "vxe-table";
-import "vxe-table/lib/style.css";
 app.use(VXETable);
 
-app.mount("#app");
+app.mount('#app');

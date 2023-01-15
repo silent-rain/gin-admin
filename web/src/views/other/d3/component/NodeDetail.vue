@@ -4,17 +4,29 @@
     <el-form ref="formRef" label-width="120px" label-position="left">
       <template v-for="(item, index) in nodeType" :key="index">
         <el-form-item v-if="item.field === 'img'" :label="item.title">
-          <el-link type="primary" @click="showLargeImage(state.data.data[item.field])">
+          <el-link
+            type="primary"
+            @click="showLargeImage(state.data.data[item.field])"
+          >
             {{ state.data.data[item.field] }}
           </el-link>
         </el-form-item>
         <el-form-item v-else-if="item.field === 'video'" :label="item.title">
-          <el-link type="primary" @click="showVideo(state.data.data[item.field])">
+          <el-link
+            type="primary"
+            @click="showVideo(state.data.data[item.field])"
+          >
             {{ state.data.data[item.field] }}
           </el-link>
         </el-form-item>
         <el-form-item v-else-if="item.field === 'ys'" :label="item.title">
-          <span :style="{ width: '20px', height: '20px', background: state.data.color }" />
+          <span
+            :style="{
+              width: '20px',
+              height: '20px',
+              background: state.data.color,
+            }"
+          />
         </el-form-item>
         <el-form-item v-else :label="item.title">
           <span>{{ state.data.data[item.field] }}</span>
@@ -29,25 +41,25 @@ export default {
   name: 'NodeDetail',
   props: {
     detail: Object,
-    nodeType: Array
+    nodeType: Array,
   },
   emits: ['showLargeImage', 'showVideo'],
   setup(props, { emit }) {
     // eslint-disable-next-line vue/no-setup-props-destructure
-    const state = props.detail
+    const state = props.detail;
     const showLargeImage = (e) => {
-      emit('showLargeImage', e)
-    }
+      emit('showLargeImage', e);
+    };
     const showVideo = (e) => {
-      emit('showVideo', e)
-    }
+      emit('showVideo', e);
+    };
     return {
       state,
       showLargeImage,
-      showVideo
-    }
-  }
-}
+      showVideo,
+    };
+  },
+};
 </script>
 
 <style>

@@ -1,14 +1,30 @@
 <template>
-  <svg-icon icon-class="lock" style="width: 18px; height: 19px" class="mr-12px" @click="open = true" />
-  <transition enter-active-class="screen-locker-lock" leave-active-class="screen-locker-unlock">
+  <svg-icon
+    icon-class="lock"
+    style="width: 18px; height: 19px"
+    class="mr-12px"
+    @click="open = true"
+  />
+  <transition
+    enter-active-class="screen-locker-lock"
+    leave-active-class="screen-locker-unlock"
+  >
     <div v-if="open" class="screen-locker">
       <div class="screen-avatar">
-        <el-avatar round :size="128" src="https://github.jzfai.top/file/images/nav-right-logo.gif" />
+        <el-avatar
+          round
+          :size="128"
+          src="https://github.jzfai.top/file/images/nav-right-logo.gif"
+        />
         <div class="screen-nickname">Vue3 Admin Plus</div>
       </div>
       <div ref="slider" class="screen-slider">
         <div class="screen-locker-placeholder">滑动解锁</div>
-        <div ref="sliderButton" class="screen-slider-button" @mousedown="onMousedown">
+        <div
+          ref="sliderButton"
+          class="screen-slider-button"
+          @mousedown="onMousedown"
+        >
           <el-icon :size="25">
             <icon />
           </el-icon>
@@ -18,81 +34,82 @@
   </transition>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { ArrowRightBold, Unlock } from '@element-plus/icons-vue'
-import SvgIcon from '@/icons/SvgIcon.vue'
-const open = ref(false)
-const slider = ref(null)
-const sliderButton = ref(null)
-let startX = 0
-let distance = 0
-let maxDistance = 0
-let minDistance = 0
-const isTrigger = ref(false)
+import { computed, ref, watch } from 'vue';
+import { ArrowRightBold, Unlock } from '@element-plus/icons-vue';
+import SvgIcon from '@/icons/SvgIcon.vue';
+
+const open = ref(false);
+const slider = ref(null);
+const sliderButton = ref(null);
+let startX = 0;
+let distance = 0;
+let maxDistance = 0;
+let minDistance = 0;
+const isTrigger = ref(false);
 
 const onMousedown = (e) => {
-  distance = 0
-  maxDistance = 0
-  minDistance = 0
-  isTrigger.value = false
+  distance = 0;
+  maxDistance = 0;
+  minDistance = 0;
+  isTrigger.value = false;
 
-  sliderButton.value.style.transition = ''
-  startX = e.screenX
-  maxDistance = slider.value.clientWidth - sliderButton.value.clientWidth - 10
-  document.addEventListener('mousemove', onMousemove)
-  document.addEventListener('mouseup', onMouseup)
-}
+  sliderButton.value.style.transition = '';
+  startX = e.screenX;
+  maxDistance = slider.value.clientWidth - sliderButton.value.clientWidth - 10;
+  document.addEventListener('mousemove', onMousemove);
+  document.addEventListener('mouseup', onMouseup);
+};
 
 const onMousemove = (e) => {
-  distance = e.screenX - startX
+  distance = e.screenX - startX;
   if (isTrigger.value) {
-    distance = maxDistance
+    distance = maxDistance;
   }
   if (distance <= minDistance) {
-    distance = minDistance
+    distance = minDistance;
   }
   if (distance >= maxDistance) {
-    distance = maxDistance
+    distance = maxDistance;
     if (!isTrigger.value) {
-      isTrigger.value = true
+      isTrigger.value = true;
       setTimeout(() => {
-        open.value = false
-      }, 300)
+        open.value = false;
+      }, 300);
     }
   }
   if (open.value) {
-    sliderButton.value.style.transform = `translateX(${distance}px)`
+    sliderButton.value.style.transform = `translateX(${distance}px)`;
   }
-}
+};
 
 const onMouseup = () => {
-  document.removeEventListener('mousemove', onMousemove)
-  document.removeEventListener('mouseup', onMouseup)
+  document.removeEventListener('mousemove', onMousemove);
+  document.removeEventListener('mouseup', onMouseup);
 
   if (!isTrigger.value) {
     // 恢复原始状态
-    distance = 0
-    maxDistance = 0
-    minDistance = 0
-    isTrigger.value = false
+    distance = 0;
+    maxDistance = 0;
+    minDistance = 0;
+    isTrigger.value = false;
 
     if (open.value) {
-      sliderButton.value.style.transition = 'all 0.4s'
-      sliderButton.value.style.transform = `translateX(${distance}px)`
+      sliderButton.value.style.transition = 'all 0.4s';
+      sliderButton.value.style.transform = `translateX(${distance}px)`;
     }
   }
-}
+};
 watch(
   () => open.value,
   () => {
     if (open.value) {
-      isTrigger.value = false
+      isTrigger.value = false;
     }
-  }
-)
+  },
+);
 const icon = computed(() => {
-  return isTrigger.value ? Unlock : ArrowRightBold
-})
+  return isTrigger.value ? Unlock : ArrowRightBold;
+});
 </script>
 
 <style scoped lang="scss">
@@ -170,7 +187,12 @@ const icon = computed(() => {
   width: 300px;
   height: 60px;
   border-radius: 100px;
-  background-image: linear-gradient(to right, rgb(72 168 237 / 25%), rgba(255, 255, 255, 0.4), rgb(72 168 237 / 25%));
+  background-image: linear-gradient(
+    to right,
+    rgb(72 168 237 / 25%),
+    rgba(255, 255, 255, 0.4),
+    rgb(72 168 237 / 25%)
+  );
   /* 背景渐变色大小 */
   background-size: 200%;
   animation: sun 7s infinite;
@@ -186,7 +208,12 @@ const icon = computed(() => {
   left: -6px;
   right: -6px;
   border-radius: 60px;
-  background-image: linear-gradient(to right, rgb(72 168 237 / 25%), rgba(255, 255, 255, 0.4), rgb(72 168 237 / 25%));
+  background-image: linear-gradient(
+    to right,
+    rgb(72 168 237 / 25%),
+    rgba(255, 255, 255, 0.4),
+    rgb(72 168 237 / 25%)
+  );
   background-size: 200%;
   z-index: -1;
   /* 设置模糊度 显示发光效果 */

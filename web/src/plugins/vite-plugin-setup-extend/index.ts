@@ -1,6 +1,7 @@
-import { parse } from '@vue/compiler-sfc'
-import { render } from 'ejs'
-import type { Plugin } from 'vite'
+import { parse } from '@vue/compiler-sfc';
+import { render } from 'ejs';
+import type { Plugin } from 'vite';
+
 export default ({ inject }): Plugin => {
   // let viteConfig
   return {
@@ -10,23 +11,23 @@ export default ({ inject }): Plugin => {
     //   viteConfig = resolvedConfig
     // },
     async transformIndexHtml(html) {
-      const result = await render(html, { ...inject })
-      return result
+      const result = await render(html, { ...inject });
+      return result;
     },
     transform(code, id) {
       if (/\.vue$/.test(id)) {
-        const { descriptor } = parse(code)
+        const { descriptor } = parse(code);
         if (!descriptor?.scriptSetup?.setup) {
-          return null
+          return null;
         }
-        const { lang, name } = descriptor.scriptSetup?.attrs || {}
-        const dillStr = headString(lang, name)
-        code += dillStr
-        return code
+        const { lang, name } = descriptor.scriptSetup?.attrs || {};
+        const dillStr = headString(lang, name);
+        code += dillStr;
+        return code;
       }
-    }
-  }
-}
+    },
+  };
+};
 
 const headString = (lang, name) => {
   return `<script ${lang ? `lang="${lang}"` : ''}>
@@ -34,5 +35,5 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   ${name ? `name: "${name}",` : ''}
 })
-</script>\n`
-}
+</script>\n`;
+};

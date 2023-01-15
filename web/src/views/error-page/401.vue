@@ -1,6 +1,8 @@
 <template>
   <div class="errPage-container">
-    <el-button icon="el-icon-arrow-left" class="pan-back-btn" @click="back">返回</el-button>
+    <el-button icon="el-icon-arrow-left" class="pan-back-btn" @click="back">
+      返回
+    </el-button>
     <el-row>
       <el-col :span="12">
         <h1 class="text-jumbo text-ginormous">Oops!</h1>
@@ -12,16 +14,23 @@
         <ul class="list-unstyled">
           <li>或者你可以去:</li>
           <li class="link-type">
-            <router-link to="/dashboard">回首页</router-link>
+            <router-link to="/dashboard"> 回首页 </router-link>
           </li>
           <li class="link-type">
             <a href="https://www.taobao.com/">随便看看</a>
           </li>
-          <li><a href="#" @click.prevent="dialogVisible = true">点我看图</a></li>
+          <li>
+            <a href="#" @click.prevent="dialogVisible = true">点我看图</a>
+          </li>
         </ul>
       </el-col>
       <el-col :span="12">
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream." />
+        <img
+          :src="errGif"
+          width="313"
+          height="428"
+          alt="Girl has dropped her ice cream."
+        />
       </el-col>
     </el-row>
     <el-dialog v-model="dialogVisible" title="随便看">
@@ -31,25 +40,26 @@
 </template>
 
 <script setup>
-import errGif from '@/assets/401_images/401.gif'
+import errGif from '@/assets/401_images/401.gif';
 
 const state = reactive({
-  errGif: `${errGif  }?${  Date.now()}`,
-  ewizardClap: 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
-  dialogVisible: false
-})
+  errGif: `${errGif}?${Date.now()}`,
+  ewizardClap:
+    'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
+  dialogVisible: false,
+});
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 const back = () => {
   if (route.query.noGoBack) {
-    router.push({ path: '/dashboard' })
+    router.push({ path: '/dashboard' });
   } else {
-    router.go(-1)
+    router.go(-1);
   }
-}
-//导出属性到页面中使用
-const { ewizardClap, dialogVisible } = toRefs(state)
+};
+// 导出属性到页面中使用
+const { ewizardClap, dialogVisible } = toRefs(state);
 </script>
 
 <style lang="scss" scoped>

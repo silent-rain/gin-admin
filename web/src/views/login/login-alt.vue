@@ -4,9 +4,22 @@
       <img src="@/assets/layout/login-bg.svg" :alt="settings.title" />
     </div>
     <div class="login-pane">
-      <img src="@/assets/layout/login-top.svg" class="login-top" :alt="settings.title" />
-      <img src="@/assets/layout/login-front.svg" class="login-front" :alt="settings.title" />
-      <el-form ref="refLoginForm" class="login-form" :model="subForm" :rules="formRules">
+      <img
+        src="@/assets/layout/login-top.svg"
+        class="login-top"
+        :alt="settings.title"
+      />
+      <img
+        src="@/assets/layout/login-front.svg"
+        class="login-front"
+        :alt="settings.title"
+      />
+      <el-form
+        ref="refLoginForm"
+        class="login-form"
+        :model="subForm"
+        :rules="formRules"
+      >
         <div class="title-container">
           <h3 class="title text-center">{{ settings.title }}</h3>
         </div>
@@ -31,7 +44,9 @@
             @keyup.enter="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            <svg-icon
+              :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+            />
           </span>
         </el-form-item>
         <div class="tip-message">{{ tipMessage }}</div>
@@ -51,91 +66,91 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useBasicStore } from '@/store/basic'
-import { elMessage, useElement } from '@/hooks/use-element'
-import { loginReq } from '@/api/user'
+import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useBasicStore } from '@/store/basic';
+import { elMessage, useElement } from '@/hooks/use-element';
+import { loginReq } from '@/api/user';
 
 /* listen router change and set the query  */
-const { settings } = useBasicStore()
-//element valid
-const formRules = useElement().formRules
-//form
+const { settings } = useBasicStore();
+// element valid
+const { formRules } = useElement();
+// form
 const subForm = reactive({
   keyword: 'panda',
-  password: '123456'
-})
+  password: '123456',
+});
 const state: any = reactive({
   otherQuery: {},
-  redirect: undefined
-})
-const route = useRoute()
+  redirect: undefined,
+});
+const route = useRoute();
 const getOtherQuery = (query) => {
   return Object.keys(query).reduce((acc, cur) => {
     if (cur !== 'redirect') {
-      acc[cur] = query[cur]
+      acc[cur] = query[cur];
     }
-    return acc
-  }, {})
-}
+    return acc;
+  }, {});
+};
 watch(
   () => route.query,
   (query) => {
     if (query) {
-      state.redirect = query.redirect
-      state.otherQuery = getOtherQuery(query)
+      state.redirect = query.redirect;
+      state.otherQuery = getOtherQuery(query);
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 /*
  *  login relative
  * */
-let subLoading = $ref(false)
-//tip message
-let tipMessage = $ref('')
-//sub form
-const refLoginForm = $ref(null)
+let subLoading = $ref(false);
+// tip message
+let tipMessage = $ref('');
+// sub form
+const refLoginForm = $ref(null);
 const handleLogin = () => {
   refLoginForm.validate((valid) => {
-    subLoading = true
-    if (valid) loginFunc()
-  })
-}
-const router = useRouter()
-const basicStore = useBasicStore()
+    subLoading = true;
+    if (valid) loginFunc();
+  });
+};
+const router = useRouter();
+const basicStore = useBasicStore();
 
 const loginFunc = () => {
   loginReq(subForm)
     .then(({ data }) => {
-      elMessage('登录成功')
-      basicStore.setToken(data?.jwtToken)
-      router.push('/')
+      elMessage('登录成功');
+      basicStore.setToken(data?.jwtToken);
+      router.push('/');
     })
     .catch((err) => {
-      tipMessage = err?.msg
+      tipMessage = err?.msg;
     })
     .finally(() => {
-      subLoading = false
-    })
-}
+      subLoading = false;
+    });
+};
 /*
  *  password show or hidden
  * */
-const passwordType = ref('password')
-const refPassword = ref()
+const passwordType = ref('password');
+const refPassword = ref();
 const showPwd = () => {
   if (passwordType.value === 'password') {
-    passwordType.value = ''
+    passwordType.value = '';
   } else {
-    passwordType.value = 'password'
+    passwordType.value = 'password';
   }
   nextTick(() => {
-    refPassword.value.focus()
-  })
-}
+    refPassword.value.focus();
+  });
+};
 </script>
 <style lang="scss" scoped>
 $bg: #ffe4b5;

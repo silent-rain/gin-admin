@@ -27,50 +27,51 @@
 </template>
 
 <script setup lang="ts">
-import SubChildren from './SubChildren.vue'
+import SubChildren from './SubChildren.vue';
+
 const props = defineProps({
   fatherName: {
     require: true,
     default: '',
-    type: String
+    type: String,
   },
   childrenTitle: {
     require: true,
     default: '',
-    type: String
-  }
-})
+    type: String,
+  },
+});
 const state = reactive({
-  name: 'Children'
-})
-//导出给refs使用
-const childRef = ref('childRef')
+  name: 'Children',
+});
+// 导出给refs使用
+const childRef = ref('childRef');
 const childMethod = () => {
-  return 'childMethod'
-}
+  return 'childMethod';
+};
 
-const vm: any = getCurrentInstance()?.proxy
+const vm: any = getCurrentInstance()?.proxy;
 const getFatherMethod = () => {
-  vm?.$parent?.fartherMethod()
-}
-//emit
+  vm?.$parent?.fartherMethod();
+};
+// emit
 // 定义emit事件
-const emit = defineEmits(['emitParent', 'update:childrenTitle'])
+const emit = defineEmits(['emitParent', 'update:childrenTitle']);
 const emitFather = () => {
-  emit('emitParent', { val: '子组件传递的信息' })
-}
+  emit('emitParent', { val: '子组件传递的信息' });
+};
 onMounted(() => {
-  console.log('得到父元素的prop', props.fatherName)
-})
+  console.log('得到父元素的prop', props.fatherName);
+});
 
-//v-model sync
+// v-model sync
 onMounted(() => {
-  console.log(`this is v-model parent data:${props.childrenTitle}`)
-})
+  console.log(`this is v-model parent data:${props.childrenTitle}`);
+});
 const changeParentValue = () => {
-  emit('update:childrenTitle', 'update it childrenTitle')
-}
-defineExpose({ childRef, childMethod })
-//export to page for use
-const { name } = toRefs(state)
+  emit('update:childrenTitle', 'update it childrenTitle');
+};
+defineExpose({ childRef, childMethod });
+// export to page for use
+const { name } = toRefs(state);
 </script>

@@ -1,4 +1,5 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue';
+
 const table = {
   path: '/table',
   component: Layout,
@@ -9,15 +10,15 @@ const table = {
       path: 'dynamic-table',
       name: 'DynamicTable',
       component: () => import('@/views/table/dynamic-table.vue'),
-      meta: { title: 'Dynamic Table', icon: 'nested' }
+      meta: { title: 'Dynamic Table', icon: 'nested' },
     },
     {
       path: 'vxe-table',
       name: 'VxeTable',
       component: () => import('@/views/table/vxe-table.vue'),
-      meta: { title: 'Vxe Table', icon: 'nested' }
-    }
-  ]
-}
+      meta: { title: 'Vxe Table', icon: 'nested' },
+    },
+  ],
+};
 
-export default table
+export default table;

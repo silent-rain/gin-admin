@@ -1,10 +1,11 @@
-import type { defineOptions as _defineOptions } from 'unplugin-vue-define-options/macros.d.ts'
+import type { defineOptions as _defineOptions } from 'unplugin-vue-define-options/macros.d.ts';
+
 declare global {
   interface ObjKeys {
-    [propName: string]: any
+    [propName: string]: any;
   }
-  const GLOBAL_VAR: String
-  const defineOptions: typeof _defineOptions
-  const $ref: any
+  const GLOBAL_VAR: string;
+  const defineOptions: typeof _defineOptions;
+  const $ref: any;
 }
-export {}
+export {};

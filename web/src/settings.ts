@@ -1,5 +1,6 @@
-import packageJson from '../package.json'
-import type { SettingsConfig } from '~/basic'
+import packageJson from '../package.json';
+import type { SettingsConfig } from '~/basic';
+
 export const settings: SettingsConfig = {
   title: packageJson.name,
   /**
@@ -41,7 +42,7 @@ export const settings: SettingsConfig = {
    * @description Whether show the top Navbar
    */
   showTopNavbar: true,
-  /* page  animation related*/
+  /* page  animation related */
   /**
    * @type {boolean} true | false
    * @description Whether need animation of main area
@@ -53,7 +54,7 @@ export const settings: SettingsConfig = {
    */
   isNeedNprogress: true,
 
-  /*page login or other*/
+  /* page login or other */
   /**
    * @type {boolean} true | false
    * @description Whether need login
@@ -108,8 +109,8 @@ export const settings: SettingsConfig = {
    * vite.config.js base config
    * such as
    * */
-  //平台id  2->vue3-admin-plus
-  plateFormId: 2
-}
+  // 平台id  2->vue3-admin-plus
+  plateFormId: 2,
+};
 
-export default settings
+export default settings;

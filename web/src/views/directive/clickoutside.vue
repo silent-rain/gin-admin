@@ -10,12 +10,12 @@
 </template>
 
 <script setup>
-const sideStr = ref("");
+const sideStr = ref('');
 const setData = (type) => {
   if (type) {
-    sideStr.value = "outSide";
+    sideStr.value = 'outSide';
   } else {
-    sideStr.value = "inSide";
+    sideStr.value = 'inSide';
   }
 };
 </script>

@@ -1,87 +1,96 @@
-import NProgress from 'nprogress'
-import type { RouteRawConfig, RouterTypes, rawConfig } from '~/basic'
-import type { RouteRecordName } from 'vue-router'
+import NProgress from 'nprogress';
+import type { RouteRecordName } from 'vue-router';
+import type { RouteRawConfig, RouterTypes, rawConfig } from '~/basic';
 /**
  * 根据请求，过滤异步路由
  * @param:menuList 异步路由数组
  * return 过滤后的异步路由
  */
-// @ts-ignore
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue';
 /*
  * 路由操作
  * */
-import router, { asyncRoutes, constantRoutes, roleCodeRoutes } from '@/router'
-//进度条
-import 'nprogress/nprogress.css'
-import { useBasicStore } from '@/store/basic'
+import router, { asyncRoutes, constantRoutes, roleCodeRoutes } from '@/router';
+// 进度条
+import 'nprogress/nprogress.css';
+import { useBasicStore } from '@/store/basic';
 
-const buttonCodes: Array<Number> = [] //按钮权限
+const buttonCodes: Array<number> = []; // 按钮权限
 interface menuRow {
-  category: number
-  code: number
-  children: RouterTypes
+  category: number;
+  code: number;
+  children: RouterTypes;
 }
+
 export const filterAsyncRoutesByMenuList = (menuList) => {
-  const filterRouter: RouterTypes = []
+  const filterRouter: RouterTypes = [];
   menuList.forEach((route: menuRow) => {
-    //button permission
+    // button permission
     if (route.category === 3) {
-      buttonCodes.push(route.code)
+      buttonCodes.push(route.code);
     } else {
-      //generator every router item by menuList
-      const itemFromReqRouter = getRouteItemFromReqRouter(route)
+      // generator every router item by menuList
+      const itemFromReqRouter = getRouteItemFromReqRouter(route);
       if (route.children?.length) {
-        //judge  the type is router or button
-        itemFromReqRouter.children = filterAsyncRoutesByMenuList(route.children)
+        // judge  the type is router or button
+        itemFromReqRouter.children = filterAsyncRoutesByMenuList(
+          route.children,
+        );
       }
-      filterRouter.push(itemFromReqRouter)
+      filterRouter.push(itemFromReqRouter);
     }
-  })
-  return filterRouter
-}
+  });
+  return filterRouter;
+};
+
 const getRouteItemFromReqRouter = (route): RouteRawConfig => {
-  const tmp: rawConfig = { meta: { title: '' } }
-  const routeKeyArr = ['path', 'component', 'redirect', 'alwaysShow', 'name', 'hidden']
-  const metaKeyArr = ['title', 'activeMenu', 'elSvgIcon', 'icon']
-  // @ts-ignore
-  const modules = import.meta.glob('../views/**/**.vue')
-  //generator routeKey
+  const tmp: rawConfig = { meta: { title: '' } };
+  const routeKeyArr = [
+    'path',
+    'component',
+    'redirect',
+    'alwaysShow',
+    'name',
+    'hidden',
+  ];
+  const metaKeyArr = ['title', 'activeMenu', 'elSvgIcon', 'icon'];
+  const modules = import.meta.glob('../views/**/**.vue');
+  // generator routeKey
   routeKeyArr.forEach((fItem) => {
     if (fItem === 'component') {
       if (route[fItem] === 'Layout') {
-        tmp[fItem] = Layout
+        tmp[fItem] = Layout;
       } else {
-        //has error , i will fix it through plugins
-        //tmp[fItem] = () => import(`@/views/permission-center/test/TestTableQuery.vue`)
-        tmp[fItem] = modules[`../views/${route[fItem]}`]
+        // has error , i will fix it through plugins
+        // tmp[fItem] = () => import(`@/views/permission-center/test/TestTableQuery.vue`)
+        tmp[fItem] = modules[`../views/${route[fItem]}`];
       }
     } else if (fItem === 'path' && route.parentId === 0) {
-      tmp[fItem] = `/${route[fItem]}`
+      tmp[fItem] = `/${route[fItem]}`;
     } else if (['hidden', 'alwaysShow'].includes(fItem)) {
-      tmp[fItem] = !!route[fItem]
+      tmp[fItem] = !!route[fItem];
     } else if (['name'].includes(fItem)) {
-      tmp[fItem] = route['code']
+      tmp[fItem] = route.code;
     } else if (route[fItem]) {
-      tmp[fItem] = route[fItem]
+      tmp[fItem] = route[fItem];
     }
-  })
-  //generator metaKey
+  });
+  // generator metaKey
   metaKeyArr.forEach((fItem) => {
-    if (route[fItem] && tmp.meta) tmp.meta[fItem] = route[fItem]
-  })
-  //route extra insert
+    if (route[fItem] && tmp.meta) tmp.meta[fItem] = route[fItem];
+  });
+  // route extra insert
   if (route.extra) {
     Object.entries(route.extra.parse(route.extra)).forEach(([key, value]) => {
       if (key === 'meta' && tmp.meta) {
-        tmp.meta[key] = value
+        tmp.meta[key] = value;
       } else {
-        tmp[key] = value
+        tmp[key] = value;
       }
-    })
+    });
   }
-  return tmp as RouteRawConfig
-}
+  return tmp as RouteRawConfig;
+};
 
 /**
  * 根据角色数组过滤异步路由
@@ -90,24 +99,24 @@ const getRouteItemFromReqRouter = (route): RouteRawConfig => {
  * return 过滤后的异步路由
  */
 export function filterAsyncRoutesByRoles(routes, roles) {
-  const res: RouterTypes = []
+  const res: RouterTypes = [];
   routes.forEach((route) => {
-    const tmp: RouteRawConfig = { ...route }
+    const tmp: RouteRawConfig = { ...route };
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutesByRoles(tmp.children, roles)
+        tmp.children = filterAsyncRoutesByRoles(tmp.children, roles);
       }
-      res.push(tmp)
+      res.push(tmp);
     }
-  })
-  return res
+  });
+  return res;
 }
+
 function hasPermission(roles, route) {
   if (route?.meta?.roles) {
-    return roles?.some((role) => route.meta.roles.includes(role))
-  } else {
-    return true
+    return roles?.some((role) => route.meta.roles.includes(role));
   }
+  return true;
 }
 
 /**
@@ -117,68 +126,75 @@ function hasPermission(roles, route) {
  * return 过滤后的异步路由
  */
 export function filterAsyncRouterByCodes(codesRoutes, codes) {
-  const filterRouter: RouterTypes = []
+  const filterRouter: RouterTypes = [];
   codesRoutes.forEach((routeItem: RouteRawConfig) => {
     if (hasCodePermission(codes, routeItem)) {
-      if (routeItem.children) routeItem.children = filterAsyncRouterByCodes(routeItem.children, codes)
-      filterRouter.push(routeItem)
+      if (routeItem.children)
+        routeItem.children = filterAsyncRouterByCodes(
+          routeItem.children,
+          codes,
+        );
+      filterRouter.push(routeItem);
     }
-  })
-  return filterRouter
-}
-function hasCodePermission(codes, routeItem) {
-  if (routeItem.meta?.code) {
-    return codes.includes(routeItem.meta.code) || routeItem.hidden
-  } else {
-    return true
-  }
-}
-//过滤异步路由
-export function filterAsyncRouter({ menuList, roles, codes }) {
-  const basicStore = useBasicStore()
-  let accessRoutes: RouterTypes = []
-  const permissionMode = basicStore.settings?.permissionMode
-  if (permissionMode === 'rbac') {
-    accessRoutes = filterAsyncRoutesByMenuList(menuList) //by menuList
-  } else if (permissionMode === 'roles') {
-    accessRoutes = filterAsyncRoutesByRoles(roleCodeRoutes, roles) //by roles
-  } else {
-    accessRoutes = filterAsyncRouterByCodes(roleCodeRoutes, codes) //by codes
-  }
-  accessRoutes.forEach((route) => router.addRoute(route))
-  asyncRoutes.forEach((item) => router.addRoute(item))
-  basicStore.setFilterAsyncRoutes(accessRoutes)
-}
-//重置路由
-export function resetRouter() {
-  //移除之前存在的路由
-  const routeNameSet: Set<RouteRecordName> = new Set()
-  router.getRoutes().forEach((fItem) => {
-    if (fItem.name) routeNameSet.add(fItem.name)
-  })
-  routeNameSet.forEach((setItem) => router.removeRoute(setItem))
-  //新增constantRoutes
-  constantRoutes.forEach((feItem) => router.addRoute(feItem))
-}
-//重置登录状态
-export function resetState() {
-  resetRouter()
-  useBasicStore().resetState()
+  });
+  return filterRouter;
 }
 
-//刷新路由
+function hasCodePermission(codes, routeItem) {
+  if (routeItem.meta?.code) {
+    return codes.includes(routeItem.meta.code) || routeItem.hidden;
+  }
+  return true;
+}
+
+// 过滤异步路由
+export function filterAsyncRouter({ menuList, roles, codes }) {
+  const basicStore = useBasicStore();
+  let accessRoutes: RouterTypes = [];
+  const permissionMode = basicStore.settings?.permissionMode;
+  if (permissionMode === 'rbac') {
+    accessRoutes = filterAsyncRoutesByMenuList(menuList); // by menuList
+  } else if (permissionMode === 'roles') {
+    accessRoutes = filterAsyncRoutesByRoles(roleCodeRoutes, roles); // by roles
+  } else {
+    accessRoutes = filterAsyncRouterByCodes(roleCodeRoutes, codes); // by codes
+  }
+  accessRoutes.forEach((route) => router.addRoute(route));
+  asyncRoutes.forEach((item) => router.addRoute(item));
+  basicStore.setFilterAsyncRoutes(accessRoutes);
+}
+
+// 重置路由
+export function resetRouter() {
+  // 移除之前存在的路由
+  const routeNameSet: Set<RouteRecordName> = new Set();
+  router.getRoutes().forEach((fItem) => {
+    if (fItem.name) routeNameSet.add(fItem.name);
+  });
+  routeNameSet.forEach((setItem) => router.removeRoute(setItem));
+  // 新增constantRoutes
+  constantRoutes.forEach((feItem) => router.addRoute(feItem));
+}
+
+// 重置登录状态
+export function resetState() {
+  resetRouter();
+  useBasicStore().resetState();
+}
+
+// 刷新路由
 export function freshRouter(data) {
-  resetRouter()
-  filterAsyncRouter(data)
+  resetRouter();
+  filterAsyncRouter(data);
   // location.reload()
 }
 
-NProgress.configure({ showSpinner: false })
-//开始进度条
+NProgress.configure({ showSpinner: false });
+// 开始进度条
 export const progressStart = () => {
-  NProgress.start()
-}
-//关闭进度条
+  NProgress.start();
+};
+// 关闭进度条
 export const progressClose = () => {
-  NProgress.done()
-}
+  NProgress.done();
+};
