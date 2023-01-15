@@ -14,6 +14,7 @@ import screenfull from 'screenfull';
 import { ElMessage } from 'element-plus';
 import SvgIcon from '@/icons/SvgIcon.vue';
 
+// 屏幕的状态
 const state = reactive({
   isFullscreen: false,
 });
@@ -33,17 +34,24 @@ const toggleScreen = () => {
     });
     return false;
   }
+  // 切换全屏状态
   screenfull.toggle();
 };
 
-const change = () => {
-  state.isFullscreen = screenfull.isFullscreen;
-};
+// 初始化注册screenFull的change事件
 const init = () => {
+  // 判断是否支持全屏
   if (screenfull.isEnabled) {
+    // 开启监听change事件
     screenfull.on('change', change);
   }
 };
+// 更改当前屏幕的状态
+const change = () => {
+  // 更新全屏状态
+  state.isFullscreen = screenfull.isFullscreen;
+};
+// 最后注销监听事件
 const destroy = () => {
   if (screenfull.isEnabled) {
     screenfull.off('change', change);
