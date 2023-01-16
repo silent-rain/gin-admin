@@ -21,6 +21,7 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // 放行白名单
@@ -37,7 +38,7 @@ var whiteList = []string{
 func CheckLogin() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// OPTIONS 过滤
-		if ctx.Request.Method != "OPTIONS" {
+		if ctx.Request.Method == "OPTIONS" {
 			ctx.Next()
 			return
 		}
@@ -52,6 +53,7 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 		// 验证 API 的 Content-Type 是否为空
+		zap.S().Errorln("========", ctx.Request.Header.Get("Content-Type"))
 		if ctx.Request.Header.Get("Content-Type") == "" {
 			log.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Errorf("")
 			response.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Json()

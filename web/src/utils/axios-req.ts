@@ -11,6 +11,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
+import { useUserStore } from '@/store/user';
 
 // 使用axios.create()创建一个axios请求实例
 const service = axios.create();
@@ -18,7 +19,8 @@ const service = axios.create();
 // 请求前拦截
 service.interceptors.request.use(
   (req) => {
-    const { token, axiosPromiseArr } = useBasicStore();
+    const { axiosPromiseArr } = useBasicStore();
+    const { token } = useUserStore();
     // axiosPromiseArr收集请求地址,用于取消请求
     req.cancelToken = new axios.CancelToken((cancel) => {
       axiosPromiseArr.push({
@@ -29,8 +31,6 @@ service.interceptors.request.use(
     // 设置token到header
     // @ts-ignore
     req.headers['Authorization'] = token;
-    // @ts-ignore
-    req.headers['Content-Type'] = 'application/json';
     // @ts-ignore
     req.headers['Content-type'] = 'application/json;charset=UTF-8';
     // 如果req.method给get 请求参数设置为 ?name=xxx
@@ -61,7 +61,7 @@ service.interceptors.response.use(
         showClose: false,
         type: 'warning',
       }).then(() => {
-        useBasicStore().resetStateAndToLogin();
+        useUserStore().resetStateAndToLogin();
       });
     }
     return Promise.reject(res.data);

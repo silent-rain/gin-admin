@@ -29,7 +29,7 @@
       </div>
       <div class="right-button">
         <el-tooltip content="刷新" placement="top">
-          <el-button :icon="RefreshRight" @click="handleFilter" />
+          <el-button :icon="RefreshRight" @click="fetchRoleList" />
         </el-tooltip>
         <el-tooltip content="密度" placement="top">
           <el-dropdown @command="handleTableSizeCommand">
@@ -90,6 +90,19 @@
         </el-tooltip>
       </div>
     </div>
+
+    <el-table :data="tableData" style="width: 100%" :size="tableSize">
+      <el-table-column type="selection" width="55" />
+      <el-table-column label="Date" width="120">
+        <template #default="scope">{{ scope.row.date }}</template>
+      </el-table-column>
+      <el-table-column property="name" label="Name" width="120" />
+      <el-table-column
+        property="address"
+        label="Address"
+        show-overflow-tooltip
+      />
+    </el-table>
   </el-card>
 </template>
 <script setup lang="ts">
@@ -102,9 +115,10 @@ import {
   Expand,
   FullScreen,
 } from '@element-plus/icons-vue';
-import { reactive, ref } from 'vue';
+import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { useBasicStore } from '@/store/basic';
+import { getRoleList } from '@/api/system/role';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -172,6 +186,17 @@ const handleScreenFull = () => {
   }
   // 切换文本状态（只是用在文本上，文本不是动态可以忽略）
   screenFullFlag.value = !screenFullFlag.value;
+};
+
+const tableData = ref([]);
+
+onBeforeMount(() => {
+  fetchRoleList();
+});
+
+const fetchRoleList = async () => {
+  const resp = (await getRoleList(queryList)).data;
+  console.log(resp);
 };
 </script>
 
