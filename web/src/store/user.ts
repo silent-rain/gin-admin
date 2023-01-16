@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import router from '@/router';
-import { getUserInfo } from '@/api/user';
+import { getUserInfo } from '@/api/system/user';
 
 export const useUserStore = defineStore('user', {
   state: () => {

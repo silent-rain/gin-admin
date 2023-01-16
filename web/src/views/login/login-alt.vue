@@ -74,7 +74,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useBasicStore } from '@/store/basic';
 import { useUserStore } from '@/store/user';
 import { elMessage, useElement } from '@/hooks/use-element';
-import { login } from '@/api/user';
+import { login } from '@/api/system/user';
 import { md5Encode } from '@/utils/md5';
 
 /* listen router change and set the query  */

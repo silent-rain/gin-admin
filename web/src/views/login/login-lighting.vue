@@ -57,7 +57,7 @@ import { reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBasicStore } from '@/store/basic';
 import { elMessage, useElement } from '@/hooks/use-element';
-import { login } from '@/api/user';
+import { login } from '@/api/system/user';
 import { useUserStore } from '@/store/user';
 /* listen router change and set the query  */
 const { settings } = useBasicStore();

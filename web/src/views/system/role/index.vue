@@ -50,7 +50,41 @@
           </el-dropdown>
         </el-tooltip>
 
-        <el-button :icon="Setting" @click="handleFilter" />
+        <el-popover placement="bottom" :width="180" trigger="hover">
+          <template #reference>
+            <span>
+              <el-tooltip content="设置" placement="top">
+                <el-button :icon="Setting" @click="handleFilter" />
+              </el-tooltip>
+            </span>
+          </template>
+          <div
+            class="operation-settings-show"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <el-checkbox
+              v-model="checkAll"
+              :indeterminate="isIndeterminate"
+              @change="handleCheckAllChange"
+              >列展示
+            </el-checkbox>
+            <el-button type="primary" text>重置</el-button>
+          </div>
+
+          <el-divider style="margin: 4px 0" />
+
+          <el-checkbox-group v-model="tableColsCheckList">
+            <el-checkbox label="Option A" />
+            <el-checkbox label="Option B" />
+            <el-checkbox label="Option C" />
+            <el-checkbox label="disabled" disabled />
+            <el-checkbox label="selected and disabled" disabled />
+          </el-checkbox-group>
+        </el-popover>
         <el-tooltip content="全屏" placement="top">
           <el-button :icon="FullScreen" @click="handleScreenFull" />
         </el-tooltip>
@@ -86,6 +120,7 @@ const handleFilter = () => {
 const handleCleanFilter = () => {
   queryList.name = '';
 };
+
 // 表格尺寸列表
 const tableSizeOptions = [
   {
@@ -107,6 +142,15 @@ const tableSize = ref(settings.value.defaultSize);
 const handleTableSizeCommand = (data: string) => {
   tableSize.value = data;
 };
+
+const checkAll = ref(false);
+const isIndeterminate = ref(true);
+const tableColsCheckList = ref(['selected and disabled', 'Option A']);
+const handleCheckAllChange = (val: boolean) => {
+  // checkedCities.value = val ? cities : [];
+  isIndeterminate.value = false;
+};
+
 // 全屏
 const screenFullFlag = ref(false);
 const handleScreenFull = () => {
@@ -145,8 +189,20 @@ const handleScreenFull = () => {
   display: flex;
   justify-content: space-between;
 
+  .left-button {
+    .el-button + .el-button {
+      margin-left: 8px;
+    }
+  }
+
   .el-button + .el-button {
     margin-left: 0px;
   }
+}
+
+:deep(.operation-settings-show) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
