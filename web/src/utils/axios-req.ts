@@ -31,6 +31,9 @@ service.interceptors.request.use(
     // 设置token到header
     // @ts-ignore
     req.headers['Authorization'] = token;
+    if (req.method === 'get') {
+      req.data = { unused: 0 }; // 这个是关键点，加入这行就可以了,解决get,请求添加不上Content-Type
+    }
     // @ts-ignore
     req.headers['Content-type'] = 'application/json;charset=UTF-8';
     // 如果req.method给get 请求参数设置为 ?name=xxx
