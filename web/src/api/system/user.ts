@@ -15,7 +15,10 @@ export const captcha = async (params: any) => {
   return axiosReq({
     url: '/captcha',
     method: 'get',
-    params,
+    bfLoading: false,
+    isAlertErrorMsg: false,
+    isParams: true,
+    data: params,
   });
 };
 
@@ -24,7 +27,8 @@ export const captchaVerify = async (params: any) => {
   return axiosReq({
     url: '/captcha/verify',
     method: 'get',
-    params,
+    isParams: true,
+    data: params,
   });
 };
 
@@ -50,6 +54,7 @@ export const getUserInfo = async (params: any) => {
   return axiosReq({
     url: '/user/info',
     method: 'get',
-    params,
+    isParams: true,
+    data: params,
   });
 };

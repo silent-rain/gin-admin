@@ -1,45 +1,61 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:53
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 01:39:59
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/utils/axios-req.ts
- * @Descripttion:
- */
 import axios, { AxiosRequestConfig } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
 import { useUserStore } from '@/store/user';
 
+let reqConfig: any;
+let loadingE: any;
+
 // 使用axios.create()创建一个axios请求实例
 const service = axios.create();
 
-// 请求前拦截
+// 请求拦截
+// @ts-ignore
 service.interceptors.request.use(
-  (req) => {
+  (request) => {
     const { axiosPromiseArr } = useBasicStore();
-    const { token } = useUserStore();
     // axiosPromiseArr收集请求地址,用于取消请求
-    req.cancelToken = new axios.CancelToken((cancel) => {
+    request.cancelToken = new axios.CancelToken((cancel) => {
       axiosPromiseArr.push({
-        url: req.url,
+        url: request.url,
         cancel,
       });
     });
-    // 设置token到header
+
+    // token setting
     // @ts-ignore
-    req.headers['Authorization'] = token;
-    if (req.method === 'get') {
-      req.data = { unused: 0 }; // 这个是关键点，加入这行就可以了,解决get,请求添加不上Content-Type
+    request.headers['authorization'] = useUserStore().token;
+    /* download file*/
+    // @ts-ignore
+    if (request.isDownLoadFile) {
+      request.responseType = 'blob';
     }
+    /* upload file*/
     // @ts-ignore
-    req.headers['Content-type'] = 'application/json;charset=UTF-8';
-    // 如果req.method给get 请求参数设置为 ?name=xxx
-    if ('get'.includes(req.method?.toLowerCase() as string))
-      req.params = req.data;
-    return req;
+    if (request.isUploadFile) {
+      // @ts-ignore
+      request.headers['Content-Type'] = 'multipart/form-data';
+    }
+
+    reqConfig = request;
+    // @ts-ignore
+    if (request.bfLoading) {
+      // @ts-ignore
+      loadingE = ElLoading.service({
+        lock: true,
+        text: '数据载入中',
+        // spinner: 'el-icon-ElLoading',
+        background: 'rgba(0, 0, 0, 0.1)',
+      });
+    }
+
+    // params会拼接到url上
+    // @ts-ignore
+    if (request.isParams) {
+      request.params = request.data;
+      request.data = {};
+    }
+    return request;
   },
   (err) => {
     // 发送请求失败
@@ -47,15 +63,46 @@ service.interceptors.request.use(
   },
 );
 
+// 请求前拦截
+// service.interceptors.request.use(
+//   (request) => {
+//     // @ts-ignore
+//     req.headers['Content-type'] = 'application/json;charset=UTF-8';
+//     // 如果req.method给get 请求参数设置为 ?name=xxx
+//     if ('get'.includes(req.method?.toLowerCase() as string))
+//       req.params = req.data;
+//     return req;
+//   },
+//   (err) => {
+//     // 发送请求失败
+//     Promise.reject(err);
+//   },
+// );
+
 // 请求后拦截
 service.interceptors.response.use(
   (res) => {
-    const { code } = res.data;
-    const successCode = '0,200,10000,20000';
-    const noAuthCode = '401,403,10401,10402,10403,10404,10405,10406';
+    if (reqConfig.afHLoading && loadingE) {
+      loadingE.close();
+    }
+
+    // 如果是下载文件直接返回
+    if (reqConfig.isDownLoadFile) {
+      return res;
+    }
+
+    const { msg, isNeedUpdateToken, data, code } = res.data;
+    //更新token保持登录状态
+    if (isNeedUpdateToken && data.token) {
+      // setToken(data.token);
+    }
+
+    const successCode = '0,200,10000';
     if (successCode.includes(code)) {
       return res.data;
     }
+
+    const noAuthCode = '401,403,10401,10402,10403,10404,10405,10406';
     if (noAuthCode.includes(code) && !location.href.includes('/login')) {
       ElMessageBox.confirm('请重新登录', {
         confirmButtonText: '重新登录',
@@ -67,26 +114,80 @@ service.interceptors.response.use(
         useUserStore().resetStateAndToLogin();
       });
     }
+
+    if (reqConfig.isAlertErrorMsg) {
+      ElMessage({
+        message: msg,
+        type: 'error',
+        duration: 2 * 1000,
+      });
+    }
+
+    //返回错误信息
+    //如果未catch 走unhandledrejection进行收集
+    //注：如果没有return 则，会放回到请求方法中.then ,返回的res为 undefined
     return Promise.reject(res.data);
   },
   // 响应报错
   (err) => {
+    if (loadingE) {
+      loadingE.close();
+    }
     ElMessage.error({
       message: err,
       duration: 2 * 1000,
     });
-    return Promise.reject(err);
+
+    //如果是跨域
+    //Network Error,cross origin
+    const errObj = {
+      msg: err.toString(),
+      reqUrl: reqConfig.baseURL + reqConfig.url,
+      params: reqConfig.isParams ? reqConfig.params : reqConfig.data,
+    };
+    return Promise.reject(JSON.stringify(errObj));
   },
 );
 
 // 导出service实例给页面调用 , config->页面的配置
-export default function axiosReq(config: AxiosRequestConfig<any>) {
+export function axiosReq2(config: AxiosRequestConfig<any>) {
   return service({
     baseURL: import.meta.env.VITE_APP_BASE_URL,
     timeout: 8000,
     ...config,
   });
 }
+
+// 导出service实例给页面调用, 自定义配置
+export default function axiosReq({
+  url,
+  method,
+  data = {},
+  isParams = false,
+  bfLoading = false,
+  afHLoading = false,
+  isUploadFile = false,
+  isDownLoadFile = false,
+  baseURL = import.meta.env.VITE_APP_BASE_URL,
+  timeout = 150000,
+  isAlertErrorMsg = true,
+}) {
+  // @ts-ignore
+  return service({
+    url: url,
+    method: method,
+    data: data,
+    isParams: isParams,
+    bfLoading: bfLoading,
+    afHLoading: afHLoading,
+    isUploadFile: isUploadFile,
+    isDownLoadFile: isDownLoadFile,
+    isAlertErrorMsg: isAlertErrorMsg,
+    baseURL: baseURL,
+    timeout: timeout,
+  });
+}
+
 function AxiosHeaderValue(): any {
   throw new Error('Function not implemented.');
 }

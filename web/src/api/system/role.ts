@@ -8,7 +8,8 @@ export const getAllRole = async (params: any) => {
   return axiosReq({
     url: '/role/all',
     method: 'get',
-    params,
+    isParams: true,
+    data: params,
   });
 };
 
@@ -17,7 +18,8 @@ export const getRoleList = async (params: any) => {
   return axiosReq({
     url: '/role/list',
     method: 'get',
-    params,
+    isParams: true,
+    data: params,
   });
 };
 
