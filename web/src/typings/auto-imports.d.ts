@@ -3,6 +3,7 @@ export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
   const addRole: typeof import('../api/system/role')['addRole']
+  const axiosReq2: typeof import('../utils/axios-req')['axiosReq2']
   const axiosReq: typeof import('../utils/axios-req')['default']
   const bus: typeof import('../utils/bus')['default']
   const buttonCodes: typeof import('../directives/button-codes')['default']

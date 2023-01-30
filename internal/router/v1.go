@@ -81,6 +81,6 @@ func NewApiV1(engine *gin.Engine) {
 		// 删除角色
 		role.DELETE("/delete", system.RoleHandlerImpl.Delete)
 		// 更新角色状态
-		role.POST("/status", system.RoleHandlerImpl.Status)
+		role.PUT("/status", system.RoleHandlerImpl.Status)
 	}
 }

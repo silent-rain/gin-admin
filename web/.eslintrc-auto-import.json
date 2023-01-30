@@ -3,6 +3,7 @@
     "EffectScope": true,
     "addRole": true,
     "axiosReq": true,
+    "axiosReq2": true,
     "bus": true,
     "buttonCodes": true,
     "captcha": true,

@@ -93,15 +93,47 @@
 
     <el-table :data="tableData" style="width: 100%" :size="tableSize">
       <el-table-column type="selection" width="55" />
-      <el-table-column label="Date" width="120">
-        <template #default="scope">{{ scope.row.date }}</template>
-      </el-table-column>
-      <el-table-column property="name" label="Name" width="120" />
+
+      <el-table-column property="id" label="角色ID" width="80" />
+      <el-table-column property="name" label="角色名称" show-overflow-tooltip />
       <el-table-column
-        property="address"
-        label="Address"
+        property="sort"
+        label="排序"
         show-overflow-tooltip
+        width="80"
       />
+      <el-table-column
+        property="status"
+        label="角色状态"
+        align="center"
+        width="80"
+      >
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleStatusChange(scope.row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column property="note" label="备注" show-overflow-tooltip />
+      <el-table-column property="created_at" label="创建时间" width="155" />
+      <el-table-column property="updated_at" label="更新时间" width="155" />
+      <el-table-column fixed="right" label="操作" width="120">
+        <template #default="scope">
+          <el-button link type="primary" size="small" @click="handleEdit"
+            >编辑
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            size="small"
+            @click="handleDelete(scope.row)"
+            >删除
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </el-card>
 </template>
@@ -118,7 +150,15 @@ import {
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { useBasicStore } from '@/store/basic';
-import { getRoleList } from '@/api/system/role';
+import {
+  getRoleList,
+  updateRoleStatus,
+  deleteRole,
+  updateRole,
+  addRole,
+} from '@/api/system/role';
+import { RoleListRsp, Role } from '~/api/system/role';
+import { ElMessage } from 'element-plus';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -128,7 +168,7 @@ const queryList = reactive({
 });
 // 过滤事件
 const handleFilter = () => {
-  console.log(queryList);
+  fetchRoleList();
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
@@ -188,15 +228,76 @@ const handleScreenFull = () => {
   screenFullFlag.value = !screenFullFlag.value;
 };
 
-const tableData = ref([]);
+const tableData = ref<Role[]>();
 
 onBeforeMount(() => {
   fetchRoleList();
 });
 
+// 获取角色列表
 const fetchRoleList = async () => {
-  const resp = (await getRoleList(queryList)).data;
-  console.log(resp);
+  try {
+    const resp = (await getRoleList(queryList)).data as RoleListRsp;
+    tableData.value = resp.data_list;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 删除
+const handleDelete = async (row: Role) => {
+  const data = {
+    id: row.id,
+  };
+  try {
+    await deleteRole(data);
+    fetchRoleList();
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+// 编辑
+const handleEdit = async (row: Role) => {
+  const data = {
+    id: row.id,
+  };
+  try {
+    await updateRole(data);
+    fetchRoleList();
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+// 添加
+const handleAdd = async (row: Role) => {
+  const data = {
+    id: row.id,
+  };
+  try {
+    await addRole(data);
+    fetchRoleList();
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 状态变更
+const handleStatusChange = async (row: Role) => {
+  const data = {
+    id: row.id,
+    status: row.status,
+  };
+  try {
+    const resp = (await updateRoleStatus(data)).data as RoleListRsp;
+    tableData.value = resp.data_list;
+    fetchRoleList();
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 

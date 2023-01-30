@@ -10,17 +10,21 @@
  */
 package systemModel
 
-import "time"
+import (
+	"gin-admin/internal/pkg/utils"
+)
 
 // Role 角色表
 type Role struct {
-	ID        uint      `json:"id" gorm:"column:id;primaryKey"`                           // 角色ID
-	Name      string    `json:"name" gorm:"column:name"`                                  // 角色名称
-	Sort      uint      `json:"sort" gorm:"column:sort"`                                  // 排序
-	Note      string    `json:"note" gorm:"column:note"`                                  // 备注
-	Status    uint      `json:"status" gorm:"column:status"`                              // 角色状态,0:停用,1:启用
-	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
-	UpdatedAt time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
+	ID     uint   `json:"id" gorm:"column:id;primaryKey"` // 角色ID
+	Name   string `json:"name" gorm:"column:name"`        // 角色名称
+	Sort   uint   `json:"sort" gorm:"column:sort"`        // 排序
+	Note   string `json:"note" gorm:"column:note"`        // 备注
+	Status uint   `json:"status" gorm:"column:status"`    // 角色状态,0:停用,1:启用
+	// 创建时间
+	CreatedAt *utils.LocalTime `json:"created_at" gorm:"column:created_at;autoCreateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP;<-:create"`
+	// 更新时间
+	UpdatedAt *utils.LocalTime `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP  on update current_timestamp"`
 }
 
 // TableName 表名重写
