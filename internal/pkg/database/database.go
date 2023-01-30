@@ -58,7 +58,7 @@ func Init() {
 // 初始化 mysql 实例
 func initMysql() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(conf.Instance().DBConfig.Dsn()), &gorm.Config{
-		// 设置时区
+		// 更改创建时间使用的函数
 		NowFunc: func() time.Time {
 			return time.Now().Local()
 		},
