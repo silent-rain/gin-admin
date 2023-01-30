@@ -106,7 +106,7 @@
         property="status"
         label="角色状态"
         align="center"
-        width="80"
+        width="90"
       >
         <template #default="scope">
           <el-switch
@@ -118,8 +118,8 @@
         </template>
       </el-table-column>
       <el-table-column property="note" label="备注" show-overflow-tooltip />
-      <el-table-column property="created_at" label="创建时间" width="155" />
-      <el-table-column property="updated_at" label="更新时间" width="155" />
+      <el-table-column property="created_at" label="创建时间" width="165" />
+      <el-table-column property="updated_at" label="更新时间" width="165" />
       <el-table-column fixed="right" label="操作" width="120">
         <template #default="scope">
           <el-button link type="primary" size="small" @click="handleEdit"
