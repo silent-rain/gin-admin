@@ -104,6 +104,7 @@
       :data="tableData"
       style="width: 100%; margin-top: 10px"
       :size="tableSize"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" />
 
@@ -256,16 +257,15 @@ const handleScreenFull = () => {
 
 const state = reactive({
   roleForm: {
-    data: {
-      sort: 1,
-    } as Role,
+    data: {} as Role,
     visible: false,
-    type: 'add',
+    type: '',
     width: '500px',
   },
 });
 const tableData = ref<Role[]>();
 const tableDataTotal = ref<number>(0);
+const multipleSelection = ref<Role[]>([]);
 
 onBeforeMount(() => {
   fetchRoleList();
@@ -297,18 +297,27 @@ const handleDelete = async (row: Role) => {
 };
 // 编辑
 const handleEdit = async (row: Role) => {
-  state.roleForm.visible = true;
   state.roleForm.data = row;
   state.roleForm.type = 'edit';
+  state.roleForm.visible = true;
 };
 // 添加
 const handleAdd = async () => {
+  state.roleForm.data.sort = 1;
+  state.roleForm.type = 'add';
   state.roleForm.visible = true;
 };
+// 多选事件
+const handleSelectionChange = (val: Role[]) => {
+  multipleSelection.value = val;
+};
+
 // 批量删除
 const handleBatchDelete = async () => {
   const data = {
-    ids: [],
+    ids: multipleSelection.value.map((v: Role) => {
+      return v.id;
+    }),
   };
   try {
     await batchDelete(data);

@@ -4,8 +4,8 @@
       hidden: props.hidden,
       paginationContainer: true,
     }"
-    v-model:current-page="props.currentPage"
-    v-model:page-size="props.pageSize"
+    :model-value:current-page="props.currentPage"
+    :model-value:page-size="props.pageSize"
     :page-sizes="props.pageSizes"
     :small="props.small"
     :background="props.background"
@@ -47,7 +47,7 @@ const props = withDefaults(
     layout: 'total, sizes, prev, pager, next, jumper',
     autoScroll: false,
     hidden: false,
-    hideOnSinglePage: true,
+    hideOnSinglePage: false,
   },
 );
 
@@ -57,13 +57,15 @@ const emit = defineEmits([
   'pagination',
 ]);
 
-const handleSizeChange = (_val: number) => {
+const handleCurrentChange = (val: number) => {
+  emit('update:currentPage', val);
   emit('pagination', null);
   if (ref(props.autoScroll).value) {
     scrollTo(0, 800);
   }
 };
-const handleCurrentChange = (_val: number) => {
+const handleSizeChange = (val: number) => {
+  emit('update:pageSize', val);
   emit('pagination', null);
   if (ref(props.autoScroll).value) {
     scrollTo(0, 800);

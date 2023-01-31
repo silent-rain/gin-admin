@@ -91,6 +91,18 @@ func (d *role) Delete(id uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
+// BatchDelete 批量删除角色
+func (d *role) BatchDelete(ids []uint) (int64, error) {
+	beans := make([]systemModel.Role, len(ids))
+	for _, id := range ids {
+		beans = append(beans, systemModel.Role{
+			ID: id,
+		})
+	}
+	result := database.Instance().Delete(&beans)
+	return result.RowsAffected, result.Error
+}
+
 // Status 更新状态
 func (d *role) Status(id uint, status uint) (int64, error) {
 	result := database.Instance().Select("status").Updates(&systemModel.Role{

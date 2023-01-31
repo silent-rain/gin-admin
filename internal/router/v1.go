@@ -80,6 +80,8 @@ func NewApiV1(engine *gin.Engine) {
 		role.PUT("/update", system.RoleHandlerImpl.Update)
 		// 删除角色
 		role.DELETE("/delete", system.RoleHandlerImpl.Delete)
+		// 批量删除角色
+		role.DELETE("/batchDelete", system.RoleHandlerImpl.BatchDelete)
 		// 更新角色状态
 		role.PUT("/status", system.RoleHandlerImpl.Status)
 	}

@@ -40,6 +40,11 @@ type RoleDeleteReq struct {
 	ID uint `json:"id" form:"id" binding:"required"` // 角色ID
 }
 
+// RoleBatchDeleteReq 批量删除角色
+type RoleBatchDeleteReq struct {
+	Ids []uint `json:"ids" form:"ids" binding:"required"` // 角色ID列表
+}
+
 // 更新角色状态
 type RoleStatusReq struct {
 	ID     uint `json:"id" form:"id" binding:"required"`

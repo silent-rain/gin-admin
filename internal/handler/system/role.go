@@ -115,6 +115,22 @@ func (h *roleHandler) Delete(ctx *gin.Context) {
 	response.New(ctx).WithData(row).Json()
 }
 
+// BatchDelete 批量删除角色
+func (h *roleHandler) BatchDelete(ctx *gin.Context) {
+	req := new(systemDto.RoleBatchDeleteReq)
+	if err := utils.ParsingReqParams(ctx, req); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+		return
+	}
+	row, err := systemDao.RoleImpl.BatchDelete(req.Ids)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
+		return
+	}
+	response.New(ctx).WithData(row).Json()
+}
+
 // Status 更新角色状态
 func (h *roleHandler) Status(ctx *gin.Context) {
 	req := new(systemDto.RoleStatusReq)

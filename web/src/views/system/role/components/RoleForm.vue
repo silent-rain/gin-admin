@@ -72,11 +72,13 @@ const rules = reactive<FormRules>({
 // 关闭
 const handleClose = () => {
   emit('update:visible', false);
+  emit('update:data', {});
 };
 
 // 取消
 const handleCancel = () => {
   emit('update:visible', false);
+  emit('update:data', {});
 };
 // 提交
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -94,6 +96,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         await updateRole(props.data);
       }
       emit('update:visible', false);
+      emit('update:data', {});
       emit('refresh');
       ElMessage.success('操作成功');
     } catch (error) {
