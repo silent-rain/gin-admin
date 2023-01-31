@@ -49,6 +49,14 @@ export const deleteRole = async (params: any) => {
     data: params,
   });
 };
+// 批量删除角色
+export const batchDelete = async (params: any) => {
+  return axiosReq({
+    url: '/role/batchDelete',
+    method: 'delete',
+    data: params,
+  });
+};
 
 // 更新角色状态
 export const updateRoleStatus = async (params: any) => {

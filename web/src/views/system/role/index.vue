@@ -4,7 +4,7 @@
     <div class="filter">
       <label>角色名称: </label>
       <el-input
-        v-model="queryList.name"
+        v-model="listQuery.name"
         class="filter-name"
         placeholder="请输入角色名称"
         @keyup.enter.native="handleFilter"
@@ -20,11 +20,11 @@
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <el-button type="primary" :icon="Plus" @click="handleFilter"
+        <el-button type="primary" :icon="Plus" @click="handleAdd"
           >添加
         </el-button>
-        <el-button type="danger" :icon="Delete" @click="handleFilter"
-          >删除
+        <el-button type="danger" :icon="Delete" @click="handleBatchDelete"
+          >批量删除
         </el-button>
       </div>
       <div class="right-button">
@@ -91,7 +91,20 @@
       </div>
     </div>
 
-    <el-table :data="tableData" style="width: 100%" :size="tableSize">
+    <!-- 添加/编辑表单 -->
+    <RoleForm
+      v-model:data="state.roleForm.data"
+      v-model:visible="state.roleForm.visible"
+      :type="state.roleForm.type"
+      :width="state.roleForm.width"
+      @refresh="fetchRoleList"
+    />
+
+    <el-table
+      :data="tableData"
+      style="width: 100%; margin-top: 10px"
+      :size="tableSize"
+    >
       <el-table-column type="selection" width="55" />
 
       <el-table-column property="id" label="角色ID" width="80" />
@@ -122,7 +135,11 @@
       <el-table-column property="updated_at" label="更新时间" width="165" />
       <el-table-column fixed="right" label="操作" width="120">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="handleEdit"
+          <el-button
+            link
+            type="primary"
+            size="small"
+            @click="handleEdit(scope.row)"
             >编辑
           </el-button>
           <el-button
@@ -135,6 +152,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <Pagination
+      v-model:currentPage="listQuery.page"
+      v-model:pageSize="listQuery.page_size"
+      :total="tableDataTotal"
+      @pagination="fetchRoleList"
+    />
   </el-card>
 </template>
 <script setup lang="ts">
@@ -149,22 +172,25 @@ import {
 } from '@element-plus/icons-vue';
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
+import { ElMessage } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
 import {
   getRoleList,
   updateRoleStatus,
   deleteRole,
-  updateRole,
-  addRole,
+  batchDelete,
 } from '@/api/system/role';
 import { RoleListRsp, Role } from '~/api/system/role';
-import { ElMessage } from 'element-plus';
+import Pagination from '@/components/Pagination.vue';
+import RoleForm from './components/RoleForm.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 
 // 筛选过滤条件
-const queryList = reactive({
+const listQuery = reactive({
   name: '',
+  page: 1,
+  page_size: 10,
 });
 // 过滤事件
 const handleFilter = () => {
@@ -172,7 +198,7 @@ const handleFilter = () => {
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
-  queryList.name = '';
+  listQuery.name = '';
 };
 
 // 表格尺寸列表
@@ -228,7 +254,18 @@ const handleScreenFull = () => {
   screenFullFlag.value = !screenFullFlag.value;
 };
 
+const state = reactive({
+  roleForm: {
+    data: {
+      sort: 1,
+    } as Role,
+    visible: false,
+    type: 'add',
+    width: '500px',
+  },
+});
 const tableData = ref<Role[]>();
+const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
   fetchRoleList();
@@ -237,8 +274,9 @@ onBeforeMount(() => {
 // 获取角色列表
 const fetchRoleList = async () => {
   try {
-    const resp = (await getRoleList(queryList)).data as RoleListRsp;
+    const resp = (await getRoleList(listQuery)).data as RoleListRsp;
     tableData.value = resp.data_list;
+    tableDataTotal.value = resp.tatol;
   } catch (error) {
     console.log(error);
   }
@@ -259,24 +297,21 @@ const handleDelete = async (row: Role) => {
 };
 // 编辑
 const handleEdit = async (row: Role) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await updateRole(data);
-    fetchRoleList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
+  state.roleForm.visible = true;
+  state.roleForm.data = row;
+  state.roleForm.type = 'edit';
 };
 // 添加
-const handleAdd = async (row: Role) => {
+const handleAdd = async () => {
+  state.roleForm.visible = true;
+};
+// 批量删除
+const handleBatchDelete = async () => {
   const data = {
-    id: row.id,
+    ids: [],
   };
   try {
-    await addRole(data);
+    await batchDelete(data);
     fetchRoleList();
     ElMessage.success('操作成功');
   } catch (error) {
