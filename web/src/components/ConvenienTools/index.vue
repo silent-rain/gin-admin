@@ -40,7 +40,9 @@
           @change="handleCheckAllChange"
           >列展示
         </el-checkbox>
-        <el-button type="primary" text>重置</el-button>
+        <el-button type="primary" text @click="handleCheckdReset"
+          >重置</el-button
+        >
       </div>
 
       <el-divider style="margin: 4px 0" />
@@ -147,6 +149,15 @@ const handleCheckAllChange = (val: boolean) => {
   isIndeterminate.value =
     checkedCount > 0 && checkedCount < props.checkAllList.length;
   checkedListToMap();
+};
+// 重置
+const handleCheckdReset = () => {
+  checkAll.value = true;
+  checkedList.value = props.checkAllList.map((v) => v.value);
+
+  const checkedCount = checkedList.value.length;
+  isIndeterminate.value =
+    checkedCount > 0 && checkedCount < props.checkAllList.length;
 };
 // 筛选框点击事件
 const handleCheckedChange = (value: string[]) => {
