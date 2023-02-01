@@ -159,7 +159,7 @@ const handleCheckdReset = () => {
   isIndeterminate.value =
     checkedCount > 0 && checkedCount < props.checkAllList.length;
 };
-// 筛选框点击事件
+// 多选框点击事件
 const handleCheckedChange = (value: string[]) => {
   const checkedCount = value.length;
   checkAll.value = checkedCount === props.checkAllList.length;
