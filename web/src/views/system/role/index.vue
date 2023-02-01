@@ -21,6 +21,7 @@
     <div class="operation-button">
       <div class="left-button">
         <ConvenienButtons
+          :buttonList="['add', 'batchDelete']"
           @add-event="handleAdd"
           @batch-delete-event="handleBatchDelete"
         />
