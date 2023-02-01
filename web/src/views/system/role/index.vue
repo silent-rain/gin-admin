@@ -273,7 +273,6 @@ const handleEdit = async (row: Role) => {
   state.roleForm.data = row;
   state.roleForm.type = 'edit';
   state.roleForm.visible = true;
-  console.log(checkedDict.value);
 };
 // 添加
 const handleAdd = async () => {

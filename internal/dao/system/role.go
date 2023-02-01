@@ -11,6 +11,7 @@
 package systemDao
 
 import (
+	"errors"
 	systemDto "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
@@ -23,10 +24,13 @@ var RoleImpl = new(role)
 
 // Role 角色接口
 type Role interface {
+	All() ([]systemModel.Role, int64, error)
 	List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error)
+	InfoByName(name string) (systemModel.Role, bool, error)
 	Add(bean systemModel.Role) (uint, error)
 	Update(bean systemModel.Role) (int64, error)
 	Delete(id uint) (int64, error)
+	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 }
 
@@ -60,12 +64,26 @@ func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, erro
 	}
 
 	bean := make([]systemModel.Role, 0)
-	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").Find(&bean); result.Error != nil {
+	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").Order("updated_at DESC").Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
 	stats().Model(&systemModel.Role{}).Count(&total)
 	return bean, total, nil
+}
+
+// Info 获取角色信息
+func (d *role) InfoByName(name string) (systemModel.Role, bool, error) {
+	bean := systemModel.Role{}
+	result := database.Instance().Debug().
+		Where("name=?", name).First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return systemModel.Role{}, false, nil
+	}
+	if result.Error != nil {
+		return systemModel.Role{}, false, result.Error
+	}
+	return bean, true, nil
 }
 
 // Add 添加角色

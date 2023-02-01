@@ -20,6 +20,7 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // RoleHandlerImpl 角色对象
@@ -69,8 +70,21 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	_, err := systemDao.RoleImpl.Add(role)
+
+	_, ok, err := systemDao.RoleImpl.InfoByName(role.Name)
 	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	zap.S().Errorf("========= %#v   %#v  %#v", role.Name, ok, err)
+	if ok {
+		log.New(ctx).WithCode(statuscode.DbDataExistError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("角色已存在").Json()
+		return
+	}
+
+	if _, err := systemDao.RoleImpl.Add(role); err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbAddError).Json()
 		return

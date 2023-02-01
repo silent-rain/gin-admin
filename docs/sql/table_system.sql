@@ -28,7 +28,7 @@ CREATE TABLE sys_user (
 -- 角色表
 CREATE TABLE sys_role (
     `id` INT AUTO_INCREMENT COMMENT '角色ID',
-    `name` VARCHAR(20) NOT NULL COMMENT '角色名称',
+    `name` VARCHAR(20) UNIQUE NOT NULL COMMENT '角色名称',
     `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
     `note` VARCHAR(200) NULL COMMENT '备注',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '角色状态,0:停用,1:启用',
@@ -45,8 +45,8 @@ CREATE TABLE sys_user_role_rel (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    CONSTRAINT `user_role_rel_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `user_role_rel_user_id` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户角色关联表';
 
 -- 菜单表
