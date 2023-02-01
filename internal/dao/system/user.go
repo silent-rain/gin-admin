@@ -40,7 +40,7 @@ type User interface {
 	UpdateEmail(id uint, email string) (int64, error)
 	ExistUsername(phone, email string) (bool, error)
 	ExistUserPassword(userId uint, password string) (bool, error)
-	GetUsername(username, password string) (*systemModel.User, bool, error)
+	GetUsername(username, password string) (systemModel.User, bool, error)
 }
 
 // 用户
@@ -266,14 +266,14 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 }
 
 // GetUsername 获取用户信息 邮件/手机号
-func (d *user) GetUsername(username, password string) (*systemModel.User, bool, error) {
+func (d *user) GetUsername(username, password string) (systemModel.User, bool, error) {
 	bean := &systemModel.User{}
 	result := database.Instance().Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, false, nil
+		return systemModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return nil, false, result.Error
+		return systemModel.User{}, false, result.Error
 	}
-	return bean, true, nil
+	return systemModel.User{}, true, nil
 }
