@@ -112,15 +112,20 @@
         v-if="checkedDict.operation"
         fixed="right"
         label="操作"
-        width="120"
+        align="center"
+        width="186"
       >
         <template #default="scope">
           <el-button
             link
             type="primary"
             size="small"
+            :icon="EditPen"
             @click="handleEdit(scope.row)"
-            >编辑
+            >修改
+          </el-button>
+          <el-button link type="primary" size="small" :icon="Finished"
+            >分配权限
           </el-button>
           <el-popconfirm
             confirm-button-text="确认"
@@ -132,7 +137,9 @@
             @cancel="handleCancelEvent"
           >
             <template #reference>
-              <el-button link type="primary" size="small">删除 </el-button>
+              <el-button link type="danger" size="small" :icon="Delete"
+                >删除
+              </el-button>
             </template>
           </el-popconfirm>
         </template>
@@ -151,7 +158,13 @@
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { useBasicStore } from '@/store/basic';
-import { Search, Delete, InfoFilled } from '@element-plus/icons-vue';
+import {
+  EditPen,
+  Search,
+  Delete,
+  Finished,
+  InfoFilled,
+} from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import {
   getRoleList,
