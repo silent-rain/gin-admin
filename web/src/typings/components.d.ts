@@ -7,6 +7,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ConvenienButtons: typeof import('./../components/ConvenienButtons/index.vue')['default']
+    ConvenienTools: typeof import('./../components/ConvenienTools/index.vue')['default']
+    copy: typeof import('./../components/ConvenienTools copy/index.vue')['default']
     ElSvgIcon: typeof import('./../components/ElSvgIcon.vue')['default']
     Pagination: typeof import('./../components/Pagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

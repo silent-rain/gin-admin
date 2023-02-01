@@ -5,6 +5,7 @@ declare global {
   const addRole: typeof import('../api/system/role')['addRole']
   const axiosReq2: typeof import('../utils/axios-req')['axiosReq2']
   const axiosReq: typeof import('../utils/axios-req')['default']
+  const batchDelete: typeof import('../api/system/role')['batchDelete']
   const bus: typeof import('../utils/bus')['default']
   const buttonCodes: typeof import('../directives/button-codes')['default']
   const captcha: typeof import('../api/system/user')['captcha']

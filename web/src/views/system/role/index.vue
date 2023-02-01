@@ -20,74 +20,19 @@
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <el-button type="primary" :icon="Plus" @click="handleAdd"
-          >添加
-        </el-button>
-        <el-button type="danger" :icon="Delete" @click="handleBatchDelete"
-          >批量删除
-        </el-button>
+        <ConvenienButtons
+          @add-event="handleAdd"
+          @batch-delete-event="handleBatchDelete"
+        />
       </div>
       <div class="right-button">
-        <el-tooltip content="刷新" placement="top">
-          <el-button :icon="RefreshRight" @click="fetchRoleList" />
-        </el-tooltip>
-        <el-tooltip content="密度" placement="top">
-          <el-dropdown @command="handleTableSizeCommand">
-            <el-button
-              class="el-dropdown-link"
-              :icon="Expand"
-              trigger="click"
-            />
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  v-for="(item, _) in tableSizeOptions"
-                  :command="item.value"
-                  >{{ item.label }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </el-tooltip>
-
-        <el-popover placement="bottom" :width="180" trigger="hover">
-          <template #reference>
-            <span>
-              <el-tooltip content="设置" placement="top">
-                <el-button :icon="Setting" @click="handleFilter" />
-              </el-tooltip>
-            </span>
-          </template>
-          <div
-            class="operation-settings-show"
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            "
-          >
-            <el-checkbox
-              v-model="checkAll"
-              :indeterminate="isIndeterminate"
-              @change="handleCheckAllChange"
-              >列展示
-            </el-checkbox>
-            <el-button type="primary" text>重置</el-button>
-          </div>
-
-          <el-divider style="margin: 4px 0" />
-
-          <el-checkbox-group v-model="tableColsCheckList">
-            <el-checkbox label="Option A" />
-            <el-checkbox label="Option B" />
-            <el-checkbox label="Option C" />
-            <el-checkbox label="disabled" disabled />
-            <el-checkbox label="selected and disabled" disabled />
-          </el-checkbox-group>
-        </el-popover>
-        <el-tooltip content="全屏" placement="top">
-          <el-button :icon="FullScreen" @click="handleScreenFull" />
-        </el-tooltip>
+        <ConvenienTools
+          @refreshEvent="fetchRoleList"
+          v-model:size="tableSize"
+          :screenFullElement="'el-table-role'"
+          :checkAllList="checkAllList"
+          v-model:checkedDict="checkedDict"
+        />
       </div>
     </div>
 
@@ -101,6 +46,7 @@
     />
 
     <el-table
+      class="el-table-role"
       :data="tableData"
       style="width: 100%; margin-top: 10px"
       :size="tableSize"
@@ -108,15 +54,27 @@
     >
       <el-table-column type="selection" width="55" />
 
-      <el-table-column property="id" label="角色ID" width="80" />
-      <el-table-column property="name" label="角色名称" show-overflow-tooltip />
       <el-table-column
+        v-if="checkedDict.id"
+        property="id"
+        label="角色ID"
+        width="80"
+      />
+      <el-table-column
+        v-if="checkedDict.name"
+        property="name"
+        label="角色名称"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.sort"
         property="sort"
         label="排序"
         show-overflow-tooltip
         width="80"
       />
       <el-table-column
+        v-if="checkedDict.status"
         property="status"
         label="角色状态"
         align="center"
@@ -131,10 +89,30 @@
           />
         </template>
       </el-table-column>
-      <el-table-column property="note" label="备注" show-overflow-tooltip />
-      <el-table-column property="created_at" label="创建时间" width="165" />
-      <el-table-column property="updated_at" label="更新时间" width="165" />
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column
+        v-if="checkedDict.note"
+        property="note"
+        label="备注"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.created_at"
+        property="created_at"
+        label="创建时间"
+        width="165"
+      />
+      <el-table-column
+        v-if="checkedDict.updated_at"
+        property="updated_at"
+        label="更新时间"
+        width="165"
+      />
+      <el-table-column
+        v-if="checkedDict.operation"
+        fixed="right"
+        label="操作"
+        width="120"
+      >
         <template #default="scope">
           <el-button
             link
@@ -143,13 +121,19 @@
             @click="handleEdit(scope.row)"
             >编辑
           </el-button>
-          <el-button
-            link
-            type="primary"
-            size="small"
-            @click="handleDelete(scope.row)"
-            >删除
-          </el-button>
+          <el-popconfirm
+            confirm-button-text="确认"
+            cancel-button-text="取消"
+            :icon="InfoFilled"
+            icon-color="#E6A23C"
+            title="确定删除吗?"
+            @confirm="handleDelete(scope.row)"
+            @cancel="handleCancelEvent"
+          >
+            <template #reference>
+              <el-button link type="primary" size="small">删除 </el-button>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -161,20 +145,13 @@
     />
   </el-card>
 </template>
+
 <script setup lang="ts">
-import {
-  Search,
-  Delete,
-  Plus,
-  Setting,
-  RefreshRight,
-  Expand,
-  FullScreen,
-} from '@element-plus/icons-vue';
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
-import { ElMessage } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
+import { Search, Delete, InfoFilled } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import {
   getRoleList,
   updateRoleStatus,
@@ -183,6 +160,8 @@ import {
 } from '@/api/system/role';
 import { RoleListRsp, Role } from '~/api/system/role';
 import Pagination from '@/components/Pagination.vue';
+import ConvenienTools from '@/components/ConvenienTools/index.vue';
+import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
 import RoleForm from './components/RoleForm.vue';
 
 const { settings } = storeToRefs(useBasicStore());
@@ -202,59 +181,6 @@ const handleCleanFilter = () => {
   listQuery.name = '';
 };
 
-// 表格尺寸列表
-const tableSizeOptions = [
-  {
-    label: '宽松',
-    value: 'large',
-  },
-  {
-    label: '默认',
-    value: 'default',
-  },
-  {
-    label: '紧凑',
-    value: 'small',
-  },
-];
-// 表格尺寸
-const tableSize = ref(settings.value.defaultSize);
-// 表格尺寸选择事件
-const handleTableSizeCommand = (data: string) => {
-  tableSize.value = data;
-};
-
-const checkAll = ref(false);
-const isIndeterminate = ref(true);
-const tableColsCheckList = ref(['selected and disabled', 'Option A']);
-const handleCheckAllChange = (val: boolean) => {
-  // checkedCities.value = val ? cities : [];
-  isIndeterminate.value = false;
-};
-
-// 全屏
-const screenFullFlag = ref(false);
-const handleScreenFull = () => {
-  let element = document.getElementById('role-manage');
-  if (!element) {
-    return;
-  }
-  // 不全屏是null,返回false,
-  screenFullFlag.value = document.fullscreenElement === null ? false : true;
-  // false是进入全屏状态
-  if (screenFullFlag.value) {
-    // 退出全屏
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  } else {
-    // 全屏
-    element.requestFullscreen();
-  }
-  // 切换文本状态（只是用在文本上，文本不是动态可以忽略）
-  screenFullFlag.value = !screenFullFlag.value;
-};
-
 const state = reactive({
   roleForm: {
     data: {} as Role,
@@ -263,6 +189,52 @@ const state = reactive({
     width: '500px',
   },
 });
+
+const checkAllList = [
+  {
+    value: 'id',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'name',
+    disabled: true,
+    enabled: true,
+  },
+  {
+    value: 'sort',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'note',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'status',
+    disabled: true,
+    enabled: true,
+  },
+  {
+    value: 'created_at',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'updated_at',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'operation',
+    disabled: false,
+    enabled: true,
+  },
+];
+const checkedDict = ref<any>({});
+
+const tableSize = ref<string>(settings.value.defaultSize);
 const tableData = ref<Role[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<Role[]>([]);
@@ -300,6 +272,7 @@ const handleEdit = async (row: Role) => {
   state.roleForm.data = row;
   state.roleForm.type = 'edit';
   state.roleForm.visible = true;
+  console.log(checkedDict.value);
 };
 // 添加
 const handleAdd = async () => {
@@ -314,6 +287,10 @@ const handleSelectionChange = (val: Role[]) => {
 
 // 批量删除
 const handleBatchDelete = async () => {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据');
+    return;
+  }
   const data = {
     ids: multipleSelection.value.map((v: Role) => {
       return v.id;
@@ -326,6 +303,11 @@ const handleBatchDelete = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+
+// 删除取消事件
+const handleCancelEvent = () => {
+  ElMessage.warning('取消操作');
 };
 
 // 状态变更
@@ -370,9 +352,7 @@ const handleStatusChange = async (row: Role) => {
   }
 }
 
-:deep(.operation-settings-show) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.el-button + .el-button {
+  margin-left: 0px;
 }
 </style>
