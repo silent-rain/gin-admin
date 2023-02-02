@@ -24,7 +24,7 @@ var UserRegisterImpl = &userRegister{
 
 // UserRegister 用户接口
 type UserRegister interface {
-	Add(user *systemModel.User, roleIds []uint) error
+	Add(user systemModel.User, roleIds []uint) error
 }
 
 // 用户注册结构

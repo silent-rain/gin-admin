@@ -30,8 +30,8 @@ var UserImpl = new(user)
 type User interface {
 	All() ([]systemModel.User, int64, error)
 	List(req systemDto.UserQueryReq) ([]systemModel.User, int64, error)
-	Info(id uint) (*systemModel.User, bool, error)
-	UpdateDetails(user systemModel.User, roles []uint)
+	Info(id uint) (systemModel.User, bool, error)
+	UpdateDetails(user systemModel.User, roles []uint) error
 	Delete(id uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 	UpdatePassword(id uint, password string) (int64, error)
@@ -95,14 +95,14 @@ func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, erro
 }
 
 // Info 获取用户信息
-func (d *user) Info(id uint) (*systemModel.User, bool, error) {
-	bean := &systemModel.User{ID: id}
-	result := database.Instance().Model(&systemModel.User{}).Preload("Roles").First(bean)
+func (d *user) Info(id uint) (systemModel.User, bool, error) {
+	bean := systemModel.User{ID: id}
+	result := database.Instance().Model(&systemModel.User{}).Preload("Roles").First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, false, nil
+		return systemModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return nil, false, result.Error
+		return systemModel.User{}, false, result.Error
 	}
 	return bean, true, nil
 }
@@ -267,13 +267,14 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 
 // GetUsername 获取用户信息 邮件/手机号
 func (d *user) GetUsername(username, password string) (systemModel.User, bool, error) {
-	bean := &systemModel.User{}
-	result := database.Instance().Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(bean)
+	bean := systemModel.User{}
+	result := database.Instance().
+		Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil
 	}
 	if result.Error != nil {
 		return systemModel.User{}, false, result.Error
 	}
-	return systemModel.User{}, true, nil
+	return bean, true, nil
 }

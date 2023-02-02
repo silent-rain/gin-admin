@@ -20,7 +20,7 @@ var HttpLogImpl = new(httpLog)
 
 // HttpLog 网络请求日志接口
 type HttpLog interface {
-	Add(bean *systemModel.HttpLog) (uint, error)
+	Add(bean systemModel.HttpLog) (uint, error)
 }
 
 // 网络请求日志结构

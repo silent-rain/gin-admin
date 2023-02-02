@@ -20,7 +20,7 @@ var SystemLogImpl = new(systemLog)
 
 // HttpLog 系统日志接口
 type SystemLog interface {
-	Add(bean *systemModel.SystemLog) (uint, error)
+	Add(bean systemModel.SystemLog) (uint, error)
 }
 
 // 系统日志结构

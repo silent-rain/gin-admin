@@ -23,7 +23,7 @@ func Init(engine *gin.Engine) {
 	engine.SetTrustedProxies(nil)
 
 	// 服务健康检查
-	engine.GET("/ping", handler.Ping)
+	engine.GET("/api/ping", handler.Ping)
 
 	//  静态资源路由
 	NewStaticApi(engine)
