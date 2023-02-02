@@ -1,12 +1,23 @@
 <template>
-  <el-card id="role-manage">
+  <el-card>
     <!-- 过滤条件 -->
     <div class="filter">
-      <label>用户昵称: </label>
       <el-input
         v-model="listQuery.nickname"
         class="filter-name"
-        placeholder="请输入用户昵称"
+        placeholder="筛选用户昵称"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.phone"
+        class="filter-name"
+        placeholder="筛选手机号码"
+        @keyup.enter.native="handleFilter"
+      />
+      <el-input
+        v-model="listQuery.email"
+        class="filter-name"
+        placeholder="筛选邮箱"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
@@ -38,11 +49,11 @@
     </div>
 
     <!-- 添加/编辑表单 -->
-    <RoleForm
-      v-model:data="state.roleForm.data"
-      v-model:visible="state.roleForm.visible"
-      :type="state.roleForm.type"
-      :width="state.roleForm.width"
+    <UserForm
+      v-model:data="state.userForm.data"
+      v-model:visible="state.userForm.visible"
+      :type="state.userForm.type"
+      :width="state.userForm.width"
       @refresh="fetchUserList"
     />
 
@@ -64,7 +75,7 @@
       <!-- <el-table-column
         v-if="checkedDict.realname"
         property="realname"
-        label="真实姓名"
+        label="姓名"
         show-overflow-tooltip
       /> -->
       <el-table-column
@@ -250,17 +261,19 @@ import {
   batchDeleteUser,
   resetUserPwd,
 } from '@/api/system/user';
-import { RoleListRsp, Role } from '~/api/system/role';
+import { UserListRsp, User } from '~/api/system/user';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
-import RoleForm from './components/RoleForm.vue';
+import UserForm from './components/UserForm.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 
 // 筛选过滤条件
 const listQuery = reactive({
   nickname: '',
+  phone: '',
+  email: '',
   page: 1,
   page_size: 10,
 });
@@ -271,14 +284,16 @@ const handleFilter = () => {
 // 清空过滤条件
 const handleCleanFilter = () => {
   listQuery.nickname = '';
+  listQuery.phone = '';
+  listQuery.email = '';
 };
 
 const state = reactive({
-  roleForm: {
-    data: {} as Role,
+  userForm: {
+    data: {} as User,
     visible: false,
     type: '',
-    width: '500px',
+    width: '700px',
   },
 });
 
@@ -372,9 +387,9 @@ const checkAllList = [
 const checkedDict = ref<any>({});
 
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<Role[]>();
+const tableData = ref<User[]>();
 const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<Role[]>([]);
+const multipleSelection = ref<User[]>([]);
 
 onBeforeMount(() => {
   fetchUserList();
@@ -383,7 +398,7 @@ onBeforeMount(() => {
 // 获取用户列表
 const fetchUserList = async () => {
   try {
-    const resp = (await getUserList(listQuery)).data as RoleListRsp;
+    const resp = (await getUserList(listQuery)).data as UserListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
@@ -392,7 +407,7 @@ const fetchUserList = async () => {
 };
 
 // 删除
-const handleDelete = async (row: Role) => {
+const handleDelete = async (row: User) => {
   const data = {
     id: row.id,
   };
@@ -405,19 +420,22 @@ const handleDelete = async (row: Role) => {
   }
 };
 // 编辑
-const handleEdit = async (row: Role) => {
-  state.roleForm.data = row;
-  state.roleForm.type = 'edit';
-  state.roleForm.visible = true;
+const handleEdit = async (row: User) => {
+  state.userForm.data = row;
+  state.userForm.type = 'edit';
+  state.userForm.visible = true;
 };
 // 添加
 const handleAdd = async () => {
-  state.roleForm.data.sort = 1;
-  state.roleForm.type = 'add';
-  state.roleForm.visible = true;
+  state.userForm.data.age = 1;
+  state.userForm.data.sort = 1;
+  state.userForm.data.gender = 0;
+  state.userForm.data.password = settings.value.defaultPassword;
+  state.userForm.type = 'add';
+  state.userForm.visible = true;
 };
 // 多选事件
-const handleSelectionChange = (val: Role[]) => {
+const handleSelectionChange = (val: User[]) => {
   multipleSelection.value = val;
 };
 
@@ -428,7 +446,7 @@ const handleBatchDelete = async () => {
     return;
   }
   const data = {
-    ids: multipleSelection.value.map((v: Role) => {
+    ids: multipleSelection.value.map((v: User) => {
       return v.id;
     }),
   };
@@ -447,14 +465,13 @@ const handleCancelEvent = () => {
 };
 
 // 状态变更
-const handleStatusChange = async (row: Role) => {
+const handleStatusChange = async (row: User) => {
   const data = {
     id: row.id,
     status: row.status,
   };
   try {
-    const resp = (await updateUserStatus(data)).data as RoleListRsp;
-    tableData.value = resp.data_list;
+    await updateUserStatus(data);
     fetchUserList();
     ElMessage.success('操作成功');
   } catch (error) {
@@ -468,8 +485,7 @@ const handleResetUserPwd = async (id: number) => {
     id: id,
   };
   try {
-    const resp = (await resetUserPwd(data)).data as RoleListRsp;
-    tableData.value = resp.data_list;
+    await resetUserPwd(data);
     fetchUserList();
     ElMessage.success('操作成功');
   } catch (error) {
@@ -482,7 +498,6 @@ const handleResetUserPwd = async (id: number) => {
 .filter {
   .filter-name {
     width: 200px;
-    margin-left: 8px;
   }
 }
 

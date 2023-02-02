@@ -21,6 +21,7 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // UserHandlerImpl 用户管理对象
@@ -73,6 +74,7 @@ func (h *userHandler) UpdateDetails(ctx *gin.Context) {
 		return
 	}
 	roleIds := req.RoleIds
+	zap.S().Errorf("=======%#v,", user)
 	if err := systemDao.UserImpl.UpdateDetails(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()

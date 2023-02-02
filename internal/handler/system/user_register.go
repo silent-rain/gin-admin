@@ -36,6 +36,18 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
+	// todo: 分开验证
+	// 判断用户是否存在 邮件/手机号
+	if ok, err := systemDao.UserImpl.ExistUsername(req.Phone, req.Email); err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	} else if ok {
+		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("用户已存在")
+		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
+		return
+	}
+
 	// 密码加密
 	req.Password = utils.Md5(req.Password)
 
@@ -47,17 +59,6 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	}
 	user.Status = 1
 	roleIds := req.RoleIds
-
-	// 判断用户是否存在 邮件/手机号
-	if ok, err := systemDao.UserImpl.ExistUsername(user.Phone, user.Email); err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	} else if ok {
-		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("用户已存在")
-		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
-		return
-	}
 
 	// 数据入库
 	if err := systemDao.UserRegisterImpl.Add(*user, roleIds); err != nil {

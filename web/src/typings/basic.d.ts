@@ -62,6 +62,7 @@ export interface SettingsConfig {
   defaultSize: string;
   defaultTheme: string;
   plateFormId: number;
+  defaultPassword: string;
 }
 
 export {};

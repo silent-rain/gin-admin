@@ -54,6 +54,8 @@ type UserUpdateDetailsReq struct {
 	Email    string `json:"email" form:"email"`              // 邮件
 	Intro    string `json:"intro" form:"intro"`              // 介绍
 	Note     string `json:"note" form:"note"`                // 备注
+	Sort     uint   `json:"sort" form:"sort"`                // 排序
+	Status   uint   `json:"status" form:"status"`            // 状态
 	RoleIds  []uint `json:"role_ids" form:"role_ids"`        // 角色IDs
 }
 

@@ -256,7 +256,14 @@ func (d *user) UpdateEmail(id uint, email string) (int64, error) {
 
 // ExistUserName 判断用户是否存在 邮件/手机号
 func (d *user) ExistUsername(phone, email string) (bool, error) {
-	result := database.Instance().Where("phone = ? OR email = ?", phone, email).First(&systemModel.User{})
+	state := database.Instance().Debug().Model(&systemModel.User{})
+	if phone != "" {
+		state.Where("phone = ?", phone)
+	}
+	if email != "" {
+		state.Or("email = ?", email)
+	}
+	result := state.First(&systemModel.User{})
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, nil
 	}

@@ -111,6 +111,10 @@ export const settings: SettingsConfig = {
    * */
   // 平台id  2->vue3-admin-plus
   plateFormId: 2,
+  /*
+   * setting default 密码
+   * */
+  defaultPassword: '888888',
 };
 
 export default settings;

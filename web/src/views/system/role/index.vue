@@ -1,5 +1,5 @@
 <template>
-  <el-card id="role-manage">
+  <el-card>
     <!-- 过滤条件 -->
     <div class="filter">
       <label>角色名称: </label>
