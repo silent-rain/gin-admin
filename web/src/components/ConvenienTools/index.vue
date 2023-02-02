@@ -3,20 +3,6 @@
     <el-tooltip content="刷新" placement="top">
       <el-button :icon="RefreshRight" @click="refreshEvent" />
     </el-tooltip>
-    <el-tooltip content="密度" placement="top">
-      <el-dropdown @command="handleSizeCommand">
-        <el-button class="el-dropdown-link" :icon="Expand" trigger="click" />
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-              v-for="(item, _) in sizeOptions"
-              :command="item.value"
-              >{{ item.label }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </el-tooltip>
 
     <el-popover placement="bottom" :width="180" trigger="hover">
       <template #reference>
@@ -58,6 +44,22 @@
         </el-checkbox>
       </el-checkbox-group>
     </el-popover>
+
+    <el-tooltip content="密度" placement="top">
+      <el-dropdown @command="handleSizeCommand">
+        <el-button class="el-dropdown-link" :icon="Expand" trigger="click" />
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
+              v-for="(item, _) in sizeOptions"
+              :command="item.value"
+              >{{ item.label }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </el-tooltip>
+
     <el-tooltip content="全屏" placement="top">
       <el-button :icon="FullScreen" @click="handleScreenFull" />
     </el-tooltip>
