@@ -97,6 +97,22 @@ func (h *userHandler) Delete(ctx *gin.Context) {
 	response.New(ctx).WithData(row).Json()
 }
 
+// BatchDelete 批量删除用户
+func (h *userHandler) BatchDelete(ctx *gin.Context) {
+	req := new(systemDto.UserBatchDeleteReq)
+	if err := utils.ParsingReqParams(ctx, req); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+		return
+	}
+	row, err := systemDao.UserImpl.BatchDelete(req.Ids)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
+		return
+	}
+	response.New(ctx).WithData(row).Json()
+}
+
 // Status 更新用户状态
 func (h *userHandler) Status(ctx *gin.Context) {
 	req := new(systemDto.UserStatusReq)

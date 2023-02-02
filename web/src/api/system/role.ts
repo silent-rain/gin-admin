@@ -50,7 +50,7 @@ export const deleteRole = async (params: any) => {
   });
 };
 // 批量删除角色
-export const batchDelete = async (params: any) => {
+export const batchDeleteRole = async (params: any) => {
   return axiosReq({
     url: '/role/batchDelete',
     method: 'delete',

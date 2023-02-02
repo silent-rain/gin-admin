@@ -9,7 +9,7 @@ CREATE TABLE sys_user (
     `id` INT AUTO_INCREMENT COMMENT '用户ID',
     `realname` VARCHAR(32) NULL COMMENT '真实姓名',
     `nickname` VARCHAR(32) NOT NULL COMMENT '昵称',
-    `gender` TINYINT(1) NULL COMMENT '性别: 0:女,1:男',
+    `gender` TINYINT(1) NULL COMMENT '0: 保密,1: 女,2: 男',
     `age` INT(11) NULL COMMENT '年龄',
     `birthday` VARCHAR(20) NULL COMMENT '出生日期',
     `avatar` VARCHAR(50) NULL COMMENT '用户头像URL',

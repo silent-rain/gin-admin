@@ -62,6 +62,11 @@ type UserDeleteReq struct {
 	ID uint `json:"id" form:"id" binding:"required"` // 用户ID
 }
 
+// UserBatchDeleteReq 批量删除用户
+type UserBatchDeleteReq struct {
+	Ids []uint `json:"ids" form:"ids" binding:"required"` // 用户ID列表
+}
+
 // UserStatusReq 更新用户状态
 type UserStatusReq struct {
 	ID     uint `json:"id" form:"id" binding:"required"`

@@ -60,7 +60,7 @@ export const constantRoutes: RouterTypes = [
     children: [
       {
         path: '/system/user',
-        component: () => import('@/views/other/count-to.vue'),
+        component: () => import('@/views/system/user/index.vue'),
         name: '用户管理',
         meta: { title: '用户管理', elSvgIcon: 'User' },
       },

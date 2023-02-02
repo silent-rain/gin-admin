@@ -55,6 +55,8 @@ func NewApiV1(engine *gin.Engine) {
 		user.PUT("/updateDetails", system.UserHandlerImpl.UpdateDetails)
 		// 删除用户
 		user.DELETE("/delete", system.UserHandlerImpl.Delete)
+		// 批量删除用户
+		user.DELETE("/batchDelete", system.UserHandlerImpl.BatchDelete)
 		// 更新用户状态
 		user.PUT("/status", system.UserHandlerImpl.Status)
 		// 更新用户密码

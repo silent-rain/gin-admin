@@ -84,7 +84,8 @@ func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, erro
 
 	bean := make([]systemModel.User, 0)
 	result := stats().Model(&systemModel.User{}).Preload("Roles").
-		Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").
+		Offset(req.Offset()).Limit(req.PageSize).
+		Order("sort DESC").Order("updated_at DESC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
@@ -201,9 +202,21 @@ func (d *user) Delete(id uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
+// BatchDelete 批量删除用户
+func (d *user) BatchDelete(ids []uint) (int64, error) {
+	beans := make([]systemModel.User, len(ids))
+	for _, id := range ids {
+		beans = append(beans, systemModel.User{
+			ID: id,
+		})
+	}
+	result := database.Instance().Delete(&beans)
+	return result.RowsAffected, result.Error
+}
+
 // Status 更新状态
 func (d *user) Status(id uint, status uint) (int64, error) {
-	result := database.Instance().Updates(&systemModel.User{
+	result := database.Instance().Select("status").Updates(&systemModel.User{
 		ID:     id,
 		Status: status,
 	})
@@ -212,14 +225,14 @@ func (d *user) Status(id uint, status uint) (int64, error) {
 
 // UpdatePassword 更新密码
 func (d *user) UpdatePassword(id uint, password string) (int64, error) {
-	result := database.Instance().Table("user").Where("id = ?", id).
+	result := database.Instance().Table("sys_user").Where("id = ?", id).
 		Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // ResetPassword 重置密码
 func (d *user) ResetPassword(id uint, password string) (int64, error) {
-	result := database.Instance().Table("user").Where("id = ?", id).Update("password", password)
+	result := database.Instance().Table("sys_user").Where("id = ?", id).Update("password", password)
 	return result.RowsAffected, result.Error
 }
 

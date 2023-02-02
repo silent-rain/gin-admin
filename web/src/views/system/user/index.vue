@@ -2,11 +2,11 @@
   <el-card id="role-manage">
     <!-- 过滤条件 -->
     <div class="filter">
-      <label>角色名称: </label>
+      <label>用户昵称: </label>
       <el-input
-        v-model="listQuery.name"
+        v-model="listQuery.nickname"
         class="filter-name"
-        placeholder="请输入角色名称"
+        placeholder="请输入用户昵称"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
@@ -28,9 +28,9 @@
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchRoleList"
+          @refreshEvent="fetchUserList"
           v-model:size="tableSize"
-          :screenFullElement="'el-table-role'"
+          :screenFullElement="'el-table-user'"
           :checkAllList="checkAllList"
           v-model:checkedDict="checkedDict"
         />
@@ -43,11 +43,11 @@
       v-model:visible="state.roleForm.visible"
       :type="state.roleForm.type"
       :width="state.roleForm.width"
-      @refresh="fetchRoleList"
+      @refresh="fetchUserList"
     />
 
     <el-table
-      class="el-table-role"
+      class="el-table-user"
       :data="tableData"
       style="width: 100%; margin-top: 10px"
       :size="tableSize"
@@ -58,13 +58,74 @@
       <el-table-column
         v-if="checkedDict.id"
         property="id"
-        label="角色ID"
+        label="用户ID"
         width="80"
       />
+      <!-- <el-table-column
+        v-if="checkedDict.realname"
+        property="realname"
+        label="真实姓名"
+        show-overflow-tooltip
+      /> -->
       <el-table-column
-        v-if="checkedDict.name"
-        property="name"
-        label="角色名称"
+        v-if="checkedDict.nickname"
+        property="nickname"
+        label="昵称"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.gender"
+        property="gender"
+        label="性别"
+        align="center"
+        width="90"
+      >
+        <template #default="scope">
+          <el-tag v-if="scope.row.gender === 0" type="info">保密</el-tag>
+          <el-tag v-else-if="scope.row.gender === 1" type="success">女</el-tag>
+          <el-tag v-else>男</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="checkedDict.age"
+        property="age"
+        label="年龄"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.birthday"
+        property="birthday"
+        label="出生日期"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.avatar"
+        property="avatar"
+        label="用户头像URL"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.phone"
+        property="phone"
+        label="手机号码"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.email"
+        property="email"
+        label="邮箱"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.intro"
+        property="intro"
+        label="介绍"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.note"
+        property="note"
+        label="备注"
         show-overflow-tooltip
       />
       <el-table-column
@@ -75,9 +136,20 @@
         width="80"
       />
       <el-table-column
+        v-if="checkedDict.roles"
+        property="roles"
+        label="角色"
+        align="center"
+        width="90"
+      >
+        <template #default="scope">
+          {{ scope.row.roles }}
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="checkedDict.status"
         property="status"
-        label="角色状态"
+        label="状态"
         align="center"
         width="90"
       >
@@ -124,9 +196,6 @@
             @click="handleEdit(scope.row)"
             >修改
           </el-button>
-          <el-button link type="primary" size="small" :icon="Finished"
-            >分配权限
-          </el-button>
           <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="取消"
@@ -142,6 +211,14 @@
               </el-button>
             </template>
           </el-popconfirm>
+          <el-button
+            link
+            type="warning"
+            size="small"
+            :icon="Finished"
+            @click="handleResetUserPwd(scope.row.id)"
+            >重置密码
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -149,7 +226,7 @@
       v-model:currentPage="listQuery.page"
       v-model:pageSize="listQuery.page_size"
       :total="tableDataTotal"
-      @pagination="fetchRoleList"
+      @pagination="fetchUserList"
     />
   </el-card>
 </template>
@@ -167,11 +244,12 @@ import {
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import {
-  getRoleList,
-  updateRoleStatus,
-  deleteRole,
-  batchDeleteRole,
-} from '@/api/system/role';
+  getUserList,
+  updateUserStatus,
+  deleteUser,
+  batchDeleteUser,
+  resetUserPwd,
+} from '@/api/system/user';
 import { RoleListRsp, Role } from '~/api/system/role';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
@@ -182,17 +260,17 @@ const { settings } = storeToRefs(useBasicStore());
 
 // 筛选过滤条件
 const listQuery = reactive({
-  name: '',
+  nickname: '',
   page: 1,
   page_size: 10,
 });
 // 过滤事件
 const handleFilter = () => {
-  fetchRoleList();
+  fetchUserList();
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
-  listQuery.name = '';
+  listQuery.nickname = '';
 };
 
 const state = reactive({
@@ -211,19 +289,64 @@ const checkAllList = [
     enabled: true,
   },
   {
-    value: 'name',
+    value: 'realname',
     disabled: true,
     enabled: true,
   },
   {
-    value: 'sort',
+    value: 'nickname',
+    disabled: true,
+    enabled: true,
+  },
+  {
+    value: 'gender',
     disabled: false,
     enabled: true,
+  },
+  {
+    value: 'age',
+    disabled: false,
+    enabled: false,
+  },
+  {
+    value: 'birthday',
+    disabled: false,
+    enabled: false,
+  },
+  {
+    value: 'avatar',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'phone',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'email',
+    disabled: false,
+    enabled: false,
+  },
+  {
+    value: 'intro',
+    disabled: false,
+    enabled: false,
   },
   {
     value: 'note',
     disabled: false,
     enabled: true,
+  },
+  {
+    value: 'roles',
+    disabled: false,
+    enabled: true,
+  },
+  {
+    value: 'sort',
+    disabled: false,
+    enabled: false,
   },
   {
     value: 'status',
@@ -233,7 +356,7 @@ const checkAllList = [
   {
     value: 'created_at',
     disabled: false,
-    enabled: true,
+    enabled: false,
   },
   {
     value: 'updated_at',
@@ -254,13 +377,13 @@ const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<Role[]>([]);
 
 onBeforeMount(() => {
-  fetchRoleList();
+  fetchUserList();
 });
 
-// 获取角色列表
-const fetchRoleList = async () => {
+// 获取用户列表
+const fetchUserList = async () => {
   try {
-    const resp = (await getRoleList(listQuery)).data as RoleListRsp;
+    const resp = (await getUserList(listQuery)).data as RoleListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
@@ -274,8 +397,8 @@ const handleDelete = async (row: Role) => {
     id: row.id,
   };
   try {
-    await deleteRole(data);
-    fetchRoleList();
+    await deleteUser(data);
+    fetchUserList();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -310,8 +433,8 @@ const handleBatchDelete = async () => {
     }),
   };
   try {
-    await batchDeleteRole(data);
-    fetchRoleList();
+    await batchDeleteUser(data);
+    fetchUserList();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -330,9 +453,24 @@ const handleStatusChange = async (row: Role) => {
     status: row.status,
   };
   try {
-    const resp = (await updateRoleStatus(data)).data as RoleListRsp;
+    const resp = (await updateUserStatus(data)).data as RoleListRsp;
     tableData.value = resp.data_list;
-    fetchRoleList();
+    fetchUserList();
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 重置密码
+const handleResetUserPwd = async (id: number) => {
+  const data = {
+    id: id,
+  };
+  try {
+    const resp = (await resetUserPwd(data)).data as RoleListRsp;
+    tableData.value = resp.data_list;
+    fetchUserList();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);

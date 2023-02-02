@@ -1,53 +1,5 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:53
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 01:49:04
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/api/user.ts
- * @Descripttion: 用户
+/*用户
  */
-import axiosReq from '@/utils/axios-req';
-
-// 获取验证码
-export const captcha = async (params: any) => {
-  return axiosReq({
-    url: '/captcha',
-    method: 'get',
-    bfLoading: false,
-    isAlertErrorMsg: false,
-    isParams: true,
-    data: params,
-  });
-};
-
-// 验证码验证
-export const captchaVerify = async (params: any) => {
-  return axiosReq({
-    url: '/captcha/verify',
-    method: 'get',
-    isParams: true,
-    data: params,
-  });
-};
-
-// 登录
-export const login = async (data: any) => {
-  return axiosReq({
-    url: '/login',
-    data,
-    method: 'post',
-  });
-};
-
-// 退出登录
-export const logout = async () => {
-  return axiosReq({
-    url: '/logout',
-    method: 'post',
-  });
-};
 
 // 获取用户信息
 export const getUserInfo = async (params: any) => {
@@ -55,6 +7,102 @@ export const getUserInfo = async (params: any) => {
     url: '/user/info',
     method: 'get',
     isParams: true,
+    data: params,
+  });
+};
+
+// 获取所有用户列表
+export const getAllUser = async () => {
+  return axiosReq({
+    url: '/user/all',
+    method: 'get',
+    isParams: true,
+    data: {},
+  });
+};
+
+// 获取用户列表
+export const getUserList = async (params: any) => {
+  return axiosReq({
+    url: '/user/list',
+    method: 'get',
+    isParams: true,
+    data: params,
+  });
+};
+
+// 添加用户
+export const addUser = async (params: any) => {
+  return axiosReq({
+    url: '/user/add',
+    method: 'post',
+    data: params,
+  });
+};
+
+// 更新用户详情信息
+export const updateUserDetails = async (params: any) => {
+  return axiosReq({
+    url: '/user/updateDetails',
+    method: 'put',
+    data: params,
+  });
+};
+
+// 删除用户
+export const deleteUser = async (params: any) => {
+  return axiosReq({
+    url: '/user/delete',
+    method: 'delete',
+    data: params,
+  });
+};
+// 批量删除用户
+export const batchDeleteUser = async (params: any) => {
+  return axiosReq({
+    url: '/user/batchDelete',
+    method: 'delete',
+    data: params,
+  });
+};
+
+// 更新用户状态
+export const updateUserStatus = async (params: any) => {
+  return axiosReq({
+    url: '/user/status',
+    method: 'put',
+    data: params,
+  });
+};
+// 更新用户密码
+export const updateUserPwd = async (params: any) => {
+  return axiosReq({
+    url: '/user/updatePwd',
+    method: 'put',
+    data: params,
+  });
+};
+// 重置用户密码
+export const resetUserPwd = async (params: any) => {
+  return axiosReq({
+    url: '/user/resetPwd',
+    method: 'put',
+    data: params,
+  });
+};
+// 更新用户手机号码
+export const updatePhone = async (params: any) => {
+  return axiosReq({
+    url: '/user/updatePhone',
+    method: 'put',
+    data: params,
+  });
+};
+// 更新用户邮箱
+export const updateEmail = async (params: any) => {
+  return axiosReq({
+    url: '/user/updateEmail',
+    method: 'put',
     data: params,
   });
 };
