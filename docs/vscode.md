@@ -1,5 +1,8 @@
 # VsCode 插件
 
+## Go Interface Annotations
+- interface 接口提示插件
+
 ## koroFileHeader
 - 文档注释插件
 - 插件配置
