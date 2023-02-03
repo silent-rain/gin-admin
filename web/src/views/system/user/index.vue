@@ -112,7 +112,7 @@
       <el-table-column
         v-if="checkedDict.avatar"
         property="avatar"
-        label="用户头像URL"
+        label="头像"
         show-overflow-tooltip
       />
       <el-table-column
@@ -134,12 +134,6 @@
         show-overflow-tooltip
       />
       <el-table-column
-        v-if="checkedDict.note"
-        property="note"
-        label="备注"
-        show-overflow-tooltip
-      />
-      <el-table-column
         v-if="checkedDict.sort"
         property="sort"
         label="排序"
@@ -151,10 +145,14 @@
         property="roles"
         label="角色"
         align="center"
-        width="90"
       >
         <template #default="scope">
-          {{ scope.row.roles }}
+          <el-tag
+            v-for="(item, _) in scope.row.roles"
+            :key="item.id"
+            size="small"
+            >{{ item.name }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -293,7 +291,7 @@ const state = reactive({
     data: {} as User,
     visible: false,
     type: '',
-    width: '700px',
+    width: '750px',
   },
 });
 
@@ -331,7 +329,7 @@ const checkAllList = [
   {
     value: 'avatar',
     disabled: false,
-    enabled: true,
+    enabled: false,
   },
   {
     value: 'phone',
@@ -341,7 +339,7 @@ const checkAllList = [
   {
     value: 'email',
     disabled: false,
-    enabled: false,
+    enabled: true,
   },
   {
     value: 'intro',
@@ -431,6 +429,7 @@ const handleAdd = async () => {
   state.userForm.data.sort = 1;
   state.userForm.data.gender = 0;
   state.userForm.data.password = settings.value.defaultPassword;
+  state.userForm.data.role_ids = [];
   state.userForm.type = 'add';
   state.userForm.visible = true;
 };

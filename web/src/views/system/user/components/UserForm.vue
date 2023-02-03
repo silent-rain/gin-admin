@@ -85,16 +85,6 @@
             />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="24">
-          <el-form-item label="分配角色" prop="role_ids">
-            <el-switch
-              v-model="props.data.role_ids"
-              :active-value="1"
-              :inactive-value="0"
-            />
-          </el-form-item>
-        </el-col> -->
-
         <el-col :span="24">
           <el-form-item label="介绍" prop="intro">
             <el-input
@@ -104,13 +94,24 @@
             />
           </el-form-item>
         </el-col>
-
         <el-col :span="24">
           <el-form-item label="备注" prop="note">
             <el-input
               v-model="props.data.note"
               type="textarea"
               placeholder="备注"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item label="分配角色" prop="role_ids">
+            <el-transfer
+              v-model="roleIds"
+              filterable
+              filter-placeholder="筛选角色"
+              :data="roleList"
+              :props="{ key: 'id', label: 'name' }"
+              :titles="['可选角色', '已选角色']"
             />
           </el-form-item>
         </el-col>
@@ -131,7 +132,9 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { updateUserDetails, addUser } from '@/api/system/user';
+import { getAllRole } from '@/api/system/role';
 import { User } from '~/api/system/user';
+import { RoleListRsp, Role } from '~/api/system/role';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
@@ -165,6 +168,22 @@ const rules = reactive<FormRules>({
   ],
   sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
 });
+const roleList = ref<Role[]>([]);
+const roleIds = ref<number[]>([]);
+
+onBeforeMount(() => {
+  fetchAllRole();
+});
+
+// 获取所有角色
+const fetchAllRole = async () => {
+  try {
+    const resp = (await getAllRole()).data as RoleListRsp;
+    roleList.value = resp.data_list;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // 关闭
 const handleClose = () => {
@@ -185,12 +204,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       console.log('error submit!', fields);
       return;
     }
-
+    const data = { ...props.data };
+    data.role_ids = roleIds.value;
     try {
       if (props.type === 'add') {
-        await addUser(props.data);
+        await addUser(data);
       } else {
-        await updateUserDetails(props.data);
+        await updateUserDetails(data);
       }
       emit('update:visible', false);
       emit('update:data', {});
