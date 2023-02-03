@@ -27,8 +27,8 @@
           >列展示
         </el-checkbox>
         <el-button type="primary" text @click="handleCheckdReset"
-          >重置</el-button
-        >
+          >重置
+        </el-button>
       </div>
 
       <el-divider style="margin: 4px 0" />
@@ -40,7 +40,7 @@
           :label="item.value"
           :disabled="item.disabled"
           style="width: 100%"
-          >{{ item.value }}
+          >{{ item.label }}
         </el-checkbox>
       </el-checkbox-group>
     </el-popover>
@@ -155,11 +155,14 @@ const handleCheckAllChange = (val: boolean) => {
 // 重置
 const handleCheckdReset = () => {
   checkAll.value = true;
-  checkedList.value = props.checkAllList.map((v) => v.value);
+  checkedList.value = props.checkAllList
+    .filter((v) => v.enabled)
+    .map((v) => v.value);
 
   const checkedCount = checkedList.value.length;
   isIndeterminate.value =
     checkedCount > 0 && checkedCount < props.checkAllList.length;
+  checkedListToMap();
 };
 // 多选框点击事件
 const handleCheckedChange = (value: string[]) => {

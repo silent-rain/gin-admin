@@ -205,46 +205,14 @@ const state = reactive({
 });
 
 const checkAllList = [
-  {
-    value: 'id',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'name',
-    disabled: true,
-    enabled: true,
-  },
-  {
-    value: 'sort',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'note',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'status',
-    disabled: true,
-    enabled: true,
-  },
-  {
-    value: 'created_at',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'updated_at',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'operation',
-    disabled: false,
-    enabled: true,
-  },
+  { label: '角色ID', value: 'id', disabled: false, enabled: true },
+  { label: '角色名称', value: 'name', disabled: true, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
 ];
 const checkedDict = ref<any>({});
 

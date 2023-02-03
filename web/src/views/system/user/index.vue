@@ -296,91 +296,23 @@ const state = reactive({
 });
 
 const checkAllList = [
-  {
-    value: 'id',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'realname',
-    disabled: true,
-    enabled: true,
-  },
-  {
-    value: 'nickname',
-    disabled: true,
-    enabled: true,
-  },
-  {
-    value: 'gender',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'age',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'birthday',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'avatar',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'phone',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'email',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'intro',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'note',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'roles',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'sort',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'status',
-    disabled: true,
-    enabled: true,
-  },
-  {
-    value: 'created_at',
-    disabled: false,
-    enabled: false,
-  },
-  {
-    value: 'updated_at',
-    disabled: false,
-    enabled: true,
-  },
-  {
-    value: 'operation',
-    disabled: false,
-    enabled: true,
-  },
+  { label: '用户ID', value: 'id', disabled: false, enabled: true },
+  // { label: '真实姓名', value: 'realname', disabled: true, enabled: true },
+  { label: '昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: '性别', value: 'gender', disabled: false, enabled: true },
+  { label: '年龄', value: 'age', disabled: false, enabled: false },
+  { label: '出生日期', value: 'birthday', disabled: false, enabled: false },
+  { label: '头像', value: 'avatar', disabled: false, enabled: false },
+  { label: '手机号码', value: 'phone', disabled: false, enabled: true },
+  { label: '邮箱', value: 'email', disabled: false, enabled: true },
+  { label: '介绍', value: 'intro', disabled: false, enabled: false },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '角色', value: 'roles', disabled: false, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: false },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
 ];
 const checkedDict = ref<any>({});
 
