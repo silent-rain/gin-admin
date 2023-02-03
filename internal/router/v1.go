@@ -59,10 +59,10 @@ func NewApiV1(engine *gin.Engine) {
 		user.DELETE("/batchDelete", system.UserHandlerImpl.BatchDelete)
 		// 更新用户状态
 		user.PUT("/status", system.UserHandlerImpl.Status)
-		// 更新用户密码
-		user.PUT("/updatePwd", system.UserHandlerImpl.UpdatePassword)
 		// 重置用户密码
 		user.PUT("/resetPwd", system.UserHandlerImpl.ResetPassword)
+		// 更新用户密码
+		user.PUT("/updatePwd", system.UserHandlerImpl.UpdatePassword)
 		// 更新用户手机号码
 		user.PUT("/updatePhone", system.UserHandlerImpl.UpdatePhone)
 		// 更新用户邮箱
