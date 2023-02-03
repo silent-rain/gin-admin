@@ -53,9 +53,12 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="出生日期" prop="birthday">
-            <el-input
+            <el-date-picker
               v-model="props.data.birthday"
-              placeholder="请输入出生日期"
+              type="date"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择出生日期"
             />
           </el-form-item>
         </el-col>
@@ -94,13 +97,21 @@
 
         <el-col :span="24">
           <el-form-item label="介绍" prop="intro">
-            <el-input v-model="props.data.intro" placeholder="介绍内容" />
+            <el-input
+              v-model="props.data.intro"
+              type="textarea"
+              placeholder="介绍内容"
+            />
           </el-form-item>
         </el-col>
 
         <el-col :span="24">
           <el-form-item label="备注" prop="note">
-            <el-input v-model="props.data.note" placeholder="备注" />
+            <el-input
+              v-model="props.data.note"
+              type="textarea"
+              placeholder="备注"
+            />
           </el-form-item>
         </el-col>
       </el-row>

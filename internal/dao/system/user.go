@@ -38,7 +38,8 @@ type User interface {
 	ResetPassword(id uint, password string) (int64, error)
 	UpdatePhone(id uint, phone string) (int64, error)
 	UpdateEmail(id uint, email string) (int64, error)
-	ExistUsername(phone, email string) (bool, error)
+	GetUserByPhone(phone string) (systemModel.User, bool, error)
+	GetUserByEmail(email string) (systemModel.User, bool, error)
 	ExistUserPassword(userId uint, password string) (bool, error)
 	GetUsername(username, password string) (systemModel.User, bool, error)
 }
@@ -254,23 +255,30 @@ func (d *user) UpdateEmail(id uint, email string) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// ExistUserName 判断用户是否存在 邮件/手机号
-func (d *user) ExistUsername(phone, email string) (bool, error) {
-	state := database.Instance().Debug().Model(&systemModel.User{})
-	if phone != "" {
-		state.Where("phone = ?", phone)
-	}
-	if email != "" {
-		state.Or("email = ?", email)
-	}
-	result := state.First(&systemModel.User{})
+// GetUserByPhone 获取用户信息
+func (d *user) GetUserByPhone(phone string) (systemModel.User, bool, error) {
+	bean := systemModel.User{}
+	result := database.Instance().Where("phone=?", phone).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return false, nil
+		return systemModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return false, result.Error
+		return systemModel.User{}, false, result.Error
 	}
-	return true, nil
+	return bean, true, nil
+}
+
+// GetUserByEmail 获取用户信息
+func (d *user) GetUserByEmail(email string) (systemModel.User, bool, error) {
+	bean := systemModel.User{}
+	result := database.Instance().Where("email=?", email).First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return systemModel.User{}, false, nil
+	}
+	if result.Error != nil {
+		return systemModel.User{}, false, result.Error
+	}
+	return bean, true, nil
 }
 
 // ExistUserPassword 判断用户密码是否正确

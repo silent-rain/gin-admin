@@ -75,8 +75,7 @@ func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, erro
 // Info 获取角色信息
 func (d *role) InfoByName(name string) (systemModel.Role, bool, error) {
 	bean := systemModel.Role{}
-	result := database.Instance().Debug().
-		Where("name=?", name).First(&bean)
+	result := database.Instance().Where("name=?", name).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.Role{}, false, nil
 	}

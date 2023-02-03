@@ -71,6 +71,8 @@ const (
 	CaptchaGenerateError                                  // 生成验证码失败
 	CaptchaVerifyError                                    // 验证码错误
 	SessionGetCaptchaEmptyError                           // 验证码为空
+	ExistPhoneError                                       // 手机号已存在
+	ExistEmailError                                       // 邮箱已存在
 )
 
 // 状态码映射具体消息
@@ -113,6 +115,8 @@ var statusCodeMsg = map[StatuScode]error{
 	CaptchaGenerateError:        errors.New("生成验证码失败"),
 	CaptchaVerifyError:          errors.New("验证码错误"),
 	SessionGetCaptchaEmptyError: errors.New("验证码为空"),
+	ExistPhoneError:             errors.New("手机号已存在"),
+	ExistEmailError:             errors.New("邮箱已存在"),
 }
 
 // Error 返回状态码错误信息

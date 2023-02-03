@@ -36,15 +36,14 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	// todo: 分开验证
+
 	// 判断用户是否存在 邮件/手机号
-	if ok, err := systemDao.UserImpl.ExistUsername(req.Phone, req.Email); err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+	if h.chechkPhone(ctx, req.Phone) {
+		response.New(ctx).WithCode(statuscode.ExistPhoneError).WithMsg("手机号已存在").Json()
 		return
-	} else if ok {
-		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("用户已存在")
-		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("用户已存在").Json()
+	}
+	if h.chechkEmail(ctx, req.Email) {
+		response.New(ctx).WithCode(statuscode.ExistEmailError).WithMsg("邮箱已存在").Json()
 		return
 	}
 
@@ -67,4 +66,35 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 		return
 	}
 	response.New(ctx).WithMsg("用户注册成功").Json()
+}
+
+// 检查手机号是否存在
+func (h *userRegisterHandler) chechkPhone(ctx *gin.Context, phone string) bool {
+	if phone == "" {
+		return false
+	}
+	if _, ok, err := systemDao.UserImpl.GetUserByPhone(phone); err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		return false
+	} else if !ok {
+		return false
+	}
+	log.New(ctx).WithCode(statuscode.DbDataExistError).Error("手机号已存在")
+	return true
+}
+
+// 检查邮箱是否存在
+func (h *userRegisterHandler) chechkEmail(ctx *gin.Context, email string) bool {
+	if email == "" {
+		return false
+	}
+	if _, ok, err := systemDao.UserImpl.GetUserByEmail(email); err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		return false
+	} else if !ok {
+
+		return false
+	}
+	log.New(ctx).WithCode(statuscode.DbDataExistError).Error("邮箱已存在")
+	return true
 }
