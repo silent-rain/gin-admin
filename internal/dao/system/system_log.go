@@ -28,7 +28,7 @@ type systemLog struct {
 }
 
 // 创建系统日志 Dao 对象
-func NewDaoSystemLog() *systemLog {
+func NewSystemLogDao() *systemLog {
 	return &systemLog{
 		db: database.Instance(),
 	}

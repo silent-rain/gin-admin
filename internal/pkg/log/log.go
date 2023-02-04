@@ -158,7 +158,7 @@ func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
 		return len(p), nil
 	}
 	go func() {
-		systemDao.NewDaoSystemLog().Add(sysLog)
+		systemDao.NewSystemLogDao().Add(sysLog)
 	}()
 	// 返回写入日志的长度,以及错误
 	return len(p), nil

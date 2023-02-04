@@ -22,11 +22,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserRegisterHandlerImpl 用户注册对象
-var UserRegisterHandlerImpl = new(userRegisterHandler)
-
 // 用户注册结构
 type userRegisterHandler struct{}
+
+// 创建用户注册 Handler 对象
+func NewUserRegisterHandler() *userRegisterHandler {
+	return &userRegisterHandler{}
+}
 
 // Add 添加用户
 func (h *userRegisterHandler) Add(ctx *gin.Context) {
@@ -60,7 +62,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	roleIds := req.RoleIds
 
 	// 数据入库
-	if err := systemDao.NewDaoUserRegister().Add(*user, roleIds); err != nil {
+	if err := systemDao.NewUserRegisterDao().Add(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
@@ -73,7 +75,7 @@ func (h *userRegisterHandler) chechkPhone(ctx *gin.Context, phone string) bool {
 	if phone == "" {
 		return false
 	}
-	if _, ok, err := systemDao.NewDaoUser().GetUserByPhone(phone); err != nil {
+	if _, ok, err := systemDao.NewUserDao().GetUserByPhone(phone); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {
@@ -88,7 +90,7 @@ func (h *userRegisterHandler) chechkEmail(ctx *gin.Context, email string) bool {
 	if email == "" {
 		return false
 	}
-	if _, ok, err := systemDao.NewDaoUser().GetUserByEmail(email); err != nil {
+	if _, ok, err := systemDao.NewUserDao().GetUserByEmail(email); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {

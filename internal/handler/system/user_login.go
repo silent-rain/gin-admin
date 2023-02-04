@@ -25,11 +25,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserLoginImpl 用户登录注册对象
-var UserLoginImpl = new(userLoginHandler)
-
 // 用户登录/登出
 type userLoginHandler struct {
+}
+
+// 创建用户登录/登出 Handler 对象
+func NewUserLoginHandler() *userLoginHandler {
+	return &userLoginHandler{}
 }
 
 // Login 登录
@@ -41,7 +43,7 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 	}
 
 	// 查询用户
-	user, ok, err := systemDao.NewDaoUser().GetUsername(req.Username, req.Password)
+	user, ok, err := systemDao.NewUserDao().GetUsername(req.Username, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()

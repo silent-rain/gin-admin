@@ -31,9 +31,9 @@ type userRegister struct {
 }
 
 // 创建用户注册 Dao 对象
-func NewDaoUserRegister() *userRegister {
+func NewUserRegisterDao() *userRegister {
 	return &userRegister{
-		Transaction: dao.NewTransaction(),
+		Transaction: dao.NewTransaction(database.Instance()),
 		db:          database.Instance(),
 	}
 }

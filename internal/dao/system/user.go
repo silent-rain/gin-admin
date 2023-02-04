@@ -43,14 +43,15 @@ type User interface {
 
 // 用户
 type user struct {
-	dao.Transaction
+	*dao.Transaction
 	db *gorm.DB
 }
 
 // 创建用户 Dao 对象
-func NewDaoUser() *user {
+func NewUserDao() *user {
 	return &user{
-		db: database.Instance(),
+		Transaction: dao.NewTransaction(database.Instance()),
+		db:          database.Instance(),
 	}
 }
 

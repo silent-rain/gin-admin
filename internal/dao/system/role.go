@@ -37,7 +37,7 @@ type role struct {
 }
 
 // 创建角色 Dao 对象
-func NewDaoRole() *role {
+func NewRoleDao() *role {
 	return &role{
 		db: database.Instance(),
 	}

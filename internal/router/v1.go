@@ -29,62 +29,62 @@ func NewApiV1(engine *gin.Engine) {
 	userLogin := v1.Group("/")
 	{
 		// 注册
-		userLogin.POST("/register", system.UserRegisterHandlerImpl.Add)
+		userLogin.POST("/register", system.NewUserRegisterHandler().Add)
 		// 验证码
-		userLogin.GET("/captcha", system.UserLoginImpl.Captcha)
+		userLogin.GET("/captcha", system.NewUserLoginHandler().Captcha)
 		// 验证码验证
-		userLogin.GET("/captcha/verify", system.UserLoginImpl.CaptchaVerify)
+		userLogin.GET("/captcha/verify", system.NewUserLoginHandler().CaptchaVerify)
 		// 登录
-		userLogin.POST("/login", system.UserLoginImpl.Login)
+		userLogin.POST("/login", system.NewUserLoginHandler().Login)
 		// 登出
-		userLogin.POST("/logout", system.UserLoginImpl.Logout)
+		userLogin.POST("/logout", system.NewUserLoginHandler().Logout)
 	}
 
 	// 用户管理
 	user := v1.Group("/user")
 	{
 		// 获取用户信息
-		user.GET("/info", system.UserHandlerImpl.Info)
+		user.GET("/info", system.NewUserHandler().Info)
 		// 获取所有用户列表
-		user.GET("/all", system.UserHandlerImpl.All)
+		user.GET("/all", system.NewUserHandler().All)
 		// 获取用户列表
-		user.GET("/list", system.UserHandlerImpl.List)
+		user.GET("/list", system.NewUserHandler().List)
 		// 添加用户
-		user.POST("/add", system.UserRegisterHandlerImpl.Add)
+		user.POST("/add", system.NewUserRegisterHandler().Add)
 		// 更新用户详情信息
-		user.PUT("/updateDetails", system.UserHandlerImpl.UpdateDetails)
+		user.PUT("/updateDetails", system.NewUserHandler().UpdateDetails)
 		// 删除用户
-		user.DELETE("/delete", system.UserHandlerImpl.Delete)
+		user.DELETE("/delete", system.NewUserHandler().Delete)
 		// 批量删除用户
-		user.DELETE("/batchDelete", system.UserHandlerImpl.BatchDelete)
+		user.DELETE("/batchDelete", system.NewUserHandler().BatchDelete)
 		// 更新用户状态
-		user.PUT("/status", system.UserHandlerImpl.Status)
+		user.PUT("/status", system.NewUserHandler().Status)
 		// 重置用户密码
-		user.PUT("/resetPwd", system.UserHandlerImpl.ResetPassword)
+		user.PUT("/resetPwd", system.NewUserHandler().ResetPassword)
 		// 更新用户密码
-		user.PUT("/updatePwd", system.UserHandlerImpl.UpdatePassword)
+		user.PUT("/updatePwd", system.NewUserHandler().UpdatePassword)
 		// 更新用户手机号码
-		user.PUT("/updatePhone", system.UserHandlerImpl.UpdatePhone)
+		user.PUT("/updatePhone", system.NewUserHandler().UpdatePhone)
 		// 更新用户邮箱
-		user.PUT("/updateEmail", system.UserHandlerImpl.UpdateEmail)
+		user.PUT("/updateEmail", system.NewUserHandler().UpdateEmail)
 	}
 
 	// 角色管理
 	role := v1.Group("/role")
 	{
 		// 获取所有角色列表
-		role.GET("/all", system.RoleHandlerImpl.All)
+		role.GET("/all", system.NewRoleHandler().All)
 		// 获取角色列表
-		role.GET("/list", system.RoleHandlerImpl.List)
+		role.GET("/list", system.NewRoleHandler().List)
 		// 添加角色
-		role.POST("/add", system.RoleHandlerImpl.Add)
+		role.POST("/add", system.NewRoleHandler().Add)
 		// 更新角色
-		role.PUT("/update", system.RoleHandlerImpl.Update)
+		role.PUT("/update", system.NewRoleHandler().Update)
 		// 删除角色
-		role.DELETE("/delete", system.RoleHandlerImpl.Delete)
+		role.DELETE("/delete", system.NewRoleHandler().Delete)
 		// 批量删除角色
-		role.DELETE("/batchDelete", system.RoleHandlerImpl.BatchDelete)
+		role.DELETE("/batchDelete", system.NewRoleHandler().BatchDelete)
 		// 更新角色状态
-		role.PUT("/status", system.RoleHandlerImpl.Status)
+		role.PUT("/status", system.NewRoleHandler().Status)
 	}
 }

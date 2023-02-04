@@ -68,7 +68,7 @@ func HttpLogger() gin.HandlerFunc {
 			HttpType:   "REQ",
 		}
 		go func(htppLog systemModel.HttpLog) {
-			systemDao.NewDaoHttpLog().Add(htppLog)
+			systemDao.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 
 		ctx.Next()
@@ -79,7 +79,7 @@ func HttpLogger() gin.HandlerFunc {
 		htppLog.HttpType = "RSP"
 		htppLog.Body = blw.Body.String()
 		go func(htppLog systemModel.HttpLog) {
-			systemDao.NewDaoHttpLog().Add(htppLog)
+			systemDao.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 	}
 }

@@ -28,7 +28,7 @@ type httpLog struct {
 }
 
 // 创建网络请求日志 Dao 对象
-func NewDaoHttpLog() *httpLog {
+func NewHttpLogDao() *httpLog {
 	return &httpLog{
 		db: database.Instance(),
 	}

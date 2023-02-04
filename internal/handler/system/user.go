@@ -23,16 +23,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserHandlerImpl 用户管理对象
-var UserHandlerImpl = new(userHandler)
-
 // 用户管理
 type userHandler struct {
 }
 
+// 创建角色 Handler 对象
+func NewUserHandler() *userHandler {
+	return &userHandler{}
+}
+
 // All 获取所有用户列表
 func (h *userHandler) All(ctx *gin.Context) {
-	results, total, err := systemDao.NewDaoUser().All()
+	results, total, err := systemDao.NewUserDao().All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -49,7 +51,7 @@ func (h *userHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	results, total, err := systemDao.NewDaoUser().List(*req)
+	results, total, err := systemDao.NewUserDao().List(*req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -73,7 +75,7 @@ func (h *userHandler) UpdateDetails(ctx *gin.Context) {
 		return
 	}
 	roleIds := req.RoleIds
-	if err := systemDao.NewDaoUser().UpdateDetails(*user, roleIds); err != nil {
+	if err := systemDao.NewUserDao().UpdateDetails(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
 		return
@@ -88,7 +90,7 @@ func (h *userHandler) Delete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoUser().Delete(req.ID)
+	row, err := systemDao.NewUserDao().Delete(req.ID)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
@@ -104,7 +106,7 @@ func (h *userHandler) BatchDelete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoUser().BatchDelete(req.Ids)
+	row, err := systemDao.NewUserDao().BatchDelete(req.Ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
@@ -120,7 +122,7 @@ func (h *userHandler) Status(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoUser().Status(req.ID, req.Status)
+	row, err := systemDao.NewUserDao().Status(req.ID, req.Status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbSetStatusError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbSetStatusError).Json()
@@ -142,7 +144,7 @@ func (h *userHandler) UpdatePassword(ctx *gin.Context) {
 	req.NewPassword = utils.Md5(req.NewPassword)
 
 	// 用户密码验证
-	ok, err := systemDao.NewDaoUser().ExistUserPassword(req.ID, req.OldPassword)
+	ok, err := systemDao.NewUserDao().ExistUserPassword(req.ID, req.OldPassword)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -154,7 +156,7 @@ func (h *userHandler) UpdatePassword(ctx *gin.Context) {
 		return
 	}
 
-	row, err := systemDao.NewDaoUser().UpdatePassword(req.ID, req.NewPassword)
+	row, err := systemDao.NewUserDao().UpdatePassword(req.ID, req.NewPassword)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -173,7 +175,7 @@ func (h *userHandler) ResetPassword(ctx *gin.Context) {
 
 	// 默认密码加密
 	password := utils.Md5(conf.ServerUserDefaultPwd)
-	row, err := systemDao.NewDaoUser().ResetPassword(req.ID, password)
+	row, err := systemDao.NewUserDao().ResetPassword(req.ID, password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbResetError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbResetError).Json()
@@ -189,7 +191,7 @@ func (h *userHandler) UpdatePhone(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoUser().UpdatePhone(req.ID, req.Phone)
+	row, err := systemDao.NewUserDao().UpdatePhone(req.ID, req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -205,7 +207,7 @@ func (h *userHandler) UpdateEmail(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoUser().UpdateEmail(req.ID, req.Email)
+	row, err := systemDao.NewUserDao().UpdateEmail(req.ID, req.Email)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -217,7 +219,7 @@ func (h *userHandler) UpdateEmail(ctx *gin.Context) {
 // Info 获取用户信息
 func (h *userHandler) Info(ctx *gin.Context) {
 	userId := utils.GetUserId(ctx)
-	user, ok, err := systemDao.NewDaoUser().Info(userId)
+	user, ok, err := systemDao.NewUserDao().Info(userId)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()

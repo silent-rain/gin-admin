@@ -20,19 +20,20 @@ import (
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
-
-// RoleHandlerImpl 角色对象
-var RoleHandlerImpl = new(roleHandler)
 
 // 角色
 type roleHandler struct {
 }
 
+// 创建角色 Handler 对象
+func NewRoleHandler() *roleHandler {
+	return &roleHandler{}
+}
+
 // All 获取所有角色列表
 func (h *roleHandler) All(ctx *gin.Context) {
-	roles, total, err := systemDao.NewDaoRole().All()
+	roles, total, err := systemDao.NewRoleDao().All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -49,7 +50,7 @@ func (h *roleHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	roles, total, err := systemDao.NewDaoRole().List(*req)
+	roles, total, err := systemDao.NewRoleDao().List(*req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -71,20 +72,19 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 		return
 	}
 
-	_, ok, err := systemDao.NewDaoRole().InfoByName(role.Name)
+	_, ok, err := systemDao.NewRoleDao().InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	}
-	zap.S().Errorf("========= %#v   %#v  %#v", role.Name, ok, err)
 	if ok {
 		log.New(ctx).WithCode(statuscode.DbDataExistError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("角色已存在").Json()
 		return
 	}
 
-	if _, err := systemDao.NewDaoRole().Add(role); err != nil {
+	if _, err := systemDao.NewRoleDao().Add(role); err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbAddError).Json()
 		return
@@ -104,7 +104,7 @@ func (h *roleHandler) Update(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoRole().Update(role)
+	row, err := systemDao.NewRoleDao().Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -120,7 +120,7 @@ func (h *roleHandler) Delete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoRole().Delete(req.ID)
+	row, err := systemDao.NewRoleDao().Delete(req.ID)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
@@ -136,7 +136,7 @@ func (h *roleHandler) BatchDelete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoRole().BatchDelete(req.Ids)
+	row, err := systemDao.NewRoleDao().BatchDelete(req.Ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
@@ -152,7 +152,7 @@ func (h *roleHandler) Status(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewDaoRole().Status(req.ID, req.Status)
+	row, err := systemDao.NewRoleDao().Status(req.ID, req.Status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbSetStatusError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbSetStatusError).Json()
