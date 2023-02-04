@@ -45,13 +45,49 @@ func (h *menuHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	menus, total, err := h.dao.List(*req)
+	menus, _, err := h.dao.List()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	}
-	response.New(ctx).WithDataList(menus, total).Json()
+
+	// list 数据转为 tree
+	tree := ListToTree(menus, nil)
+	if req.Title == "" {
+		response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
+		return
+	}
+
+	// 过滤
+	treeFilter := make([]systemModel.Menu, 0)
+	for _, item := range tree {
+		if item.Title == req.Title {
+			treeFilter = append(treeFilter, item)
+		}
+	}
+	response.New(ctx).WithDataList(treeFilter, int64(len(treeFilter))).Json()
+}
+
+// ListToTree 列表数据转为树结构
+func ListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
+	tree := make([]systemModel.Menu, 0)
+	for _, item := range src {
+		if (item.ParentId == nil && parentId == nil) ||
+			(item.ParentId != nil && parentId != nil && *item.ParentId == *parentId) {
+			tree = append(tree, item)
+		}
+	}
+
+	for i := range tree {
+		children := ListToTree(src, &tree[i].ID)
+		if tree[i].Children == nil {
+			tree[i].Children = children
+		} else {
+			tree[i].Children = append(tree[i].Children, children...)
+		}
+	}
+	return tree
 }
 
 // Add 添加菜单

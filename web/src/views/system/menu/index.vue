@@ -2,11 +2,11 @@
   <el-card>
     <!-- 过滤条件 -->
     <div class="filter">
-      <label>菜单名称: </label>
+      <label>一级菜单筛选: </label>
       <el-input
         v-model="listQuery.title"
         class="filter-name"
-        placeholder="请输入菜单名称"
+        placeholder="请输入一级菜单名称"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
@@ -54,7 +54,7 @@
       style="width: 100%; margin-top: 10px"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column v-if="checkedDict.id" prop="id" label="ID" width="80" />
+      <el-table-column v-if="checkedDict.id" prop="id" label="ID" />
       <el-table-column
         v-if="checkedDict.title"
         prop="title"

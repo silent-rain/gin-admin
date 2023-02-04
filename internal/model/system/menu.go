@@ -40,3 +40,15 @@ type Menu struct {
 func (Menu) TableName() string {
 	return "sys_menu"
 }
+
+// MenuSortById 通过对 ID 排序实现了 sort.Interface 接口
+type MenuSortById []*Menu
+
+// Len 数据长度
+func (a MenuSortById) Len() int { return len(a) }
+
+// Less 数据比较
+func (a MenuSortById) Less(i, j int) bool { return a[i].ID < a[j].ID }
+
+// Swap 数据交换位置
+func (a MenuSortById) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
