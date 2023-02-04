@@ -34,19 +34,3 @@ type UpdateRoleReq struct {
 	Sort   uint   `json:"sort"  form:"sort"`                   // 排序
 	Note   string `json:"note"  form:"note"`                   // 备注
 }
-
-// DeleteRoleReq 删除角色
-type DeleteRoleReq struct {
-	ID uint `json:"id" form:"id" binding:"required"` // 角色ID
-}
-
-// BatchDeleteRoleReq 批量删除角色
-type BatchDeleteRoleReq struct {
-	Ids []uint `json:"ids" form:"ids" binding:"required"` // 角色ID列表
-}
-
-// 更新角色状态
-type UpdateRoleStatusReq struct {
-	ID     uint `json:"id" form:"id" binding:"required"`
-	Status uint `json:"status" form:"status"`
-}

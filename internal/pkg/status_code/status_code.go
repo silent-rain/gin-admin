@@ -36,15 +36,15 @@ const (
 
 // 数据库
 const (
-	DbQueryError       StatuScode = iota + 10300 // 数据查询错误
-	DbQueryEmptyError                            // 数据不存在
-	DbAddError                                   // 数据添加失败
-	DbUpdateError                                // 数据更新失败
-	DbDeleteError                                // 数据删除失败
-	DbBatchDeleteError                           // 数据批量删除失败
-	DbSetStatusError                             // 更新状态失败
-	DbResetError                                 // 数据重置失败
-	DbDataExistError                             // 数据已存在
+	DbQueryError        StatuScode = iota + 10300 // 数据查询错误
+	DbQueryEmptyError                             // 数据不存在
+	DbAddError                                    // 数据添加失败
+	DbUpdateError                                 // 数据更新失败
+	DbDeleteError                                 // 数据删除失败
+	DbBatchDeleteError                            // 数据批量删除失败
+	DbUpdateStatusError                           // 更新状态失败
+	DbResetError                                  // 数据重置失败
+	DbDataExistError                              // 数据已存在
 )
 
 // 鉴权
@@ -88,15 +88,15 @@ var statusCodeMsg = map[StatuScode]error{
 	JsonDataEncodeError: errors.New("数据编码错误"),
 	JsonDataDecodeError: errors.New("数据解码错误"),
 	// 数据库
-	DbQueryError:       errors.New("数据查询错误"),
-	DbQueryEmptyError:  errors.New("数据不存在"),
-	DbAddError:         errors.New("数据添加失败"),
-	DbUpdateError:      errors.New("数据更新失败"),
-	DbDeleteError:      errors.New("数据删除失败"),
-	DbBatchDeleteError: errors.New("数据批量删除失败"),
-	DbSetStatusError:   errors.New("更新状态失败"),
-	DbResetError:       errors.New("数据重置失败"),
-	DbDataExistError:   errors.New("数据已存在"),
+	DbQueryError:        errors.New("数据查询错误"),
+	DbQueryEmptyError:   errors.New("数据不存在"),
+	DbAddError:          errors.New("数据添加失败"),
+	DbUpdateError:       errors.New("数据更新失败"),
+	DbDeleteError:       errors.New("数据删除失败"),
+	DbBatchDeleteError:  errors.New("数据批量删除失败"),
+	DbUpdateStatusError: errors.New("更新状态失败"),
+	DbResetError:        errors.New("数据重置失败"),
+	DbDataExistError:    errors.New("数据已存在"),
 	// 鉴权
 	TokenGenerateError: errors.New("生成 Token 失败"),
 	TokenNotFound:      errors.New("鉴权信息不存在"),

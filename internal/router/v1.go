@@ -87,4 +87,23 @@ func NewApiV1(engine *gin.Engine) {
 		// 更新角色状态
 		role.PUT("/status", system.NewRoleHandler().Status)
 	}
+
+	// 菜单管理
+	menu := v1.Group("/menu")
+	{
+		// 获取所有菜单列表
+		menu.GET("/all", system.NewMenuHandler().All)
+		// 获取菜单列表
+		menu.GET("/list", system.NewMenuHandler().List)
+		// 添加菜单
+		menu.POST("/add", system.NewMenuHandler().Add)
+		// 更新菜单
+		menu.PUT("/update", system.NewMenuHandler().Update)
+		// 删除菜单
+		menu.DELETE("/delete", system.NewMenuHandler().Delete)
+		// 批量删除菜单
+		menu.DELETE("/batchDelete", system.NewMenuHandler().BatchDelete)
+		// 更新菜单状态
+		menu.PUT("/status", system.NewMenuHandler().Status)
+	}
 }

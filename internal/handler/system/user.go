@@ -12,6 +12,7 @@ package system
 
 import (
 	systemDao "gin-admin/internal/dao/system"
+	"gin-admin/internal/dto"
 	systemDto "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
@@ -85,7 +86,7 @@ func (h *userHandler) Update(ctx *gin.Context) {
 
 // Delete 删除用户
 func (h *userHandler) Delete(ctx *gin.Context) {
-	req := new(systemDto.DeleteUserReq)
+	req := new(dto.DeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -101,7 +102,7 @@ func (h *userHandler) Delete(ctx *gin.Context) {
 
 // BatchDelete 批量删除用户
 func (h *userHandler) BatchDelete(ctx *gin.Context) {
-	req := new(systemDto.BatchDeleteUserReq)
+	req := new(dto.BatchDeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -117,15 +118,15 @@ func (h *userHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新用户状态
 func (h *userHandler) Status(ctx *gin.Context) {
-	req := new(systemDto.UpdateUserStatusReq)
+	req := new(dto.UpdateStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 	row, err := systemDao.NewUserDao().Status(req.ID, req.Status)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbSetStatusError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbSetStatusError).Json()
+		log.New(ctx).WithCode(statuscode.DbUpdateStatusError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbUpdateStatusError).Json()
 		return
 	}
 	response.New(ctx).WithData(row).Json()

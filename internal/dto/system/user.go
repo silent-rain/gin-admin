@@ -59,22 +59,6 @@ type UpdateUserReq struct {
 	RoleIds  []uint `json:"role_ids" form:"role_ids"`        // 角色IDs
 }
 
-// DeleteUserReq 删除用户
-type DeleteUserReq struct {
-	ID uint `json:"id" form:"id" binding:"required"` // 用户ID
-}
-
-// BatchDeleteUserReq 批量删除用户
-type BatchDeleteUserReq struct {
-	Ids []uint `json:"ids" form:"ids" binding:"required"` // 用户ID列表
-}
-
-// UpdateUserStatusReq 更新用户状态
-type UpdateUserStatusReq struct {
-	ID     uint `json:"id" form:"id" binding:"required"`
-	Status uint `json:"status" form:"status"`
-}
-
 // ResetUserPasswordReq 重置用户密码
 type ResetUserPasswordReq struct {
 	ID uint `json:"id" form:"id" binding:"required"`
