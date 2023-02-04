@@ -28,8 +28,9 @@ type User interface {
 	All() ([]systemModel.User, int64, error)
 	List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error)
 	Info(id uint) (systemModel.User, bool, error)
-	UpdateDetails(user systemModel.User, roles []uint) error
+	Update(user systemModel.User, roles []uint) error
 	Delete(id uint) (int64, error)
+	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 	UpdatePassword(id uint, password string) (int64, error)
 	ResetPassword(id uint, password string) (int64, error)

@@ -23,11 +23,17 @@ import (
 )
 
 // 注册用户结构
-type registerUserHandler struct{}
+type registerUserHandler struct {
+	dao             systemDao.User
+	registerUserDao systemDao.RegisterUser
+}
 
 // 创建注册用户 Handler 对象
 func NewRegisterUserHandler() *registerUserHandler {
-	return &registerUserHandler{}
+	return &registerUserHandler{
+		dao:             systemDao.NewUserDao(),
+		registerUserDao: systemDao.NewRegisteUserDao(),
+	}
 }
 
 // Add 添加用户
@@ -62,7 +68,7 @@ func (h *registerUserHandler) Add(ctx *gin.Context) {
 	roleIds := req.RoleIds
 
 	// 数据入库
-	if err := systemDao.NewRegisteUserDao().Add(*user, roleIds); err != nil {
+	if err := h.registerUserDao.Add(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
@@ -75,7 +81,7 @@ func (h *registerUserHandler) chechkPhone(ctx *gin.Context, phone string) bool {
 	if phone == "" {
 		return false
 	}
-	if _, ok, err := systemDao.NewUserDao().GetUserByPhone(phone); err != nil {
+	if _, ok, err := h.dao.GetUserByPhone(phone); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {
@@ -90,7 +96,7 @@ func (h *registerUserHandler) chechkEmail(ctx *gin.Context, email string) bool {
 	if email == "" {
 		return false
 	}
-	if _, ok, err := systemDao.NewUserDao().GetUserByEmail(email); err != nil {
+	if _, ok, err := h.dao.GetUserByEmail(email); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {

@@ -16,16 +16,19 @@ import (
 
 // 菜单
 type menuHandler struct {
+	dao systemDao.Menu
 }
 
 // 创建菜单 Handler 对象
 func NewMenuHandler() *menuHandler {
-	return &menuHandler{}
+	return &menuHandler{
+		dao: systemDao.NewMenuDao(),
+	}
 }
 
 // All 获取所有菜单列表
 func (h *menuHandler) All(ctx *gin.Context) {
-	menus, total, err := systemDao.NewMenuDao().All()
+	menus, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -42,7 +45,7 @@ func (h *menuHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	menus, total, err := systemDao.NewMenuDao().List(*req)
+	menus, total, err := h.dao.List(*req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -63,7 +66,7 @@ func (h *menuHandler) Add(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	if _, err := systemDao.NewMenuDao().Add(menu); err != nil {
+	if _, err := h.dao.Add(menu); err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbAddError).Json()
 		return
@@ -83,7 +86,7 @@ func (h *menuHandler) Update(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewMenuDao().Update(menu)
+	row, err := h.dao.Update(menu)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -99,7 +102,7 @@ func (h *menuHandler) Delete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewMenuDao().Delete(req.ID)
+	row, err := h.dao.Delete(req.ID)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
@@ -115,7 +118,7 @@ func (h *menuHandler) BatchDelete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewMenuDao().BatchDelete(req.Ids)
+	row, err := h.dao.BatchDelete(req.Ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
@@ -131,7 +134,7 @@ func (h *menuHandler) Status(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewMenuDao().Status(req.ID, req.Status)
+	row, err := h.dao.Status(req.ID, req.Status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateStatusError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateStatusError).Json()

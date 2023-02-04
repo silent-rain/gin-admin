@@ -19,8 +19,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserRegister 用户接口
-type UserRegister interface {
+// RegisterUser 用户接口
+type RegisterUser interface {
 	Add(user systemModel.User, roleIds []uint) error
 }
 

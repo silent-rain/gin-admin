@@ -25,16 +25,19 @@ import (
 
 // 角色
 type roleHandler struct {
+	dao systemDao.Role
 }
 
 // 创建角色 Handler 对象
 func NewRoleHandler() *roleHandler {
-	return &roleHandler{}
+	return &roleHandler{
+		dao: systemDao.NewRoleDao(),
+	}
 }
 
 // All 获取所有角色列表
 func (h *roleHandler) All(ctx *gin.Context) {
-	roles, total, err := systemDao.NewRoleDao().All()
+	roles, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -51,7 +54,7 @@ func (h *roleHandler) List(ctx *gin.Context) {
 		return
 	}
 
-	roles, total, err := systemDao.NewRoleDao().List(*req)
+	roles, total, err := h.dao.List(*req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -73,7 +76,7 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 		return
 	}
 
-	_, ok, err := systemDao.NewRoleDao().InfoByName(role.Name)
+	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -85,7 +88,7 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 		return
 	}
 
-	if _, err := systemDao.NewRoleDao().Add(role); err != nil {
+	if _, err := h.dao.Add(role); err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbAddError).Json()
 		return
@@ -105,7 +108,7 @@ func (h *roleHandler) Update(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewRoleDao().Update(role)
+	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
@@ -121,7 +124,7 @@ func (h *roleHandler) Delete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewRoleDao().Delete(req.ID)
+	row, err := h.dao.Delete(req.ID)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
@@ -137,7 +140,7 @@ func (h *roleHandler) BatchDelete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewRoleDao().BatchDelete(req.Ids)
+	row, err := h.dao.BatchDelete(req.Ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
@@ -153,7 +156,7 @@ func (h *roleHandler) Status(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := systemDao.NewRoleDao().Status(req.ID, req.Status)
+	row, err := h.dao.Status(req.ID, req.Status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateStatusError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateStatusError).Json()
