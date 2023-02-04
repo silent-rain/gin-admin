@@ -131,7 +131,7 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateUserDetails, addUser } from '@/api/system/user';
+import { updateUser, addUser } from '@/api/system/user';
 import { getAllRole } from '@/api/system/role';
 import { User } from '~/api/system/user';
 import { RoleListRsp, Role } from '~/api/system/role';
@@ -210,7 +210,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       if (props.type === 'add') {
         await addUser(data);
       } else {
-        await updateUserDetails(data);
+        await updateUser(data);
       }
       emit('update:visible', false);
       emit('update:data', {});

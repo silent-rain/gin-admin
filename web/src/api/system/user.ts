@@ -41,9 +41,9 @@ export const addUser = async (params: any) => {
 };
 
 // 更新用户详情信息
-export const updateUserDetails = async (params: any) => {
+export const updateUser = async (params: any) => {
   return axiosReq({
-    url: '/user/updateDetails',
+    url: '/user/update',
     method: 'put',
     data: params,
   });

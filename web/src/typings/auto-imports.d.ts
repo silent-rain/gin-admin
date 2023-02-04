@@ -118,7 +118,7 @@ declare global {
   const updatePhone: typeof import('../api/system/user')['updatePhone']
   const updateRole: typeof import('../api/system/role')['updateRole']
   const updateRoleStatus: typeof import('../api/system/role')['updateRoleStatus']
-  const updateUserDetails: typeof import('../api/system/user')['updateUserDetails']
+  const updateUser: typeof import('../api/system/user')['updateUser']
   const updateUserPwd: typeof import('../api/system/user')['updateUserPwd']
   const updateUserStatus: typeof import('../api/system/user')['updateUserStatus']
   const useAttrs: typeof import('vue')['useAttrs']
