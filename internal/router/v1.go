@@ -29,7 +29,7 @@ func NewApiV1(engine *gin.Engine) {
 	userLogin := v1.Group("/")
 	{
 		// 注册
-		userLogin.POST("/register", system.NewUserRegisterHandler().Add)
+		userLogin.POST("/register", system.NewRegisterUserHandler().Add)
 		// 验证码
 		userLogin.GET("/captcha", system.NewUserLoginHandler().Captcha)
 		// 验证码验证
@@ -50,9 +50,9 @@ func NewApiV1(engine *gin.Engine) {
 		// 获取用户列表
 		user.GET("/list", system.NewUserHandler().List)
 		// 添加用户
-		user.POST("/add", system.NewUserRegisterHandler().Add)
+		user.POST("/add", system.NewRegisterUserHandler().Add)
 		// 更新用户详情信息
-		user.PUT("/updateDetails", system.NewUserHandler().UpdateDetails)
+		user.PUT("/update", system.NewUserHandler().Update)
 		// 删除用户
 		user.DELETE("/delete", system.NewUserHandler().Delete)
 		// 批量删除用户

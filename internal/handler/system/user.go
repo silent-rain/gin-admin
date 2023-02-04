@@ -45,7 +45,7 @@ func (h *userHandler) All(ctx *gin.Context) {
 
 // List 获取用户列表
 func (h *userHandler) List(ctx *gin.Context) {
-	req := new(systemDto.UserQueryReq)
+	req := new(systemDto.QueryUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -60,9 +60,9 @@ func (h *userHandler) List(ctx *gin.Context) {
 	response.New(ctx).WithDataList(results, total).Json()
 }
 
-// UpdateDetails 更新用户详情信息
-func (h *userHandler) UpdateDetails(ctx *gin.Context) {
-	req := new(systemDto.UserUpdateDetailsReq)
+// Update 更新用户详情信息
+func (h *userHandler) Update(ctx *gin.Context) {
+	req := new(systemDto.UpdateUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -75,7 +75,7 @@ func (h *userHandler) UpdateDetails(ctx *gin.Context) {
 		return
 	}
 	roleIds := req.RoleIds
-	if err := systemDao.NewUserDao().UpdateDetails(*user, roleIds); err != nil {
+	if err := systemDao.NewUserDao().Update(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
 		return
@@ -85,7 +85,7 @@ func (h *userHandler) UpdateDetails(ctx *gin.Context) {
 
 // Delete 删除用户
 func (h *userHandler) Delete(ctx *gin.Context) {
-	req := new(systemDto.UserDeleteReq)
+	req := new(systemDto.DeleteUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -101,7 +101,7 @@ func (h *userHandler) Delete(ctx *gin.Context) {
 
 // BatchDelete 批量删除用户
 func (h *userHandler) BatchDelete(ctx *gin.Context) {
-	req := new(systemDto.UserBatchDeleteReq)
+	req := new(systemDto.BatchDeleteUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -117,7 +117,7 @@ func (h *userHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新用户状态
 func (h *userHandler) Status(ctx *gin.Context) {
-	req := new(systemDto.UserStatusReq)
+	req := new(systemDto.UpdateUserStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -133,7 +133,7 @@ func (h *userHandler) Status(ctx *gin.Context) {
 
 // UpdatePassword 更新密码
 func (h *userHandler) UpdatePassword(ctx *gin.Context) {
-	req := new(systemDto.UserUpdatePasswordReq)
+	req := new(systemDto.UpdateUserPasswordReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -167,7 +167,7 @@ func (h *userHandler) UpdatePassword(ctx *gin.Context) {
 
 // ResetPassword 重置密码
 func (h *userHandler) ResetPassword(ctx *gin.Context) {
-	req := new(systemDto.UserResetPasswordReq)
+	req := new(systemDto.ResetUserPasswordReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -186,7 +186,7 @@ func (h *userHandler) ResetPassword(ctx *gin.Context) {
 
 // UpdatePhone 更新手机号码
 func (h *userHandler) UpdatePhone(ctx *gin.Context) {
-	req := new(systemDto.UserUpdatePhoneReq)
+	req := new(systemDto.UpdateUserPhoneReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -202,7 +202,7 @@ func (h *userHandler) UpdatePhone(ctx *gin.Context) {
 
 // UpdateEmail 更新邮箱
 func (h *userHandler) UpdateEmail(ctx *gin.Context) {
-	req := new(systemDto.UserUpdateEmailReq)
+	req := new(systemDto.UpdateUserEmailReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return

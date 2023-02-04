@@ -22,18 +22,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 用户注册结构
-type userRegisterHandler struct{}
+// 注册用户结构
+type registerUserHandler struct{}
 
-// 创建用户注册 Handler 对象
-func NewUserRegisterHandler() *userRegisterHandler {
-	return &userRegisterHandler{}
+// 创建注册用户 Handler 对象
+func NewRegisterUserHandler() *registerUserHandler {
+	return &registerUserHandler{}
 }
 
 // Add 添加用户
-func (h *userRegisterHandler) Add(ctx *gin.Context) {
+func (h *registerUserHandler) Add(ctx *gin.Context) {
 	// 解析参数
-	req := new(systemDto.UserRegisterReq)
+	req := new(systemDto.RegisterUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -62,7 +62,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	roleIds := req.RoleIds
 
 	// 数据入库
-	if err := systemDao.NewUserRegisterDao().Add(*user, roleIds); err != nil {
+	if err := systemDao.NewRegisteUserDao().Add(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
@@ -71,7 +71,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 }
 
 // 检查手机号是否存在
-func (h *userRegisterHandler) chechkPhone(ctx *gin.Context, phone string) bool {
+func (h *registerUserHandler) chechkPhone(ctx *gin.Context, phone string) bool {
 	if phone == "" {
 		return false
 	}
@@ -86,7 +86,7 @@ func (h *userRegisterHandler) chechkPhone(ctx *gin.Context, phone string) bool {
 }
 
 // 检查邮箱是否存在
-func (h *userRegisterHandler) chechkEmail(ctx *gin.Context, email string) bool {
+func (h *registerUserHandler) chechkEmail(ctx *gin.Context, email string) bool {
 	if email == "" {
 		return false
 	}

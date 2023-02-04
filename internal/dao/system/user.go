@@ -26,7 +26,7 @@ import (
 // User 用户接口
 type User interface {
 	All() ([]systemModel.User, int64, error)
-	List(req systemDto.UserQueryReq) ([]systemModel.User, int64, error)
+	List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error)
 	Info(id uint) (systemModel.User, bool, error)
 	UpdateDetails(user systemModel.User, roles []uint) error
 	Delete(id uint) (int64, error)
@@ -74,7 +74,7 @@ func (d *user) All() ([]systemModel.User, int64, error) {
 }
 
 // List 获取用户列表
-func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, error) {
+func (d *user) List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.Nickname != "" {
@@ -116,7 +116,7 @@ func (d *user) Info(id uint) (systemModel.User, bool, error) {
 }
 
 // Update 更新用户详情信息
-func (d *user) UpdateDetails(user systemModel.User, roles []uint) error {
+func (d *user) Update(user systemModel.User, roles []uint) error {
 	d.Begin()
 	defer func() {
 		if err := recover(); err != nil {

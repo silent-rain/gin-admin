@@ -24,22 +24,22 @@ type UserRegister interface {
 	Add(user systemModel.User, roleIds []uint) error
 }
 
-// 用户注册
-type userRegister struct {
+// 注册用户
+type registerUser struct {
 	*dao.Transaction
 	db *gorm.DB
 }
 
-// 创建用户注册 Dao 对象
-func NewUserRegisterDao() *userRegister {
-	return &userRegister{
+// 创建注册用户 Dao 对象
+func NewRegisteUserDao() *registerUser {
+	return &registerUser{
 		Transaction: dao.NewTransaction(database.Instance()),
 		db:          database.Instance(),
 	}
 }
 
 // 注册用户
-func (d *userRegister) Add(user systemModel.User, roleIds []uint) error {
+func (d *registerUser) Add(user systemModel.User, roleIds []uint) error {
 	d.Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -63,7 +63,7 @@ func (d *userRegister) Add(user systemModel.User, roleIds []uint) error {
 }
 
 // 添加用户
-func (d *userRegister) addUser(bean systemModel.User) (uint, error) {
+func (d *registerUser) addUser(bean systemModel.User) (uint, error) {
 	result := d.Tx().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -72,7 +72,7 @@ func (d *userRegister) addUser(bean systemModel.User) (uint, error) {
 }
 
 // 添加用户角色
-func (d *userRegister) addUserRole(userId uint, roleIds []uint) error {
+func (d *registerUser) addUserRole(userId uint, roleIds []uint) error {
 	if len(roleIds) == 0 {
 		return nil
 	}

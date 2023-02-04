@@ -12,22 +12,22 @@ package systemDto
 
 import "gin-admin/internal/dto"
 
-// RoleQueryReq 查询条件
-type RoleQueryReq struct {
+// QueryRoleReq 查询条件
+type QueryRoleReq struct {
 	dto.Pagination        // 分页
 	Name           string `json:"name" form:"name"` // 角色名称
 }
 
-// RoleAddReq 添加角色
-type RoleAddReq struct {
+// AddRoleReq 添加角色
+type AddRoleReq struct {
 	Name   string `json:"name" form:"name" binding:"required"` // 角色名称
 	Status uint   `json:"status" form:"status"`                // 角色状态,0:停用,1:启用
 	Sort   uint   `json:"sort" form:"sort"`                    // 排序
 	Note   string `json:"note" form:"note"`                    // 备注
 }
 
-// RoleUpdateReq 更新角色
-type RoleUpdateReq struct {
+// UpdateRoleReq 更新角色
+type UpdateRoleReq struct {
 	ID     uint   `json:"id" form:"id" binding:"required"`     // 角色ID
 	Name   string `json:"name" form:"name" binding:"required"` // 角色名称
 	Status uint   `json:"status" form:"status"`                // 角色状态,0:停用,1:启用
@@ -35,13 +35,13 @@ type RoleUpdateReq struct {
 	Note   string `json:"note"  form:"note"`                   // 备注
 }
 
-// RoleDeleteReq 删除角色
-type RoleDeleteReq struct {
+// DeleteRoleReq 删除角色
+type DeleteRoleReq struct {
 	ID uint `json:"id" form:"id" binding:"required"` // 角色ID
 }
 
-// RoleBatchDeleteReq 批量删除角色
-type RoleBatchDeleteReq struct {
+// BatchDeleteRoleReq 批量删除角色
+type BatchDeleteRoleReq struct {
 	Ids []uint `json:"ids" form:"ids" binding:"required"` // 角色ID列表
 }
 

@@ -10,8 +10,8 @@
  */
 package systemDto
 
-// UserRegisterReq 用户注册
-type UserRegisterReq struct {
+// RegisterUserReq 用户注册
+type RegisterUserReq struct {
 	Realname string `json:"realname" form:"realname"`                    // 真实姓名
 	Nickname string `json:"nickname" form:"nickname" binding:"required"` // 昵称
 	Gender   uint   `json:"gender" form:"gender"`                        // 性别: 0:女,1:男

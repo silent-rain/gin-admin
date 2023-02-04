@@ -22,7 +22,7 @@ import (
 // Role 角色接口
 type Role interface {
 	All() ([]systemModel.Role, int64, error)
-	List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error)
+	List(req systemDto.QueryRoleReq) ([]systemModel.Role, int64, error)
 	InfoByName(name string) (systemModel.Role, bool, error)
 	Add(bean systemModel.Role) (uint, error)
 	Update(bean systemModel.Role) (int64, error)
@@ -60,7 +60,7 @@ func (d *role) All() ([]systemModel.Role, int64, error) {
 }
 
 // List 查询角色列表
-func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error) {
+func (d *role) List(req systemDto.QueryRoleReq) ([]systemModel.Role, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.Name != "" {
