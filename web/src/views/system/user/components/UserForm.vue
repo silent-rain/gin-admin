@@ -99,7 +99,7 @@
             <el-input
               v-model="props.data.note"
               type="textarea"
-              placeholder="备注"
+              placeholder="请输入备注"
             />
           </el-form-item>
         </el-col>

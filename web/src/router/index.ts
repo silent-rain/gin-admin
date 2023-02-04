@@ -72,7 +72,7 @@ export const constantRoutes: RouterTypes = [
       },
       {
         path: '/system/menu',
-        component: () => import('@/views/other/drag-pane.vue'),
+        component: () => import('@/views/system/menu/index.vue'),
         name: '菜单管理',
         meta: { title: '菜单管理', elSvgIcon: 'Operation' },
       },

@@ -54,13 +54,16 @@ func (d *menu) List(req systemDto.QueryMenuReq) ([]systemModel.Menu, int64, erro
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.Title != "" {
-			stats = stats.Where("name like ?", "%"+req.Title+"%")
+			stats = stats.Where("title like ?", "%"+req.Title+"%")
 		}
 		return stats
 	}
 
 	bean := make([]systemModel.Menu, 0)
-	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").Order("updated_at DESC").Find(&bean); result.Error != nil {
+	result := stats().Offset(req.Offset()).Limit(req.PageSize).
+		Order("sort DESC").Order("updated_at DESC").
+		Find(&bean)
+	if result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0

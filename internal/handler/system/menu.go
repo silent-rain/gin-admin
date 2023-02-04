@@ -66,6 +66,9 @@ func (h *menuHandler) Add(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
+	userId := utils.GetUserId(ctx)
+	menu.CreateUserId = userId
+	menu.UpdateUserId = userId
 	if _, err := h.dao.Add(menu); err != nil {
 		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbAddError).Json()
@@ -86,6 +89,8 @@ func (h *menuHandler) Update(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
+	userId := utils.GetUserId(ctx)
+	menu.UpdateUserId = userId
 	row, err := h.dao.Update(menu)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)

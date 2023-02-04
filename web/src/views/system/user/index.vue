@@ -68,25 +68,25 @@
 
       <el-table-column
         v-if="checkedDict.id"
-        property="id"
+        prop="id"
         label="用户ID"
         width="80"
       />
       <!-- <el-table-column
         v-if="checkedDict.realname"
-        property="realname"
+        prop="realname"
         label="姓名"
         show-overflow-tooltip
       /> -->
       <el-table-column
         v-if="checkedDict.nickname"
-        property="nickname"
+        prop="nickname"
         label="昵称"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.gender"
-        property="gender"
+        prop="gender"
         label="性别"
         align="center"
         width="90"
@@ -99,50 +99,50 @@
       </el-table-column>
       <el-table-column
         v-if="checkedDict.age"
-        property="age"
+        prop="age"
         label="年龄"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.birthday"
-        property="birthday"
+        prop="birthday"
         label="出生日期"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.avatar"
-        property="avatar"
+        prop="avatar"
         label="头像"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.phone"
-        property="phone"
+        prop="phone"
         label="手机号码"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.email"
-        property="email"
+        prop="email"
         label="邮箱"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.intro"
-        property="intro"
+        prop="intro"
         label="介绍"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.sort"
-        property="sort"
+        prop="sort"
         label="排序"
         show-overflow-tooltip
         width="80"
       />
       <el-table-column
         v-if="checkedDict.roles"
-        property="roles"
+        prop="roles"
         label="角色"
         align="center"
       >
@@ -157,7 +157,7 @@
       </el-table-column>
       <el-table-column
         v-if="checkedDict.status"
-        property="status"
+        prop="status"
         label="状态"
         align="center"
         width="90"
@@ -173,19 +173,19 @@
       </el-table-column>
       <el-table-column
         v-if="checkedDict.note"
-        property="note"
+        prop="note"
         label="备注"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.created_at"
-        property="created_at"
+        prop="created_at"
         label="创建时间"
         width="165"
       />
       <el-table-column
         v-if="checkedDict.updated_at"
-        property="updated_at"
+        prop="updated_at"
         label="更新时间"
         width="165"
       />

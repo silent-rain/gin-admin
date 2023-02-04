@@ -1,3 +1,6 @@
+/*用户
+ */
+
 export interface User {
   id: number;
   realname: string;

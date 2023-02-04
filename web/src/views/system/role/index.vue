@@ -57,26 +57,26 @@
 
       <el-table-column
         v-if="checkedDict.id"
-        property="id"
+        prop="id"
         label="角色ID"
         width="80"
       />
       <el-table-column
         v-if="checkedDict.name"
-        property="name"
+        prop="name"
         label="角色名称"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.sort"
-        property="sort"
+        prop="sort"
         label="排序"
         show-overflow-tooltip
         width="80"
       />
       <el-table-column
         v-if="checkedDict.status"
-        property="status"
+        prop="status"
         label="角色状态"
         align="center"
         width="90"
@@ -92,19 +92,19 @@
       </el-table-column>
       <el-table-column
         v-if="checkedDict.note"
-        property="note"
+        prop="note"
         label="备注"
         show-overflow-tooltip
       />
       <el-table-column
         v-if="checkedDict.created_at"
-        property="created_at"
+        prop="created_at"
         label="创建时间"
         width="165"
       />
       <el-table-column
         v-if="checkedDict.updated_at"
-        property="updated_at"
+        prop="updated_at"
         label="更新时间"
         width="165"
       />

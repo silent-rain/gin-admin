@@ -14,28 +14,29 @@ import "gin-admin/internal/pkg/utils"
 
 // Menu 菜单
 type Menu struct {
-	ID           uint             `gorm:"column:id;primaryKey"`                   // 菜单ID
-	ParentId     *uint            `gorm:"column:parent_id"`                       // 父菜单ID
-	Title        string           `gorm:"column:title"`                           // 菜单名称
-	Icon         string           `gorm:"column:icon"`                            // 菜单图标
-	OpenType     string           `gorm:"column:open_type"`                       // 打开方式,0:组件,1:内链,2:外联
-	Path         string           `gorm:"column:path"`                            // 路由地址/外链地址
-	Component    string           `gorm:"column:component"`                       // 组件路径/内链地址
-	Target       string           `gorm:"column:target"`                          // 链接地址跳转方式, _blank/_self
-	Permission   string           `gorm:"column:permission"`                      // 权限标识
-	MenuType     string           `gorm:"column:menu_type"`                       // 菜单类型,0:菜单,1:按钮
-	Hide         string           `gorm:"column:hide"`                            // 菜单是否隐藏,0:隐藏,1:显示
-	Sort         uint             `gorm:"column:sort"`                            // 排序
-	Note         string           `gorm:"column:note"`                            // 备注
-	Status       uint             `gorm:"column:status"`                          // 状态,0:停用,1:启用
-	CreateUserId uint             `gorm:"column:create_user_id;"`                 // 创建菜单用户ID
-	UpdateUserId uint             `gorm:"column:update_user_id;"`                 // 更新菜单用户ID
-	CreatedAt    *utils.LocalTime `gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
-	UpdatedAt    *utils.LocalTime `gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
-	Children     []Menu           `gorm:"foreignKey:ParentId"`                    // 子菜单列表
+	ID           uint             `json:"id" gorm:"column:id;primaryKey"`                           // 菜单ID
+	ParentId     *uint            `json:"parent_id" gorm:"column:parent_id"`                        // 父菜单ID
+	Title        string           `json:"title" gorm:"column:title"`                                // 菜单名称
+	Icon         string           `json:"icon" gorm:"column:icon"`                                  // 菜单图标
+	MenuType     uint             `json:"menu_type" gorm:"column:menu_type"`                        // 菜单类型,0:菜单,1:按钮
+	OpenType     uint             `json:"open_type" gorm:"column:open_type"`                        // 打开方式,0:组件,1:内链,2:外链
+	Path         string           `json:"path" gorm:"column:path"`                                  // 路由地址
+	Component    string           `json:"component" gorm:"column:component"`                        // 组件路径
+	Link         string           `json:"link" gorm:"column:link"`                                  // 链接地址: 内链地址/外链地址
+	Target       string           `json:"target" gorm:"column:target"`                              // 链接地址跳转方式, _blank/_self
+	Permission   string           `json:"permission" gorm:"column:permission"`                      // 权限标识
+	Hide         uint             `json:"hide" gorm:"column:hide"`                                  // 是否可见,0:隐藏,1:显示
+	Sort         uint             `json:"sort" gorm:"column:sort"`                                  // 排序
+	Note         string           `json:"note" gorm:"column:note"`                                  // 备注
+	Status       uint             `json:"status" gorm:"column:status"`                              // 状态,0:停用,1:启用
+	CreateUserId uint             `json:"-" gorm:"column:create_user_id;"`                          // 创建菜单用户ID
+	UpdateUserId uint             `json:"-" gorm:"column:update_user_id;"`                          // 更新菜单用户ID
+	CreatedAt    *utils.LocalTime `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
+	UpdatedAt    *utils.LocalTime `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
+	Children     []Menu           `json:"children" gorm:"foreignKey:ParentId"`                      // 子菜单列表
 }
 
 // TableName 表名重写
-func (HttpLog) Menu() string {
+func (Menu) TableName() string {
 	return "sys_menu"
 }

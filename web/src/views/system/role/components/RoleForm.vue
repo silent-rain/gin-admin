@@ -26,7 +26,7 @@
         <el-input-number v-model="props.data.sort" :min="1" />
       </el-form-item>
       <el-form-item label="备注" prop="note">
-        <el-input v-model="props.data.note" placeholder="备注" />
+        <el-input v-model="props.data.note" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
 
