@@ -26,6 +26,7 @@
               :render-after-expand="false"
               filterable
               accordion
+              check-strictly="true"
               style="width: 100%"
             >
               <template #default="{ node, _data }">
@@ -289,6 +290,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       } else {
         await updateMenu(props.data);
       }
+      fetchAllMenu();
       emit('update:visible', false);
       emit('update:data', {});
       emit('refresh');

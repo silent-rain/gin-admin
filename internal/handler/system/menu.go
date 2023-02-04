@@ -28,24 +28,32 @@ func NewMenuHandler() *menuHandler {
 
 // All 获取所有菜单列表
 func (h *menuHandler) All(ctx *gin.Context) {
-	menus, total, err := h.dao.All()
+	menus, _, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	}
-	response.New(ctx).WithDataList(menus, total).Json()
+	// list 数据转为 tree
+	tree := ListToTree(menus, nil)
+	response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
 }
 
 // List 获取用菜单列表
 func (h *menuHandler) List(ctx *gin.Context) {
-	req := new(systemDto.QueryMenuReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
+	req := systemDto.QueryMenuReq{}
+	if err := utils.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 
-	menus, _, err := h.dao.List()
+	menuList, _, err := h.dao.List(req)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	menuAll, _, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
@@ -53,20 +61,18 @@ func (h *menuHandler) List(ctx *gin.Context) {
 	}
 
 	// list 数据转为 tree
-	tree := ListToTree(menus, nil)
-	if req.Title == "" {
-		response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
-		return
-	}
+	tree := ListToTree(menuAll, nil)
 
 	// 过滤
 	treeFilter := make([]systemModel.Menu, 0)
-	for _, item := range tree {
-		if item.Title == req.Title {
-			treeFilter = append(treeFilter, item)
+	for _, itemA := range tree {
+		for _, item := range menuList {
+			if itemA.Title == item.Title {
+				treeFilter = append(treeFilter, itemA)
+			}
 		}
 	}
-	response.New(ctx).WithDataList(treeFilter, int64(len(treeFilter))).Json()
+	response.New(ctx).WithDataList(treeFilter, int64(len(tree))).Json()
 }
 
 // ListToTree 列表数据转为树结构

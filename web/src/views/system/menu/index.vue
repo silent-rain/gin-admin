@@ -184,12 +184,17 @@
             link
             type="primary"
             size="small"
+            :icon="Plus"
+            @click="handleAddById(scope.row)"
+            >添加
+          </el-button>
+          <el-button
+            link
+            type="primary"
+            size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
             >修改
-          </el-button>
-          <el-button link type="primary" size="small" :icon="Finished"
-            >分配权限
           </el-button>
           <el-popconfirm
             confirm-button-text="确认"
@@ -226,7 +231,7 @@ import {
   EditPen,
   Search,
   Delete,
-  Finished,
+  Plus,
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
@@ -329,6 +334,17 @@ const handleEdit = async (row: Menu) => {
 };
 // 添加
 const handleAdd = async () => {
+  state.menuForm.data.menu_type = 0;
+  state.menuForm.data.open_type = 0;
+  state.menuForm.data.hide = 1;
+  state.menuForm.data.status = 1;
+  state.menuForm.data.sort = 1;
+  state.menuForm.type = 'add';
+  state.menuForm.visible = true;
+};
+// 指定上级菜单添加
+const handleAddById = async (row: Menu) => {
+  state.menuForm.data.parent_id = row.id;
   state.menuForm.data.menu_type = 0;
   state.menuForm.data.open_type = 0;
   state.menuForm.data.hide = 1;

@@ -3,6 +3,7 @@
 package systemDao
 
 import (
+	systemDto "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
 
@@ -12,7 +13,7 @@ import (
 // Menu 菜单接口
 type Menu interface {
 	All() ([]systemModel.Menu, int64, error)
-	List() ([]systemModel.Menu, int64, error)
+	List(req systemDto.QueryMenuReq) ([]systemModel.Menu, int64, error)
 	Add(bean systemModel.Menu) (uint, error)
 	Update(bean systemModel.Menu) (int64, error)
 	Delete(id uint) (int64, error)
@@ -49,9 +50,12 @@ func (d *menu) All() ([]systemModel.Menu, int64, error) {
 }
 
 // List 查询菜单列表
-func (d *menu) List() ([]systemModel.Menu, int64, error) {
+func (d *menu) List(req systemDto.QueryMenuReq) ([]systemModel.Menu, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
+		if req.Title != "" {
+			stats = stats.Where("title like ?", "%"+req.Title+"%")
+		}
 		return stats
 	}
 
