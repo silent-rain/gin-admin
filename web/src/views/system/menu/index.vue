@@ -21,11 +21,16 @@
     <div class="operation-button">
       <div class="left-button">
         <ConvenienButtons
-          :buttonList="['add', 'expandAll', 'foldAll']"
+          :buttonList="['add', 'expand', 'collapse', 'import', 'export']"
           @add-event="handleAdd"
           @batch-delete-event="handleBatchDelete"
-          @expandAllEvent="handleExpandAllEvent"
-        />
+          @expandEvent="handleExpandAllEvent"
+          @importEvent="handleImportEvent"
+          @exportEvent="handleExportEvent"
+        >
+          <template v-slot:import> 导入用户 </template>
+          <template v-slot:export> 导出用户 </template>
+        </ConvenienButtons>
       </div>
       <div class="right-button">
         <ConvenienTools
@@ -404,12 +409,12 @@ const handleStatusChange = async (row: Menu) => {
   }
 };
 
-// 展开全部/折叠全部 事件
+// 全部展开/全部折叠 事件
 const handleExpandAllEvent = (value: boolean) => {
   toggleRowExpansionAll(tableData.value, value);
 };
 
-// 展开全部/折叠全部
+// 全部展开/全部折叠
 const toggleRowExpansionAll = (
   dataList: Menu[] | undefined,
   value: boolean,
@@ -423,6 +428,16 @@ const toggleRowExpansionAll = (
       toggleRowExpansionAll(v.children, value);
     }
   });
+};
+
+// 导入
+const handleImportEvent = () => {
+  console.log('导入');
+};
+
+// 导出
+const handleExportEvent = () => {
+  console.log('导出');
 };
 </script>
 

@@ -21,11 +21,17 @@
         <el-button type="danger" :icon="Delete">批量删除 </el-button>
       </template>
     </el-popconfirm>
-    <el-button v-if="buttonDict.expandAll" @click="handleExpandAllEvent(true)"
-      >展开全部
+    <el-button v-if="buttonDict.expand" @click="handleExpandAllEvent(true)"
+      >全部展开
     </el-button>
-    <el-button v-if="buttonDict.foldAll" @click="handleExpandAllEvent(false)"
-      >折叠全部
+    <el-button v-if="buttonDict.collapse" @click="handleExpandAllEvent(false)"
+      >全部折叠
+    </el-button>
+    <el-button v-if="buttonDict.import" @click="handleImportEvent">
+      <slot name="export">导入</slot>
+    </el-button>
+    <el-button v-if="buttonDict.export" @click="handleExportEvent">
+      <slot name="export">导出</slot>
     </el-button>
   </div>
 </template>
@@ -38,15 +44,28 @@ import { onBeforeMount, ref } from 'vue';
 const props = withDefaults(
   defineProps<{
     buttonList?: string[]; // 按钮名称列表; add/batchDelete
-    expandAll?: boolean; // 展开全部/折叠全部
+    expandAll?: boolean; // 全部展开/全部折叠
   }>(),
   {
-    buttonList: () => ['add', 'batchDelete', 'expandAll', 'foldAll'],
+    buttonList: () => [
+      'add',
+      'batchDelete',
+      'expand',
+      'collapse',
+      'import',
+      'export',
+    ],
     expandAll: true,
   },
 );
 
-const emit = defineEmits(['addEvent', 'batchDeleteEvent', 'expandAllEvent']);
+const emit = defineEmits([
+  'addEvent',
+  'batchDeleteEvent',
+  'expandEvent',
+  'importEvent',
+  'exportEvent',
+]);
 const buttonDict = ref<any>({});
 
 onBeforeMount(() => {
@@ -74,9 +93,19 @@ const handleBatchDeleteCancelEvent = () => {
   ElMessage.warning('取消操作');
 };
 
-// 展开全部/折叠全部
+// 全部展开/全部折叠
 const handleExpandAllEvent = (value: boolean) => {
-  emit('expandAllEvent', value);
+  emit('expandEvent', value);
+};
+
+// 导入
+const handleImportEvent = () => {
+  emit('importEvent', null);
+};
+
+// 导出
+const handleExportEvent = () => {
+  emit('exportEvent', null);
 };
 </script>
 
