@@ -147,7 +147,7 @@ func (h *roleHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新角色状态
 func (h *roleHandler) Status(ctx *gin.Context) {
-	req := new(systemDto.RoleStatusReq)
+	req := new(systemDto.UpdateRoleStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return

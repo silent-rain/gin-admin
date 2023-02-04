@@ -46,7 +46,7 @@ type BatchDeleteRoleReq struct {
 }
 
 // 更新角色状态
-type RoleStatusReq struct {
+type UpdateRoleStatusReq struct {
 	ID     uint `json:"id" form:"id" binding:"required"`
 	Status uint `json:"status" form:"status"`
 }
