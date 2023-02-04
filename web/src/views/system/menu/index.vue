@@ -21,9 +21,10 @@
     <div class="operation-button">
       <div class="left-button">
         <ConvenienButtons
-          :buttonList="['add']"
+          :buttonList="['add', 'expandAll', 'foldAll']"
           @add-event="handleAdd"
           @batch-delete-event="handleBatchDelete"
+          @expandAllEvent="handleExpandAllEvent"
         />
       </div>
       <div class="right-button">
@@ -48,10 +49,12 @@
 
     <el-table
       class="el-table-menu"
+      ref="tableRef"
       :data="tableData"
       :size="tableSize"
       row-key="id"
       style="width: 100%; margin-top: 10px"
+      :default-expand-all="tableExpandAll"
       @selection-change="handleSelectionChange"
     >
       <el-table-column v-if="checkedDict.id" prop="id" label="ID" />
@@ -123,7 +126,7 @@
       <el-table-column
         v-if="checkedDict.hide"
         prop="hide"
-        label="是否隐藏"
+        label="是否可见"
         show-overflow-tooltip
       >
         <template #default="scope">
@@ -234,7 +237,7 @@ import {
   Plus,
   InfoFilled,
 } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, TableInstance } from 'element-plus';
 import {
   getMenuList,
   updateMenuStatus,
@@ -294,6 +297,8 @@ const checkAllList = [
 const checkedDict = ref<any>({});
 
 const tableSize = ref<string>(settings.value.defaultSize);
+const tableExpandAll = ref<boolean>(true);
+const tableRef = ref<TableInstance>();
 const tableData = ref<Menu[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<Menu[]>([]);
@@ -397,6 +402,27 @@ const handleStatusChange = async (row: Menu) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+// 展开全部/折叠全部 事件
+const handleExpandAllEvent = (value: boolean) => {
+  toggleRowExpansionAll(tableData.value, value);
+};
+
+// 展开全部/折叠全部
+const toggleRowExpansionAll = (
+  dataList: Menu[] | undefined,
+  value: boolean,
+) => {
+  if (!dataList) {
+    return;
+  }
+  dataList.forEach((v) => {
+    tableRef.value?.toggleRowExpansion(v, value);
+    if (v.children !== undefined && v.children !== null) {
+      toggleRowExpansionAll(v.children, value);
+    }
+  });
 };
 </script>
 

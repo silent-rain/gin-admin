@@ -21,6 +21,12 @@
         <el-button type="danger" :icon="Delete">批量删除 </el-button>
       </template>
     </el-popconfirm>
+    <el-button v-if="buttonDict.expandAll" @click="handleExpandAllEvent(true)"
+      >展开全部
+    </el-button>
+    <el-button v-if="buttonDict.foldAll" @click="handleExpandAllEvent(false)"
+      >折叠全部
+    </el-button>
   </div>
 </template>
 
@@ -32,13 +38,15 @@ import { onBeforeMount, ref } from 'vue';
 const props = withDefaults(
   defineProps<{
     buttonList?: string[]; // 按钮名称列表; add/batchDelete
+    expandAll?: boolean; // 展开全部/折叠全部
   }>(),
   {
-    buttonList: () => ['add', 'batchDelete'],
+    buttonList: () => ['add', 'batchDelete', 'expandAll', 'foldAll'],
+    expandAll: true,
   },
 );
 
-const emit = defineEmits(['addEvent', 'batchDeleteEvent']);
+const emit = defineEmits(['addEvent', 'batchDeleteEvent', 'expandAllEvent']);
 const buttonDict = ref<any>({});
 
 onBeforeMount(() => {
@@ -64,6 +72,11 @@ const handleBatchDeleteEvent = () => {
 // 批量删除取消事件
 const handleBatchDeleteCancelEvent = () => {
   ElMessage.warning('取消操作');
+};
+
+// 展开全部/折叠全部
+const handleExpandAllEvent = (value: boolean) => {
+  emit('expandAllEvent', value);
 };
 </script>
 

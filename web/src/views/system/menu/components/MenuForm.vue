@@ -26,7 +26,7 @@
               :render-after-expand="false"
               filterable
               accordion
-              check-strictly="true"
+              :check-strictly="true"
               style="width: 100%"
             >
               <template #default="{ node, _data }">
