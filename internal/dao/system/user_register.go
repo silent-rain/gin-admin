@@ -13,23 +13,29 @@ package systemDao
 import (
 	"gin-admin/internal/dao"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/database"
 
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
-
-// UserRegisterImpl 用户注册对象
-var UserRegisterImpl = &userRegister{
-	Transaction: dao.NewTransaction(),
-}
 
 // UserRegister 用户接口
 type UserRegister interface {
 	Add(user systemModel.User, roleIds []uint) error
 }
 
-// 用户注册结构
+// 用户注册
 type userRegister struct {
 	*dao.Transaction
+	db *gorm.DB
+}
+
+// 创建用户注册 Dao 对象
+func NewDaoUserRegister() *userRegister {
+	return &userRegister{
+		Transaction: dao.NewTransaction(),
+		db:          database.Instance(),
+	}
 }
 
 // 注册用户

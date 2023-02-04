@@ -13,10 +13,9 @@ package systemDao
 import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
-)
 
-// HttpLogImpl 网络请求日志对象
-var HttpLogImpl = new(httpLog)
+	"gorm.io/gorm"
+)
 
 // HttpLog 网络请求日志接口
 type HttpLog interface {
@@ -24,11 +23,20 @@ type HttpLog interface {
 }
 
 // 网络请求日志结构
-type httpLog struct{}
+type httpLog struct {
+	db *gorm.DB
+}
+
+// 创建网络请求日志 Dao 对象
+func NewDaoHttpLog() *httpLog {
+	return &httpLog{
+		db: database.Instance(),
+	}
+}
 
 // Add 添加网络请求日志
 func (d *httpLog) Add(bean systemModel.HttpLog) (uint, error) {
-	result := database.Instance().Create(&bean)
+	result := d.db.Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
 	}

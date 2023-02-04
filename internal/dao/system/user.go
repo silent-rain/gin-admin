@@ -23,9 +23,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserImpl 用户对象
-var UserImpl = new(user)
-
 // User 用户接口
 type User interface {
 	All() ([]systemModel.User, int64, error)
@@ -47,12 +44,20 @@ type User interface {
 // 用户
 type user struct {
 	dao.Transaction
+	db *gorm.DB
+}
+
+// 创建用户 Dao 对象
+func NewDaoUser() *user {
+	return &user{
+		db: database.Instance(),
+	}
 }
 
 // All 获取所有用户列表
 func (d *user) All() ([]systemModel.User, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := database.Instance()
+		stats := d.db
 		return stats
 	}
 
@@ -70,7 +75,7 @@ func (d *user) All() ([]systemModel.User, int64, error) {
 // List 获取用户列表
 func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := database.Instance()
+		stats := d.db
 		if req.Nickname != "" {
 			stats = stats.Where("nickname like ?", "%"+req.Nickname+"%")
 		}
@@ -99,7 +104,7 @@ func (d *user) List(req systemDto.UserQueryReq) ([]systemModel.User, int64, erro
 // Info 获取用户信息
 func (d *user) Info(id uint) (systemModel.User, bool, error) {
 	bean := systemModel.User{ID: id}
-	result := database.Instance().Model(&systemModel.User{}).Preload("Roles").First(&bean)
+	result := d.db.Model(&systemModel.User{}).Preload("Roles").First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil
 	}
@@ -197,7 +202,7 @@ func (d *user) getUserRoleIds(userId uint) ([]uint, error) {
 
 // Delete 删除用户
 func (d *user) Delete(id uint) (int64, error) {
-	result := database.Instance().Delete(&systemModel.User{
+	result := d.db.Delete(&systemModel.User{
 		ID: id,
 	})
 	return result.RowsAffected, result.Error
@@ -211,13 +216,13 @@ func (d *user) BatchDelete(ids []uint) (int64, error) {
 			ID: id,
 		})
 	}
-	result := database.Instance().Delete(&beans)
+	result := d.db.Delete(&beans)
 	return result.RowsAffected, result.Error
 }
 
 // Status 更新状态
 func (d *user) Status(id uint, status uint) (int64, error) {
-	result := database.Instance().Select("status").Updates(&systemModel.User{
+	result := d.db.Select("status").Updates(&systemModel.User{
 		ID:     id,
 		Status: status,
 	})
@@ -226,20 +231,20 @@ func (d *user) Status(id uint, status uint) (int64, error) {
 
 // UpdatePassword 更新密码
 func (d *user) UpdatePassword(id uint, password string) (int64, error) {
-	result := database.Instance().Table("sys_user").Where("id = ?", id).
+	result := d.db.Model(&systemModel.User{}).Where("id = ?", id).
 		Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // ResetPassword 重置密码
 func (d *user) ResetPassword(id uint, password string) (int64, error) {
-	result := database.Instance().Table("sys_user").Where("id = ?", id).Update("password", password)
+	result := d.db.Model(&systemModel.User{}).Where("id = ?", id).Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // UpdatePhone 更新手机号码
 func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
-	result := database.Instance().Updates(&systemModel.User{
+	result := d.db.Updates(&systemModel.User{
 		ID:    id,
 		Phone: phone,
 	})
@@ -248,7 +253,7 @@ func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
 
 // UpdateEmail 更新邮箱
 func (d *user) UpdateEmail(id uint, email string) (int64, error) {
-	result := database.Instance().Updates(&systemModel.User{
+	result := d.db.Updates(&systemModel.User{
 		ID:    id,
 		Email: email,
 	})
@@ -258,7 +263,7 @@ func (d *user) UpdateEmail(id uint, email string) (int64, error) {
 // GetUserByPhone 获取用户信息
 func (d *user) GetUserByPhone(phone string) (systemModel.User, bool, error) {
 	bean := systemModel.User{}
-	result := database.Instance().Where("phone=?", phone).First(&bean)
+	result := d.db.Where("phone=?", phone).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil
 	}
@@ -271,7 +276,7 @@ func (d *user) GetUserByPhone(phone string) (systemModel.User, bool, error) {
 // GetUserByEmail 获取用户信息
 func (d *user) GetUserByEmail(email string) (systemModel.User, bool, error) {
 	bean := systemModel.User{}
-	result := database.Instance().Where("email=?", email).First(&bean)
+	result := d.db.Where("email=?", email).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil
 	}
@@ -283,7 +288,7 @@ func (d *user) GetUserByEmail(email string) (systemModel.User, bool, error) {
 
 // ExistUserPassword 判断用户密码是否正确
 func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
-	result := database.Instance().Where("id = ? AND password = ?", userId, password).First(&systemModel.User{})
+	result := d.db.Where("id = ? AND password = ?", userId, password).First(&systemModel.User{})
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, nil
 	}
@@ -296,7 +301,7 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 // GetUsername 获取用户信息 邮件/手机号
 func (d *user) GetUsername(username, password string) (systemModel.User, bool, error) {
 	bean := systemModel.User{}
-	result := database.Instance().
+	result := d.db.
 		Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil

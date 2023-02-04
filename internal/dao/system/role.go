@@ -19,9 +19,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// RoleImpl 角色对象
-var RoleImpl = new(role)
-
 // Role 角色接口
 type Role interface {
 	All() ([]systemModel.Role, int64, error)
@@ -34,13 +31,22 @@ type Role interface {
 	Status(id uint, status uint) (int64, error)
 }
 
-// 角色结构
-type role struct{}
+// 角色
+type role struct {
+	db *gorm.DB
+}
+
+// 创建角色 Dao 对象
+func NewDaoRole() *role {
+	return &role{
+		db: database.Instance(),
+	}
+}
 
 // All 获取所有角色列表
 func (d *role) All() ([]systemModel.Role, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := database.Instance()
+		stats := d.db
 		return stats
 	}
 
@@ -56,7 +62,7 @@ func (d *role) All() ([]systemModel.Role, int64, error) {
 // List 查询角色列表
 func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := database.Instance()
+		stats := d.db
 		if req.Name != "" {
 			stats = stats.Where("name like ?", "%"+req.Name+"%")
 		}
@@ -75,7 +81,7 @@ func (d *role) List(req systemDto.RoleQueryReq) ([]systemModel.Role, int64, erro
 // Info 获取角色信息
 func (d *role) InfoByName(name string) (systemModel.Role, bool, error) {
 	bean := systemModel.Role{}
-	result := database.Instance().Where("name=?", name).First(&bean)
+	result := d.db.Where("name=?", name).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.Role{}, false, nil
 	}
@@ -87,7 +93,7 @@ func (d *role) InfoByName(name string) (systemModel.Role, bool, error) {
 
 // Add 添加角色
 func (d *role) Add(bean systemModel.Role) (uint, error) {
-	result := database.Instance().Create(&bean)
+	result := d.db.Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -96,13 +102,13 @@ func (d *role) Add(bean systemModel.Role) (uint, error) {
 
 // Update 更新角色
 func (d *role) Update(bean systemModel.Role) (int64, error) {
-	result := database.Instance().Select("name", "status", "sort", "note").Updates(&bean)
+	result := d.db.Select("name", "status", "sort", "note").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除角色
 func (d *role) Delete(id uint) (int64, error) {
-	result := database.Instance().Delete(&systemModel.Role{
+	result := d.db.Delete(&systemModel.Role{
 		ID: id,
 	})
 	return result.RowsAffected, result.Error
@@ -116,13 +122,13 @@ func (d *role) BatchDelete(ids []uint) (int64, error) {
 			ID: id,
 		})
 	}
-	result := database.Instance().Delete(&beans)
+	result := d.db.Delete(&beans)
 	return result.RowsAffected, result.Error
 }
 
 // Status 更新状态
 func (d *role) Status(id uint, status uint) (int64, error) {
-	result := database.Instance().Select("status").Updates(&systemModel.Role{
+	result := d.db.Select("status").Updates(&systemModel.Role{
 		ID:     id,
 		Status: status,
 	})

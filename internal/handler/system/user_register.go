@@ -60,7 +60,7 @@ func (h *userRegisterHandler) Add(ctx *gin.Context) {
 	roleIds := req.RoleIds
 
 	// 数据入库
-	if err := systemDao.UserRegisterImpl.Add(*user, roleIds); err != nil {
+	if err := systemDao.NewDaoUserRegister().Add(*user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
 		return
@@ -73,7 +73,7 @@ func (h *userRegisterHandler) chechkPhone(ctx *gin.Context, phone string) bool {
 	if phone == "" {
 		return false
 	}
-	if _, ok, err := systemDao.UserImpl.GetUserByPhone(phone); err != nil {
+	if _, ok, err := systemDao.NewDaoUser().GetUserByPhone(phone); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {
@@ -88,7 +88,7 @@ func (h *userRegisterHandler) chechkEmail(ctx *gin.Context, email string) bool {
 	if email == "" {
 		return false
 	}
-	if _, ok, err := systemDao.UserImpl.GetUserByEmail(email); err != nil {
+	if _, ok, err := systemDao.NewDaoUser().GetUserByEmail(email); err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		return false
 	} else if !ok {

@@ -41,7 +41,7 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 	}
 
 	// 查询用户
-	user, ok, err := systemDao.UserImpl.GetUsername(req.Username, req.Password)
+	user, ok, err := systemDao.NewDaoUser().GetUsername(req.Username, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
