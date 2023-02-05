@@ -26,6 +26,7 @@ import (
 // 放行白名单
 var whiteList = []string{
 	// API
+	"/api/ping",
 	"/api/v1/sayHello",
 	"/api/v1/register",
 	"/api/v1/captcha",
