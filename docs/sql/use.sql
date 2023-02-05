@@ -15,6 +15,6 @@ ALTER TABLE okx_order.minor_order_trade_history ADD CONSTRAINT minor_order_trade
 ALTER TABLE 数据表名 DROP 字段名;
 
 -- 备份数据库
-mysqldump - uxx - pxxxx okx_order > okx_order.sql
+mysqldump -uxx -pxxxx gin_admin > gin_admin.sql
 -- 恢复数据库
-mysql -u root -proot密码 okx_order < okx_order.sql
+mysql -u root -proot密码 gin_admin < gin_admin.sql
