@@ -21,6 +21,8 @@ import (
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
+	"github.com/dchest/captcha"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -64,6 +66,110 @@ func (h *userHandler) List(ctx *gin.Context) {
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
+}
+
+// Add 添加用户
+func (h *userHandler) Add(ctx *gin.Context) {
+	// 解析参数
+	req := new(systemDto.AddUserReq)
+	if err := utils.ParsingReqParams(ctx, req); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+		return
+	}
+
+	// 注册入口检查验证码
+	if ctx.Request.URL.Path == "/api/v1/register" {
+		if !h.chechkCaptcha(ctx, req.CaptchaId) {
+			return
+		}
+	}
+
+	// 判断用户是否存在 邮件/手机号
+	if h.chechkPhone(ctx, req.Phone) {
+		response.New(ctx).WithCode(statuscode.ExistPhoneError).WithMsg("手机号已存在").Json()
+		return
+	}
+	if h.chechkEmail(ctx, req.Email) {
+		response.New(ctx).WithCode(statuscode.ExistEmailError).WithMsg("邮箱已存在").Json()
+		return
+	}
+
+	// 密码加密
+	req.Password = utils.Md5(req.Password)
+
+	// 数据转换
+	user := new(systemModel.User)
+	if err := utils.ApiJsonConvertJson(ctx, req, user); err != nil {
+		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+		return
+	}
+	user.Status = 1
+
+	// 数据入库
+	if err := h.dao.Add(*user, req.RoleIds); err != nil {
+		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
+		return
+	}
+	response.New(ctx).WithMsg("用户注册成功").Json()
+}
+
+// 检查手机号是否存在
+func (h *userHandler) chechkPhone(ctx *gin.Context, phone string) bool {
+	if phone == "" {
+		return false
+	}
+	if _, ok, err := h.dao.GetUserByPhone(phone); err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		return false
+	} else if !ok {
+		return false
+	}
+	log.New(ctx).WithCode(statuscode.DbDataExistError).Error("手机号已存在")
+	return true
+}
+
+// 检查邮箱是否存在
+func (h *userHandler) chechkEmail(ctx *gin.Context, email string) bool {
+	if email == "" {
+		return false
+	}
+	if _, ok, err := h.dao.GetUserByEmail(email); err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		return false
+	} else if !ok {
+
+		return false
+	}
+	log.New(ctx).WithCode(statuscode.DbDataExistError).Error("邮箱已存在")
+	return true
+}
+
+// tod 检查验证码
+func (h *userHandler) chechkCaptcha(ctx *gin.Context, captchaId string) bool {
+	if captchaId == "" {
+		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
+		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		return false
+	}
+
+	session := sessions.Default(ctx)
+	captchaId_ := session.Get("captcha")
+	if captchaId_ == nil {
+		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
+		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
+		return false
+	}
+	session.Delete("captcha")
+	_ = session.Save()
+
+	// 验证
+	if !captcha.VerifyString(captchaId_.(string), captchaId) {
+		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
+		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
+		return false
+	}
+	return true
 }
 
 // Update 更新用户详情信息

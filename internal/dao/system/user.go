@@ -28,6 +28,7 @@ type User interface {
 	All() ([]systemModel.User, int64, error)
 	List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error)
 	Info(id uint) (systemModel.User, bool, error)
+	Add(user systemModel.User, roleIds []uint) error
 	Update(user systemModel.User, roles []uint) error
 	Delete(id uint) (int64, error)
 	BatchDelete(ids []uint) (int64, error)
@@ -114,6 +115,55 @@ func (d *user) Info(id uint) (systemModel.User, bool, error) {
 		return systemModel.User{}, false, result.Error
 	}
 	return bean, true, nil
+}
+
+// Add 添加用户
+func (d *user) Add(user systemModel.User, roleIds []uint) error {
+	d.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			d.Rollback()
+			zap.S().Panic("注册用户异常, err: %v", err)
+		}
+	}()
+	// 添加用户
+	userId, err := d.addUser(user)
+	if err != nil {
+		d.Rollback()
+		return err
+	}
+	// 添加用户角色
+	if err := d.addUserRole(userId, roleIds); err != nil {
+		d.Rollback()
+		return err
+	}
+	d.Commit()
+	return nil
+}
+
+// 添加用户
+func (d *user) addUser(bean systemModel.User) (uint, error) {
+	result := d.Tx().Create(&bean)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return bean.ID, nil
+}
+
+// 添加用户角色关联信息
+func (d *user) addUserRole(userId uint, roleIds []uint) error {
+	if len(roleIds) == 0 {
+		return nil
+	}
+	roles := make([]systemModel.UserRoleRel, 0)
+	for _, roleId := range roleIds {
+		roles = append(roles, systemModel.UserRoleRel{
+			UserId: userId,
+			RoleId: roleId,
+		})
+	}
+	result := d.Tx().Create(&roles)
+	return result.Error
 }
 
 // Update 更新用户详情信息
