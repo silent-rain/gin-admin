@@ -66,6 +66,8 @@ const (
 	UserLogoutError                                       // 用户注销失败
 	UserDisableError                                      // 您的账号已被禁用,请联系管理员
 	UserOldPasswordError                                  // 旧密码不正确
+	UserPhoneConsistentError                              // 新旧手机号码一致, 未更新
+	UserEmailConsistentError                              // 新旧邮箱一致, 未更新
 	CaptchaEtxNotFoundError                               // 验证码格式异常
 	CaptchaNotFoundError                                  // 验证码不存在
 	CaptchaGenerateError                                  // 生成验证码失败
@@ -110,6 +112,8 @@ var statusCodeMsg = map[StatuScode]error{
 	UserLogoutError:             errors.New("用户注销失败"),
 	UserDisableError:            errors.New("您的账号已被禁用,请联系管理员"),
 	UserOldPasswordError:        errors.New("旧密码不正确"),
+	UserPhoneConsistentError:    errors.New("新旧手机号码一致, 未更新"),
+	UserEmailConsistentError:    errors.New("新旧邮箱一致, 未更新"),
 	CaptchaEtxNotFoundError:     errors.New("验证码格式异常"),
 	CaptchaNotFoundError:        errors.New("验证码不存在"),
 	CaptchaGenerateError:        errors.New("生成验证码失败"),

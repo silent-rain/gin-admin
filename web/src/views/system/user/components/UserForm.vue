@@ -24,13 +24,83 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model="props.data.phone" placeholder="请输入手机号码" />
+          <el-form-item class="form-phone" label="手机号码" prop="phone">
+            <el-input
+              v-if="props.type === 'add'"
+              v-model="props.data.phone"
+              placeholder="请输入手机号码"
+            />
+            <div v-else>
+              <template v-if="!state.isPhoneEdit">
+                <span>{{ props.data.phone }}</span>
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  :icon="EditPen"
+                  @click="state.isPhoneEdit = true"
+                  >修改
+                </el-button>
+              </template>
+              <template v-else>
+                <el-input
+                  v-model="state.newPhone"
+                  placeholder="请输入新手机号码"
+                  style="width: 180px"
+                />
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  style="margin-left: 3px"
+                  @click="handleUpdatePhone"
+                  >保存
+                </el-button>
+                <el-button link size="small" @click="state.isPhoneEdit = false"
+                  >取消
+                </el-button>
+              </template>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="props.data.email" placeholder="请输入邮箱" />
+          <el-form-item class="form-email" label="邮箱" prop="email">
+            <el-input
+              v-if="props.type === 'add'"
+              v-model="props.data.email"
+              placeholder="请输入邮箱"
+            />
+            <div v-else>
+              <template v-if="!state.isEmailEdit">
+                <span>{{ props.data.email }}</span>
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  :icon="EditPen"
+                  @click="state.isEmailEdit = true"
+                  >修改
+                </el-button>
+              </template>
+              <template v-else>
+                <el-input
+                  v-model="state.newEmail"
+                  placeholder="请输入新邮箱"
+                  style="width: 180px"
+                />
+                <el-button
+                  link
+                  type="primary"
+                  size="small"
+                  style="margin-left: 3px"
+                  @click="handleUpdateEmail"
+                  >保存
+                </el-button>
+                <el-button link size="small" @click="state.isEmailEdit = false"
+                  >取消
+                </el-button>
+              </template>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -131,7 +201,13 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateUser, addUser } from '@/api/system/user';
+import { EditPen } from '@element-plus/icons-vue';
+import {
+  updateUser,
+  addUser,
+  updatePhone,
+  updateEmail,
+} from '@/api/system/user';
 import { getAllRole } from '@/api/system/role';
 import { User } from '~/api/system/user';
 import { RoleListRsp, Role } from '~/api/system/role';
@@ -152,6 +228,13 @@ const props = withDefaults(
 
 // const { data } = toRefs(props);
 // const data = toRef(props, 'data');
+
+const state = reactive({
+  isPhoneEdit: false,
+  newPhone: '',
+  isEmailEdit: false,
+  newEmail: '',
+});
 
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({
@@ -224,6 +307,55 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+
+// 更新手机号码
+const handleUpdatePhone = async () => {
+  if (state.newPhone.trim() === '') {
+    ElMessage.success('新手机号码不能为空');
+    return;
+  }
+  if (state.newPhone.trim().length !== 11) {
+    ElMessage.success('非法手机号码');
+    return;
+  }
+
+  const data = {
+    id: props.data.id,
+    phone: state.newPhone.trim(),
+  };
+  try {
+    await updatePhone(data);
+    state.isPhoneEdit = false;
+    emit('refresh');
+    emit('update:data', { ...props.data, phone: state.newPhone });
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 更新邮箱
+const handleUpdateEmail = async () => {
+  if (state.newEmail.trim() === '') {
+    ElMessage.success('新邮箱不能为空');
+    return;
+  }
+
+  const data = {
+    id: props.data.id,
+    email: state.newEmail.trim(),
+  };
+  try {
+    await updateEmail(data);
+    state.isEmailEdit = false;
+    emit('refresh');
+    emit('update:data', { ...props.data, email: state.newEmail });
+    ElMessage.success('操作成功');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 watch(
   () => props.data.roles,
   () => {
@@ -236,4 +368,11 @@ watch(
 );
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.form-phone,
+.form-email {
+  .el-button + .el-button {
+    margin-left: 0px;
+  }
+}
+</style>

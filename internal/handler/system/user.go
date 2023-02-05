@@ -197,6 +197,23 @@ func (h *userHandler) UpdatePhone(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
+	// 查看手机号码是否已经被非本人使用
+	user, ok, err := h.dao.GetUserByPhone(req.Phone)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	if ok && user.ID == req.ID {
+		log.New(ctx).WithCode(statuscode.UserPhoneConsistentError).Error("")
+		response.New(ctx).WithCode(statuscode.UserPhoneConsistentError).Json()
+		return
+	}
+	if ok {
+		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("手机号码已被使用")
+		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("手机号码已被使用").Json()
+		return
+	}
 	row, err := h.dao.UpdatePhone(req.ID, req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
@@ -211,6 +228,23 @@ func (h *userHandler) UpdateEmail(ctx *gin.Context) {
 	req := new(systemDto.UpdateUserEmailReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+		return
+	}
+	// 查看邮箱是否已经被非本人使用
+	user, ok, err := h.dao.GetUserByEmail(req.Email)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	if ok && user.ID == req.ID {
+		log.New(ctx).WithCode(statuscode.UserEmailConsistentError).Error("")
+		response.New(ctx).WithCode(statuscode.UserEmailConsistentError).Json()
+		return
+	}
+	if ok {
+		log.New(ctx).WithCode(statuscode.DbDataExistError).Error("邮箱已被使用")
+		response.New(ctx).WithCode(statuscode.DbDataExistError).WithMsg("邮箱已被使用").Json()
 		return
 	}
 	row, err := h.dao.UpdateEmail(req.ID, req.Email)

@@ -43,7 +43,7 @@
             v-model="subForm.password"
             :type="passwordType"
             name="password"
-            placeholder="密码"
+            placeholder="请输入密码"
             @keyup.enter="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
@@ -193,7 +193,6 @@ $light_gray: #eee;
   :deep(.el-input input) {
     background: transparent;
     border: 0px;
-    -webkit-appearance: none;
     border-radius: 50px;
     padding: 10px 5px 10px 35px;
     color: #999;

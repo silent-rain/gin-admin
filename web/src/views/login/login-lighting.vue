@@ -3,6 +3,7 @@
     <div class="login-hero">
       <img src="@/assets/layout/login.svg" :alt="settings.title" />
     </div>
+
     <el-form
       ref="refLoginForm"
       class="login-form"
@@ -16,7 +17,7 @@
         <span class="svg-container">
           <ElSvgIcon name="User" :size="14" />
         </span>
-        <el-input v-model="subForm.keyword" placeholder="用户名(panda)" />
+        <el-input v-model="subForm.keyword" placeholder="请输入手机号码/邮箱" />
         <!--占位-->
       </el-form-item>
       <el-form-item prop="password" :rules="formRules.isNotNull('password')">
@@ -29,7 +30,7 @@
           v-model="subForm.password"
           :type="passwordType"
           name="password"
-          placeholder="密码(123456)"
+          placeholder="请输入密码"
           @keyup.enter="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
@@ -59,10 +60,12 @@ import { useBasicStore } from '@/store/basic';
 import { elMessage, useElement } from '@/hooks/use-element';
 import { login } from '@/api/system/login';
 import { useUserStore } from '@/store/user';
+
 /* listen router change and set the query  */
 const { settings } = useBasicStore();
 // element valid
 const { formRules } = useElement();
+
 // form
 const subForm = reactive({
   keyword: '18312465088',
@@ -73,6 +76,7 @@ const state: any = reactive({
   redirect: undefined,
 });
 const route = useRoute();
+
 const getOtherQuery = (query) => {
   return Object.keys(query).reduce((acc, cur) => {
     if (cur !== 'redirect') {
@@ -81,6 +85,7 @@ const getOtherQuery = (query) => {
     return acc;
   }, {});
 };
+
 watch(
   () => route.query,
   (query) => {
@@ -143,6 +148,7 @@ const showPwd = () => {
   });
 };
 </script>
+
 <style lang="scss" scoped>
 $bg: #fbfcff;
 $dark_gray: #333;
@@ -255,7 +261,6 @@ $light_gray: #eee;
   .el-input input {
     background: transparent;
     border: 0px;
-    -webkit-appearance: none;
     border-radius: 0px;
     padding: 10px 5px 10px 35px;
     color: #999;

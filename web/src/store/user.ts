@@ -2,6 +2,10 @@ import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import router from '@/router';
 import { getUserInfo } from '@/api/system/user';
+import { User } from '~/api/system/user';
+import { Role } from '~/api/system/role';
+import { Menu } from '~/api/system/menu';
+import { UserTry } from '~/permission';
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -10,11 +14,16 @@ export const useUserStore = defineStore('user', {
       token: '',
       // 登录标识
       getUserInfo: false,
-      // user info
-      userInfo: { username: '', avatar: '' },
-      roles: [] as Array<number>,
-      codes: [] as Array<number>,
-    };
+      // 用户信息
+      userInfo: {} as User,
+      // 角色列表
+      roles: [] as Role[],
+      // 按钮权限列表
+      permissions: [] as string[],
+      // 菜单路由列表
+      menus: [] as Menu[],
+      codes: [] as number[],
+    } as UserTry;
   },
   persist: {
     storage: localStorage,
@@ -24,14 +33,12 @@ export const useUserStore = defineStore('user', {
     // 获取用户信息
     async userInfo() {
       const userData = (await getUserInfo({})).data;
-      const roles = userData.roles.map((v: any) => {
-        return v.id;
-      });
       return {
-        userInfo: userData,
-        roles: roles,
+        userInfo: userData.user,
+        roles: userData.roles,
+        menus: userData.menus,
+        permissions: userData.permissions,
         codes: [],
-        menuList: [],
       };
     },
 
@@ -40,14 +47,13 @@ export const useUserStore = defineStore('user', {
       this.token = data;
     },
     // 设置用户状态
-    setUserInfo({ userInfo, roles, codes }) {
-      const { nickname, avatar } = userInfo;
+    setUserInfo(data: any) {
       this.$patch((state) => {
-        state.roles = roles;
-        state.codes = codes;
+        state.roles = data.roles;
+        state.codes = data.codes;
         state.getUserInfo = true;
-        state.userInfo.username = nickname;
-        state.userInfo.avatar = avatar;
+        state.userInfo.nickname = data.userInfo.nickname;
+        state.userInfo.avatar = data.userInfo.avatar;
       });
     },
     // 重置登录状态
@@ -56,14 +62,16 @@ export const useUserStore = defineStore('user', {
         // reset token
         state.token = '';
 
+        // reset userInfo
+        state.userInfo = {} as User;
+
         state.roles = [];
+        state.menus = [];
+        state.permissions = [];
         state.codes = [];
 
         // reset router
-
-        // reset userInfo
-        state.userInfo.username = '';
-        state.userInfo.avatar = '';
+        // ...
       });
       this.getUserInfo = false;
     },

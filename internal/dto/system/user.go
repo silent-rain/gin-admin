@@ -74,8 +74,8 @@ type UpdateUserPasswordReq struct {
 
 // UpdateUserPhoneReq 用户更新手机号码
 type UpdateUserPhoneReq struct {
-	ID    uint   `json:"id" form:"id" binding:"required"`
-	Phone string `json:"phone" form:"phone"` // 手机号码
+	ID    uint   `json:"id" form:"id" binding:"required"` // 用户ID
+	Phone string `json:"phone" form:"phone"`              // 手机号码
 }
 
 // UpdateUserEmailReq 用户更新邮箱

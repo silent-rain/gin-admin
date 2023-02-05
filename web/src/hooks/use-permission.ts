@@ -158,13 +158,12 @@ function hasCodePermission(codes: number[], routeItem: RouteRawConfig) {
 }
 
 // 过滤异步路由
-export function filterAsyncRouter({ menuList, roles, codes }) {
+export function filterAsyncRouter({ menus, roles, codes }) {
   const basicStore = useBasicStore();
-  const userStore = useUserStore();
   const permissionMode = basicStore.settings?.permissionMode;
   let accessRoutes: RouterTypes = [];
   if (permissionMode === 'rbac') {
-    accessRoutes = filterAsyncRoutesByMenuList(menuList); // by menuList
+    accessRoutes = filterAsyncRoutesByMenuList(menus); // by menuList
   } else if (permissionMode === 'roles') {
     accessRoutes = filterAsyncRoutesByRoles(roleCodeRoutes, roles); // by roles
   } else {

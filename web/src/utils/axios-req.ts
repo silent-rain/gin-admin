@@ -63,22 +63,6 @@ service.interceptors.request.use(
   },
 );
 
-// 请求前拦截
-// service.interceptors.request.use(
-//   (request) => {
-//     // @ts-ignore
-//     req.headers['Content-type'] = 'application/json;charset=UTF-8';
-//     // 如果req.method给get 请求参数设置为 ?name=xxx
-//     if ('get'.includes(req.method?.toLowerCase() as string))
-//       req.params = req.data;
-//     return req;
-//   },
-//   (err) => {
-//     // 发送请求失败
-//     Promise.reject(err);
-//   },
-// );
-
 // 请求后拦截
 service.interceptors.response.use(
   (res) => {
@@ -92,7 +76,7 @@ service.interceptors.response.use(
     }
 
     const { msg, isNeedUpdateToken, data, code } = res.data;
-    //更新token保持登录状态
+    // 更新token保持登录状态
     if (isNeedUpdateToken && data.token) {
       // setToken(data.token);
     }

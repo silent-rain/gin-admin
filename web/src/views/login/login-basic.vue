@@ -16,7 +16,7 @@
         <span class="svg-container">
           <ElSvgIcon name="User" :size="14" />
         </span>
-        <el-input v-model="subForm.keyword" placeholder="用户名(panda)" />
+        <el-input v-model="subForm.keyword" placeholder="请输入手机号码/邮箱" />
         <!--占位-->
       </el-form-item>
       <el-form-item prop="password" :rules="formRules.isNotNull('password')">
@@ -29,7 +29,7 @@
           v-model="subForm.password"
           :type="passwordType"
           name="password"
-          placeholder="密码(123456)"
+          placeholder="请输入密码"
           @keyup.enter="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
@@ -256,7 +256,6 @@ $light_gray: #eee;
   .el-input input {
     background: transparent;
     border: 0px;
-    -webkit-appearance: none;
     border-radius: 0px;
     padding: 10px 5px 10px 35px;
     color: #999;
