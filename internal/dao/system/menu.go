@@ -19,6 +19,7 @@ type Menu interface {
 	Delete(id uint) (int64, error)
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
+	ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error)
 }
 
 // 菜单
@@ -41,7 +42,7 @@ func (d *menu) All() ([]systemModel.Menu, int64, error) {
 	}
 
 	bean := make([]systemModel.Menu, 0)
-	if result := stats().Order("sort ASC").Order("updated_at DESC").Find(&bean); result.Error != nil {
+	if result := stats().Order("sort ASC").Order("updated_at ASC").Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
@@ -61,7 +62,7 @@ func (d *menu) List(req systemDto.QueryMenuReq) ([]systemModel.Menu, int64, erro
 
 	bean := make([]systemModel.Menu, 0)
 	result := stats().
-		Order("sort ASC").Order("updated_at DESC").
+		Order("sort ASC").Order("updated_at ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
@@ -113,4 +114,19 @@ func (d *menu) Status(id uint, status uint) (int64, error) {
 		Status: status,
 	})
 	return result.RowsAffected, result.Error
+}
+
+// 通过 role_ids 获取菜单列表, 菜单去重
+func (d *menu) ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error) {
+	beans := make([]systemModel.Menu, 0)
+	result := d.db.Debug().Model(&systemModel.Menu{}).
+		Joins("left join sys_role_menu_rel on sys_role_menu_rel.menu_id = sys_menu.id").
+		Where("sys_role_menu_rel.role_id in ?", roleIds).
+		Where("sys_menu.status = 1").
+		Distinct("sys_menu.*").
+		Find(&beans)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return beans, nil
 }

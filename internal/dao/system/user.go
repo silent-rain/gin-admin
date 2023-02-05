@@ -106,7 +106,7 @@ func (d *user) List(req systemDto.QueryUserReq) ([]systemModel.User, int64, erro
 // Info 获取用户信息
 func (d *user) Info(id uint) (systemModel.User, bool, error) {
 	bean := systemModel.User{ID: id}
-	result := d.db.Model(&systemModel.User{}).Preload("Roles").First(&bean)
+	result := d.db.Debug().Model(&systemModel.User{}).Preload("Roles", "status=1").First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return systemModel.User{}, false, nil
 	}

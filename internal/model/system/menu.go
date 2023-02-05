@@ -25,7 +25,7 @@ type Menu struct {
 	Link         string           `json:"link" gorm:"column:link"`                                  // 链接地址: 内链地址/外链地址
 	Target       string           `json:"target" gorm:"column:target"`                              // 链接地址跳转方式, _blank/_self
 	Permission   string           `json:"permission" gorm:"column:permission"`                      // 权限标识
-	Hide         uint             `json:"hide" gorm:"column:hide"`                                  // 是否可见,0:隐藏,1:显示
+	Hide         uint             `json:"hide" gorm:"column:hide"`                                  // 是否隐藏,0:显示,1:隐藏
 	Sort         uint             `json:"sort" gorm:"column:sort"`                                  // 排序
 	Note         string           `json:"note" gorm:"column:note"`                                  // 备注
 	Status       uint             `json:"status" gorm:"column:status"`                              // 状态,0:停用,1:启用
@@ -52,3 +52,19 @@ func (a MenuSortById) Less(i, j int) bool { return a[i].ID < a[j].ID }
 
 // Swap 数据交换位置
 func (a MenuSortById) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+// 菜单类型
+type MenuType uint
+
+const (
+	MenuTypeByMenu MenuType = iota
+	MenuTypeByBUtton
+)
+
+// 菜单是否可见类型
+type MenuHideType uint
+
+const (
+	MenuHideTypeByShow MenuHideType = iota // 显示
+	MenuHideTypeByHide                     // 隐藏
+)

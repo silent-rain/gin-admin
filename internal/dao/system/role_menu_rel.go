@@ -19,7 +19,7 @@ type RoleMenuRel interface {
 	Update(roleId uint, menuIds []uint) error
 }
 
-// 菜单
+// 角色菜单关系
 type roleMenuRel struct {
 	*dao.Transaction
 	db *gorm.DB

@@ -10,7 +10,10 @@
  */
 package systemDto
 
-import "gin-admin/internal/dto"
+import (
+	"gin-admin/internal/dto"
+	systemModel "gin-admin/internal/model/system"
+)
 
 // UserLoginReq 登录请求
 type UserLoginReq struct {
@@ -25,12 +28,10 @@ type UserLoginRsp struct {
 
 // UserInfoRsp 用户信息响应
 type UserInfoRsp struct {
-	ID       uint   `json:"id"`       // 用户ID
-	Nickname string `json:"nickname"` // 昵称
-	Phone    string `json:"phone"`    // 手机号码
-	Email    string `json:"email"`    // 邮件
-	Avatar   string `json:"avatar"`   // 用户头像URL
-	RoleIds  []uint `json:"role_ids"` // 角色 ID 列表
+	User        systemModel.User   `json:"user"`        // 用户信息
+	Roles       []systemModel.Role `json:"roles"`       // 角色列表
+	Menus       []systemModel.Menu `json:"menus"`       // 菜单路由列表
+	Permissions []string           `json:"permissions"` // 按钮权限列表
 }
 
 // QueryUserReq 查询条件

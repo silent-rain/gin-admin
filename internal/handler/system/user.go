@@ -26,13 +26,15 @@ import (
 
 // 用户管理
 type userHandler struct {
-	dao systemDao.User
+	dao     systemDao.User
+	menuDao systemDao.Menu
 }
 
 // 创建角色 Handler 对象
 func NewUserHandler() *userHandler {
 	return &userHandler{
-		dao: systemDao.NewUserDao(),
+		dao:     systemDao.NewUserDao(),
+		menuDao: systemDao.NewMenuDao(),
 	}
 }
 
@@ -240,5 +242,72 @@ func (h *userHandler) Info(ctx *gin.Context) {
 		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
 		return
 	}
-	response.New(ctx).WithData(user).Json()
+
+	// 根据角色获取菜单列表
+	roleMenus, err := h.getRoleMenuList(user.Roles)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+	}
+	// 菜单路由列表：菜单类型为菜单的数据解析
+	menus := h.getMenuList(roleMenus)
+	// 按钮权限列表：菜单类型为按钮的数据解析
+	permissions := h.getPermissionList(roleMenus)
+
+	// 返回值收集
+	result := systemDto.UserInfoRsp{
+		User:        user,
+		Roles:       user.Roles,
+		Menus:       menus,
+		Permissions: permissions,
+	}
+	// 避免角色数据反复嵌套
+	result.User.Roles = nil
+	response.New(ctx).WithData(result).Json()
+}
+
+// 根据角色获取菜单列表
+func (h *userHandler) getRoleMenuList(roles []systemModel.Role) ([]systemModel.Menu, error) {
+	// 获取角色ID
+	roleIds := make([]uint, 0)
+	for _, item := range roles {
+		roleIds = append(roleIds, item.ID)
+	}
+	// 获取菜单列表
+	menus, err := h.menuDao.ListByRoleIds(roleIds)
+	if err != nil {
+		return nil, err
+	}
+	return menus, nil
+}
+
+// 菜单路由列表：菜单类型为菜单的数据解析
+func (h *userHandler) getMenuList(menus []systemModel.Menu) []systemModel.Menu {
+	results := make([]systemModel.Menu, 0)
+	if len(menus) == 0 {
+		return results
+	}
+	for _, item := range menus {
+		if item.MenuType == uint(systemModel.MenuTypeByMenu) {
+			results = append(results, item)
+		}
+	}
+	return results
+}
+
+// 按钮权限列表：菜单类型为按钮的数据解析
+func (h *userHandler) getPermissionList(menus []systemModel.Menu) []string {
+	results := make([]string, 0)
+	if len(menus) == 0 {
+		return results
+	}
+	for _, item := range menus {
+		// 过滤菜单路由，过滤空权限，过滤隐藏按钮
+		if item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
+			item.Permission != "" &&
+			item.Hide == uint(systemModel.MenuHideTypeByShow) {
+			results = append(results, item.Permission)
+		}
+	}
+	return results
 }

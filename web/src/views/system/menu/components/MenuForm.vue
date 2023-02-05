@@ -162,13 +162,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否可见" prop="hide">
-            <el-radio-group
-              v-model="props.data.hide"
-              :disabled="props.data.menu_type === MenuType.Button"
-            >
-              <el-radio :label="1">显示</el-radio>
-              <el-radio :label="0"
+          <el-form-item label="是否隐藏" prop="hide">
+            <el-radio-group v-model="props.data.hide">
+              <el-radio :label="0">显示</el-radio>
+              <el-radio :label="1"
                 >隐藏
                 <el-tooltip
                   content="选择不可见只注册路由不显示在侧边栏"

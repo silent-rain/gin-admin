@@ -1,0 +1,31 @@
+查询用户 sys:user:list
+添加用户 sys:user:add
+修改用户 sys:user:update
+删除用户 sys:user:delete
+批量删除 sys:user:delall
+设置状态 sys:user:status
+重置密码 sys:user:resetPwd
+导出用户 sys:user:export
+
+
+查询用户 sys:user:list
+添加用户 sys:user:add
+修改用户 sys:user:update
+删除用户 sys:user:delete
+用户详情 sys:user:detail ---
+设置状态 sys:user:status
+批量删除 sys:user:dall
+导出用户 sys:user:export
+导入用户 sys:user:import ---
+重置密码 sys:user:resetPwd
+
+角色页面 sys:role:view
+分配权限 sys:role:permission
+添加子级 sys:menu:addchild
+全部展开 sys:menu:expand
+全部折叠 sys:menu:collapse
+个人资料 sys:profile:list
+添加代码生成 sys:generate:generate
+修改代码生成 sys:generate:batchGenerate
+sys:example:index
+
