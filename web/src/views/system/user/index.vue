@@ -32,9 +32,11 @@
     <div class="operation-button">
       <div class="left-button">
         <ConvenienButtons
-          :buttonList="['add', 'batchDelete']"
+          :buttonList="['add', 'batchDelete', 'import', 'export']"
           @add-event="handleAdd"
           @batch-delete-event="handleBatchDelete"
+          @importEvent="handleImportEvent"
+          @exportEvent="handleExportEvent"
         />
       </div>
       <div class="right-button">
@@ -72,12 +74,12 @@
         label="用户ID"
         width="80"
       />
-      <!-- <el-table-column
+      <el-table-column
         v-if="checkedDict.realname"
         prop="realname"
         label="姓名"
         show-overflow-tooltip
-      /> -->
+      />
       <el-table-column
         v-if="checkedDict.nickname"
         prop="nickname"
@@ -264,6 +266,7 @@ import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
 import UserForm from './components/UserForm.vue';
+import { aoaToSheetXlsx } from '@/utils/excel';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -297,7 +300,7 @@ const state = reactive({
 
 const checkAllList = [
   { label: '用户ID', value: 'id', disabled: false, enabled: true },
-  // { label: '真实姓名', value: 'realname', disabled: true, enabled: true },
+  { label: '姓名', value: 'realname', disabled: false, enabled: true },
   { label: '昵称', value: 'nickname', disabled: true, enabled: true },
   { label: '性别', value: 'gender', disabled: false, enabled: true },
   { label: '年龄', value: 'age', disabled: false, enabled: false },
@@ -422,6 +425,86 @@ const handleResetUserPwd = async (id: number) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+// 导入
+const handleImportEvent = () => {
+  console.log('导入');
+};
+
+// 导出
+const handleExportEvent = async () => {
+  const fileName = '用户列表';
+  const header = [
+    '用户ID',
+    '姓名',
+    '昵称',
+    '性别',
+    '年龄',
+    '出生日期',
+    '手机号码',
+    '邮箱',
+    '介绍',
+    '备注',
+    '角色',
+    '排序',
+    '状态',
+    '创建时间',
+    '更新时间',
+  ];
+  const data = tableData.value?.map((item, _index) => {
+    const {
+      id,
+      realname,
+      nickname,
+      gender,
+      age,
+      birthday,
+      phone,
+      email,
+      intro,
+      note,
+      roles,
+      sort,
+      status,
+      created_at,
+      updated_at,
+    } = item;
+    const genderMap = {
+      0: '保密',
+      1: '女',
+      2: '男',
+    };
+    const genderZh = genderMap[gender];
+    const statusZh = status === 1 ? '启用' : '禁用';
+    const rolesList: string[] = [];
+    roles.forEach((v) => {
+      rolesList.push(v.name);
+    });
+
+    return [
+      id,
+      realname,
+      nickname,
+      genderZh,
+      age,
+      birthday,
+      phone,
+      email,
+      intro,
+      note,
+      rolesList.join(';'),
+      sort,
+      statusZh,
+      created_at,
+      updated_at,
+    ];
+  });
+  aoaToSheetXlsx({
+    data,
+    header,
+    filename: `${unref(fileName)}.xlsx`,
+  });
 };
 </script>
 

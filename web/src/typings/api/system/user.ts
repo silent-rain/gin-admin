@@ -18,7 +18,7 @@ export interface User {
   status: number;
   created_at: string;
   updated_at: string;
-  roles: User[];
+  roles: any[];
   role_ids: number[];
 }
 

@@ -30,7 +30,7 @@
 <script setup>
 import { Upload } from '@element-plus/icons-vue';
 import { toRefs } from 'vue';
-import { importsExcel } from './excel';
+import { importsExcel } from '@/utils/excel';
 
 const state = reactive({
   list: null,

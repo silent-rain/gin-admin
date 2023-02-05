@@ -1,12 +1,13 @@
+/**Excel */
 import * as xlsx from 'xlsx';
 
 const { utils, writeFile, read } = xlsx;
 const DEF_FILE_NAME = 'new-excel.xlsx';
 
-function getHeaderRow(sheet) {
-  const headers = [];
-  const range = utils.decode_range(sheet['!ref']);
-  let C;
+function getHeaderRow(sheet: xlsx.WorkSheet) {
+  const headers: string[] = [];
+  const range = utils.decode_range(sheet['!ref'] as string);
+  let C: number;
   const R = range.s.r;
   /* start in the first row */
   for (C = range.s.c; C <= range.e.c; ++C) {
@@ -19,11 +20,14 @@ function getHeaderRow(sheet) {
   }
   return headers;
 }
-export function importsExcel(file) {
+
+// 导入
+export function importsExcel(file: { raw: Blob }) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = (e) => {
+      // @ts-ignore
       const data = new Uint8Array(e.target.result);
       const workbook = read(data, { type: 'array' });
       //  console.log("workbook: ", workbook);
@@ -39,6 +43,8 @@ export function importsExcel(file) {
     reader.readAsArrayBuffer(file.raw);
   });
 }
+
+// 导出
 export function aoaToSheetXlsx({
   data,
   header,
@@ -49,6 +55,7 @@ export function aoaToSheetXlsx({
   if (header) {
     arrData.unshift(header);
   }
+
   const worksheet = utils.aoa_to_sheet(arrData);
   /* add worksheet to workbook */
   const workbook = {
@@ -58,6 +65,7 @@ export function aoaToSheetXlsx({
     },
   };
   /* output format determined by filename */
+  // @ts-ignore
   writeFile(workbook, filename, write2excelOpts);
   /* at this point, out.xlsb will have been downloaded */
 }

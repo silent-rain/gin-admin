@@ -21,12 +21,10 @@
     <div class="operation-button">
       <div class="left-button">
         <ConvenienButtons
-          :buttonList="['add', 'expand', 'collapse', 'import', 'export']"
+          :buttonList="['add', 'expand', 'collapse']"
           @add-event="handleAdd"
           @batch-delete-event="handleBatchDelete"
           @expandEvent="handleExpandAllEvent"
-          @importEvent="handleImportEvent"
-          @exportEvent="handleExportEvent"
         >
           <template v-slot:import> 导入菜单 </template>
           <template v-slot:export> 导出菜单 </template>
@@ -428,16 +426,6 @@ const toggleRowExpansionAll = (
       toggleRowExpansionAll(v.children, value);
     }
   });
-};
-
-// 导入
-const handleImportEvent = () => {
-  console.log('导入');
-};
-
-// 导出
-const handleExportEvent = () => {
-  console.log('导出');
 };
 </script>
 

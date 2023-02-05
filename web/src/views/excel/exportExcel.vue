@@ -47,7 +47,7 @@ import { Download } from '@element-plus/icons-vue';
 import { onBeforeMount, toRefs } from 'vue';
 import { ElMessage } from 'element-plus';
 import { transactionList } from '@/api/remote-search';
-import { aoaToSheetXlsx } from './excel';
+import { aoaToSheetXlsx } from '@/utils/excel';
 
 const statusFilter = (status) => {
   const statusMap = {
