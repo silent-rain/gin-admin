@@ -73,6 +73,18 @@ CREATE TABLE sys_menu (
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '菜单表';
 
+-- 角色菜单关联表
+CREATE TABLE sys_role_menu_rel (
+    `id` INT AUTO_INCREMENT COMMENT '自增ID',
+    `role_id` INT(10) NOT NULL COMMENT '角色ID',
+    `menu_id` INT(10) NOT NULL COMMENT '菜单ID',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    CONSTRAINT `sys_role_menu_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `sys_role_menu_rel_menu_id` FOREIGN KEY (`menu_id`) REFERENCES `sys_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '角色菜单关联表';
+
 -- user表触发器，更新其他表冗余字段
 /*
  CREATE TRIGGER trigger_update_user

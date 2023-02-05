@@ -47,6 +47,10 @@
     />
 
     <!-- 分配权限 -->
+    <MenuPermission
+      v-model:data="state.menuPermission.data"
+      v-model:visible="state.menuPermission.visible"
+    />
 
     <el-table
       class="el-table-role"
@@ -126,7 +130,12 @@
             @click="handleEdit(scope.row)"
             >修改
           </el-button>
-          <el-button link type="primary" size="small" :icon="Finished"
+          <el-button
+            link
+            type="primary"
+            size="small"
+            :icon="Finished"
+            @click="handleMenuPermission(scope.row)"
             >分配权限
           </el-button>
           <el-popconfirm
@@ -179,6 +188,7 @@ import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
 import RoleForm from './components/RoleForm.vue';
+import MenuPermission from './components/MenuPermission.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -203,6 +213,10 @@ const state = reactive({
     visible: false,
     type: '',
     width: '500px',
+  },
+  menuPermission: {
+    data: {} as Role,
+    visible: false,
   },
 });
 
@@ -307,6 +321,12 @@ const handleStatusChange = async (row: Role) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+// 分配权限
+const handleMenuPermission = async (row: Role) => {
+  state.menuPermission.data = { ...row };
+  state.menuPermission.visible = true;
 };
 </script>
 

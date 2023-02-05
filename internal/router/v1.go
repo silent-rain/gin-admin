@@ -105,5 +105,15 @@ func NewApiV1(engine *gin.Engine) {
 		menu.DELETE("/batchDelete", system.NewMenuHandler().BatchDelete)
 		// 更新菜单状态
 		menu.PUT("/status", system.NewMenuHandler().Status)
+
+	}
+
+	// 角色菜单关系管理
+	roleMenuRel := v1.Group("/roleMenuRel")
+	{
+		// 获取角色关联的菜单列表
+		roleMenuRel.GET("/list", system.NewMenuRelHandler().List)
+		// 更新角色菜单关联关系
+		roleMenuRel.PUT("/update", system.NewMenuRelHandler().Update)
 	}
 }

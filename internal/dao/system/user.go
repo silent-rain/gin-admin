@@ -153,8 +153,8 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 	if roleIds == nil {
 		return nil
 	}
-	// 获取用户关联的角色列表
-	userRoleIds, err := d.getUserRoleIds(userId)
+	// 获取用户关联的角色 roleId 列表
+	userRoleIds, err := d.getUserRoleByRoleIds(userId)
 	if err != nil {
 		return err
 	}
@@ -191,15 +191,18 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 	return nil
 }
 
-// 获取用户关联角色列表
-func (d *user) getUserRoleIds(userId uint) ([]uint, error) {
+// 获取用户关联的角色 roleId 列表
+func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
 	userRoles := make([]systemModel.UserRoleRel, 0)
 	results := d.Tx().Where("user_id = ?", userId).Find(&userRoles)
-	userRoleIds := make([]uint, 0)
-	for _, userRole := range userRoles {
-		userRoleIds = append(userRoleIds, userRole.RoleId)
+	if results.Error != nil {
+		return nil, results.Error
 	}
-	return userRoleIds, results.Error
+	roleIds := make([]uint, 0)
+	for _, item := range userRoles {
+		roleIds = append(roleIds, item.RoleId)
+	}
+	return roleIds, nil
 }
 
 // Delete 删除用户
