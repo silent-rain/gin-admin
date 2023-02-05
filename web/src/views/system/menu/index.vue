@@ -28,8 +28,8 @@
           @importEvent="handleImportEvent"
           @exportEvent="handleExportEvent"
         >
-          <template v-slot:import> 导入用户 </template>
-          <template v-slot:export> 导出用户 </template>
+          <template v-slot:import> 导入菜单 </template>
+          <template v-slot:export> 导出菜单 </template>
         </ConvenienButtons>
       </div>
       <div class="right-button">
@@ -338,7 +338,7 @@ const handleDelete = async (row: Menu) => {
 };
 // 编辑
 const handleEdit = async (row: Menu) => {
-  state.menuForm.data = row;
+  state.menuForm.data = { ...row };
   state.menuForm.type = 'edit';
   state.menuForm.visible = true;
 };

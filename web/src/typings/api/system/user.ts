@@ -18,8 +18,8 @@ export interface User {
   status: number;
   created_at: string;
   updated_at: string;
+  roles: User[];
   role_ids: number[];
-  _rawData: User;
 }
 
 export interface UserListRsp {

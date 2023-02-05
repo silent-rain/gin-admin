@@ -20,7 +20,6 @@ export interface Menu {
   created_at: string;
   updated_at: string;
   children: Menu[];
-  _rawData: Menu;
 }
 export interface MenuListRsp {
   data_list: Menu[];

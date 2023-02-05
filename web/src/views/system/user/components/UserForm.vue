@@ -150,6 +150,9 @@ const props = withDefaults(
   },
 );
 
+// const { data } = toRefs(props);
+// const data = toRef(props, 'data');
+
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({
   nickname: [
@@ -221,6 +224,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+watch(
+  () => props.data.roles,
+  () => {
+    if (!props.data.roles) {
+      return;
+    }
+    roleIds.value = props.data.roles.map((v) => v.id);
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="scss"></style>

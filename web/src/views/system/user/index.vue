@@ -351,7 +351,7 @@ const handleDelete = async (row: User) => {
 };
 // 编辑
 const handleEdit = async (row: User) => {
-  state.userForm.data = row;
+  state.userForm.data = { ...row };
   state.userForm.type = 'edit';
   state.userForm.visible = true;
 };

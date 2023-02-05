@@ -8,7 +8,6 @@ export interface Role {
   status: number;
   created_at: string;
   updated_at: string;
-  _rawData: Role;
 }
 
 export interface RoleListRsp {

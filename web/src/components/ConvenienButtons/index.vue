@@ -28,7 +28,7 @@
       >全部折叠
     </el-button>
     <el-button v-if="buttonDict.import" @click="handleImportEvent">
-      <slot name="export">导入</slot>
+      <slot name="import">导入</slot>
     </el-button>
     <el-button v-if="buttonDict.export" @click="handleExportEvent">
       <slot name="export">导出</slot>
