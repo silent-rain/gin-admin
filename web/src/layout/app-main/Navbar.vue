@@ -74,6 +74,7 @@ import { resetState } from '@/hooks/use-permission';
 import { elMessage } from '@/hooks/use-element';
 import { useBasicStore } from '@/store/basic';
 import { langTitle } from '@/hooks/use-common';
+import { logout } from '@/api/system/login';
 
 const basicStore = useBasicStore();
 const { settings, sidebar, setToggleSideBar } = basicStore;
@@ -82,12 +83,17 @@ const toggleSideBar = () => {
 };
 // 退出登录
 const router = useRouter();
-const loginOut = () => {
-  elMessage('退出登录成功');
-  router.push('/login?redirect=/');
-  nextTick(() => {
-    resetState();
-  });
+const loginOut = async () => {
+  try {
+    await logout();
+    elMessage('退出登录成功');
+    router.push('/login?redirect=/');
+    nextTick(() => {
+      resetState();
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 </script>
 

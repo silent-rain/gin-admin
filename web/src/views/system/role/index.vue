@@ -314,8 +314,7 @@ const handleStatusChange = async (row: Role) => {
     status: row.status,
   };
   try {
-    const resp = (await updateRoleStatus(data)).data as RoleListRsp;
-    tableData.value = resp.data_list;
+    await updateRoleStatus(data);
     fetchRoleList();
     ElMessage.success('操作成功');
   } catch (error) {
