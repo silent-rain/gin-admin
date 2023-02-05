@@ -26,8 +26,8 @@ func NewMenuHandler() *menuHandler {
 	}
 }
 
-// All 获取所有菜单列表
-func (h *menuHandler) All(ctx *gin.Context) {
+// AllTree 获取所有菜单树
+func (h *menuHandler) AllTree(ctx *gin.Context) {
 	menus, _, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
@@ -39,8 +39,8 @@ func (h *menuHandler) All(ctx *gin.Context) {
 	response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
 }
 
-// List 获取用菜单列表
-func (h *menuHandler) List(ctx *gin.Context) {
+// Tree 获取菜单树
+func (h *menuHandler) Tree(ctx *gin.Context) {
 	req := systemDto.QueryMenuReq{}
 	if err := utils.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)

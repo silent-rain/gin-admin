@@ -70,7 +70,10 @@ func (d *role) List(req systemDto.QueryRoleReq) ([]systemModel.Role, int64, erro
 	}
 
 	bean := make([]systemModel.Role, 0)
-	if result := stats().Offset(req.Offset()).Limit(req.PageSize).Order("sort DESC").Order("updated_at DESC").Find(&bean); result.Error != nil {
+	result := stats().Offset(req.Offset()).Limit(req.PageSize).
+		Order("sort DESC").Order("updated_at DESC").
+		Find(&bean)
+	if result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0

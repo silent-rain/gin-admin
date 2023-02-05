@@ -33,7 +33,7 @@ type User struct {
 	Status    uint             `json:"status" gorm:"column:status"`                              // 是否启用,0:禁用,1:启用
 	CreatedAt *utils.LocalTime `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
 	UpdatedAt *utils.LocalTime `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli"` // 更新时间
-	Roles     []Role           `json:"roles" gorm:"many2many:sys_user_role_rel;"`                // 角色列表, Many To Many, 关联 role 表
+	Roles     []Role           `json:"roles" gorm:"many2many:sys_user_role_rel;"`                // 角色列表, Many To Many, 关联 sys_user_role_rel 表
 }
 
 // TableName 表名重写

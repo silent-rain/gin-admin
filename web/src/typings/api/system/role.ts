@@ -8,6 +8,7 @@ export interface Role {
   status: number;
   created_at: string;
   updated_at: string;
+  menu_ids: number[];
 }
 
 export interface RoleListRsp {

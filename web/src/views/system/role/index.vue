@@ -46,6 +46,8 @@
       @refresh="fetchRoleList"
     />
 
+    <!-- 分配权限 -->
+
     <el-table
       class="el-table-role"
       :data="tableData"

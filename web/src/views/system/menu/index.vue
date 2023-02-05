@@ -32,7 +32,7 @@
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchMenuList"
+          @refreshEvent="fetchMenuTree"
           v-model:size="tableSize"
           :screenFullElement="'el-table-menu'"
           :checkAllList="checkAllList"
@@ -47,7 +47,7 @@
       v-model:visible="state.menuForm.visible"
       :type="state.menuForm.type"
       :width="state.menuForm.width"
-      @refresh="fetchMenuList"
+      @refresh="fetchMenuTree"
     />
 
     <el-table
@@ -224,7 +224,7 @@
       v-model:currentPage="listQuery.page"
       v-model:pageSize="listQuery.page_size"
       :total="tableDataTotal"
-      @pagination="fetchMenuList"
+      @pagination="fetchMenuTree"
     />
   </el-card>
 </template>
@@ -242,7 +242,7 @@ import {
 } from '@element-plus/icons-vue';
 import { ElMessage, TableInstance } from 'element-plus';
 import {
-  getMenuList,
+  getMenuTree,
   updateMenuStatus,
   deleteMenu,
   batchDeleteMenu,
@@ -264,7 +264,7 @@ const listQuery = reactive({
 });
 // 过滤事件
 const handleFilter = () => {
-  fetchMenuList();
+  fetchMenuTree();
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
@@ -307,13 +307,13 @@ const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<Menu[]>([]);
 
 onBeforeMount(() => {
-  fetchMenuList();
+  fetchMenuTree();
 });
 
-// 获取菜单列表
-const fetchMenuList = async () => {
+// 获取菜单树
+const fetchMenuTree = async () => {
   try {
-    const resp = (await getMenuList(listQuery)).data as MenuListRsp;
+    const resp = (await getMenuTree(listQuery)).data as MenuListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
@@ -328,7 +328,7 @@ const handleDelete = async (row: Menu) => {
   };
   try {
     await deleteMenu(data);
-    fetchMenuList();
+    fetchMenuTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -379,7 +379,7 @@ const handleBatchDelete = async () => {
   };
   try {
     await batchDeleteMenu(data);
-    fetchMenuList();
+    fetchMenuTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -400,7 +400,7 @@ const handleStatusChange = async (row: Menu) => {
   try {
     const resp = (await updateMenuStatus(data)).data as MenuListRsp;
     tableData.value = resp.data_list;
-    fetchMenuList();
+    fetchMenuTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);

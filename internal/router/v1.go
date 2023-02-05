@@ -91,10 +91,10 @@ func NewApiV1(engine *gin.Engine) {
 	// 菜单管理
 	menu := v1.Group("/menu")
 	{
-		// 获取所有菜单列表
-		menu.GET("/all", system.NewMenuHandler().All)
-		// 获取菜单列表
-		menu.GET("/list", system.NewMenuHandler().List)
+		// 获取所有菜单树
+		menu.GET("/allTree", system.NewMenuHandler().AllTree)
+		// 获取菜单树
+		menu.GET("/tree", system.NewMenuHandler().Tree)
 		// 添加菜单
 		menu.POST("/add", system.NewMenuHandler().Add)
 		// 更新菜单

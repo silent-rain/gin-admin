@@ -3,20 +3,20 @@
  */
 import axiosReq from '@/utils/axios-req';
 
-// 获取所有菜单列表
-export const getAllMenu = async () => {
+// 获取所有菜单树
+export const getAllMenuTree = async () => {
   return axiosReq({
-    url: '/menu/all',
+    url: '/menu/allTree',
     method: 'get',
     isParams: true,
     data: {},
   });
 };
 
-// 获取菜单列表
-export const getMenuList = async (params: any) => {
+// 获取菜单树
+export const getMenuTree = async (params: any) => {
   return axiosReq({
-    url: '/menu/list',
+    url: '/menu/tree',
     method: 'get',
     isParams: true,
     data: params,

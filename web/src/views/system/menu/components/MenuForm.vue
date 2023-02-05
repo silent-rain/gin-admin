@@ -217,7 +217,7 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { QuestionFilled } from '@element-plus/icons-vue';
-import { updateMenu, addMenu, getAllMenu } from '@/api/system/menu';
+import { updateMenu, addMenu, getAllMenuTree } from '@/api/system/menu';
 import { Menu, MenuListRsp } from '~/api/system/menu';
 import { MenuType, OpenType } from '@/constant/system/menu';
 
@@ -246,13 +246,13 @@ const rules = reactive<FormRules>({
 const menuOptions = ref<Menu[]>([]);
 
 onBeforeMount(() => {
-  fetchAllMenu();
+  fetchAllMenuTree();
 });
 
-// 获取所有菜单列表
-const fetchAllMenu = async () => {
+// 获取所有菜单树
+const fetchAllMenuTree = async () => {
   try {
-    const resp = (await getAllMenu()).data as MenuListRsp;
+    const resp = (await getAllMenuTree()).data as MenuListRsp;
     menuOptions.value = resp.data_list.filter((v: any) => {
       // 过滤自身选择, 防止自依赖
       if (v.id !== props.data.id) {
@@ -290,7 +290,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       } else {
         await updateMenu(props.data);
       }
-      fetchAllMenu();
+      fetchAllMenuTree();
       emit('update:visible', false);
       emit('update:data', {});
       emit('refresh');
