@@ -360,7 +360,7 @@ const handleEdit = async (row: User) => {
 };
 // 添加
 const handleAdd = async () => {
-  state.userForm.data.age = 1;
+  state.userForm.data.age = 0;
   state.userForm.data.sort = 1;
   state.userForm.data.gender = 0;
   state.userForm.data.password = settings.value.defaultPassword;

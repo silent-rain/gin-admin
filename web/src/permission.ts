@@ -8,7 +8,7 @@ import { useUserStore } from '@/store/user';
 import { langTitle } from '@/hooks/use-common';
 
 // no redirect whitelist
-const whiteList = ['/login', '/404', '/401'];
+const whiteList = ['/login', '/register', '/404', '/401'];
 
 // 路由进入前拦截
 // to:将要进入的页面 vue-router4.0 不推荐使用next()

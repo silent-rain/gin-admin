@@ -27,6 +27,13 @@ export const constantRoutes: RouterTypes = [
     path: '/login',
     component: () => import('@/views/login/index.vue'),
     hidden: true,
+    meta: { title: '登录' },
+  },
+  {
+    path: '/register',
+    component: () => import('@/views/login/register.vue'),
+    hidden: true,
+    meta: { title: '用户注册' },
   },
   {
     path: '/404',

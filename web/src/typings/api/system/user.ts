@@ -14,12 +14,15 @@ export interface User {
   intro: string;
   note: string;
   password: string;
+  password2: string;
   sort: number;
   status: number;
   created_at: string;
   updated_at: string;
   roles: any[];
   role_ids: number[];
+  captcha_id: string;
+  captcha: string;
 }
 
 export interface UserListRsp {

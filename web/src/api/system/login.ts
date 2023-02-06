@@ -3,14 +3,14 @@
 import axiosReq from '@/utils/axios-req';
 
 // 获取验证码
-export const captcha = async (params: any) => {
+export const getCaptcha = async () => {
   return axiosReq({
     url: '/captcha',
     method: 'get',
     bfLoading: false,
     isAlertErrorMsg: false,
     isParams: true,
-    data: params,
+    data: {},
   });
 };
 

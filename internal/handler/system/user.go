@@ -21,8 +21,6 @@ import (
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
-	"github.com/dchest/captcha"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -79,7 +77,7 @@ func (h *userHandler) Add(ctx *gin.Context) {
 
 	// 注册入口检查验证码
 	if ctx.Request.URL.Path == "/api/v1/register" {
-		if !h.chechkCaptcha(ctx, req.CaptchaId) {
+		if !h.chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
 			return
 		}
 	}
@@ -146,25 +144,20 @@ func (h *userHandler) chechkEmail(ctx *gin.Context, email string) bool {
 }
 
 // tod 检查验证码
-func (h *userHandler) chechkCaptcha(ctx *gin.Context, captchaId string) bool {
-	if captchaId == "" {
+func (h *userHandler) chechkCaptcha(ctx *gin.Context, captchaId, captcha string) bool {
+	if captcha == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
 		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
 		return false
 	}
-
-	session := sessions.Default(ctx)
-	captchaId_ := session.Get("captcha")
-	if captchaId_ == nil {
+	if captchaId == "" {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
 		return false
 	}
-	session.Delete("captcha")
-	_ = session.Save()
 
-	// 验证
-	if !captcha.VerifyString(captchaId_.(string), captchaId) {
+	// 校验验证码
+	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
 		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
 		return false

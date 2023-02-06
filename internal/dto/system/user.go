@@ -29,7 +29,8 @@ type AddUserReq struct {
 	Note      string `json:"note" form:"note"`                            // 备注
 	Password  string `json:"password" form:"password" binding:"required"` // 密码, 仅创建（禁止从 db 读）
 	RoleIds   []uint `json:"role_ids" form:"role_ids"`                    // 角色IDs
-	CaptchaId string `json:"captcha_id" form:"captcha_id"`                // 验证码，只有注册的时候才需要
+	CaptchaId string `json:"captcha_id" form:"captcha_id"`                // 验证码ID
+	Captcha   string `json:"captcha" form:"captcha"`                      // 验证码，只有注册的时候才需要
 }
 
 // UserLoginReq 登录请求
