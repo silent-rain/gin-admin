@@ -68,6 +68,7 @@ const (
 	UserOldPasswordError                                  // 旧密码不正确
 	UserPhoneConsistentError                              // 新旧手机号码一致, 未更新
 	UserEmailConsistentError                              // 新旧邮箱一致, 未更新
+	CaptchaTypeError                                      // 验证码类型错误, 不支持的类型
 	CaptchaEtxNotFoundError                               // 验证码格式异常
 	CaptchaNotFoundError                                  // 验证码不存在
 	CaptchaGenerateError                                  // 生成验证码失败
@@ -114,6 +115,7 @@ var statusCodeMsg = map[StatuScode]error{
 	UserOldPasswordError:        errors.New("旧密码不正确"),
 	UserPhoneConsistentError:    errors.New("新旧手机号码一致, 未更新"),
 	UserEmailConsistentError:    errors.New("新旧邮箱一致, 未更新"),
+	CaptchaTypeError:            errors.New("验证码类型错误, 不支持的类型"),
 	CaptchaEtxNotFoundError:     errors.New("验证码格式异常"),
 	CaptchaNotFoundError:        errors.New("验证码不存在"),
 	CaptchaGenerateError:        errors.New("生成验证码失败"),

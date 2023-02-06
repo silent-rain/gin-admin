@@ -15,6 +15,7 @@ import (
 
 	systemDao "gin-admin/internal/dao/system"
 	systemDto "gin-admin/internal/dto/system"
+	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
@@ -87,6 +88,57 @@ func (h *userLoginHandler) Logout(ctx *gin.Context) {
 
 // Captcha 验证码
 func (h *userLoginHandler) Captcha(ctx *gin.Context) {
+	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.CaptchaGenerateError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.CaptchaGenerateError).Json()
+		return
+	}
+
+	session := sessions.Default(ctx)
+	session.Set("captchaId", captchaId)
+	_ = session.Save()
+
+	result := map[string]string{
+		"captcha_id": captchaId,
+		"b64s":       b64s,
+	}
+	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
+}
+
+// CaptchaVerify 验证码验证
+func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
+	verifyValue := ctx.DefaultQuery("captcha", "")
+	if verifyValue == "" {
+		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
+		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		return
+	}
+
+	session := sessions.Default(ctx)
+	captchaId := session.Get("captchaId")
+	if captchaId == nil {
+		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
+		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
+		return
+	}
+	session.Delete("captcha")
+	_ = session.Save()
+
+	// 校验验证码
+	// 注意 Verify(id, VerifyValue, true) 中的 true参数
+	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
+	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
+	if !utils.CaptchaStore.Verify(captchaId.(string), verifyValue, true) {
+		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
+		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
+		return
+	}
+	response.New(ctx).WithMsg("验证成功").Json()
+}
+
+// Captcha2 验证码
+func (h *userLoginHandler) Captcha2(ctx *gin.Context) {
 	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")
@@ -119,8 +171,8 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 	ctx.Writer.Write(content.Bytes())
 }
 
-// CaptchaVerify 验证码验证
-func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
+// Captcha2Verify 验证码验证
+func (h *userLoginHandler) Captcha2Verify(ctx *gin.Context) {
 	value := ctx.DefaultQuery("captchaId", "")
 	if value == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")

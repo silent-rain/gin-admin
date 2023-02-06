@@ -39,6 +39,9 @@ const (
 
 	// ServerUserDefaultPwd 用户默认密码
 	ServerUserDefaultPwd = "888888"
+
+	// 验证码类型
+	CaptchaType = "digit"
 )
 
 // Config 定义配置信息
