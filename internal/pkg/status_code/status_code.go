@@ -78,6 +78,18 @@ const (
 	ExistEmailError                                       // 邮箱已存在
 )
 
+// 文件上传
+const (
+	UploadFileParserError StatuScode = iota + 11100 // 上传文件解析失败
+	UploadFileSaveError                             // 上传文件保存失败
+)
+
+// 系统操作
+const (
+	FileNotFoundError StatuScode = iota + 11200 // 文件不存在
+	DirNotFoundError                            // 文件夹不存在
+)
+
 // 状态码映射具体消息
 var statusCodeMsg = map[StatuScode]error{
 	Ok:            errors.New("Ok"),
@@ -123,6 +135,12 @@ var statusCodeMsg = map[StatuScode]error{
 	SessionGetCaptchaEmptyError: errors.New("验证码为空"),
 	ExistPhoneError:             errors.New("手机号已存在"),
 	ExistEmailError:             errors.New("邮箱已存在"),
+	// 文件上传
+	UploadFileParserError: errors.New("上传文件解析失败"),
+	UploadFileSaveError:   errors.New("上传文件保存失败"),
+	// 系统操作
+	FileNotFoundError: errors.New("文件不存在"),
+	DirNotFoundError:  errors.New("文件夹不存在"), 
 }
 
 // Error 返回状态码错误信息

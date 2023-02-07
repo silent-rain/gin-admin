@@ -24,7 +24,7 @@ import (
 )
 
 // 放行白名单
-var whiteList = []string{
+var apiWhiteList = []string{
 	// API
 	"/api/ping",
 	"/api/v1/sayHello",
@@ -43,27 +43,13 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 		// 请求白名单过滤
-		if utils.IndexOfArray(whiteList, ctx.Request.URL.Path) != -1 {
+		if utils.IndexOfArray(apiWhiteList, ctx.Request.URL.Path) != -1 {
 			ctx.Next()
 			return
 		}
 		// 非 API 请求过滤
 		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
 			ctx.Next()
-			return
-		}
-		// 验证 API 的 Content-Type 是否为空
-		if ctx.Request.Header.Get("Content-Type") == "" {
-			log.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Errorf("")
-			response.New(ctx).WithCode(statuscode.ReqContentTypeNotFoundError).Json()
-			ctx.Abort()
-			return
-		}
-		// 验证 API 的 Content-Type 是否为 json
-		if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/json") {
-			log.New(ctx).WithCode(statuscode.ReqContentTypeParamsError).Errorf("")
-			response.New(ctx).WithCode(statuscode.ReqContentTypeParamsError).Json()
-			ctx.Abort()
 			return
 		}
 

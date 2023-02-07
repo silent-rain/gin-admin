@@ -137,6 +137,25 @@
             <el-input v-model="props.data.password" placeholder="请输入密码" />
           </el-form-item>
         </el-col>
+        <el-col :span="24">
+          <el-form-item label="头像" prop="status">
+            <el-upload
+              class="avatar-uploader"
+              :action="uploadAvatar"
+              :headers="headerObj"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img
+                v-if="remoteImageUrl"
+                :src="remoteImageUrl"
+                class="upload-avatar"
+              />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="是否启用" prop="status">
             <el-switch
@@ -200,8 +219,8 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { EditPen } from '@element-plus/icons-vue';
+import { ElMessage, FormInstance, FormRules, UploadProps } from 'element-plus';
+import { EditPen, Plus } from '@element-plus/icons-vue';
 import {
   updateUser,
   addUser,
@@ -209,6 +228,8 @@ import {
   updateEmail,
 } from '@/api/system/user';
 import { getAllRole } from '@/api/system/role';
+import { useUserStore } from '@/store/user';
+import { uploadAvatar } from '@/api/system/upload';
 import { User } from '~/api/system/user';
 import { RoleListRsp, Role } from '~/api/system/role';
 
@@ -226,6 +247,8 @@ const props = withDefaults(
   },
 );
 
+const userStore = useUserStore();
+
 // const { data } = toRefs(props);
 // const data = toRef(props, 'data');
 
@@ -234,7 +257,11 @@ const state = reactive({
   newPhone: '',
   isEmailEdit: false,
   newEmail: '',
+  imageUrl: '',
 });
+const headerObj = {
+  authorization: userStore.token,
+};
 
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({
@@ -259,6 +286,7 @@ const roleIds = ref<number[]>([]);
 
 onBeforeMount(() => {
   fetchAllRole();
+  state.imageUrl = props.data.avatar;
 });
 
 // 获取所有角色
@@ -275,12 +303,14 @@ const fetchAllRole = async () => {
 const handleClose = () => {
   emit('update:visible', false);
   emit('update:data', {});
+  state.imageUrl = '';
 };
 
 // 取消
 const handleCancel = () => {
   emit('update:visible', false);
   emit('update:data', {});
+  state.imageUrl = '';
 };
 // 提交
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -292,6 +322,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
     const data = { ...props.data };
     data.role_ids = roleIds.value;
+    data.avatar = state.imageUrl;
     try {
       if (props.type === 'add') {
         await addUser(data);
@@ -356,6 +387,42 @@ const handleUpdateEmail = async () => {
   }
 };
 
+// 上传头像成功事件
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile,
+) => {
+  // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
+  state.imageUrl = '/' + response.data.url;
+};
+// 上传头像事件
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  const imgfileType = [
+    'image/gif',
+    'image/jpg',
+    'image/jpeg',
+    'image/x-png',
+    'image/png',
+  ];
+  if (imgfileType.indexOf(rawFile.type) === -1) {
+    ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!');
+    return false;
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!');
+    return false;
+  }
+  return true;
+};
+
+// 远程图片地址
+const remoteImageUrl = computed(() => {
+  if (!state.imageUrl) {
+    return '';
+  }
+  return import.meta.env.VITE_APP_IMAGE_URL + state.imageUrl;
+});
+
+// 角色赋值
 watch(
   () => props.data.roles,
   () => {
@@ -363,6 +430,18 @@ watch(
       return;
     }
     roleIds.value = props.data.roles.map((v) => v.id);
+  },
+  { immediate: true },
+);
+
+// 头像赋值
+watch(
+  () => props.data.avatar,
+  () => {
+    if (!props.data.avatar) {
+      return;
+    }
+    state.imageUrl = props.data.avatar;
   },
   { immediate: true },
 );
@@ -374,5 +453,30 @@ watch(
   .el-button + .el-button {
     margin-left: 0px;
   }
+}
+
+// 头像
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color-darker);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  border: 1px dashed var(--el-border-color-darker);
+}
+.upload-avatar {
+  width: 100px;
+  height: 100px;
 }
 </style>

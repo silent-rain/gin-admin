@@ -28,17 +28,6 @@ import (
 // 日志输出至数据库
 func HttpLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// 验证 API 的 Content-Type 是否为空
-		if ctx.Request.Header.Get("Content-Type") == "" {
-			ctx.Next()
-			return
-		}
-		// 验证 API 的 Content-Type 是否为 json
-		if !strings.Contains(strings.ToLower(ctx.Request.Header.Get("Content-Type")), "application/json") {
-			ctx.Next()
-			return
-		}
-
 		// 响应
 		start := time.Now()
 		// 读取 body 数据
@@ -67,6 +56,11 @@ func HttpLogger() gin.HandlerFunc {
 			Cost:       time.Since(start).Nanoseconds(),
 			HttpType:   "REQ",
 		}
+		// 文件上传的 API 需要过滤 body
+		if !strings.HasPrefix(ctx.Request.URL.Path, "/api/upload") {
+			htppLog.Body = ""
+		}
+
 		go func(htppLog systemModel.HttpLog) {
 			systemDao.NewHttpLogDao().Add(htppLog)
 		}(htppLog)

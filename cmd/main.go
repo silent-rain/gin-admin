@@ -66,7 +66,9 @@ func main() {
 	engine.StaticFS("/static", http.FS(utils.NewResource()))
 	// Api Docs 静态内嵌资源
 	engine.StaticFS("/docs", http.FS(utils.NewDocsResource()))
-	// 首页模板
+	// 本地静态资源
+	engine.Static("/upload", conf.Instance().UploadConfig.FilePath)
+	// WEB 首页模板
 	templ := template.Must(template.New("").ParseFS(assets.WebAssets, "dist/*.html"))
 	engine.SetHTMLTemplate(templ)
 

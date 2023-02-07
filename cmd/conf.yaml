@@ -15,6 +15,9 @@ db: # mysql 数据库, 当 mysql 配置为空时，使用 sqlite3 数据库
 sqlite: # sqlite3 数据库
   filepath: "./data.dat"
 
+upload: # 上传文件配置
+  filepath: "upload" # 文件文件路径
+
 logger: # 日志
   filename: "logs/log.log"
   level: "debug" # debug/info/warn/error/panic

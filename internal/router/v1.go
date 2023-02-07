@@ -40,6 +40,13 @@ func NewApiV1(engine *gin.Engine) {
 		userLogin.POST("/logout", system.NewUserLoginHandler().Logout)
 	}
 
+	// 文件上传
+	upload := v1.Group("/upload")
+	{
+		// 上传用户头像
+		upload.POST("/avatar", system.NewUploadHandler().Avatar)
+	}
+
 	// 用户管理
 	user := v1.Group("/user")
 	{

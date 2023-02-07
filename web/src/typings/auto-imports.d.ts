@@ -132,6 +132,7 @@ declare global {
   const updateUser: typeof import('../api/system/user')['updateUser']
   const updateUserPwd: typeof import('../api/system/user')['updateUserPwd']
   const updateUserStatus: typeof import('../api/system/user')['updateUserStatus']
+  const uploadAvatar: typeof import('../api/system/upload')['uploadAvatar']
   const useAttrs: typeof import('vue')['useAttrs']
   const useBasicStore: typeof import('../store/basic')['useBasicStore']
   const useConfigStore: typeof import('../store/config')['useConfigStore']

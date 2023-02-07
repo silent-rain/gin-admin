@@ -9,3 +9,6 @@ internal/pkg/log/logs
 
 # embed web
 assets/dist/*
+
+# upload
+cmd/upload/*

@@ -49,6 +49,7 @@ type Config struct {
 	ServerConfig *ServerConfig `yaml:"server"` // 系统服务配置
 	DBConfig     *DBConfig     `yaml:"db"`     // mysql 数据库配置
 	SqliteConfig *SqliteConfig `yaml:"sqlite"` // sqlite 数据库配置
+	UploadConfig *UploadConfig `yaml:"upload"` // 上传文件配置
 	LoggerConfig *LoggerConfig `yaml:"logger"` // 日志配置
 	EnvConfig    *EnvConfig    `yaml:"env"`    // 系统环境
 }
@@ -89,6 +90,11 @@ func (r DBConfig) Dsn() string {
 // SqliteConfig sqlite3 数据库配置
 type SqliteConfig struct {
 	FilePath string `yaml:"filepath"` // sqlite3 文件路径
+}
+
+// UploadConfig 上传文件配置
+type UploadConfig struct {
+	FilePath string `yaml:"filepath"` // 文件文件路径
 }
 
 // LoggerConfig 日志配置
