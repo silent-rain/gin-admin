@@ -1,7 +1,7 @@
 <template>
   <div class="register-container columnCE">
     <div class="register-hero">
-      <img src="@/assets/layout/login.svg" :alt="settings.title" />
+      <img src="@/assets/layout/register.svg" :alt="settings.title" />
     </div>
 
     <el-form
@@ -56,25 +56,19 @@
       </el-form-item>
 
       <!-- 验证码 -->
-      <el-form-item label="">
-        <img class="captcha" :src="state.captcha" @click="fetchCaptcha" />
-      </el-form-item>
       <el-form-item label="验证码" prop="captcha">
         <div class="form-captcha">
           <el-input v-model="userForm.captcha" placeholder="请输入验证码" />
-          <el-tooltip content="刷新验证码" placement="top">
-            <el-button :icon="RefreshRight" @click="fetchCaptcha" />
-          </el-tooltip>
+          <img class="captcha" :src="state.captchaSrc" @click="fetchCaptcha" />
         </div>
       </el-form-item>
 
-      <el-button
-        class="form-submit"
-        type="primary"
-        @click="submitForm(ruleFormRef)"
-      >
-        提交
-      </el-button>
+      <div class="form-submit">
+        <el-button type="" link @click="handleLogin"> 返回登录 </el-button>
+        <el-button type="primary" @click="submitForm(ruleFormRef)">
+          提交
+        </el-button>
+      </div>
     </el-form>
   </div>
 </template>
@@ -83,7 +77,6 @@
 import { reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { RefreshRight } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
 import { useUserStore } from '@/store/user';
 import { register, getCaptcha } from '@/api/system/login';
@@ -98,7 +91,7 @@ const { settings } = useBasicStore();
 const state: any = reactive({
   otherQuery: {},
   redirect: undefined,
-  captcha: '',
+  captchaSrc: '',
 });
 const ruleFormRef = ref<FormInstance>();
 const userForm = reactive({
@@ -141,6 +134,7 @@ const rules = reactive<FormRules>({
       trigger: 'blur',
     },
   ],
+  captcha: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
 });
 
 onBeforeMount(() => {
@@ -151,7 +145,7 @@ onBeforeMount(() => {
 const fetchCaptcha = async () => {
   try {
     const resp = (await getCaptcha()).data as GetCaptchaRsp;
-    state.captcha = resp.b64s;
+    state.captchaSrc = resp.b64s;
     userForm.captcha_id = resp.captcha_id;
   } catch (error) {
     console.log(error);
@@ -176,6 +170,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       fetchCaptcha();
     }
   });
+};
+
+// 返回登录
+const handleLogin = () => {
+  router.push('/login');
 };
 </script>
 
@@ -230,7 +229,9 @@ $light_gray: #eee;
   }
 }
 .form-submit {
-  float: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 .register-hero {
   width: 40vw;

@@ -77,7 +77,7 @@ func (h *userHandler) Add(ctx *gin.Context) {
 
 	// 注册入口检查验证码
 	if ctx.Request.URL.Path == "/api/v1/register" {
-		if !h.chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
+		if !chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
 			return
 		}
 	}
@@ -143,8 +143,8 @@ func (h *userHandler) chechkEmail(ctx *gin.Context, email string) bool {
 	return true
 }
 
-// tod 检查验证码
-func (h *userHandler) chechkCaptcha(ctx *gin.Context, captchaId, captcha string) bool {
+// 检查验证码
+func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) bool {
 	if captcha == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
 		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()

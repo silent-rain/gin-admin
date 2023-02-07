@@ -46,6 +46,10 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 		return
 	}
 
+	if !chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
+		return
+	}
+
 	// 查询用户
 	user, ok, err := h.dao.GetUsername(req.Username, req.Password)
 	if err != nil {
@@ -95,10 +99,6 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 		return
 	}
 
-	session := sessions.Default(ctx)
-	session.Set("captchaId", captchaId)
-	_ = session.Save()
-
 	result := map[string]string{
 		"captcha_id": captchaId,
 		"b64s":       b64s,
@@ -109,27 +109,23 @@ func (h *userLoginHandler) Captcha(ctx *gin.Context) {
 // CaptchaVerify 验证码验证
 func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 	verifyValue := ctx.DefaultQuery("captcha", "")
+	captchaId := ctx.DefaultQuery("captcha_id", "")
 	if verifyValue == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
 		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
 		return
 	}
-
-	session := sessions.Default(ctx)
-	captchaId := session.Get("captchaId")
-	if captchaId == nil {
+	if captchaId == "" {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
 		return
 	}
-	session.Delete("captcha")
-	_ = session.Save()
 
 	// 校验验证码
 	// 注意 Verify(id, VerifyValue, true) 中的 true参数
 	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
-	if !utils.CaptchaStore.Verify(captchaId.(string), verifyValue, true) {
+	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
 		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
 		return
@@ -165,7 +161,7 @@ func (h *userLoginHandler) Captcha2(ctx *gin.Context) {
 	}
 
 	session := sessions.Default(ctx)
-	session.Set("captcha", captchaId)
+	session.Set("captcha_id", captchaId)
 	_ = session.Save()
 
 	ctx.Writer.Write(content.Bytes())
@@ -173,7 +169,7 @@ func (h *userLoginHandler) Captcha2(ctx *gin.Context) {
 
 // Captcha2Verify 验证码验证
 func (h *userLoginHandler) Captcha2Verify(ctx *gin.Context) {
-	value := ctx.DefaultQuery("captchaId", "")
+	value := ctx.DefaultQuery("captcha_id", "")
 	if value == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
 		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
@@ -181,7 +177,7 @@ func (h *userLoginHandler) Captcha2Verify(ctx *gin.Context) {
 	}
 
 	session := sessions.Default(ctx)
-	captchaId := session.Get("captcha")
+	captchaId := session.Get("captcha_id")
 	if captchaId == nil {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
 		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()

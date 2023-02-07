@@ -42,8 +42,8 @@ func (r captcha) mathConfig() *base64Captcha.DriverMath {
 // 生成图形化数字验证码配置
 func (r captcha) digitConfig() *base64Captcha.DriverDigit {
 	digitType := &base64Captcha.DriverDigit{
-		Height:   50,
-		Width:    100,
+		Height:   40,
+		Width:    120,
 		Length:   5,
 		MaxSkew:  0.45,
 		DotCount: 80,

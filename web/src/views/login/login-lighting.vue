@@ -1,7 +1,7 @@
 <template>
   <div class="login-container columnCE">
     <div class="login-hero">
-      <img src="@/assets/layout/login.svg" :alt="settings.title" />
+      <img src="@/assets/layout/login-lighting.svg" :alt="settings.title" />
     </div>
 
     <el-form
@@ -13,71 +13,107 @@
       <div class="title-container">
         <h3 class="title text-center">{{ settings.title }}</h3>
       </div>
-      <el-form-item prop="keyword" :rules="formRules.isNotNull('keyword')">
-        <span class="svg-container">
-          <ElSvgIcon name="User" :size="14" />
-        </span>
-        <el-input v-model="subForm.keyword" placeholder="请输入手机号码/邮箱" />
-        <!--占位-->
-      </el-form-item>
-      <el-form-item prop="password" :rules="formRules.isNotNull('password')">
-        <span class="svg-container">
-          <ElSvgIcon name="Lock" :size="14" />
-        </span>
+
+      <el-form-item prop="username">
         <el-input
-          :key="passwordType"
+          v-model="subForm.username"
+          placeholder="请输入手机号码/邮箱"
+          :prefix-icon="User"
+        />
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input
           ref="refPassword"
           v-model="subForm.password"
-          :type="passwordType"
-          name="password"
+          :prefix-icon="Lock"
+          show-password
           placeholder="请输入密码"
-          @keyup.enter="handleLogin"
         />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon
-            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-          />
-        </span>
       </el-form-item>
-      <div class="tip-message">{{ tipMessage }}</div>
+
+      <!-- 验证码 -->
+      <el-form-item prop="captcha">
+        <div class="form-captcha">
+          <el-input
+            v-model="subForm.captcha"
+            placeholder="请输入验证码"
+            @keyup.enter="handleLogin(refLoginForm)"
+          />
+          <img class="captcha" :src="state.captchaSrc" @click="fetchCaptcha" />
+        </div>
+      </el-form-item>
+
       <el-button
         :loading="subLoading"
         type="primary"
         class="login-btn"
         size="default"
-        @click.prevent="handleLogin"
+        @click.prevent="handleLogin(refLoginForm)"
       >
         登录
       </el-button>
+      <div class="register-btn">
+        <el-button type="primary" link @click="handleRegister">
+          没有用户?点击注册
+        </el-button>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { onBeforeMount, reactive, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { ElMessage, FormInstance, FormRules } from 'element-plus';
+import { User, Lock } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
-import { elMessage, useElement } from '@/hooks/use-element';
-import { login } from '@/api/system/login';
 import { useUserStore } from '@/store/user';
+import { login } from '@/api/system/login';
+import { getCaptcha } from '@/api/system/login';
+import { GetCaptchaRsp } from '~/api/system/login';
+import { md5Encode } from '@/utils/md5';
 
 /* listen router change and set the query  */
 const { settings } = useBasicStore();
-// element valid
-const { formRules } = useElement();
+const route = useRoute();
+const router = useRouter();
+const userStore = useUserStore();
 
-// form
 const subForm = reactive({
-  keyword: '18312465088',
+  username: '18312465088',
   password: '888888',
+  captcha_id: '',
+  captcha: '',
 });
 const state: any = reactive({
   otherQuery: {},
   redirect: undefined,
+  captchaSrc: '',
 });
-const route = useRoute();
+const formRules = reactive<FormRules>({
+  username: [
+    { required: true, message: '请输入手机号码/邮箱', trigger: 'blur' },
+  ],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  captcha: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+});
 
-const getOtherQuery = (query) => {
+onBeforeMount(() => {
+  fetchCaptcha();
+});
+
+// 获取验证码
+const fetchCaptcha = async () => {
+  try {
+    const resp = (await getCaptcha()).data as GetCaptchaRsp;
+    state.captchaSrc = resp.b64s;
+    subForm.captcha_id = resp.captcha_id;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getOtherQuery = (query: any) => {
   return Object.keys(query).reduce((acc, cur) => {
     if (cur !== 'redirect') {
       acc[cur] = query[cur];
@@ -97,55 +133,41 @@ watch(
   { immediate: true },
 );
 
-/*
- *  login relative
- * */
-let subLoading = $ref(false);
-// tip message
-let tipMessage = $ref('');
-// sub form
-const refLoginForm = $ref(null);
-const handleLogin = () => {
-  refLoginForm.validate((valid) => {
-    subLoading = true;
-    if (valid) loginFunc();
-  });
-};
-const router = useRouter();
-const userStore = useUserStore();
-
-const loginFunc = () => {
-  const data = {
-    username: subForm.keyword,
-    password: md5Encode(subForm.password),
-  };
-  login(data)
-    .then(({ data }) => {
-      elMessage('登录成功');
-      userStore.setToken(data?.token);
+// 登录
+let subLoading = ref(false);
+const refLoginForm = ref<FormInstance>();
+const handleLogin = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields);
+      subLoading.value = false;
+      return;
+    }
+    subLoading.value = true;
+    const data = {
+      username: subForm.username,
+      password: md5Encode(subForm.password),
+      captcha_id: subForm.captcha_id,
+      captcha: subForm.captcha,
+    };
+    try {
+      const resp = (await login(data)).data;
+      ElMessage.success('登录成功');
+      userStore.setToken(resp?.token);
       router.push('/');
-    })
-    .catch((err) => {
-      tipMessage = err?.msg;
-    })
-    .finally(() => {
-      subLoading = false;
-    });
-};
-/*
- *  password show or hidden
- * */
-const passwordType = ref('password');
-const refPassword = ref();
-const showPwd = () => {
-  if (passwordType.value === 'password') {
-    passwordType.value = '';
-  } else {
-    passwordType.value = 'password';
-  }
-  nextTick(() => {
-    refPassword.value.focus();
+      subLoading.value = false;
+    } catch (error) {
+      console.log(error);
+      subLoading.value = false;
+      fetchCaptcha();
+    }
   });
+};
+
+// 注册用户
+const handleRegister = () => {
+  router.push('/register');
 };
 </script>
 
@@ -216,18 +238,20 @@ $light_gray: #eee;
   transform: translateY(-50%);
 }
 
-//错误提示信息
-.tip-message {
-  color: #e4393c;
-  height: 30px;
-  margin-top: -12px;
-  font-size: 12px;
-}
+.form-captcha {
+  display: flex;
+  align-items: center;
 
+  img {
+    width: 115px;
+    height: auto;
+    cursor: pointer;
+  }
+}
 //登录按钮
 .login-btn {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 .show-pwd {
   width: 50px;
@@ -239,37 +263,5 @@ $light_gray: #eee;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-}
-</style>
-
-<style lang="scss">
-//css 样式重置 增加个前缀避免全局污染
-.login-container {
-  .el-input__wrapper {
-    background-color: transparent;
-    box-shadow: none;
-  }
-  .el-form-item {
-    border: 1px solid #e0e0e0;
-    background: #fff;
-    border-radius: 4px;
-    color: #999;
-    &__content {
-      position: relative;
-    }
-  }
-  .el-input input {
-    background: transparent;
-    border: 0px;
-    border-radius: 0px;
-    padding: 10px 5px 10px 35px;
-    color: #999;
-    height: 42px; //此处调整item的高度
-    caret-color: #999;
-  }
-  //hiden the input border
-  .el-input__inner {
-    box-shadow: none !important;
-  }
 }
 </style>
