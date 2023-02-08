@@ -127,13 +127,13 @@
         show-overflow-tooltip
       />
       <el-table-column
-        v-if="checkedDict.hide"
-        prop="hide"
+        v-if="checkedDict.hidden"
+        prop="hidden"
         label="是否隐藏"
         show-overflow-tooltip
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.hide">隐藏</el-tag>
+          <el-tag v-if="scope.row.hidden">隐藏</el-tag>
           <el-tag v-else type="success">显示 </el-tag>
         </template>
       </el-table-column>
@@ -289,7 +289,7 @@ const checkAllList = [
   { label: '组件路径', value: 'component', disabled: false, enabled: true },
   { label: '链接地址', value: 'link', disabled: false, enabled: true },
   { label: '权限标识', value: 'permission', disabled: true, enabled: true },
-  { label: '是否隐藏', value: 'hide', disabled: false, enabled: true },
+  { label: '是否隐藏', value: 'hidden', disabled: false, enabled: true },
   { label: '排序', value: 'sort', disabled: false, enabled: true },
   { label: '状态', value: 'status', disabled: true, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
@@ -344,7 +344,7 @@ const handleEdit = async (row: Menu) => {
 const handleAdd = async () => {
   state.menuForm.data.menu_type = 0;
   state.menuForm.data.open_type = 0;
-  state.menuForm.data.hide = 0;
+  state.menuForm.data.hidden = 0;
   state.menuForm.data.status = 1;
   state.menuForm.data.sort = 1;
   state.menuForm.type = 'add';
@@ -355,7 +355,7 @@ const handleAddById = async (row: Menu) => {
   state.menuForm.data.parent_id = row.id;
   state.menuForm.data.menu_type = 0;
   state.menuForm.data.open_type = 0;
-  state.menuForm.data.hide = 0;
+  state.menuForm.data.hidden = 0;
   state.menuForm.data.status = 1;
   state.menuForm.data.sort = 1;
   state.menuForm.type = 'add';

@@ -29,9 +29,12 @@ import { useRoute } from 'vue-router';
 import Logo from './Logo.vue';
 import SidebarItem from './SidebarItem.vue';
 import { useBasicStore } from '@/store/basic';
+import { useMenuStore } from '@/store/menu';
 
-const { settings, allRoutes, sidebar } = storeToRefs(useBasicStore());
+const { settings, sidebar } = storeToRefs(useBasicStore());
+const { allRoutes } = storeToRefs(useMenuStore());
 const route = useRoute();
+
 const activeMenu = computed(() => {
   const { meta, path } = route;
   // if set path, the sidebar will highlight the path you set
@@ -41,6 +44,7 @@ const activeMenu = computed(() => {
   return path;
 });
 </script>
+
 <style lang="scss">
 //fix open the item style issue
 .el-menu-vertical {

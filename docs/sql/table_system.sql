@@ -62,7 +62,7 @@ CREATE TABLE sys_menu (
     `link` VARCHAR(500) NULL COMMENT '链接地址:内链地址/外链地址',
     `target` VARCHAR(500) NULL COMMENT '链接地址跳转方式, component/_blank/_self',
     `permission` VARCHAR(200) NULL COMMENT '权限标识',
-    `hide` TINYINT(1) NULL DEFAULT 1 COMMENT '是否隐藏,0:显示,1:隐藏',
+    `hidden` TINYINT(1) NULL DEFAULT 1 COMMENT '是否隐藏,0:显示,1:隐藏',
     `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
     `note` VARCHAR(200) NULL COMMENT '备注',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '状态,0:停用,1:启用',

@@ -1,10 +1,7 @@
 import router from '@/router';
-import {
-  filterAsyncRouter,
-  progressClose,
-  progressStart,
-} from '@/hooks/use-permission';
+import { progressClose, progressStart } from '@/hooks/use-permission';
 import { useUserStore } from '@/store/user';
+import { useMenuStore } from '@/store/menu';
 import { langTitle } from '@/hooks/use-common';
 
 // no redirect whitelist
@@ -12,13 +9,15 @@ const whiteList = ['/login', '/register', '/404', '/401'];
 
 // 路由进入前拦截
 // to:将要进入的页面 vue-router4.0 不推荐使用next()
-router.beforeEach(async (to) => {
+router.beforeEach(async (to, from) => {
   progressStart();
+
   // i18 page title
   document.title = langTitle(to.meta?.title);
   const userStore = useUserStore();
+  const menuStore = useMenuStore();
 
-  // 判断 Token
+  // 判断 Token, 不存在则跳转至登录
   if (!userStore.token) {
     if (!whiteList.includes(to.path)) {
       return `/login?redirect=${to.path}`;
@@ -32,7 +31,7 @@ router.beforeEach(async (to) => {
   }
 
   // 判断是否获取用户信息
-  if (userStore.getUserInfo) {
+  if (userStore.getUserInfo && menuStore.allRoutes.length > 0) {
     return true;
   }
 
@@ -41,9 +40,13 @@ router.beforeEach(async (to) => {
     const userData = await userStore.userInfo();
     // 保存用户信息到 store
     userStore.setUserInfo(userData);
-    // 动态路由权限筛选
-    filterAsyncRouter(userData);
-    // 再次执行路由跳转
+    // 动态路由权限
+    menuStore.setAsyncRoutes(userData.menus);
+    menuStore.asyncRoutes.forEach((route) => {
+      router.addRoute(route);
+    });
+
+    // 执行路由跳转
     return { ...to, replace: true };
   } catch (e) {
     console.error(`route permission error ${e}`);

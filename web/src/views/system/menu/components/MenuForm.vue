@@ -162,8 +162,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否隐藏" prop="hide">
-            <el-radio-group v-model="props.data.hide">
+          <el-form-item label="是否隐藏" prop="hidden">
+            <el-radio-group v-model="props.data.hidden">
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1"
                 >隐藏

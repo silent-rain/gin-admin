@@ -384,6 +384,8 @@ func (h *userHandler) Info(ctx *gin.Context) {
 	}
 	// 菜单路由列表：菜单类型为菜单的数据解析
 	menus := h.getMenuList(roleMenus)
+	// 菜单列表数据转为树结构
+	menus = MenuListToTree(menus, nil)
 	// 按钮权限列表：菜单类型为按钮的数据解析
 	permissions := h.getPermissionList(roleMenus)
 
@@ -438,7 +440,7 @@ func (h *userHandler) getPermissionList(menus []systemModel.Menu) []string {
 		// 过滤菜单路由，过滤空权限，过滤隐藏按钮
 		if item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
 			item.Permission != "" &&
-			item.Hide == uint(systemModel.MenuHideTypeByShow) {
+			item.Hidden == uint(systemModel.MenuHideTypeByShow) {
 			results = append(results, item.Permission)
 		}
 	}

@@ -13,7 +13,7 @@ export interface Menu {
   link: string;
   target: string;
   permission: string;
-  hide: number;
+  hidden: number;
   sort: number;
   note: string;
   status: number;

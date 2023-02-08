@@ -10,7 +10,7 @@ import Layout from '@/layout/index.vue';
 /*
  * 路由操作
  * */
-import router, { asyncRoutes, constantRoutes, roleCodeRoutes } from '@/router';
+import router, { constantRoutes } from '@/router';
 // 进度条
 import 'nprogress/nprogress.css';
 import { useBasicStore } from '@/store/basic';
@@ -158,21 +158,18 @@ function hasCodePermission(codes: number[], routeItem: RouteRawConfig) {
 }
 
 // 过滤异步路由
-export function filterAsyncRouter({ menus, roles, codes }) {
-  const basicStore = useBasicStore();
-  const permissionMode = basicStore.settings?.permissionMode;
-  let accessRoutes: RouterTypes = [];
-  if (permissionMode === 'rbac') {
-    accessRoutes = filterAsyncRoutesByMenuList(menus); // by menuList
-  } else if (permissionMode === 'roles') {
-    accessRoutes = filterAsyncRoutesByRoles(roleCodeRoutes, roles); // by roles
-  } else {
-    accessRoutes = filterAsyncRouterByCodes(roleCodeRoutes, codes); // by codes
-  }
-  accessRoutes.forEach((route) => router.addRoute(route));
-  asyncRoutes.forEach((item) => router.addRoute(item));
-  basicStore.setFilterAsyncRoutes(accessRoutes);
-}
+// export function filterAsyncRouter({ menus, roles, codes }) {
+//   const basicStore = useBasicStore();
+//   const permissionMode = basicStore.settings?.permissionMode;
+//   let accessRoutes: RouterTypes = [];
+//   if (permissionMode === 'rbac') {
+//     accessRoutes = filterAsyncRoutesByMenuList(menus); // by menuList
+//   } else if (permissionMode === 'roles') {
+//     accessRoutes = filterAsyncRoutesByRoles(roleCodeRoutes, roles); // by roles
+//   } else {
+//     accessRoutes = filterAsyncRouterByCodes(roleCodeRoutes, codes); // by codes
+//   }
+// }
 
 // 重置路由
 export function resetRouter() {
@@ -195,7 +192,7 @@ export function resetState() {
 // 刷新路由
 export function freshRouter(data: any) {
   resetRouter();
-  filterAsyncRouter(data);
+  // filterAsyncRouter(data);
   // location.reload()
 }
 

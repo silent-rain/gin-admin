@@ -4,7 +4,6 @@ import router from '@/router';
 import { getUserInfo } from '@/api/system/user';
 import { User } from '~/api/system/user';
 import { Role } from '~/api/system/role';
-import { Menu } from '~/api/system/menu';
 import { UserTry } from '~/permission';
 
 export const useUserStore = defineStore('user', {
@@ -20,8 +19,6 @@ export const useUserStore = defineStore('user', {
       roles: [] as Role[],
       // 按钮权限列表
       permissions: [] as string[],
-      // 菜单路由列表
-      menus: [] as Menu[],
       codes: [] as number[],
     } as UserTry;
   },
@@ -44,7 +41,9 @@ export const useUserStore = defineStore('user', {
 
     // 设置 token
     setToken(data: string) {
-      this.token = data;
+      this.$patch((state) => {
+        state.token = data;
+      });
     },
     // 设置用户状态
     setUserInfo(data: any) {
@@ -66,7 +65,6 @@ export const useUserStore = defineStore('user', {
         state.userInfo = {} as User;
 
         state.roles = [];
-        state.menus = [];
         state.permissions = [];
         state.codes = [];
 

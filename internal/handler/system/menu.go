@@ -34,8 +34,8 @@ func (h *menuHandler) AllTree(ctx *gin.Context) {
 		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
 		return
 	}
-	// list 数据转为 tree
-	tree := ListToTree(menus, nil)
+	// 菜单列表数据转为树结构
+	tree := MenuListToTree(menus, nil)
 	response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
 }
 
@@ -60,8 +60,8 @@ func (h *menuHandler) Tree(ctx *gin.Context) {
 		return
 	}
 
-	// list 数据转为 tree
-	tree := ListToTree(menuAll, nil)
+	// 菜单列表数据转为树结构
+	tree := MenuListToTree(menuAll, nil)
 
 	// 过滤
 	treeFilter := make([]systemModel.Menu, 0)
@@ -75,8 +75,8 @@ func (h *menuHandler) Tree(ctx *gin.Context) {
 	response.New(ctx).WithDataList(treeFilter, int64(len(tree))).Json()
 }
 
-// ListToTree 列表数据转为树结构
-func ListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
+// MenuListToTree 菜单列表数据转为树结构
+func MenuListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
 	tree := make([]systemModel.Menu, 0)
 	for _, item := range src {
 		if (item.ParentId == nil && parentId == nil) ||
@@ -86,7 +86,7 @@ func ListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
 	}
 
 	for i := range tree {
-		children := ListToTree(src, &tree[i].ID)
+		children := MenuListToTree(src, &tree[i].ID)
 		if tree[i].Children == nil {
 			tree[i].Children = children
 		} else {

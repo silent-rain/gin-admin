@@ -25,7 +25,7 @@ type Menu struct {
 	Link         string           `json:"link" gorm:"column:link"`                                  // 链接地址: 内链地址/外链地址
 	Target       string           `json:"target" gorm:"column:target"`                              // 链接地址跳转方式, _blank/_self
 	Permission   string           `json:"permission" gorm:"column:permission"`                      // 权限标识
-	Hide         uint             `json:"hide" gorm:"column:hide"`                                  // 是否隐藏,0:显示,1:隐藏
+	Hidden         uint            `json:"hidden" gorm:"column:hidden"`                              // 是否隐藏,0:显示,1:隐藏
 	Sort         uint             `json:"sort" gorm:"column:sort"`                                  // 排序
 	Note         string           `json:"note" gorm:"column:note"`                                  // 备注
 	Status       uint             `json:"status" gorm:"column:status"`                              // 状态,0:停用,1:启用
