@@ -57,7 +57,8 @@ func HttpLogger() gin.HandlerFunc {
 			HttpType:   "REQ",
 		}
 		// 文件上传的 API 需要过滤 body
-		if !strings.HasPrefix(ctx.Request.URL.Path, "/api/upload") {
+		if !strings.HasPrefix(ctx.Request.URL.Path, "/api/upload") ||
+			!strings.HasPrefix(ctx.Request.URL.Path, "/upload") {
 			htppLog.Body = ""
 		}
 

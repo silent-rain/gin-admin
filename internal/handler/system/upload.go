@@ -6,11 +6,15 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
+	"strconv"
+	"time"
 
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
+	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -35,10 +39,11 @@ func (h *uploadHandler) Avatar(ctx *gin.Context) {
 		return
 	}
 
-	zap.S().Errorf("============= %#v", file.Filename)
+	ext := path.Ext(file.Filename)
+	filename := utils.Md5(file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
 
 	// 上传文件到指定的 dst
-	dst := conf.Instance().UploadConfig.FilePath + "/avatar/" + file.Filename
+	dst := conf.Instance().UploadConfig.FilePath + "/avatar/" + filename
 	err = ctx.SaveUploadedFile(file, dst)
 	if errors.Is(err, fs.ErrNotExist) {
 		if err := os.MkdirAll(dst, os.ModePerm); err != nil {
