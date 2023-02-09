@@ -23,7 +23,7 @@
 import { computed, watch } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { useRoute, RouteLocationMatched } from 'vue-router';
-import type { rawConfig } from '~/basic';
+import type { rawConfig } from '~/store/router';
 import { useBasicStore } from '@/store/basic';
 import { cloneDeep } from '@/hooks/use-common';
 

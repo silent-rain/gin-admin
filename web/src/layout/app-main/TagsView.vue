@@ -61,7 +61,7 @@ import { Close } from '@element-plus/icons-vue';
 import { resolve } from 'path-browserify';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia/dist/pinia';
-import type { RouterTypes } from '~/basic';
+import type { RouterTypes } from '~/store/router';
 import { useBasicStore } from '@/store/basic';
 import { usePermissionStore } from '@/store/permission';
 import { useTagsViewStore } from '@/store/tags-view';

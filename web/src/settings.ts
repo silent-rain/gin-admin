@@ -1,5 +1,5 @@
 import packageJson from '../package.json';
-import type { SettingsConfig } from '~/basic';
+import type { SettingsConfig } from '~/settings';
 
 export const settings: SettingsConfig = {
   title: packageJson.name,

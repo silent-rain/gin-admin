@@ -32,7 +32,7 @@ import { ref } from 'vue';
 import { resolve } from 'path-browserify';
 import Link from './Link.vue';
 import MenuIcon from './MenuIcon.vue';
-import type { RouteRawConfig } from '~/basic';
+import type { RouteRawConfig } from '~/store/router';
 import { isExternal } from '@/hooks/use-layout';
 import { langTitle } from '@/hooks/use-common';
 

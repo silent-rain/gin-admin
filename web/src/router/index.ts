@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Layout from '@/layout/index.vue';
-import type { RouteRawConfig, RouterTypes } from '~/basic';
+import type { RouteRawConfig, RouterTypes } from '@/typings/store/router';
 import basicDemo from './modules/basic-demo';
 import charts from './modules/charts';
 import richText from './modules/rich-text';

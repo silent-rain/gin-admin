@@ -40,7 +40,7 @@
 import { ref, watch } from 'vue';
 import { compile } from 'path-to-regexp';
 import { useRoute, useRouter } from 'vue-router';
-import type { RouterTypes } from '~/basic';
+import type { RouterTypes } from '~/store/router';
 import { useBasicStore } from '@/store/basic';
 import { langTitle } from '@/hooks/use-common';
 

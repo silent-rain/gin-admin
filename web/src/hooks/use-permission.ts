@@ -2,7 +2,7 @@ import { RouteRecordName } from 'vue-router';
 import router, { catchRoutes, constantRoutes } from '@/router';
 import Layout from '@/layout/index.vue';
 import { usePermissionStore } from '@/store/permission';
-import { RouteRawConfig } from '~/basic';
+import { RouteRawConfig } from '~/store/router';
 import { Menu } from '~/api/system/menu';
 
 // 菜单列表转为路由列表

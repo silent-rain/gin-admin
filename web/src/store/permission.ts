@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { RouteRawConfig, RouterTypes } from '~/basic';
+import { RouteRawConfig, RouterTypes } from '~/store/router';
 import { Menu } from '~/api/system/menu';
 
 export const usePermissionStore = defineStore('permission', {

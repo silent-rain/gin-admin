@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
-import type { RouterTypes } from '~/basic';
 import defaultSettings from '@/settings';
-import { constantRoutes } from '@/router';
 
 export const useBasicStore = defineStore('basic', {
   state: () => {

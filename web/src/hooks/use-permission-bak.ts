@@ -1,5 +1,5 @@
 import type { RouteRecordName } from 'vue-router';
-import type { RouteRawConfig, RouterTypes, rawConfig } from '~/basic';
+import type { RouteRawConfig, RouterTypes, rawConfig } from '~/store/router';
 /**
  * 根据请求，过滤异步路由
  * @param:menuList 异步路由数组

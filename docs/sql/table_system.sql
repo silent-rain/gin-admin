@@ -58,6 +58,7 @@ CREATE TABLE sys_menu (
     `menu_type` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '菜单类型,0:菜单,1:按钮',
     `open_type` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '打开方式,0:组件,1:内链,2:外链',
     `path` VARCHAR(500) NULL COMMENT '路由地址',
+    `name` VARCHAR(50) NULL COMMENT '路由别名',
     `component` VARCHAR(500) NULL COMMENT '组件路径',
     `link` VARCHAR(500) NULL COMMENT '链接地址:内链地址/外链地址',
     `target` VARCHAR(500) NULL COMMENT '链接地址跳转方式, component/_blank/_self',
