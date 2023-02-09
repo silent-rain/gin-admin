@@ -15,7 +15,6 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
       parentNode.component = shallowRef(Layout);
     } else {
       const url = menu.component.replace('@', '..');
-      console.log(url);
       // parentNode.component = importModule(url);
       parentNode.component = () =>
         import(/* @vite-ignore */ '@/views/system/menu/index.vue');
@@ -43,13 +42,13 @@ function importModule(path: string) {
 
 // 过滤异步路由
 export const filterAsyncRouter = (menus: Menu[]) => {
+  const permissionStore = usePermissionStore();
   const asyncRoutes = asyncRoutesByMenus(menus);
   const allRoutes = constantRoutes.concat(asyncRoutes).concat(catchRoutes);
-  usePermissionStore().setFilterAsyncRoutes(menus, asyncRoutes, allRoutes);
-  asyncRoutes.forEach((route) => {
-    router.addRoute(route);
-  });
-  console.log(router.getRoutes());
+  permissionStore.setFilterAsyncRoutes(menus, asyncRoutes, allRoutes);
+
+  // 新增异步路由
+  permissionStore.asyncRoutes.forEach((feItem) => router.addRoute(feItem));
 };
 
 //重置路由

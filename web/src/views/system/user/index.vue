@@ -270,9 +270,6 @@ import { aoaToSheetXlsx } from '@/utils/excel';
 
 const { settings } = storeToRefs(useBasicStore());
 
-const xx = useRouter();
-console.log(xx.getRoutes());
-
 // 筛选过滤条件
 const listQuery = reactive({
   nickname: '',

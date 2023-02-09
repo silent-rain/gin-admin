@@ -4,7 +4,7 @@ import router from '@/router';
 import { getUserInfo } from '@/api/system/user';
 import { User } from '~/api/system/user';
 import { Role } from '~/api/system/role';
-import { UserTry } from '@/typings/store/user';
+import { UserTry } from '~/store/user';
 
 export const useUserStore = defineStore('user', {
   state: () => {
