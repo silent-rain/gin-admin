@@ -72,17 +72,18 @@ import ThemeSelect from './component/ThemeSelect.vue';
 import ScreenLock from './component/ScreenLock.vue';
 import { resetState } from '@/hooks/use-permission';
 import { elMessage } from '@/hooks/use-element';
-import { useBasicStore } from '@/store/basic';
 import { langTitle } from '@/hooks/use-common';
+import { useBasicStore } from '@/store/basic';
 import { logout } from '@/api/system/login';
 
 const basicStore = useBasicStore();
 const { settings, sidebar, setToggleSideBar } = basicStore;
+const router = useRouter();
+
 const toggleSideBar = () => {
   setToggleSideBar();
 };
 // 退出登录
-const router = useRouter();
 const loginOut = async () => {
   try {
     await logout();

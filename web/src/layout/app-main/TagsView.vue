@@ -63,6 +63,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia/dist/pinia';
 import type { RouterTypes } from '~/basic';
 import { useBasicStore } from '@/store/basic';
+import { usePermissionStore } from '@/store/permission';
 import { useTagsViewStore } from '@/store/tags-view';
 import { langTitle } from '@/hooks/use-common';
 
@@ -133,7 +134,7 @@ const filterAffixTags = (routes, basePath = '/') => {
 
 // 初始
 const tagsViewStore = useTagsViewStore();
-const { allRoutes } = useBasicStore();
+const { allRoutes } = usePermissionStore();
 const initTags = () => {
   // 过滤affix=true的tags数组并赋值给state.affixTags，挂载到页面上
   const affixTags = (state.affixTags = filterAffixTags(allRoutes));
@@ -186,7 +187,7 @@ const closeSelectedTag = (view) => {
         basicStore.delCachedView(view.name);
       }
       if (routerLevel === 3) {
-        basicStore.setCacheViewDeep(view.name);
+        basicStore.delCacheViewDeep(view.name);
       }
     }
   });

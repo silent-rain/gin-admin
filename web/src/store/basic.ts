@@ -6,10 +6,7 @@ import { constantRoutes } from '@/router';
 export const useBasicStore = defineStore('basic', {
   state: () => {
     return {
-      // router
-      allRoutes: [] as RouterTypes,
       buttonCodes: [],
-      filterAsyncRoutes: [] as RouterTypes,
       // keep-alive
       cachedViews: [] as Array<string>,
       cachedViewsDeep: [] as Array<string>,
@@ -25,14 +22,6 @@ export const useBasicStore = defineStore('basic', {
     paths: ['token'],
   },
   actions: {
-    // 设置过滤的异步路由
-    setFilterAsyncRoutes(routes: RouterTypes) {
-      this.$patch((state) => {
-        state.filterAsyncRoutes = routes;
-        state.allRoutes = constantRoutes.concat(routes);
-      });
-    },
-
     // 设置侧边栏，显示/隐藏
     setSidebarOpen(data: any) {
       this.$patch((state) => {
@@ -53,7 +42,6 @@ export const useBasicStore = defineStore('basic', {
         state.cachedViews.push(view);
       });
     },
-
     delCachedView(view) {
       this.$patch((state) => {
         const index = state.cachedViews.indexOf(view);

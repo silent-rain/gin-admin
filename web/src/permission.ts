@@ -1,8 +1,9 @@
 import router from '@/router';
-import { progressClose, progressStart } from '@/hooks/use-permission';
-import { useUserStore } from '@/store/user';
-import { useMenuStore } from '@/store/menu';
+import { usePermissionStore } from '@/store/permission';
+import { progressClose, progressStart } from '@/hooks/use-basic';
 import { langTitle } from '@/hooks/use-common';
+import { filterAsyncRouter } from './hooks/use-permission';
+import { useUserStore } from '@/store/user';
 
 // no redirect whitelist
 const whiteList = ['/login', '/register', '/404', '/401'];
@@ -15,7 +16,7 @@ router.beforeEach(async (to, from) => {
   // i18 page title
   document.title = langTitle(to.meta?.title);
   const userStore = useUserStore();
-  const menuStore = useMenuStore();
+  const permissionStore = usePermissionStore();
 
   // 判断 Token, 不存在则跳转至登录
   if (!userStore.token) {
@@ -31,7 +32,7 @@ router.beforeEach(async (to, from) => {
   }
 
   // 判断是否获取用户信息
-  if (userStore.getUserInfo && menuStore.allRoutes.length > 0) {
+  if (userStore.getUserInfo && permissionStore.allRoutes.length > 0) {
     return true;
   }
 
@@ -41,10 +42,7 @@ router.beforeEach(async (to, from) => {
     // 保存用户信息到 store
     userStore.setUserInfo(userData);
     // 动态路由权限
-    menuStore.setAsyncRoutes(userData.menus);
-    menuStore.asyncRoutes.forEach((route) => {
-      router.addRoute(route);
-    });
+    filterAsyncRouter(userData.menus);
 
     // 执行路由跳转
     return { ...to, replace: true };

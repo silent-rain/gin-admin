@@ -22,14 +22,15 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
-import { useRoute } from 'vue-router';
-import type { RouteLocationMatched } from 'vue-router';
+import { useRoute, RouteLocationMatched } from 'vue-router';
 import type { rawConfig } from '~/basic';
 import { useBasicStore } from '@/store/basic';
 import { cloneDeep } from '@/hooks/use-common';
 
 const { settings, cachedViews } = storeToRefs(useBasicStore());
 const route = useRoute();
+const basicStore = useBasicStore();
+
 const key = computed(() => route.path);
 /* listen the component name changing, then to keep-alive the page */
 // cachePage: is true, keep-alive this Page
@@ -37,12 +38,13 @@ const key = computed(() => route.path);
 let oldRoute: rawConfig = {};
 let deepOldRouter: RouteLocationMatched | null = null;
 let cacheGroup: any = [];
-const basicStore = useBasicStore();
+
 const removeDeepChildren = (deepOldRouter) => {
   deepOldRouter.children?.forEach((fItem) => {
     basicStore.delCacheViewDeep(fItem.name);
   });
 };
+
 watch(
   () => route.name,
   () => {

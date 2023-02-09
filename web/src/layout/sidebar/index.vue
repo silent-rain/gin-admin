@@ -29,10 +29,10 @@ import { useRoute } from 'vue-router';
 import Logo from './Logo.vue';
 import SidebarItem from './SidebarItem.vue';
 import { useBasicStore } from '@/store/basic';
-import { useMenuStore } from '@/store/menu';
+import { usePermissionStore } from '@/store/permission';
 
 const { settings, sidebar } = storeToRefs(useBasicStore());
-const { allRoutes } = storeToRefs(useMenuStore());
+const { allRoutes } = storeToRefs(usePermissionStore());
 const route = useRoute();
 
 const activeMenu = computed(() => {

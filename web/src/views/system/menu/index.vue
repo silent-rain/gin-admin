@@ -231,7 +231,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
+import { storeToRefs } from 'pinia';
 import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
