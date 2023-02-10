@@ -27,6 +27,7 @@
               filterable
               accordion
               :check-strictly="true"
+              placeholder="请选择上级菜单"
               style="width: 100%"
             >
               <template #default="{ node, _data }">
@@ -66,11 +67,33 @@
         <el-divider />
 
         <el-col :span="12">
+          <el-form-item label="El菜单图标" prop="el_svg_icon">
+            <el-input
+              v-model="props.data.el_svg_icon"
+              :disabled="props.data.menu_type === MenuType.Button"
+              placeholder="请选择Element菜单图标"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="菜单图标" prop="icon">
             <el-input
               v-model="props.data.icon"
               :disabled="props.data.menu_type === MenuType.Button"
               placeholder="请选择菜单图标"
+            />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="12">
+          <el-form-item label="路由别名" prop="name">
+            <el-input
+              v-model="props.data.name"
+              :disabled="
+                props.data.menu_type === MenuType.Button ||
+                props.data.open_type === OpenType.OuterLink
+              "
+              placeholder="请选输入路由别名"
             />
           </el-form-item>
         </el-col>
@@ -84,14 +107,38 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="路由地址" prop="path">
+          <el-form-item
+            v-if="
+              props.data.open_type === OpenType.Component ||
+              props.data.open_type === OpenType.Link
+            "
+            label="路由地址"
+            prop="path"
+          >
             <el-input
               v-model="props.data.path"
-              :disabled="
-                props.data.menu_type === MenuType.Button ||
-                props.data.open_type === OpenType.OuterLink
-              "
+              :disabled="props.data.menu_type === MenuType.Button"
               placeholder="请输入路由地址"
+            />
+          </el-form-item>
+          <el-form-item v-else label="外链地址" prop="path">
+            <template #label>
+              <div>
+                <el-tooltip
+                  content="需要以`http://`、`https://`、`//`开头"
+                  placement="top"
+                >
+                  <el-icon style="margin-right: 2px">
+                    <QuestionFilled
+                  /></el-icon>
+                </el-tooltip>
+                <span>外链地址</span>
+              </div>
+            </template>
+            <el-input
+              v-model="props.data.path"
+              :disabled="props.data.menu_type === MenuType.Button"
+              placeholder="请输入外链地址"
             />
           </el-form-item>
         </el-col>
@@ -101,17 +148,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item
-            v-if="props.data.open_type === OpenType.Component"
-            label="组件路径"
-            prop="component"
-          >
-            <el-input
-              v-model="props.data.component"
-              :disabled="props.data.menu_type === MenuType.Button"
-              placeholder="请输入组件路径"
-            />
-          </el-form-item>
           <el-form-item
             v-if="props.data.open_type === OpenType.Link"
             label="内链地址"
@@ -136,28 +172,14 @@
               placeholder="请输入内链地址"
             />
           </el-form-item>
-          <el-form-item
-            v-if="props.data.open_type === OpenType.OuterLink"
-            label="外链地址"
-            prop="link"
-          >
-            <template #label>
-              <div>
-                <el-tooltip
-                  content="需要以`http://`、`https://`、`//`开头"
-                  placement="top"
-                >
-                  <el-icon style="margin-right: 2px">
-                    <QuestionFilled
-                  /></el-icon>
-                </el-tooltip>
-                <span>外链地址</span>
-              </div>
-            </template>
+          <el-form-item v-else label="组件路径" prop="component">
             <el-input
-              v-model="props.data.link"
-              :disabled="props.data.menu_type === MenuType.Button"
-              placeholder="请输入外链地址"
+              v-model="props.data.component"
+              :disabled="
+                props.data.menu_type === MenuType.Button ||
+                props.data.open_type === OpenType.OuterLink
+              "
+              placeholder="请输入组件路径"
             />
           </el-form-item>
         </el-col>
@@ -168,7 +190,41 @@
               <el-radio :label="1"
                 >隐藏
                 <el-tooltip
-                  content="选择不可见只注册路由不显示在侧边栏"
+                  content="选择隐藏, 注册路由不显示在侧边栏"
+                  placement="top"
+                >
+                  <el-icon style="margin-left: 1px">
+                    <QuestionFilled
+                  /></el-icon>
+                </el-tooltip>
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="路由重定向" prop="redirect">
+            <el-input
+              v-model="props.data.redirect"
+              :disabled="
+                props.data.menu_type === MenuType.Button ||
+                props.data.open_type === OpenType.OuterLink ||
+                props.data.open_type === OpenType.Link
+              "
+              placeholder="请选输入重定向路由"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="根菜单" prop="always_show">
+            <el-radio-group
+              v-model="props.data.always_show"
+              :disabled="props.data.menu_type === MenuType.Button"
+            >
+              <el-radio :label="1">显示</el-radio>
+              <el-radio :label="0"
+                >隐藏
+                <el-tooltip
+                  content="选择隐藏当只有一个子菜单时不显示根菜单"
                   placement="top"
                 >
                   <el-icon style="margin-left: 1px">

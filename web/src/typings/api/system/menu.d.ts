@@ -6,14 +6,18 @@ export interface Menu {
   parent_id: number;
   title: string;
   icon: string;
+  el_svg_icon: string;
   menu_type: number;
   open_type: number;
   path: string;
+  name: string;
   component: string;
+  redirect: string;
   link: string;
   target: string;
   permission: string;
   hidden: number;
+  always_show: number;
   sort: number;
   note: string;
   status: number;

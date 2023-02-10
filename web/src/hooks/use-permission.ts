@@ -11,19 +11,24 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
   for (const menu of menus) {
     const parentNode: RouteRawConfig = {} as RouteRawConfig;
     parentNode.path = menu.path;
+    parentNode.name = menu.name;
+    parentNode.redirect = menu.redirect;
     if (menu.component === 'Layout') {
       parentNode.component = shallowRef(Layout);
     } else {
       const url = menu.component.replace('@', '..');
       // parentNode.component = importModule(url);
-      parentNode.component = () =>
-        import(/* @vite-ignore */ '@/views/system/menu/index.vue');
+      parentNode.component = () => import(/* @vite-ignore */ url);
       // parentNode.component = defineAsyncComponent(
       //   () => import(/* @vite-ignore */ url),
       // );
     }
-    parentNode.meta = { title: menu.title, elSvgIcon: menu.icon };
-    // parentNode.alwaysShow = menu.always_show;
+    parentNode.meta = {
+      title: menu.title,
+      elSvgIcon: menu.el_svg_icon,
+      icon: menu.icon,
+    };
+    parentNode.alwaysShow = menu.always_show === 1 ? true : false;
     parentNode.hidden = menu.hidden === 1 ? true : false;
 
     if (menu.children) {

@@ -345,6 +345,7 @@ const handleAdd = async () => {
   state.menuForm.data.menu_type = 0;
   state.menuForm.data.open_type = 0;
   state.menuForm.data.hidden = 0;
+  state.menuForm.data.always_show = 1;
   state.menuForm.data.status = 1;
   state.menuForm.data.sort = 1;
   state.menuForm.type = 'add';
@@ -356,6 +357,7 @@ const handleAddById = async (row: Menu) => {
   state.menuForm.data.menu_type = 0;
   state.menuForm.data.open_type = 0;
   state.menuForm.data.hidden = 0;
+  state.menuForm.data.always_show = 1;
   state.menuForm.data.status = 1;
   state.menuForm.data.sort = 1;
   state.menuForm.type = 'add';
