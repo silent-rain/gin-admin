@@ -56,3 +56,9 @@ type UpdateMenuReq struct {
 	Note       string `json:"note" form:"note"`                      // 备注
 	Status     uint   `json:"status" form:"status"`                  // 状态,0:停用,1:启用
 }
+
+// ButtonPermission 按钮权限
+type ButtonPermission struct {
+	Permission string `json:"permission"` // 按钮权限标识
+	Disabled   uint   `json:"disabled"`   // 是否禁用
+}

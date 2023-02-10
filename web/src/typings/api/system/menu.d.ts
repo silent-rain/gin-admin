@@ -29,3 +29,8 @@ export interface MenuListRsp {
   data_list: Menu[];
   tatol: number;
 }
+
+export interface ButtonPermission {
+  permission: string; // 按钮权限标识
+  disabled: number; // 是否禁用
+}

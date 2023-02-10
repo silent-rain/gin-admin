@@ -51,7 +51,7 @@ type UserInfoRsp struct {
 	User        systemModel.User   `json:"user"`        // 用户信息
 	Roles       []systemModel.Role `json:"roles"`       // 角色列表
 	Menus       []systemModel.Menu `json:"menus"`       // 菜单路由列表
-	Permissions []string           `json:"permissions"` // 按钮权限列表
+	Permissions []ButtonPermission `json:"permissions"` // 按钮权限列表
 }
 
 // QueryUserReq 查询条件

@@ -1,14 +1,16 @@
 import { defineStore } from 'pinia';
 import { RouteRawConfig, RouterTypes } from '~/store/router';
-import { Menu } from '~/api/system/menu';
+import { Menu, ButtonPermission } from '~/api/system/menu';
 
 export const usePermissionStore = defineStore('permission', {
   state: () => {
     return {
       // 菜单路由列表
       menus: [] as Menu[],
-      // 按钮权限
-      buttonCodes: [] as any[],
+      // 按钮权限列表
+      permissions: [] as ButtonPermission[],
+      // 按钮权限 HASH 表， key: 权限标识, value: 是否禁用
+      permissionHash: {},
       // 异步路由列表
       asyncRoutes: [] as RouteRawConfig[],
       // 所有路由
@@ -28,13 +30,23 @@ export const usePermissionStore = defineStore('permission', {
         state.allRoutes = allRoutes;
       });
     },
+    // 设置按钮权限
+    setButtonPermission(
+      permissions: ButtonPermission[],
+      permissionHash: any,
+    ) {
+      this.$patch((state) => {
+        state.permissions = permissions;
+        state.permissionHash = permissionHash;
+      });
+    },
     // 重置状态
     resetState() {
       this.$patch((state) => {
         state.menus = [];
         // state.codes = [];
         state.allRoutes = [];
-        state.buttonCodes = [];
+        state.permissions = [];
         state.asyncRoutes = [];
       });
     },

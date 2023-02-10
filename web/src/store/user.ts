@@ -17,8 +17,6 @@ export const useUserStore = defineStore('user', {
       userInfo: {} as User,
       // 角色列表
       roles: [] as Role[],
-      // 按钮权限列表
-      permissions: [] as string[],
       codes: [] as number[],
     } as UserTry;
   },

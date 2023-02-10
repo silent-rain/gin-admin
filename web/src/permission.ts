@@ -2,7 +2,7 @@ import router from '@/router';
 import { usePermissionStore } from '@/store/permission';
 import { progressClose, progressStart } from '@/hooks/use-basic';
 import { langTitle } from '@/hooks/use-common';
-import { filterAsyncRouter } from './hooks/use-permission';
+import { buttonPermissions, filterAsyncRouter } from './hooks/use-permission';
 import { useUserStore } from '@/store/user';
 
 // no redirect whitelist
@@ -39,10 +39,12 @@ router.beforeEach(async (to, from) => {
   try {
     // 获取用户信息
     const userData = await userStore.userInfo();
-    // 保存用户信息到 store
+    // 设置用户信息
     userStore.setUserInfo(userData);
-    // 动态路由权限
+    // 设置动态路由权限
     filterAsyncRouter(userData.menus);
+    // 设置按钮权限
+    buttonPermissions(userData.permissions);
 
     // 执行路由跳转
     return { ...to, replace: true };

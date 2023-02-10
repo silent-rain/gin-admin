@@ -40,7 +40,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="菜单类型" prop="menu_type">
-            <el-radio-group v-model="props.data.menu_type">
+            <el-radio-group
+              v-model="props.data.menu_type"
+              :disabled="props.type === 'edit'"
+            >
               <el-radio :label="0">菜单</el-radio>
               <el-radio :label="1">按钮</el-radio>
             </el-radio-group>
@@ -184,7 +187,25 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="是否隐藏" prop="hidden">
+          <el-form-item
+            v-if="props.data.menu_type === MenuType.Button"
+            label="是否禁用"
+            prop="hidden"
+          >
+            <!-- 按钮设置 -->
+            <el-radio-group v-model="props.data.hidden">
+              <el-radio :label="0">可用</el-radio>
+              <el-radio :label="1"
+                >禁用
+                <el-tooltip content="选择禁用, 按钮将不能点击" placement="top">
+                  <el-icon style="margin-left: 1px">
+                    <QuestionFilled
+                  /></el-icon>
+                </el-tooltip>
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-else label="是否隐藏" prop="hidden">
             <el-radio-group v-model="props.data.hidden">
               <el-radio :label="0">显示</el-radio>
               <el-radio :label="1"

@@ -431,8 +431,8 @@ func (h *userHandler) getMenuList(menus []systemModel.Menu) []systemModel.Menu {
 }
 
 // 按钮权限列表：菜单类型为按钮的数据解析
-func (h *userHandler) getPermissionList(menus []systemModel.Menu) []string {
-	results := make([]string, 0)
+func (h *userHandler) getPermissionList(menus []systemModel.Menu) []systemDto.ButtonPermission {
+	results := make([]systemDto.ButtonPermission, 0)
 	if len(menus) == 0 {
 		return results
 	}
@@ -441,7 +441,10 @@ func (h *userHandler) getPermissionList(menus []systemModel.Menu) []string {
 		if item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
 			item.Permission != "" &&
 			item.Hidden == uint(systemModel.MenuHideTypeByShow) {
-			results = append(results, item.Permission)
+			results = append(results, systemDto.ButtonPermission{
+				Permission: item.Permission,
+				Disabled:   item.Hidden,
+			})
 		}
 	}
 	return results

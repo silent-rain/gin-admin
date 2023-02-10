@@ -267,8 +267,10 @@ import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
 import UserForm from './components/UserForm.vue';
 import { aoaToSheetXlsx } from '@/utils/excel';
+import { usePermissionStore } from '@/store/permission';
 
 const { settings } = storeToRefs(useBasicStore());
+const permissionStore = usePermissionStore();
 
 // 筛选过滤条件
 const listQuery = reactive({
@@ -326,6 +328,7 @@ const multipleSelection = ref<User[]>([]);
 
 onBeforeMount(() => {
   fetchUserList();
+  console.log(permissionStore.permissionHash);
 });
 
 // 获取用户列表

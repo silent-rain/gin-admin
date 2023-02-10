@@ -3,7 +3,7 @@ import router, { catchRoutes, constantRoutes } from '@/router';
 import Layout from '@/layout/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import { RouteRawConfig } from '~/store/router';
-import { Menu } from '~/api/system/menu';
+import { ButtonPermission, Menu } from '~/api/system/menu';
 
 // 菜单列表转为路由列表
 export const asyncRoutesByMenus = (menus: Menu[]) => {
@@ -54,6 +54,15 @@ export const filterAsyncRouter = (menus: Menu[]) => {
 
   // 新增异步路由
   permissionStore.asyncRoutes.forEach((feItem) => router.addRoute(feItem));
+};
+
+// 按钮权限
+export const buttonPermissions = (permissions: ButtonPermission[]) => {
+  const permissionHash = {};
+  for (const item of permissions) {
+    permissionHash[item.permission] = item.disabled === 0 ? false : true;
+  }
+  usePermissionStore().setButtonPermission(permissions, permissionHash);
 };
 
 //重置路由

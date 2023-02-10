@@ -103,6 +103,12 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="checkedDict.name"
+        prop="name"
+        label="路由别名"
+        show-overflow-tooltip
+      />
+      <el-table-column
         v-if="checkedDict.path"
         prop="path"
         label="路由地址"
@@ -112,6 +118,12 @@
         v-if="checkedDict.component"
         prop="component"
         label="组件路径"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        v-if="checkedDict.redirect"
+        prop="redirect"
+        label="路由重定向"
         show-overflow-tooltip
       />
       <el-table-column
@@ -133,8 +145,31 @@
         show-overflow-tooltip
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.hidden">隐藏</el-tag>
+          <el-tag
+            v-if="scope.row.menu_type === MenuType.Button && scope.row.hidden"
+            type="info"
+            >禁用
+          </el-tag>
+          <el-tag
+            v-else-if="
+              scope.row.menu_type === MenuType.Button && !scope.row.hidden
+            "
+            type="success"
+            >可用
+          </el-tag>
+          <el-tag v-else-if="scope.row.hidden">隐藏</el-tag>
           <el-tag v-else type="success">显示 </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="checkedDict.always_show"
+        prop="always_show"
+        label="显示根菜单"
+        show-overflow-tooltip
+      >
+        <template #default="scope">
+          <el-tag v-if="scope.row.always_show" type="success">显示</el-tag>
+          <el-tag v-else> 隐藏</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -285,11 +320,19 @@ const checkAllList = [
   { label: '菜单名称', value: 'title', disabled: true, enabled: true },
   { label: '菜单类型', value: 'menu_type', disabled: true, enabled: true },
   { label: '打开方式', value: 'open_type', disabled: false, enabled: false },
+  { label: '路由别名', value: 'name', disabled: true, enabled: false },
   { label: '路由地址', value: 'path', disabled: true, enabled: true },
   { label: '组件路径', value: 'component', disabled: false, enabled: true },
+  { label: '路由重定向', value: 'redirect', disabled: false, enabled: false },
   { label: '链接地址', value: 'link', disabled: false, enabled: true },
   { label: '权限标识', value: 'permission', disabled: true, enabled: true },
   { label: '是否隐藏', value: 'hidden', disabled: false, enabled: true },
+  {
+    label: '显示根菜单',
+    value: 'always_show',
+    disabled: false,
+    enabled: false,
+  },
   { label: '排序', value: 'sort', disabled: false, enabled: true },
   { label: '状态', value: 'status', disabled: true, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
