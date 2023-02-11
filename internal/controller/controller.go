@@ -1,14 +1,5 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 18:44:38
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-13 21:25:46
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/handler/handler.go
- * @Descripttion: 服务逻辑
- */
-package handler
+/*接口测试*/
+package controller
 
 import (
 	"net/http"

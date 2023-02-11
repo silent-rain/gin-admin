@@ -11,9 +11,9 @@
 package system
 
 import (
-	systemDao "gin-admin/internal/dao/system"
-	"gin-admin/internal/dto"
-	systemDto "gin-admin/internal/dto/system"
+	systemDAO "gin-admin/internal/dao/system"
+	DTO "gin-admin/internal/dto"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -25,13 +25,13 @@ import (
 
 // 角色
 type roleHandler struct {
-	dao systemDao.Role
+	dao systemDAO.Role
 }
 
 // 创建角色 Handler 对象
 func NewRoleHandler() *roleHandler {
 	return &roleHandler{
-		dao: systemDao.NewRoleDao(),
+		dao: systemDAO.NewRoleDao(),
 	}
 }
 
@@ -48,7 +48,7 @@ func (h *roleHandler) All(ctx *gin.Context) {
 
 // List 获取用角色列表
 func (h *roleHandler) List(ctx *gin.Context) {
-	req := new(systemDto.QueryRoleReq)
+	req := new(systemDTO.QueryRoleReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -65,7 +65,7 @@ func (h *roleHandler) List(ctx *gin.Context) {
 
 // Add 添加角色
 func (h *roleHandler) Add(ctx *gin.Context) {
-	req := new(systemDto.AddRoleReq)
+	req := new(systemDTO.AddRoleReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -98,7 +98,7 @@ func (h *roleHandler) Add(ctx *gin.Context) {
 
 // Update 更新角色
 func (h *roleHandler) Update(ctx *gin.Context) {
-	req := new(systemDto.UpdateRoleReq)
+	req := new(systemDTO.UpdateRoleReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -119,7 +119,7 @@ func (h *roleHandler) Update(ctx *gin.Context) {
 
 // Delete 删除角色
 func (h *roleHandler) Delete(ctx *gin.Context) {
-	req := new(dto.DeleteReq)
+	req := new(DTO.DeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -135,7 +135,7 @@ func (h *roleHandler) Delete(ctx *gin.Context) {
 
 // BatchDelete 批量删除角色
 func (h *roleHandler) BatchDelete(ctx *gin.Context) {
-	req := new(dto.BatchDeleteReq)
+	req := new(DTO.BatchDeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -151,7 +151,7 @@ func (h *roleHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新角色状态
 func (h *roleHandler) Status(ctx *gin.Context) {
-	req := new(dto.UpdateStatusReq)
+	req := new(DTO.UpdateStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return

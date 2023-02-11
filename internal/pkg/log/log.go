@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"os"
 
-	systemDao "gin-admin/internal/dao/system"
+	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
 	statuscode "gin-admin/internal/pkg/status_code"
@@ -158,7 +158,7 @@ func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
 		return len(p), nil
 	}
 	go func() {
-		systemDao.NewSystemLogDao().Add(sysLog)
+		systemDAO.NewSystemLogDao().Add(sysLog)
 	}()
 	// 返回写入日志的长度,以及错误
 	return len(p), nil

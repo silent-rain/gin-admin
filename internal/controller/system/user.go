@@ -11,9 +11,9 @@
 package system
 
 import (
-	systemDao "gin-admin/internal/dao/system"
-	"gin-admin/internal/dto"
-	systemDto "gin-admin/internal/dto/system"
+	systemDAO "gin-admin/internal/dao/system"
+	DTO "gin-admin/internal/dto"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
@@ -26,15 +26,15 @@ import (
 
 // 用户管理
 type userHandler struct {
-	dao     systemDao.User
-	menuDao systemDao.Menu
+	dao     systemDAO.User
+	menuDao systemDAO.Menu
 }
 
 // 创建角色 Handler 对象
 func NewUserHandler() *userHandler {
 	return &userHandler{
-		dao:     systemDao.NewUserDao(),
-		menuDao: systemDao.NewMenuDao(),
+		dao:     systemDAO.NewUserDao(),
+		menuDao: systemDAO.NewMenuDao(),
 	}
 }
 
@@ -51,7 +51,7 @@ func (h *userHandler) All(ctx *gin.Context) {
 
 // List 获取用户列表
 func (h *userHandler) List(ctx *gin.Context) {
-	req := new(systemDto.QueryUserReq)
+	req := new(systemDTO.QueryUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -69,7 +69,7 @@ func (h *userHandler) List(ctx *gin.Context) {
 // Add 添加用户
 func (h *userHandler) Add(ctx *gin.Context) {
 	// 解析参数
-	req := new(systemDto.AddUserReq)
+	req := new(systemDTO.AddUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -167,7 +167,7 @@ func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) bool {
 
 // Update 更新用户详情信息
 func (h *userHandler) Update(ctx *gin.Context) {
-	req := new(systemDto.UpdateUserReq)
+	req := new(systemDTO.UpdateUserReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -190,7 +190,7 @@ func (h *userHandler) Update(ctx *gin.Context) {
 
 // Delete 删除用户
 func (h *userHandler) Delete(ctx *gin.Context) {
-	req := new(dto.DeleteReq)
+	req := new(DTO.DeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -206,7 +206,7 @@ func (h *userHandler) Delete(ctx *gin.Context) {
 
 // BatchDelete 批量删除用户
 func (h *userHandler) BatchDelete(ctx *gin.Context) {
-	req := new(dto.BatchDeleteReq)
+	req := new(DTO.BatchDeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -222,7 +222,7 @@ func (h *userHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新用户状态
 func (h *userHandler) Status(ctx *gin.Context) {
-	req := new(dto.UpdateStatusReq)
+	req := new(DTO.UpdateStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -238,7 +238,7 @@ func (h *userHandler) Status(ctx *gin.Context) {
 
 // UpdatePassword 更新密码
 func (h *userHandler) UpdatePassword(ctx *gin.Context) {
-	req := new(systemDto.UpdateUserPasswordReq)
+	req := new(systemDTO.UpdateUserPasswordReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -272,7 +272,7 @@ func (h *userHandler) UpdatePassword(ctx *gin.Context) {
 
 // ResetPassword 重置密码
 func (h *userHandler) ResetPassword(ctx *gin.Context) {
-	req := new(systemDto.ResetUserPasswordReq)
+	req := new(systemDTO.ResetUserPasswordReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -291,7 +291,7 @@ func (h *userHandler) ResetPassword(ctx *gin.Context) {
 
 // UpdatePhone 更新手机号码
 func (h *userHandler) UpdatePhone(ctx *gin.Context) {
-	req := new(systemDto.UpdateUserPhoneReq)
+	req := new(systemDTO.UpdateUserPhoneReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -324,7 +324,7 @@ func (h *userHandler) UpdatePhone(ctx *gin.Context) {
 
 // UpdateEmail 更新邮箱
 func (h *userHandler) UpdateEmail(ctx *gin.Context) {
-	req := new(systemDto.UpdateUserEmailReq)
+	req := new(systemDTO.UpdateUserEmailReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -390,7 +390,7 @@ func (h *userHandler) Info(ctx *gin.Context) {
 	permissions := h.getPermissionList(roleMenus)
 
 	// 返回值收集
-	result := systemDto.UserInfoRsp{
+	result := systemDTO.UserInfoRsp{
 		User:        user,
 		Roles:       user.Roles,
 		Menus:       menus,
@@ -431,8 +431,8 @@ func (h *userHandler) getMenuList(menus []systemModel.Menu) []systemModel.Menu {
 }
 
 // 按钮权限列表：菜单类型为按钮的数据解析
-func (h *userHandler) getPermissionList(menus []systemModel.Menu) []systemDto.ButtonPermission {
-	results := make([]systemDto.ButtonPermission, 0)
+func (h *userHandler) getPermissionList(menus []systemModel.Menu) []systemDTO.ButtonPermission {
+	results := make([]systemDTO.ButtonPermission, 0)
 	if len(menus) == 0 {
 		return results
 	}
@@ -440,7 +440,7 @@ func (h *userHandler) getPermissionList(menus []systemModel.Menu) []systemDto.Bu
 		// 过滤禁用按钮, 过滤菜单路由，过滤空权限
 		if item.Status == 1 && item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
 			item.Permission != "" {
-			results = append(results, systemDto.ButtonPermission{
+			results = append(results, systemDTO.ButtonPermission{
 				Permission: item.Permission,
 				Disabled:   item.Hidden,
 			})

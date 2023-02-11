@@ -13,8 +13,8 @@ package system
 import (
 	"bytes"
 
-	systemDao "gin-admin/internal/dao/system"
-	systemDto "gin-admin/internal/dto/system"
+	systemDAO "gin-admin/internal/dao/system"
+	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -28,19 +28,19 @@ import (
 
 // 用户登录/登出
 type userLoginHandler struct {
-	dao systemDao.User
+	dao systemDAO.User
 }
 
 // 创建用户登录/登出 Handler 对象
 func NewUserLoginHandler() *userLoginHandler {
 	return &userLoginHandler{
-		dao: systemDao.NewUserDao(),
+		dao: systemDAO.NewUserDao(),
 	}
 }
 
 // Login 登录
 func (h *userLoginHandler) Login(ctx *gin.Context) {
-	req := new(systemDto.UserLoginReq)
+	req := new(systemDTO.UserLoginReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -78,7 +78,7 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 	}
 
 	// 返回 Token
-	result := systemDto.UserLoginRsp{
+	result := systemDTO.UserLoginRsp{
 		Token: token,
 	}
 	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
@@ -86,7 +86,7 @@ func (h *userLoginHandler) Login(ctx *gin.Context) {
 
 // Logout 注销系统
 func (h *userLoginHandler) Logout(ctx *gin.Context) {
-	result := systemDto.UserLoginRsp{}
+	result := systemDTO.UserLoginRsp{}
 	response.New(ctx).WithMsg("注销成功").WithData(result).Json()
 }
 

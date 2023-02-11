@@ -1,20 +1,12 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 13:19:16
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 18:05:46
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dao/system/user.go
- * @Descripttion: 用户 Dao
+/*用户 DAO
  */
-package systemDao
+package systemDAO
 
 import (
 	"errors"
 
-	"gin-admin/internal/dao"
-	systemDto "gin-admin/internal/dto/system"
+	DAO "gin-admin/internal/dao"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
 	"gin-admin/internal/pkg/utils"
@@ -26,7 +18,7 @@ import (
 // User 用户接口
 type User interface {
 	All() ([]systemModel.User, int64, error)
-	List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error)
+	List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, error)
 	Info(id uint) (systemModel.User, bool, error)
 	Add(user systemModel.User, roleIds []uint) error
 	Update(user systemModel.User, roles []uint) error
@@ -45,14 +37,14 @@ type User interface {
 
 // 用户
 type user struct {
-	*dao.Transaction
+	*DAO.Transaction
 	db *gorm.DB
 }
 
 // 创建用户 Dao 对象
 func NewUserDao() *user {
 	return &user{
-		Transaction: dao.NewTransaction(database.Instance()),
+		Transaction: DAO.NewTransaction(database.Instance()),
 		db:          database.Instance(),
 	}
 }
@@ -76,7 +68,7 @@ func (d *user) All() ([]systemModel.User, int64, error) {
 }
 
 // List 获取用户列表
-func (d *user) List(req systemDto.QueryUserReq) ([]systemModel.User, int64, error) {
+func (d *user) List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.Nickname != "" {

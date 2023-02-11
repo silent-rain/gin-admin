@@ -13,8 +13,8 @@
 package router
 
 import (
-	"gin-admin/internal/handler"
-	"gin-admin/internal/handler/system"
+	"gin-admin/internal/controller"
+	"gin-admin/internal/controller/system"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ import (
 func NewApiV1(engine *gin.Engine) {
 	v1 := engine.Group("/api/v1")
 	// 接口测试
-	v1.GET("/sayHello", handler.SayHello)
+	v1.GET("/sayHello", controller.SayHello)
 
 	// 注册/登录/登出/验证码
 	userLogin := v1.Group("/")

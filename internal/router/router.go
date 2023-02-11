@@ -11,7 +11,7 @@
 package router
 
 import (
-	"gin-admin/internal/handler"
+	"gin-admin/internal/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func Init(engine *gin.Engine) {
 	engine.SetTrustedProxies(nil)
 
 	// 服务健康检查
-	engine.GET("/api/ping", handler.Ping)
+	engine.GET("/api/ping", controller.Ping)
 
 	//  静态资源路由
 	NewStaticApi(engine)

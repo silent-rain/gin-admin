@@ -1,6 +1,6 @@
 /* 菜单
  */
-package systemDto
+package systemDTO
 
 import (
 	"gin-admin/internal/dto"
@@ -8,7 +8,7 @@ import (
 
 // QueryMenuReq 查询条件
 type QueryMenuReq struct {
-	dto.Pagination        // 分页
+	DTO.Pagination        // 分页
 	Title          string `json:"title" form:"title"` // 菜单名称
 }
 

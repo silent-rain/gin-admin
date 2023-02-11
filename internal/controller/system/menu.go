@@ -2,9 +2,9 @@
 package system
 
 import (
-	systemDao "gin-admin/internal/dao/system"
-	"gin-admin/internal/dto"
-	systemDto "gin-admin/internal/dto/system"
+	systemDAO "gin-admin/internal/dao/system"
+	DTO "gin-admin/internal/dto"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -16,13 +16,13 @@ import (
 
 // 菜单
 type menuHandler struct {
-	dao systemDao.Menu
+	dao systemDAO.Menu
 }
 
 // 创建菜单 Handler 对象
 func NewMenuHandler() *menuHandler {
 	return &menuHandler{
-		dao: systemDao.NewMenuDao(),
+		dao: systemDAO.NewMenuDao(),
 	}
 }
 
@@ -41,7 +41,7 @@ func (h *menuHandler) AllTree(ctx *gin.Context) {
 
 // Tree 获取菜单树
 func (h *menuHandler) Tree(ctx *gin.Context) {
-	req := systemDto.QueryMenuReq{}
+	req := systemDTO.QueryMenuReq{}
 	if err := utils.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -98,7 +98,7 @@ func MenuListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
 
 // Add 添加菜单
 func (h *menuHandler) Add(ctx *gin.Context) {
-	req := new(systemDto.AddMenuReq)
+	req := new(systemDTO.AddMenuReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -121,7 +121,7 @@ func (h *menuHandler) Add(ctx *gin.Context) {
 
 // Update 更新菜单
 func (h *menuHandler) Update(ctx *gin.Context) {
-	req := new(systemDto.UpdateMenuReq)
+	req := new(systemDTO.UpdateMenuReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -144,7 +144,7 @@ func (h *menuHandler) Update(ctx *gin.Context) {
 
 // Delete 删除菜单
 func (h *menuHandler) Delete(ctx *gin.Context) {
-	req := new(dto.DeleteReq)
+	req := new(DTO.DeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -173,7 +173,7 @@ func (h *menuHandler) Delete(ctx *gin.Context) {
 
 // BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
 func (h *menuHandler) BatchDelete(ctx *gin.Context) {
-	req := new(dto.BatchDeleteReq)
+	req := new(DTO.BatchDeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -189,7 +189,7 @@ func (h *menuHandler) BatchDelete(ctx *gin.Context) {
 
 // Status 更新菜单状态
 func (h *menuHandler) Status(ctx *gin.Context) {
-	req := new(dto.UpdateStatusReq)
+	req := new(DTO.UpdateStatusReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return

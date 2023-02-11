@@ -1,14 +1,6 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 13:51:42
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:27:04
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dao/dao.go
- * @Descripttion: Dao 数据库操作
+/*DAO 数据库操作
  */
-package dao
+package DAO
 
 import (
 	"gorm.io/gorm"

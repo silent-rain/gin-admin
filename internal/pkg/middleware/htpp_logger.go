@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	systemDao "gin-admin/internal/dao/system"
+	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
@@ -63,7 +63,7 @@ func HttpLogger() gin.HandlerFunc {
 		}
 
 		go func(htppLog systemModel.HttpLog) {
-			systemDao.NewHttpLogDao().Add(htppLog)
+			systemDAO.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 
 		ctx.Next()
@@ -74,7 +74,7 @@ func HttpLogger() gin.HandlerFunc {
 		htppLog.HttpType = "RSP"
 		htppLog.Body = blw.Body.String()
 		go func(htppLog systemModel.HttpLog) {
-			systemDao.NewHttpLogDao().Add(htppLog)
+			systemDAO.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 	}
 }

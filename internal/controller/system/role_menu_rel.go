@@ -3,8 +3,8 @@
 package system
 
 import (
-	systemDao "gin-admin/internal/dao/system"
-	systemDto "gin-admin/internal/dto/system"
+	systemDAO "gin-admin/internal/dao/system"
+	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
@@ -15,19 +15,19 @@ import (
 
 // 角色菜单关系
 type roleMenuRelHandler struct {
-	dao systemDao.RoleMenuRel
+	dao systemDAO.RoleMenuRel
 }
 
 // 创建角色菜单关系 Handler 对象
 func NewMenuRelHandler() *roleMenuRelHandler {
 	return &roleMenuRelHandler{
-		dao: systemDao.NewRoleMenuRelDao(),
+		dao: systemDAO.NewRoleMenuRelDao(),
 	}
 }
 
 // List 获取角色关联的菜单列表
 func (h *roleMenuRelHandler) List(ctx *gin.Context) {
-	req := new(systemDto.QueryRoleMenuRelReq)
+	req := new(systemDTO.QueryRoleMenuRelReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
@@ -47,7 +47,7 @@ func (h *roleMenuRelHandler) List(ctx *gin.Context) {
 
 // Update 更新角色菜单关联关系
 func (h *roleMenuRelHandler) Update(ctx *gin.Context) {
-	req := new(systemDto.UpdateRoleMenuRelReq)
+	req := new(systemDTO.UpdateRoleMenuRelReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return

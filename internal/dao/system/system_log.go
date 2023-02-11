@@ -1,14 +1,6 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-09 23:08:33
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 00:06:00
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dao/system/system_log.go
- * @Descripttion: 系统日志
+/*系统日志 DAO
  */
-package systemDao
+package systemDAO
 
 import (
 	systemModel "gin-admin/internal/model/system"

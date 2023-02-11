@@ -1,18 +1,10 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-13 00:24:36
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:16:27
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dao/system/role.go
- * @Descripttion: 角色
+/*角色 DAO
  */
-package systemDao
+package systemDAO
 
 import (
 	"errors"
-	systemDto "gin-admin/internal/dto/system"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
 
@@ -22,7 +14,7 @@ import (
 // Role 角色接口
 type Role interface {
 	All() ([]systemModel.Role, int64, error)
-	List(req systemDto.QueryRoleReq) ([]systemModel.Role, int64, error)
+	List(req systemDTO.QueryRoleReq) ([]systemModel.Role, int64, error)
 	InfoByName(name string) (systemModel.Role, bool, error)
 	Add(bean systemModel.Role) (uint, error)
 	Update(bean systemModel.Role) (int64, error)
@@ -60,7 +52,7 @@ func (d *role) All() ([]systemModel.Role, int64, error) {
 }
 
 // List 查询角色列表
-func (d *role) List(req systemDto.QueryRoleReq) ([]systemModel.Role, int64, error) {
+func (d *role) List(req systemDTO.QueryRoleReq) ([]systemModel.Role, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.Name != "" {

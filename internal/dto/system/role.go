@@ -1,20 +1,12 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-13 00:20:26
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 13:37:04
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dto/system/role.go
- * @Descripttion: 角色
+/*角色
  */
-package systemDto
+package systemDTO
 
 import "gin-admin/internal/dto"
 
 // QueryRoleReq 查询条件
 type QueryRoleReq struct {
-	dto.Pagination        // 分页
+	DTO.Pagination        // 分页
 	Name           string `json:"name" form:"name"` // 角色名称
 }
 

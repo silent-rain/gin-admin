@@ -1,6 +1,6 @@
 /* 角色菜单
  */
-package systemDto
+package systemDTO
 
 // QueryRoleMenuRelReq 角色菜单关系查询条件
 type QueryRoleMenuRelReq struct {

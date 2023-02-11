@@ -1,10 +1,10 @@
-/* 角色菜单
+/* 角色菜单 DAO
  */
-package systemDao
+package systemDAO
 
 import (
-	"gin-admin/internal/dao"
-	systemDto "gin-admin/internal/dto/system"
+	DAO "gin-admin/internal/dao"
+	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/database"
 	"gin-admin/internal/pkg/utils"
@@ -15,26 +15,26 @@ import (
 
 // RoleMenuRel 角色菜单关系接口
 type RoleMenuRel interface {
-	List(req systemDto.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error)
+	List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error)
 	Update(roleId uint, menuIds []uint) error
 }
 
 // 角色菜单关系
 type roleMenuRel struct {
-	*dao.Transaction
+	*DAO.Transaction
 	db *gorm.DB
 }
 
 // 创建角色菜单关系 Dao 对象
 func NewRoleMenuRelDao() *roleMenuRel {
 	return &roleMenuRel{
-		Transaction: dao.NewTransaction(database.Instance()),
+		Transaction: DAO.NewTransaction(database.Instance()),
 		db:          database.Instance(),
 	}
 }
 
 // List 角色关联的菜单列表
-func (d *roleMenuRel) List(req systemDto.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
+func (d *roleMenuRel) List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db
 		if req.MenuId != 0 {

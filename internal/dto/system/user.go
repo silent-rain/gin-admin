@@ -1,17 +1,9 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 17:14:54
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:51:59
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/dto/system/user.go
- * @Descripttion:
+/*用户
  */
-package systemDto
+package systemDTO
 
 import (
-	"gin-admin/internal/dto"
+	DTO "gin-admin/internal/dto"
 	systemModel "gin-admin/internal/model/system"
 )
 
@@ -56,7 +48,7 @@ type UserInfoRsp struct {
 
 // QueryUserReq 查询条件
 type QueryUserReq struct {
-	dto.Pagination        // 分页
+	DTO.Pagination        // 分页
 	Nickname       string `json:"nickname" form:"nickname"` // 用户昵称
 	Phone          string `json:"phone" form:"phone"`       // 手机号码
 	Email          string `json:"email" form:"email"`       // 邮件
