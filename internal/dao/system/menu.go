@@ -20,6 +20,7 @@ type Menu interface {
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 	ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error)
+	ChildrenMenu(parentId uint) ([]systemModel.Menu, error)
 }
 
 // 菜单
@@ -129,4 +130,16 @@ func (d *menu) ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error) {
 		return nil, result.Error
 	}
 	return beans, nil
+}
+
+// 通过父 ID 获取子菜单列表
+func (d *menu) ChildrenMenu(parentId uint) ([]systemModel.Menu, error) {
+	bean := make([]systemModel.Menu, 0)
+	result := d.db.Where("parent_id=?", parentId).
+		Order("sort ASC").Order("id ASC").
+		Find(&bean)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return bean, nil
 }

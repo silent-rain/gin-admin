@@ -5,7 +5,7 @@
 - [x] 删除用户 sys:user:delete
 - [x] 批量删除 sys:user:delall
 - [ ] 用户详情 sys:user:detail
-- [ ] 设置状态 sys:user:status
+- [x] 设置状态 sys:user:status
 - [x] 重置密码 sys:user:resetPwd
 - [x] 导出用户 sys:user:export
 - [ ] 导入用户 sys:user:import

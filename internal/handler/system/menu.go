@@ -149,6 +149,19 @@ func (h *menuHandler) Delete(ctx *gin.Context) {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
+
+	childrenMenu, err := h.dao.ChildrenMenu(req.ID)
+	if err != nil {
+		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
+		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
+		return
+	}
+	if len(childrenMenu) > 0 {
+		log.New(ctx).WithCode(statuscode.DbDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
+		response.New(ctx).WithCode(statuscode.DbDataExistChildrenError).WithMsg("删除失败, 存在子菜单").Json()
+		return
+	}
+
 	row, err := h.dao.Delete(req.ID)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
@@ -158,7 +171,7 @@ func (h *menuHandler) Delete(ctx *gin.Context) {
 	response.New(ctx).WithData(row).Json()
 }
 
-// BatchDelete 批量删除菜单
+// BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
 func (h *menuHandler) BatchDelete(ctx *gin.Context) {
 	req := new(dto.BatchDeleteReq)
 	if err := utils.ParsingReqParams(ctx, req); err != nil {
