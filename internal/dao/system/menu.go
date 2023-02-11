@@ -42,7 +42,7 @@ func (d *menu) All() ([]systemModel.Menu, int64, error) {
 	}
 
 	bean := make([]systemModel.Menu, 0)
-	if result := stats().Order("sort ASC").Order("updated_at ASC").Find(&bean); result.Error != nil {
+	if result := stats().Order("sort ASC").Order("id ASC").Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
@@ -62,7 +62,7 @@ func (d *menu) List(req systemDto.QueryMenuReq) ([]systemModel.Menu, int64, erro
 
 	bean := make([]systemModel.Menu, 0)
 	result := stats().
-		Order("sort ASC").Order("updated_at ASC").
+		Order("sort ASC").Order("id ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error

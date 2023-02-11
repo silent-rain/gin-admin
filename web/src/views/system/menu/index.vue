@@ -1,16 +1,21 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div class="filter">
+    <div v-if="hasButtonPermission('sys:menu:list')" class="filter">
       <label>一级菜单筛选: </label>
       <el-input
         v-model="listQuery.title"
         class="filter-name"
+        :disabled="isDisabledButton('sys:menu:list')"
         placeholder="请输入一级菜单名称"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
-        <el-button type="primary" :icon="Search" @click="handleFilter"
+        <el-button
+          type="primary"
+          :icon="Search"
+          :disabled="isDisabledButton('sys:menu:list')"
+          @click="handleFilter"
           >查询
         </el-button>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
@@ -20,15 +25,43 @@
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <ConvenienButtons
-          :buttonList="['add', 'expand', 'collapse']"
-          @add-event="handleAdd"
-          @batch-delete-event="handleBatchDelete"
-          @expandEvent="handleExpandAllEvent"
+        <ButtonPermission
+          permission="sys:menu:add"
+          type="primary"
+          :icon="Plus"
+          @click="handleAdd"
+          >添加
+        </ButtonPermission>
+        <el-popconfirm
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          :icon="InfoFilled"
+          icon-color="#E6A23C"
+          title="确定删除吗?"
+          @confirm="handleBatchDelete"
+          @cancel="handleBatchDeleteCancel"
         >
-          <template v-slot:import> 导入菜单 </template>
-          <template v-slot:export> 导出菜单 </template>
-        </ConvenienButtons>
+          <template #reference>
+            <ButtonPermission
+              permission="sys:menu:delall"
+              type="danger"
+              :icon="Delete"
+              >批量删除
+            </ButtonPermission>
+          </template>
+        </el-popconfirm>
+        <ButtonPermission
+          permission="sys:menu:expand"
+          type=""
+          @click="handleExpandAllEvent(true)"
+          >全部展开
+        </ButtonPermission>
+        <ButtonPermission
+          permission="sys:menu:collapse"
+          type=""
+          @click="handleExpandAllEvent(false)"
+          >全部折叠
+        </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
@@ -184,6 +217,7 @@
             v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
+            :disabled="isDisabledButton('sys:menu:status')"
             @change="handleStatusChange(scope.row)"
           />
         </template>
@@ -221,22 +255,24 @@
         width="186"
       >
         <template #default="scope">
-          <el-button
+          <ButtonPermission
+            permission="sys:menu:addchild"
             link
             type="primary"
             size="small"
             :icon="Plus"
             @click="handleAddById(scope.row)"
             >添加
-          </el-button>
-          <el-button
+          </ButtonPermission>
+          <ButtonPermission
+            permission="sys:menu:update"
             link
             type="primary"
             size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
             >修改
-          </el-button>
+          </ButtonPermission>
           <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="取消"
@@ -247,9 +283,14 @@
             @cancel="handleCancelEvent"
           >
             <template #reference>
-              <el-button link type="danger" size="small" :icon="Delete"
+              <ButtonPermission
+                permission="sys:menu:delete"
+                link
+                type="danger"
+                size="small"
+                :icon="Delete"
                 >删除
-              </el-button>
+              </ButtonPermission>
             </template>
           </el-popconfirm>
         </template>
@@ -286,8 +327,9 @@ import { MenuListRsp, Menu } from '~/api/system/menu';
 import { MenuType, OpenType } from '@/constant/system/menu';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
+import ButtonPermission from '@/components/ButtonPermission.vue';
 import MenuForm from './components/MenuForm.vue';
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -343,7 +385,7 @@ const checkAllList = [
 const checkedDict = ref<any>({});
 
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableExpandAll = ref<boolean>(true);
+const tableExpandAll = ref<boolean>(false);
 const tableRef = ref<TableInstance>();
 const tableData = ref<Menu[]>();
 const tableDataTotal = ref<number>(0);
@@ -429,6 +471,10 @@ const handleBatchDelete = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+// 取消批量删除事件
+const handleBatchDeleteCancel = () => {
+  ElMessage.warning('取消操作');
 };
 
 // 删除取消事件

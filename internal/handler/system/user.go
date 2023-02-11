@@ -437,10 +437,9 @@ func (h *userHandler) getPermissionList(menus []systemModel.Menu) []systemDto.Bu
 		return results
 	}
 	for _, item := range menus {
-		// 过滤菜单路由，过滤空权限，过滤隐藏按钮
-		if item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
-			item.Permission != "" &&
-			item.Hidden == uint(systemModel.MenuHideTypeByShow) {
+		// 过滤禁用按钮, 过滤菜单路由，过滤空权限
+		if item.Status == 1 && item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
+			item.Permission != "" {
 			results = append(results, systemDto.ButtonPermission{
 				Permission: item.Permission,
 				Disabled:   item.Hidden,

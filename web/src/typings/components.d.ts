@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ButtonPermission: typeof import('./../components/ButtonPermission.vue')['default']
     ConvenienButtons: typeof import('./../components/ConvenienButtons/index.vue')['default']
     ConvenienTools: typeof import('./../components/ConvenienTools/index.vue')['default']
     copy: typeof import('./../components/ConvenienTools copy/index.vue')['default']

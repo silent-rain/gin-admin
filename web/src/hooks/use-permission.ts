@@ -64,6 +64,22 @@ export const buttonPermissions = (permissions: ButtonPermission[]) => {
   }
   usePermissionStore().setButtonPermission(permissions, permissionHash);
 };
+// 是否存在按钮权限
+export const hasButtonPermission = (value: string): boolean => {
+  if (usePermissionStore().permissionHash[value] !== undefined) {
+    return true;
+  }
+  return false;
+};
+// 按钮是否禁用
+export const isDisabledButton = (value: string): boolean => {
+  const perm = usePermissionStore().permissionHash[value];
+  // 不存在按钮权限, 则禁用
+  if (perm === undefined) {
+    return true;
+  }
+  return perm;
+};
 
 //重置路由
 export function resetRouter() {

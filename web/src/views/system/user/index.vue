@@ -1,29 +1,36 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div class="filter">
+    <div v-if="hasButtonPermission('sys:user:list')" class="filter">
       <el-input
         v-model="listQuery.nickname"
         class="filter-name"
+        :disabled="isDisabledButton('sys:user:list')"
         placeholder="筛选用户昵称"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.phone"
         class="filter-name"
+        :disabled="isDisabledButton('sys:user:list')"
         placeholder="筛选手机号码"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.email"
         class="filter-name"
+        :disabled="isDisabledButton('sys:user:list')"
         placeholder="筛选邮箱"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
-        <el-button type="primary" :icon="Search" @click="handleFilter"
+        <ButtonPermission
+          permission="sys:user:list"
+          type="primary"
+          :icon="Search"
+          @click="handleFilter"
           >查询
-        </el-button>
+        </ButtonPermission>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
       </el-button-group>
     </div>
@@ -31,13 +38,44 @@
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <ConvenienButtons
-          :buttonList="['add', 'batchDelete', 'import', 'export']"
-          @add-event="handleAdd"
-          @batch-delete-event="handleBatchDelete"
-          @importEvent="handleImportEvent"
-          @exportEvent="handleExportEvent"
-        />
+        <ButtonPermission
+          permission="sys:user:add"
+          type="primary"
+          :icon="Plus"
+          @click="handleAdd"
+          >添加
+        </ButtonPermission>
+        <el-popconfirm
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          :icon="InfoFilled"
+          icon-color="#E6A23C"
+          title="确定删除吗?"
+          @confirm="handleBatchDelete"
+          @cancel="handleBatchDeleteCancel"
+        >
+          <template #reference>
+            <ButtonPermission
+              permission="sys:user:delall"
+              type="danger"
+              :icon="Delete"
+              >批量删除
+            </ButtonPermission>
+          </template>
+        </el-popconfirm>
+
+        <ButtonPermission
+          permission="sys:user:import"
+          type=""
+          @click="handleImportEvent"
+          >导入
+        </ButtonPermission>
+        <ButtonPermission
+          permission="sys:user:export"
+          type=""
+          @click="handleExportEvent"
+          >导出
+        </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
@@ -169,6 +207,7 @@
             v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
+            :disabled="isDisabledButton('sys:user:status')"
             @change="handleStatusChange(scope.row)"
           />
         </template>
@@ -199,14 +238,16 @@
         width="186"
       >
         <template #default="scope">
-          <el-button
-            link
+          <ButtonPermission
+            permission="sys:user:update"
             type="primary"
             size="small"
             :icon="EditPen"
+            link
             @click="handleEdit(scope.row)"
             >修改
-          </el-button>
+          </ButtonPermission>
+
           <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="取消"
@@ -217,19 +258,37 @@
             @cancel="handleCancelEvent"
           >
             <template #reference>
-              <el-button link type="danger" size="small" :icon="Delete"
+              <ButtonPermission
+                permission="sys:user:delete"
+                type="danger"
+                size="small"
+                :icon="Delete"
+                link
                 >删除
-              </el-button>
+              </ButtonPermission>
             </template>
           </el-popconfirm>
-          <el-button
-            link
-            type="warning"
-            size="small"
-            :icon="Finished"
-            @click="handleResetUserPwd(scope.row.id)"
-            >重置密码
-          </el-button>
+
+          <el-popconfirm
+            confirm-button-text="确认"
+            cancel-button-text="取消"
+            :icon="InfoFilled"
+            icon-color="#E6A23C"
+            title="确定重置吗?"
+            @confirm="handleResetUserPwd(scope.row.id)"
+            @cancel="handleCancelEvent"
+          >
+            <template #reference>
+              <ButtonPermission
+                permission="sys:user:resetPwd"
+                type="warning"
+                size="small"
+                :icon="Finished"
+                link
+                >重置密码
+              </ButtonPermission>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -249,8 +308,9 @@ import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
   Search,
-  Delete,
   Finished,
+  Delete,
+  Plus,
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
@@ -264,13 +324,12 @@ import {
 import { UserListRsp, User } from '~/api/system/user';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
+import ButtonPermission from '@/components/ButtonPermission.vue';
 import UserForm from './components/UserForm.vue';
 import { aoaToSheetXlsx } from '@/utils/excel';
-import { usePermissionStore } from '@/store/permission';
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
 const { settings } = storeToRefs(useBasicStore());
-const permissionStore = usePermissionStore();
 
 // 筛选过滤条件
 const listQuery = reactive({
@@ -328,7 +387,6 @@ const multipleSelection = ref<User[]>([]);
 
 onBeforeMount(() => {
   fetchUserList();
-  console.log(permissionStore.permissionHash);
 });
 
 // 获取用户列表
@@ -394,6 +452,10 @@ const handleBatchDelete = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+// 取消批量删除事件
+const handleBatchDeleteCancel = () => {
+  ElMessage.warning('取消操作');
 };
 
 // 删除取消事件

@@ -1,16 +1,21 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div class="filter">
+    <div v-if="hasButtonPermission('sys:role:list')" class="filter">
       <label>角色名称: </label>
       <el-input
         v-model="listQuery.name"
         class="filter-name"
+        :disabled="isDisabledButton('sys:role:list')"
         placeholder="请输入角色名称"
         @keyup.enter.native="handleFilter"
       />
       <el-button-group>
-        <el-button type="primary" :icon="Search" @click="handleFilter"
+        <el-button
+          type="primary"
+          :icon="Search"
+          :disabled="isDisabledButton('sys:role:list')"
+          @click="handleFilter"
           >查询
         </el-button>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
@@ -20,11 +25,31 @@
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <ConvenienButtons
-          :buttonList="['add', 'batchDelete']"
-          @add-event="handleAdd"
-          @batch-delete-event="handleBatchDelete"
-        />
+        <ButtonPermission
+          permission="sys:role:add"
+          type="primary"
+          :icon="Plus"
+          @click="handleAdd"
+          >添加
+        </ButtonPermission>
+        <el-popconfirm
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          :icon="InfoFilled"
+          icon-color="#E6A23C"
+          title="确定删除吗?"
+          @confirm="handleBatchDelete"
+          @cancel="handleBatchDeleteCancel"
+        >
+          <template #reference>
+            <ButtonPermission
+              permission="sys:role:delall"
+              type="danger"
+              :icon="Delete"
+              >批量删除
+            </ButtonPermission>
+          </template>
+        </el-popconfirm>
       </div>
       <div class="right-button">
         <ConvenienTools
@@ -92,6 +117,7 @@
             v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
+            :disabled="isDisabledButton('sys:role:status')"
             @change="handleStatusChange(scope.row)"
           />
         </template>
@@ -122,22 +148,24 @@
         width="186"
       >
         <template #default="scope">
-          <el-button
+          <ButtonPermission
+            permission="sys:role:update"
             link
             type="primary"
             size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
             >修改
-          </el-button>
-          <el-button
+          </ButtonPermission>
+          <ButtonPermission
+            permission="sys:role:permission"
             link
             type="primary"
             size="small"
             :icon="Finished"
             @click="handleMenuPermission(scope.row)"
             >分配权限
-          </el-button>
+          </ButtonPermission>
           <el-popconfirm
             confirm-button-text="确认"
             cancel-button-text="取消"
@@ -148,9 +176,14 @@
             @cancel="handleCancelEvent"
           >
             <template #reference>
-              <el-button link type="danger" size="small" :icon="Delete"
+              <ButtonPermission
+                permission="sys:role:delete"
+                link
+                type="danger"
+                size="small"
+                :icon="Delete"
                 >删除
-              </el-button>
+              </ButtonPermission>
             </template>
           </el-popconfirm>
         </template>
@@ -175,6 +208,7 @@ import {
   Delete,
   Finished,
   InfoFilled,
+  Plus,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import {
@@ -186,9 +220,10 @@ import {
 import { RoleListRsp, Role } from '~/api/system/role';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ConvenienButtons from '@/components/ConvenienButtons/index.vue';
+import ButtonPermission from '@/components/ButtonPermission.vue';
 import RoleForm from './components/RoleForm.vue';
 import MenuPermission from './components/MenuPermission.vue';
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -300,6 +335,10 @@ const handleBatchDelete = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+// 取消批量删除事件
+const handleBatchDeleteCancel = () => {
+  ElMessage.warning('取消操作');
 };
 
 // 删除取消事件
