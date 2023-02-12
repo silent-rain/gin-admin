@@ -58,16 +58,10 @@ export const useUserStore = defineStore('user', {
       this.$patch((state) => {
         // reset token
         state.token = '';
-
         // reset userInfo
         state.userInfo = {} as User;
-
         state.roles = [];
-        state.permissions = [];
         state.codes = [];
-
-        // reset router
-        // ...
       });
       this.getUserInfo = false;
     },

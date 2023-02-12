@@ -7,7 +7,5 @@ export interface UserTry {
   getUserInfo: boolean;
   userInfo: User;
   roles: Role[];
-  permissions: string[];
-  menus: Menu[];
   codes: number[];
 }

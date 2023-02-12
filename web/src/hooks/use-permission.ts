@@ -2,6 +2,7 @@ import { RouteRecordName } from 'vue-router';
 import router, { catchRoutes, constantRoutes } from '@/router';
 import Layout from '@/layout/index.vue';
 import { usePermissionStore } from '@/store/permission';
+import { useUserStore } from '@/store/user';
 import { RouteRawConfig } from '~/store/router';
 import { ButtonPermission, Menu } from '~/api/system/menu';
 
@@ -97,6 +98,7 @@ export function resetRouter() {
 // 重置登录状态
 export function resetState() {
   resetRouter();
+  useUserStore().resetState();
   usePermissionStore().resetState();
 }
 

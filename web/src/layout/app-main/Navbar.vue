@@ -87,11 +87,11 @@ const toggleSideBar = () => {
 const loginOut = async () => {
   try {
     await logout();
-    elMessage('退出登录成功');
-    router.push('/login?redirect=/');
     nextTick(() => {
       resetState();
     });
+    elMessage('退出登录成功');
+    router.push('/login?redirect=/');
   } catch (error) {
     console.log(error);
   }

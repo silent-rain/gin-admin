@@ -48,6 +48,7 @@
           <div class="form-captcha">
             <el-input
               v-model="subForm.captcha"
+              clearable
               placeholder="请输入验证码"
               @keyup.enter="handleLogin(refLoginForm)"
             />
