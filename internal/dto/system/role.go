@@ -6,7 +6,7 @@ import "gin-admin/internal/dto"
 
 // QueryRoleReq 查询条件
 type QueryRoleReq struct {
-	DTO.Pagination        // 分页
+	dto.Pagination        // 分页
 	Name           string `json:"name" form:"name"` // 角色名称
 }
 

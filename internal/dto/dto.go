@@ -1,6 +1,6 @@
 /*通用数据传输
  */
-package DTO
+package dto
 
 // DeleteReq 根据 ID，删除数据请求
 type DeleteReq struct {

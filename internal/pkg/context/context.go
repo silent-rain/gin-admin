@@ -1,14 +1,5 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-10 21:29:22
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-10 22:13:10
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/utils/trace_log.go
- * @Descripttion:  trace 日志链路
- */
-package utils
+/*上下文信息*/
+package context
 
 import (
 	"crypto/md5"
@@ -18,12 +9,39 @@ import (
 	"time"
 
 	"gin-admin/internal/pkg/conf"
+	jwtToken "gin-admin/internal/pkg/jwt_token"
 
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
+}
+
+const (
+	// GinContextToken set/get Token 信息
+	GinContextToken = "token"
+	// GinContextToken set/get trace_id 信息
+	GinContextTraceTd = "trace_id"
+)
+
+// GetUserId 获取用户 ID
+func GetUserId(ctx *gin.Context) uint {
+	v, ok := ctx.Get(GinContextToken)
+	if !ok {
+		return 0
+	}
+	token := v.(jwtToken.Token)
+	return uint(token.UserId)
+}
+
+// GetTraceId 获取请求 TraceTd
+func GetTraceId(ctx *gin.Context) string {
+	var traceTd = ctx.Request.Header.Get(GinContextTraceTd)
+	if traceTd == "" {
+		traceTd = GenerateTraceId(ctx)
+	}
+	return traceTd
 }
 
 // GenerateTraceId 生成 traceId
@@ -49,13 +67,4 @@ func GenerateTraceId(ctx *gin.Context) string {
 	m.Write([]byte(conf.Secret))
 	m.Write([]byte(data))
 	return hex.EncodeToString(m.Sum(nil))
-}
-
-// GetTraceId 获取请求 TraceTd
-func GetTraceId(ctx *gin.Context) string {
-	var traceTd = ctx.Request.Header.Get(GinContextTraceTd)
-	if traceTd == "" {
-		traceTd = GenerateTraceId(ctx)
-	}
-	return traceTd
 }

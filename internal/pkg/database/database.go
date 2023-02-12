@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 20:54:33
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:31:04
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/database/database.go
- * @Descripttion: 数据库
+/*数据库
  */
 package database
 

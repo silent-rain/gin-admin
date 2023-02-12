@@ -3,7 +3,7 @@
 package systemDTO
 
 import (
-	DTO "gin-admin/internal/dto"
+	"gin-admin/internal/dto"
 	systemModel "gin-admin/internal/model/system"
 )
 
@@ -48,7 +48,7 @@ type UserInfoRsp struct {
 
 // QueryUserReq 查询条件
 type QueryUserReq struct {
-	DTO.Pagination        // 分页
+	dto.Pagination        // 分页
 	Nickname       string `json:"nickname" form:"nickname"` // 用户昵称
 	Phone          string `json:"phone" form:"phone"`       // 手机号码
 	Email          string `json:"email" form:"email"`       // 邮件

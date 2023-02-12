@@ -18,8 +18,8 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/context"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -44,8 +44,8 @@ func HttpLogger() gin.HandlerFunc {
 		ctx.Writer = blw
 
 		htppLog := systemModel.HttpLog{
-			UserId:     utils.GetUserId(ctx),
-			TraceId:    utils.GetTraceId(ctx),
+			UserId:     context.GetUserId(ctx),
+			TraceId:    context.GetTraceId(ctx),
 			StatusCode: ctx.Writer.Status(),
 			Method:     ctx.Request.Method,
 			Path:       ctx.Request.URL.Path,

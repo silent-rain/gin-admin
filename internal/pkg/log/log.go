@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 22:02:42
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 21:15:11
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/log/log.go
- * @Descripttion: 日志
+/* 日志
  */
 package log
 
@@ -18,8 +10,8 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/context"
 	statuscode "gin-admin/internal/pkg/status_code"
-	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
@@ -186,8 +178,8 @@ type logger struct {
 
 // New 创建日志对象
 func New(ctx *gin.Context) *logger {
-	traceId := utils.GetTraceId(ctx)
-	userId := utils.GetUserId(ctx)
+	traceId := context.GetTraceId(ctx)
+	userId := context.GetUserId(ctx)
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.Uint("user_id", userId),
@@ -201,7 +193,7 @@ func New(ctx *gin.Context) *logger {
 }
 
 // WithCode 添加错误码
-func (l *logger) WithCode(code statuscode.StatuScode) *logger {
+func (l *logger) WithCode(code statuscode.StatusCode) *logger {
 	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Msg()))
 	return l
 }

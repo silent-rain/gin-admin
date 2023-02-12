@@ -1,4 +1,4 @@
-/* 角色菜单
+/*角色菜单
  */
 package systemDTO
 

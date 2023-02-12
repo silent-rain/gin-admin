@@ -1,6 +1,6 @@
 /*DAO 数据库操作
  */
-package DAO
+package dao
 
 import (
 	"gorm.io/gorm"

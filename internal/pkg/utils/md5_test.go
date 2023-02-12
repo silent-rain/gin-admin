@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 15:52:19
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:16:06
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/utils/md5_test.go
- * @Descripttion: MD5 加密
+/*MD5 加密
  */
 package utils
 

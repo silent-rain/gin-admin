@@ -1,6 +1,6 @@
 /*分页, 标页码
  */
-package DTO
+package dto
 
 // Pagination 分页查询条件
 type Pagination struct {

@@ -29,89 +29,89 @@ func NewApiV1(engine *gin.Engine) {
 	userLogin := v1.Group("/")
 	{
 		// 注册
-		userLogin.POST("/register", system.NewUserHandler().Add)
+		userLogin.POST("/register", system.NewUserController().Add)
 		// 验证码
-		userLogin.GET("/captcha", system.NewUserLoginHandler().Captcha)
+		userLogin.GET("/captcha", system.NewUserLoginController().Captcha)
 		// 验证码验证
-		userLogin.GET("/captcha/verify", system.NewUserLoginHandler().CaptchaVerify)
+		userLogin.GET("/captcha/verify", system.NewUserLoginController().CaptchaVerify)
 		// 登录
-		userLogin.POST("/login", system.NewUserLoginHandler().Login)
+		userLogin.POST("/login", system.NewUserLoginController().Login)
 		// 登出
-		userLogin.POST("/logout", system.NewUserLoginHandler().Logout)
+		userLogin.POST("/logout", system.NewUserLoginController().Logout)
 	}
 
 	// 文件上传
 	upload := v1.Group("/upload")
 	{
 		// 上传用户头像
-		upload.POST("/avatar", system.NewUploadHandler().Avatar)
+		upload.POST("/avatar", system.NewUploadController().Avatar)
 	}
 
 	// 用户管理
 	user := v1.Group("/user")
 	{
 		// 获取用户信息
-		user.GET("/info", system.NewUserHandler().Info)
+		user.GET("/info", system.NewUserController().Info)
 		// 获取所有用户列表
-		user.GET("/all", system.NewUserHandler().All)
+		user.GET("/all", system.NewUserController().All)
 		// 获取用户列表
-		user.GET("/list", system.NewUserHandler().List)
+		user.GET("/list", system.NewUserController().List)
 		// 添加用户
-		user.POST("/add", system.NewUserHandler().Add)
+		user.POST("/add", system.NewUserController().Add)
 		// 更新用户详情信息
-		user.PUT("/update", system.NewUserHandler().Update)
+		user.PUT("/update", system.NewUserController().Update)
 		// 删除用户
-		user.DELETE("/delete", system.NewUserHandler().Delete)
+		user.DELETE("/delete", system.NewUserController().Delete)
 		// 批量删除用户
-		user.DELETE("/batchDelete", system.NewUserHandler().BatchDelete)
+		user.DELETE("/batchDelete", system.NewUserController().BatchDelete)
 		// 更新用户状态
-		user.PUT("/status", system.NewUserHandler().Status)
+		user.PUT("/status", system.NewUserController().Status)
 		// 重置用户密码
-		user.PUT("/resetPwd", system.NewUserHandler().ResetPassword)
+		user.PUT("/resetPwd", system.NewUserController().ResetPassword)
 		// 更新用户密码
-		user.PUT("/updatePwd", system.NewUserHandler().UpdatePassword)
+		user.PUT("/updatePwd", system.NewUserController().UpdatePassword)
 		// 更新用户手机号码
-		user.PUT("/updatePhone", system.NewUserHandler().UpdatePhone)
+		user.PUT("/updatePhone", system.NewUserController().UpdatePhone)
 		// 更新用户邮箱
-		user.PUT("/updateEmail", system.NewUserHandler().UpdateEmail)
+		user.PUT("/updateEmail", system.NewUserController().UpdateEmail)
 	}
 
 	// 角色管理
 	role := v1.Group("/role")
 	{
 		// 获取所有角色列表
-		role.GET("/all", system.NewRoleHandler().All)
+		role.GET("/all", system.NewRoleController().All)
 		// 获取角色列表
-		role.GET("/list", system.NewRoleHandler().List)
+		role.GET("/list", system.NewRoleController().List)
 		// 添加角色
-		role.POST("/add", system.NewRoleHandler().Add)
+		role.POST("/add", system.NewRoleController().Add)
 		// 更新角色
-		role.PUT("/update", system.NewRoleHandler().Update)
+		role.PUT("/update", system.NewRoleController().Update)
 		// 删除角色
-		role.DELETE("/delete", system.NewRoleHandler().Delete)
+		role.DELETE("/delete", system.NewRoleController().Delete)
 		// 批量删除角色
-		role.DELETE("/batchDelete", system.NewRoleHandler().BatchDelete)
+		role.DELETE("/batchDelete", system.NewRoleController().BatchDelete)
 		// 更新角色状态
-		role.PUT("/status", system.NewRoleHandler().Status)
+		role.PUT("/status", system.NewRoleController().Status)
 	}
 
 	// 菜单管理
 	menu := v1.Group("/menu")
 	{
 		// 获取所有菜单树
-		menu.GET("/allTree", system.NewMenuHandler().AllTree)
+		menu.GET("/allTree", system.NewMenuController().AllTree)
 		// 获取菜单树
-		menu.GET("/tree", system.NewMenuHandler().Tree)
+		menu.GET("/tree", system.NewMenuController().Tree)
 		// 添加菜单
-		menu.POST("/add", system.NewMenuHandler().Add)
+		menu.POST("/add", system.NewMenuController().Add)
 		// 更新菜单
-		menu.PUT("/update", system.NewMenuHandler().Update)
+		menu.PUT("/update", system.NewMenuController().Update)
 		// 删除菜单
-		menu.DELETE("/delete", system.NewMenuHandler().Delete)
+		menu.DELETE("/delete", system.NewMenuController().Delete)
 		// 批量删除菜单
-		menu.DELETE("/batchDelete", system.NewMenuHandler().BatchDelete)
+		menu.DELETE("/batchDelete", system.NewMenuController().BatchDelete)
 		// 更新菜单状态
-		menu.PUT("/status", system.NewMenuHandler().Status)
+		menu.PUT("/status", system.NewMenuController().Status)
 
 	}
 
@@ -119,8 +119,8 @@ func NewApiV1(engine *gin.Engine) {
 	roleMenuRel := v1.Group("/roleMenuRel")
 	{
 		// 获取角色关联的菜单列表
-		roleMenuRel.GET("/list", system.NewMenuRelHandler().List)
+		roleMenuRel.GET("/list", system.NewMenuRelController().List)
 		// 更新角色菜单关联关系
-		roleMenuRel.PUT("/update", system.NewMenuRelHandler().Update)
+		roleMenuRel.PUT("/update", system.NewMenuRelController().Update)
 	}
 }

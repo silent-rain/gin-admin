@@ -1,14 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 16:56:09
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:39:26
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/status_code/status_code_test.go
- * @Descripttion:
- */
-/**业务状态码
+/*业务状态码
  */
 package statuscode
 
@@ -63,7 +53,7 @@ func Test_Errors_Is(t *testing.T) {
 func Test_statuScode_Error(t *testing.T) {
 	tests := []struct {
 		name    string
-		r       StatuScode
+		r       StatusCode
 		msg     string
 		wantErr bool
 	}{

@@ -8,7 +8,7 @@ import (
 
 // QueryMenuReq 查询条件
 type QueryMenuReq struct {
-	DTO.Pagination        // 分页
+	dto.Pagination        // 分页
 	Title          string `json:"title" form:"title"` // 菜单名称
 }
 

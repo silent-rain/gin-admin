@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 17:45:55
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:16:48
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/response/response_test.go
- * @Descripttion: API 返回结构
+/*API 返回结构
  */
 package response
 

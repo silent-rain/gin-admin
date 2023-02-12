@@ -2,203 +2,108 @@
 package system
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	DTO "gin-admin/internal/dto"
+	"gin-admin/internal/dto"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
-	"gin-admin/internal/pkg/utils"
+	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 菜单
-type menuHandler struct {
-	dao systemDAO.Menu
+type menuController struct {
+	service service.MenuService
 }
 
-// 创建菜单 Handler 对象
-func NewMenuHandler() *menuHandler {
-	return &menuHandler{
-		dao: systemDAO.NewMenuDao(),
+// NewMenuController 创建菜单对象
+func NewMenuController() *menuController {
+	return &menuController{
+		service: service.NewMenuService(),
 	}
 }
 
 // AllTree 获取所有菜单树
-func (h *menuHandler) AllTree(ctx *gin.Context) {
-	menus, _, err := h.dao.All()
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	}
-	// 菜单列表数据转为树结构
-	tree := MenuListToTree(menus, nil)
-	response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
+func (c *menuController) AllTree(ctx *gin.Context) {
+	c.service.AllTree(ctx)
 }
 
 // Tree 获取菜单树
-func (h *menuHandler) Tree(ctx *gin.Context) {
+func (c *menuController) Tree(ctx *gin.Context) {
 	req := systemDTO.QueryMenuReq{}
-	if err := utils.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		return
 	}
 
-	menuList, _, err := h.dao.List(req)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	}
-	menuAll, _, err := h.dao.All()
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	}
-
-	// 菜单列表数据转为树结构
-	tree := MenuListToTree(menuAll, nil)
-
-	// 过滤
-	treeFilter := make([]systemModel.Menu, 0)
-	for _, itemA := range tree {
-		for _, item := range menuList {
-			if itemA.Title == item.Title {
-				treeFilter = append(treeFilter, itemA)
-			}
-		}
-	}
-	response.New(ctx).WithDataList(treeFilter, int64(len(tree))).Json()
-}
-
-// MenuListToTree 菜单列表数据转为树结构
-func MenuListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
-	tree := make([]systemModel.Menu, 0)
-	for _, item := range src {
-		if (item.ParentId == nil && parentId == nil) ||
-			(item.ParentId != nil && parentId != nil && *item.ParentId == *parentId) {
-			tree = append(tree, item)
-		}
-	}
-
-	for i := range tree {
-		children := MenuListToTree(src, &tree[i].ID)
-		if tree[i].Children == nil {
-			tree[i].Children = children
-		} else {
-			tree[i].Children = append(tree[i].Children, children...)
-		}
-	}
-	return tree
+	c.service.Tree(ctx, req)
 }
 
 // Add 添加菜单
-func (h *menuHandler) Add(ctx *gin.Context) {
-	req := new(systemDTO.AddMenuReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+func (c *menuController) Add(ctx *gin.Context) {
+	req := systemDTO.AddMenuReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		return
 	}
 	menu := systemModel.Menu{}
-	if err := utils.ApiJsonConvertJson(ctx, req, &menu); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
 		return
 	}
-	userId := utils.GetUserId(ctx)
+	userId := context.GetUserId(ctx)
 	menu.CreateUserId = userId
 	menu.UpdateUserId = userId
-	if _, err := h.dao.Add(menu); err != nil {
-		log.New(ctx).WithCode(statuscode.DbAddError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbAddError).Json()
-		return
-	}
-	response.New(ctx).Json()
+
+	c.service.Add(ctx, menu)
 }
 
 // Update 更新菜单
-func (h *menuHandler) Update(ctx *gin.Context) {
-	req := new(systemDTO.UpdateMenuReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
+func (c *menuController) Update(ctx *gin.Context) {
+	req := systemDTO.UpdateMenuReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 	menu := systemModel.Menu{}
-	if err := utils.ApiJsonConvertJson(ctx, req, &menu); err != nil {
+	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
 		return
 	}
-	userId := utils.GetUserId(ctx)
+	userId := context.GetUserId(ctx)
 	menu.UpdateUserId = userId
-	row, err := h.dao.Update(menu)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbUpdateError).Json()
-		return
-	}
-	response.New(ctx).WithData(row).Json()
+
+	c.service.Update(ctx, menu)
 }
 
 // Delete 删除菜单
-func (h *menuHandler) Delete(ctx *gin.Context) {
-	req := new(DTO.DeleteReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
+func (c *menuController) Delete(ctx *gin.Context) {
+	req := dto.DeleteReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
 
-	childrenMenu, err := h.dao.ChildrenMenu(req.ID)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	}
-	if len(childrenMenu) > 0 {
-		log.New(ctx).WithCode(statuscode.DbDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
-		response.New(ctx).WithCode(statuscode.DbDataExistChildrenError).WithMsg("删除失败, 存在子菜单").Json()
-		return
-	}
-
-	row, err := h.dao.Delete(req.ID)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbDeleteError).Json()
-		return
-	}
-	response.New(ctx).WithData(row).Json()
+	c.service.Delete(ctx, req.ID)
 }
 
 // BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
-func (h *menuHandler) BatchDelete(ctx *gin.Context) {
-	req := new(DTO.BatchDeleteReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
+func (c *menuController) BatchDelete(ctx *gin.Context) {
+	req := dto.BatchDeleteReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := h.dao.BatchDelete(req.Ids)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbBatchDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbBatchDeleteError).Json()
-		return
-	}
-	response.New(ctx).WithData(row).Json()
+
+	c.service.BatchDelete(ctx, req.Ids)
 }
 
 // Status 更新菜单状态
-func (h *menuHandler) Status(ctx *gin.Context) {
-	req := new(DTO.UpdateStatusReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
+func (c *menuController) Status(ctx *gin.Context) {
+	req := dto.UpdateStatusReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
 		return
 	}
-	row, err := h.dao.Status(req.ID, req.Status)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbUpdateStatusError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbUpdateStatusError).Json()
-		return
-	}
-	response.New(ctx).WithData(row).Json()
+
+	c.service.Status(ctx, req.ID, req.Status)
 }

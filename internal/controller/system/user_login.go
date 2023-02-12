@@ -1,113 +1,53 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 16:47:40
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 00:43:18
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/handler/system/user_login.go
- * @Descripttion: 用户登录/登出
+/*用户登录/登出
  */
 package system
 
 import (
-	"bytes"
-
-	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
-	"gin-admin/internal/pkg/utils"
+	service "gin-admin/internal/service/system"
 
-	"github.com/dchest/captcha"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 // 用户登录/登出
-type userLoginHandler struct {
-	dao systemDAO.User
+type userLoginController struct {
+	service service.UserLoginService
 }
 
-// 创建用户登录/登出 Handler 对象
-func NewUserLoginHandler() *userLoginHandler {
-	return &userLoginHandler{
-		dao: systemDAO.NewUserDao(),
+// NewUserLoginController 创建用户登录/登出 对象
+func NewUserLoginController() *userLoginController {
+	return &userLoginController{
+		service: service.NewUserLoginService(),
 	}
 }
 
 // Login 登录
-func (h *userLoginHandler) Login(ctx *gin.Context) {
-	req := new(systemDTO.UserLoginReq)
-	if err := utils.ParsingReqParams(ctx, req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+func (c *userLoginController) Login(ctx *gin.Context) {
+	req := systemDTO.UserLoginReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		return
 	}
 
-	if !chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
-		return
-	}
-
-	// 查询用户
-	user, ok, err := h.dao.GetUsername(req.Username, req.Password)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.DbQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DbQueryError).Json()
-		return
-	}
-	if !ok {
-		log.New(ctx).WithCode(statuscode.DbQueryEmptyError).Error("用户名或者密码不正确")
-		response.New(ctx).WithCode(statuscode.DbQueryEmptyError).WithMsg("用户名或者密码不正确").Json()
-		return
-	}
-	// 判断当前用户状态
-	if user.Status != 1 {
-		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
-		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
-		return
-	}
-
-	// 生成 Token
-	token, err := utils.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.TokenGenerateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokenGenerateError).Json()
-		return
-	}
-
-	// 返回 Token
-	result := systemDTO.UserLoginRsp{
-		Token: token,
-	}
-	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
+	c.service.Login(ctx, req)
 }
 
 // Logout 注销系统
-func (h *userLoginHandler) Logout(ctx *gin.Context) {
-	result := systemDTO.UserLoginRsp{}
-	response.New(ctx).WithMsg("注销成功").WithData(result).Json()
+func (c *userLoginController) Logout(ctx *gin.Context) {
+	c.service.Logout(ctx)
 }
 
 // Captcha 验证码
-func (h *userLoginHandler) Captcha(ctx *gin.Context) {
-	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.CaptchaGenerateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.CaptchaGenerateError).Json()
-		return
-	}
-
-	result := map[string]string{
-		"captcha_id": captchaId,
-		"b64s":       b64s,
-	}
-	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
+func (c *userLoginController) Captcha(ctx *gin.Context) {
+	c.service.Captcha(ctx)
 }
 
 // CaptchaVerify 验证码验证
-func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
+func (c *userLoginController) CaptchaVerify(ctx *gin.Context) {
 	verifyValue := ctx.DefaultQuery("captcha", "")
 	captchaId := ctx.DefaultQuery("captcha_id", "")
 	if verifyValue == "" {
@@ -121,54 +61,20 @@ func (h *userLoginHandler) CaptchaVerify(ctx *gin.Context) {
 		return
 	}
 
-	// 校验验证码
-	// 注意 Verify(id, VerifyValue, true) 中的 true参数
-	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
-	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
-	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
-		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
-		return
-	}
-	response.New(ctx).WithMsg("验证成功").Json()
+	c.service.CaptchaVerify(ctx, captchaId, verifyValue)
 }
 
 // Captcha2 验证码
-func (h *userLoginHandler) Captcha2(ctx *gin.Context) {
+func (c *userLoginController) Captcha2(ctx *gin.Context) {
 	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")
 
-	captchaId := captcha.NewLen(5)
-
-	var content bytes.Buffer
-	ext := ".png"
-	switch ext {
-	case ".png":
-		ctx.Header("Content-Type", "image/png")
-		captcha.WriteImage(&content, captchaId, captcha.StdWidth, captcha.StdHeight)
-	case ".wav":
-		ctx.Header("Content-Type", "audio/x-wav")
-		captcha.WriteAudio(&content, captchaId, "zh")
-	default:
-		response.New(ctx).WithCode(statuscode.CaptchaEtxNotFoundError).Json()
-		return
-	}
-
-	download := false
-	if download {
-		ctx.Header("Content-Type", "application/octet-stream")
-	}
-
-	session := sessions.Default(ctx)
-	session.Set("captcha_id", captchaId)
-	_ = session.Save()
-
-	ctx.Writer.Write(content.Bytes())
+	c.service.Captcha2(ctx)
 }
 
 // Captcha2Verify 验证码验证
-func (h *userLoginHandler) Captcha2Verify(ctx *gin.Context) {
+func (c *userLoginController) Captcha2Verify(ctx *gin.Context) {
 	value := ctx.DefaultQuery("captcha_id", "")
 	if value == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
@@ -185,10 +91,6 @@ func (h *userLoginHandler) Captcha2Verify(ctx *gin.Context) {
 	}
 	session.Delete("captcha")
 	_ = session.Save()
-	if !captcha.VerifyString(captchaId.(string), value) {
-		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
-		return
-	}
-	response.New(ctx).WithMsg("验证成功").Json()
+
+	c.service.Captcha2Verify(ctx, captchaId.(string), value)
 }

@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 17:45:55
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 01:35:38
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/response/response.go
- * @Descripttion: API 返回结构
+/*API 返回结构
  */
 package response
 
@@ -20,7 +12,7 @@ import (
 
 // ResponseAPI API响应结构
 type ResponseAPI struct {
-	Code    statuscode.StatuScode `json:"code"` // 状态码
+	Code    statuscode.StatusCode `json:"code"` // 状态码
 	Msg     string                `json:"msg"`  // 状态码信息
 	Data    interface{}           `json:"data"` // 返回数据
 	context *gin.Context          `json:"-"`    // gin Context
@@ -38,7 +30,7 @@ func New(c *gin.Context) *ResponseAPI {
 }
 
 // WithCode 添加响应状态码及状态码对应的信息
-func (r *ResponseAPI) WithCode(code statuscode.StatuScode) *ResponseAPI {
+func (r *ResponseAPI) WithCode(code statuscode.StatusCode) *ResponseAPI {
 	r.Code = code
 	r.Msg = code.Msg()
 	return r
@@ -63,6 +55,11 @@ func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
 		"tatol":     total,
 	}
 	return r
+}
+
+// 返回状态码错误
+func (r *ResponseAPI) Error() error {
+	return r.Code.Error()
 }
 
 // Json 正常返回值

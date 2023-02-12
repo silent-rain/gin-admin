@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 20:45:41
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 20:51:26
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/middleware/session.go
- * @Descripttion: session 中间件
+/*session 中间件
  */
 package middleware
 

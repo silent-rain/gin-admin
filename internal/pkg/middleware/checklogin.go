@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 21:43:52
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 01:26:29
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/middleware/checklogin.go
- * @Descripttion: 登录验证中间件
+/*登录验证中间件
  */
 package middleware
 
@@ -15,6 +7,8 @@ import (
 	"strings"
 
 	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/context"
+	jwtToken "gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
@@ -64,13 +58,13 @@ func CheckLogin() gin.HandlerFunc {
 		// 字符串替换
 		token = strings.Replace(token, "Bearer ", "", 1)
 		// Token 解析
-		claim, err := utils.ParseToken(token)
+		claim, err := jwtToken.ParseToken(token)
 		if err != nil {
 			parseTokenErr(ctx, err)
 			ctx.Abort()
 			return
 		}
-		ctx.Set(utils.GinContextToken, *claim)
+		ctx.Set(context.GinContextToken, *claim)
 		ctx.Next()
 	}
 }

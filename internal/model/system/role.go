@@ -10,9 +10,7 @@
  */
 package systemModel
 
-import (
-	"gin-admin/internal/pkg/utils"
-)
+import "time"
 
 // Role 角色表
 type Role struct {
@@ -22,9 +20,9 @@ type Role struct {
 	Note   string `json:"note" gorm:"column:note"`        // 备注
 	Status uint   `json:"status" gorm:"column:status"`    // 角色状态,0:停用,1:启用
 	// 创建时间
-	CreatedAt *utils.LocalTime `json:"created_at" gorm:"column:created_at;autoCreateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP;<-:create"`
+	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP;<-:create"`
 	// 更新时间
-	UpdatedAt *utils.LocalTime `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP  on update current_timestamp"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP  on update current_timestamp"`
 }
 
 // TableName 表名重写

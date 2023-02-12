@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 22:58:17
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-11 00:59:42
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/middleware/gin_zap_logger.go
- * @Descripttion: gin 框架集成 zap 日志库
+/*gin 框架集成 zap 日志库
  */
 package middleware
 
@@ -19,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"gin-admin/internal/pkg/utils"
+	"gin-admin/internal/pkg/context"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -44,8 +36,8 @@ func GinZapLogger() gin.HandlerFunc {
 			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
 			// 待替换
-			zap.String("trace_id", utils.GetTraceId(ctx)),
-			zap.Uint("user_id", utils.GetUserId(ctx)),
+			zap.String("trace_id", context.GetTraceId(ctx)),
+			zap.Uint("user_id", context.GetUserId(ctx)),
 		)
 	}
 }

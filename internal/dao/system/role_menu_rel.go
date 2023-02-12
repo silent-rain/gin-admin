@@ -96,8 +96,6 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 		}
 	}
 
-	zap.S().Errorf("============%#v %#v,", addRoleMenuRels, deleteRoleMenuIds)
-
 	if len(addRoleMenuRels) != 0 {
 		if result := d.Tx().Create(&addRoleMenuRels); result.Error != nil {
 			return result.Error

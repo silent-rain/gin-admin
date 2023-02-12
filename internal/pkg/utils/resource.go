@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 15:56:01
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 18:50:08
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/utils/resource.go
- * @Descripttion:
+/*静态内嵌资处理
  */
 package utils
 
