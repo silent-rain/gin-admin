@@ -12,35 +12,24 @@ import (
 )
 
 // ParsingReqParams 将请求参数解析到结构体
-func ParsingReqParams(ctx *gin.Context, req interface{}) error {
-	// if ctx.Request.Method == "GET" {
-	// 	if err := ctx.Bind(req); err != nil {
-	// 		log.New(ctx).WithCode(statuscode.ReqParameterParsingError).Errorf("%v", err)
-	// 		response.New(ctx).WithCode(statuscode.ReqParameterParsingError).Json()
-	// 		return err
-	// 	}
-	// 	return nil
-	// }
+func ParsingReqParams(ctx *gin.Context, req interface{}) *response.ResponseAPI {
 	if err := ctx.ShouldBind(req); err != nil {
 		log.New(ctx).WithCode(statuscode.ReqParameterParsingError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.ReqParameterParsingError).Json()
-		return err
+		return response.New().WithCode(statuscode.ReqParameterParsingError)
 	}
-	return nil
+	return response.New()
 }
 
 // ApiJsonConvertJson 结构体转换
-func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) error {
+func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) *response.ResponseAPI {
 	bytes, err := json.Marshal(src)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.JsonDataEncodeError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.JsonDataEncodeError).Json()
-		return err
+		return response.New().WithCode(statuscode.JsonDataEncodeError)
 	}
 	if err := json.Unmarshal(bytes, dst); err != nil {
 		log.New(ctx).WithCode(statuscode.JsonDataDecodeError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.JsonDataDecodeError).Json()
-		return err
+		return response.New().WithCode(statuscode.JsonDataDecodeError)
 	}
-	return nil
+	return response.New()
 }

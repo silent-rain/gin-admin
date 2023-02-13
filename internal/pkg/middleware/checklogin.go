@@ -51,7 +51,7 @@ func CheckLogin() gin.HandlerFunc {
 		token := ctx.GetHeader(conf.TokenHeader)
 		if token == "" {
 			log.New(ctx).WithCode(statuscode.TokenNotFound).Errorf("")
-			response.New(ctx).WithCode(statuscode.TokenNotFound).Json()
+			response.New().WithCode(statuscode.TokenNotFound).Json(ctx)
 			ctx.Abort()
 			return
 		}
@@ -76,16 +76,16 @@ func parseTokenErr(ctx *gin.Context, err error) error {
 	}
 	if errors.Is(err, statuscode.TokenParsingError.Error()) {
 		log.New(ctx).WithCode(statuscode.TokenParsingError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokenParsingError).Json()
+		response.New().WithCode(statuscode.TokenParsingError).Json(ctx)
 	} else if errors.Is(err, statuscode.TokeConvertError.Error()) {
 		log.New(ctx).WithCode(statuscode.TokeConvertError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokeConvertError).Json()
+		response.New().WithCode(statuscode.TokeConvertError).Json(ctx)
 	} else if errors.Is(err, statuscode.TokenInvalidError.Error()) {
 		log.New(ctx).WithCode(statuscode.TokenInvalidError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokenInvalidError).Json()
+		response.New().WithCode(statuscode.TokenInvalidError).Json(ctx)
 	} else if errors.Is(err, statuscode.TokenExpiredError.Error()) {
 		log.New(ctx).WithCode(statuscode.TokenExpiredError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokenExpiredError).Json()
+		response.New().WithCode(statuscode.TokenExpiredError).Json(ctx)
 	}
 	return err
 }

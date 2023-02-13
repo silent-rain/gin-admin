@@ -28,9 +28,9 @@ func (c *uploadController) Avatar(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.UploadFileParserError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.UploadFileParserError).Json()
+		response.New().WithCode(statuscode.UploadFileParserError).Json(ctx)
 		return
 	}
 
-	c.service.Avatar(ctx, file)
+	c.service.Avatar(ctx, file).Json(ctx)
 }

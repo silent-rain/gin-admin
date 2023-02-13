@@ -7,7 +7,6 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/context"
 	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -27,83 +26,86 @@ func NewMenuController() *menuController {
 
 // AllTree 获取所有菜单树
 func (c *menuController) AllTree(ctx *gin.Context) {
-	c.service.AllTree(ctx)
+	c.service.AllTree(ctx).Json(ctx)
 }
 
 // Tree 获取菜单树
 func (c *menuController) Tree(ctx *gin.Context) {
 	req := systemDTO.QueryMenuReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Tree(ctx, req)
+	c.service.Tree(ctx, req).Json(ctx)
 }
 
 // Add 添加菜单
 func (c *menuController) Add(ctx *gin.Context) {
 	req := systemDTO.AddMenuReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	menu := systemModel.Menu{}
-	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
+	if result := http.ApiJsonConvertJson(ctx, req, &menu); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	userId := context.GetUserId(ctx)
 	menu.CreateUserId = userId
 	menu.UpdateUserId = userId
 
-	c.service.Add(ctx, menu)
+	c.service.Add(ctx, menu).Json(ctx)
 }
 
 // Update 更新菜单
 func (c *menuController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateMenuReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	menu := systemModel.Menu{}
-	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+	if result := http.ApiJsonConvertJson(ctx, req, &menu); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	userId := context.GetUserId(ctx)
 	menu.UpdateUserId = userId
 
-	c.service.Update(ctx, menu)
+	c.service.Update(ctx, menu).Json(ctx)
 }
 
 // Delete 删除菜单
 func (c *menuController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Delete(ctx, req.ID)
+	c.service.Delete(ctx, req.ID).Json(ctx)
 }
 
 // BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
 func (c *menuController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.BatchDelete(ctx, req.Ids)
+	c.service.BatchDelete(ctx, req.Ids).Json(ctx)
 }
 
 // Status 更新菜单状态
 func (c *menuController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Status(ctx, req.ID, req.Status)
+	c.service.Status(ctx, req.ID, req.Status).Json(ctx)
 }

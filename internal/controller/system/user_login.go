@@ -29,21 +29,22 @@ func NewUserLoginController() *userLoginController {
 // Login 登录
 func (c *userLoginController) Login(ctx *gin.Context) {
 	req := systemDTO.UserLoginReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Login(ctx, req)
+	c.service.Login(ctx, req).Json(ctx)
 }
 
 // Logout 注销系统
 func (c *userLoginController) Logout(ctx *gin.Context) {
-	c.service.Logout(ctx)
+	c.service.Logout(ctx).Json(ctx)
 }
 
 // Captcha 验证码
 func (c *userLoginController) Captcha(ctx *gin.Context) {
-	c.service.Captcha(ctx)
+	c.service.Captcha(ctx).Json(ctx)
 }
 
 // CaptchaVerify 验证码验证
@@ -52,16 +53,16 @@ func (c *userLoginController) CaptchaVerify(ctx *gin.Context) {
 	captchaId := ctx.DefaultQuery("captcha_id", "")
 	if verifyValue == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		response.New().WithCode(statuscode.SessionGetCaptchaEmptyError).Json(ctx)
 		return
 	}
 	if captchaId == "" {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
+		response.New().WithCode(statuscode.CaptchaNotFoundError).Json(ctx)
 		return
 	}
 
-	c.service.CaptchaVerify(ctx, captchaId, verifyValue)
+	c.service.CaptchaVerify(ctx, captchaId, verifyValue).Json(ctx)
 }
 
 // Captcha2 验证码
@@ -70,7 +71,7 @@ func (c *userLoginController) Captcha2(ctx *gin.Context) {
 	ctx.Header("Pragma", "no-cache")
 	ctx.Header("Expires", "0")
 
-	c.service.Captcha2(ctx)
+	ctx.Writer.Write(c.service.Captcha2(ctx).Data.([]byte))
 }
 
 // Captcha2Verify 验证码验证
@@ -78,7 +79,7 @@ func (c *userLoginController) Captcha2Verify(ctx *gin.Context) {
 	value := ctx.DefaultQuery("captcha_id", "")
 	if value == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
+		response.New().WithCode(statuscode.SessionGetCaptchaEmptyError).Json(ctx)
 		return
 	}
 
@@ -86,11 +87,11 @@ func (c *userLoginController) Captcha2Verify(ctx *gin.Context) {
 	captchaId := session.Get("captcha_id")
 	if captchaId == nil {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
+		response.New().WithCode(statuscode.CaptchaNotFoundError).Json(ctx)
 		return
 	}
 	session.Delete("captcha")
 	_ = session.Save()
 
-	c.service.Captcha2Verify(ctx, captchaId.(string), value)
+	c.service.Captcha2Verify(ctx, captchaId.(string), value).Json(ctx)
 }

@@ -3,6 +3,7 @@
 package response
 
 import (
+	"fmt"
 	"net/http"
 
 	statuscode "gin-admin/internal/pkg/status_code"
@@ -12,20 +13,18 @@ import (
 
 // ResponseAPI API响应结构
 type ResponseAPI struct {
-	Code    statuscode.StatusCode `json:"code"` // 状态码
-	Msg     string                `json:"msg"`  // 状态码信息
-	Data    interface{}           `json:"data"` // 返回数据
-	context *gin.Context          `json:"-"`    // gin Context
+	Code statuscode.StatusCode `json:"code"` // 状态码
+	Msg  string                `json:"msg"`  // 状态码信息
+	Data interface{}           `json:"data"` // 返回数据
 }
 
 // New 返回 API 响应结构对象
 //
 // 返回默认 Ok 状态码及对应的状态码信息
-func New(c *gin.Context) *ResponseAPI {
+func New() *ResponseAPI {
 	return &ResponseAPI{
-		context: c,
-		Code:    statuscode.Ok,
-		Msg:     statuscode.Ok.Msg(),
+		Code: statuscode.Ok,
+		Msg:  statuscode.Ok.Msg(),
 	}
 }
 
@@ -57,12 +56,18 @@ func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
 	return r
 }
 
-// 返回状态码错误
+// Error 返回状态码错误
 func (r *ResponseAPI) Error() error {
-	return r.Code.Error()
+	if r.Code == statuscode.Ok {
+		return r.Code.Error()
+	}
+	if r.Msg == r.Code.Msg() {
+		return r.Code.Error()
+	}
+	return fmt.Errorf("%s, %w", r.Msg, r.Code.Error())
 }
 
-// Json 正常返回值
-func (r *ResponseAPI) Json() {
-	r.context.JSON(http.StatusOK, r)
+// Json 返回接口
+func (r *ResponseAPI) Json(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, r)
 }

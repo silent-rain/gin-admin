@@ -1,4 +1,4 @@
-/**文件上传*/
+/*文件上传*/
 package service
 
 import (
@@ -16,13 +16,14 @@ import (
 	"gin-admin/internal/pkg/response"
 	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
+	systemVO "gin-admin/internal/vo/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // UploadService 上传
 type UploadService interface {
-	Avatar(ctx *gin.Context, file *multipart.FileHeader)
+	Avatar(ctx *gin.Context, file *multipart.FileHeader) *response.ResponseAPI
 }
 
 // 上传
@@ -35,7 +36,7 @@ func NewUploadService() *uploadService {
 }
 
 // All 获取所有角色列表
-func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) {
+func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) *response.ResponseAPI {
 	ext := path.Ext(file.Filename)
 	filename := utils.Md5(file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
 	// 上传文件到指定的 dst
@@ -45,18 +46,17 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) {
 	if errors.Is(err, fs.ErrNotExist) {
 		if err := os.MkdirAll(dst, os.ModePerm); err != nil {
 			log.New(ctx).WithCode(statuscode.DirNotFoundError).Errorf("%v", err)
-			response.New(ctx).WithCode(statuscode.DirNotFoundError).
-				WithMsg(fmt.Sprintf("%s not found", dst)).Json()
-			return
+			return response.New().WithCode(statuscode.DirNotFoundError).
+				WithMsg(fmt.Sprintf("%s not found", dst))
 		}
 	}
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.UploadFileSaveError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.UploadFileSaveError).Json()
-		return
+		return response.New().WithCode(statuscode.UploadFileSaveError)
 	}
 
-	response.New(ctx).WithData(map[string]string{
-		"url": dst,
-	}).Json()
+	result := systemVO.Avatar{
+		Url: dst,
+	}
+	return response.New().WithData(result)
 }

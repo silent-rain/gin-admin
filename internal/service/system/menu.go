@@ -13,13 +13,13 @@ import (
 )
 
 type MenuService interface {
-	AllTree(ctx *gin.Context)
-	Tree(ctx *gin.Context, req systemDTO.QueryMenuReq)
-	Add(ctx *gin.Context, menu systemModel.Menu)
-	Update(ctx *gin.Context, menu systemModel.Menu)
-	Delete(ctx *gin.Context, id uint)
-	BatchDelete(ctx *gin.Context, ids []uint)
-	Status(ctx *gin.Context, id uint, status uint)
+	AllTree(ctx *gin.Context) *response.ResponseAPI
+	Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) *response.ResponseAPI
+	Add(ctx *gin.Context, menu systemModel.Menu) *response.ResponseAPI
+	Update(ctx *gin.Context, menu systemModel.Menu) *response.ResponseAPI
+	Delete(ctx *gin.Context, id uint) *response.ResponseAPI
+	BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI
+	Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI
 }
 
 // 菜单
@@ -35,31 +35,28 @@ func NewMenuService() *menuService {
 }
 
 // AllTree 获取所有菜单树
-func (s *menuService) AllTree(ctx *gin.Context) {
+func (s *menuService) AllTree(ctx *gin.Context) *response.ResponseAPI {
 	menus, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	// 菜单列表数据转为树结构
 	tree := MenuListToTree(menus, nil)
-	response.New(ctx).WithDataList(tree, int64(len(tree))).Json()
+	return response.New().WithDataList(tree, int64(len(tree)))
 }
 
 // Tree 获取菜单树
-func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) {
+func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) *response.ResponseAPI {
 	menuList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	menuAll, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 
 	// 菜单列表数据转为树结构
@@ -74,73 +71,67 @@ func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) {
 			}
 		}
 	}
-	response.New(ctx).WithDataList(treeFilter, int64(len(tree))).Json()
+	return response.New().WithDataList(treeFilter, int64(len(tree)))
 }
 
 // Add 添加菜单
-func (s *menuService) Add(ctx *gin.Context, menu systemModel.Menu) {
+func (s *menuService) Add(ctx *gin.Context, menu systemModel.Menu) *response.ResponseAPI {
 	if _, err := s.dao.Add(menu); err != nil {
 		log.New(ctx).WithCode(statuscode.DBAddError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBAddError).Json()
-		return
+
+		return response.New().WithCode(statuscode.DBAddError)
 	}
-	response.New(ctx).Json()
+	return response.New()
 }
 
 // Update 更新菜单
-func (s *menuService) Update(ctx *gin.Context, menu systemModel.Menu) {
+func (s *menuService) Update(ctx *gin.Context, menu systemModel.Menu) *response.ResponseAPI {
 	row, err := s.dao.Update(menu)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Delete 删除菜单
-func (s *menuService) Delete(ctx *gin.Context, id uint) {
+func (s *menuService) Delete(ctx *gin.Context, id uint) *response.ResponseAPI {
 	childrenMenu, err := s.dao.ChildrenMenu(id)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if len(childrenMenu) > 0 {
 		log.New(ctx).WithCode(statuscode.DBDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
-		response.New(ctx).WithCode(statuscode.DBDataExistChildrenError).WithMsg("删除失败, 存在子菜单").Json()
-		return
+		return response.New().WithCode(statuscode.DBDataExistChildrenError).WithMsg("删除失败, 存在子菜单")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
-func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) {
+func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBBatchDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBBatchDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBBatchDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Status 更新菜单状态
-func (s *menuService) Status(ctx *gin.Context, id uint, status uint) {
+func (s *menuService) Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI {
 	row, err := s.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateStatusError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateStatusError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateStatusError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // MenuListToTree 菜单列表数据转为树结构

@@ -21,12 +21,12 @@ import (
 
 // UserLoginService 用户登录/登出
 type UserLoginService interface {
-	Login(ctx *gin.Context, req systemDTO.UserLoginReq)
-	Logout(ctx *gin.Context)
-	Captcha(ctx *gin.Context)
-	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string)
-	Captcha2(ctx *gin.Context)
-	Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string)
+	Login(ctx *gin.Context, req systemDTO.UserLoginReq) *response.ResponseAPI
+	Logout(ctx *gin.Context) *response.ResponseAPI
+	Captcha(ctx *gin.Context) *response.ResponseAPI
+	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI
+	Captcha2(ctx *gin.Context) *response.ResponseAPI
+	Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI
 }
 
 // 用户登录/登出
@@ -42,83 +42,77 @@ func NewUserLoginService() *userLoginService {
 }
 
 // Login 登录
-func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) {
-	if !chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
-		return
+func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) *response.ResponseAPI {
+	if result := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); result.Error() != nil {
+		return result
 	}
 
 	// 查询用户
 	user, ok, err := h.dao.GetUsername(req.Username, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if !ok {
 		log.New(ctx).WithCode(statuscode.DBQueryEmptyError).Error("用户名或者密码不正确")
-		response.New(ctx).WithCode(statuscode.DBQueryEmptyError).WithMsg("用户名或者密码不正确").Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
-		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
-		return
+		return response.New().WithCode(statuscode.UserDisableError)
 	}
 
 	// 生成 Token
 	token, err := jwtToken.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.TokenGenerateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.TokenGenerateError).Json()
-		return
+		return response.New().WithCode(statuscode.TokenGenerateError)
 	}
 
 	// 返回 Token
 	result := systemDTO.UserLoginRsp{
 		Token: token,
 	}
-	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
+	return response.New().WithMsg("登录成功").WithData(result)
 }
 
 // Logout 注销系统
-func (h *userLoginService) Logout(ctx *gin.Context) {
+func (h *userLoginService) Logout(ctx *gin.Context) *response.ResponseAPI {
 	result := systemDTO.UserLoginRsp{}
-	response.New(ctx).WithMsg("注销成功").WithData(result).Json()
+	return response.New().WithMsg("注销成功").WithData(result)
 }
 
 // Captcha 验证码
-func (h *userLoginService) Captcha(ctx *gin.Context) {
+func (h *userLoginService) Captcha(ctx *gin.Context) *response.ResponseAPI {
 	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.CaptchaGenerateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.CaptchaGenerateError).Json()
-		return
+		return response.New().WithCode(statuscode.CaptchaGenerateError)
 	}
 
 	result := map[string]string{
 		"captcha_id": captchaId,
 		"b64s":       b64s,
 	}
-	response.New(ctx).WithMsg("登录成功").WithData(result).Json()
+	return response.New().WithMsg("登录成功").WithData(result)
 }
 
 // CaptchaVerify 验证码验证
-func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) {
+func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI {
 	// 校验验证码
 	// 注意 Verify(id, VerifyValue, true) 中的 true参数
 	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
 	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
 		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
-		return
+		return response.New().WithCode(statuscode.CaptchaVerifyError)
 	}
-	response.New(ctx).WithMsg("验证成功").Json()
+	return response.New().WithMsg("验证成功")
 }
 
 // Captcha2 验证码
-func (h *userLoginService) Captcha2(ctx *gin.Context) {
+func (h *userLoginService) Captcha2(ctx *gin.Context) *response.ResponseAPI {
 	captchaId := captcha.NewLen(5)
 
 	var content bytes.Buffer
@@ -131,8 +125,7 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) {
 		ctx.Header("Content-Type", "audio/x-wav")
 		captcha.WriteAudio(&content, captchaId, "zh")
 	default:
-		response.New(ctx).WithCode(statuscode.CaptchaEtxNotFoundError).Json()
-		return
+		return response.New().WithCode(statuscode.CaptchaEtxNotFoundError)
 	}
 
 	download := false
@@ -144,37 +137,34 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) {
 	session.Set("captcha_id", captchaId)
 	_ = session.Save()
 
-	ctx.Writer.Write(content.Bytes())
+	return response.New().WithData(content.Bytes())
 }
 
 // Captcha2Verify 验证码验证
-func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) {
+func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI {
 	if !captcha.VerifyString(captchaId, verifyValue) {
 		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
-		return
+		return response.New().WithCode(statuscode.CaptchaVerifyError)
+
 	}
-	response.New(ctx).WithMsg("验证成功").Json()
+	return response.New().WithMsg("验证成功")
 }
 
 // 检查验证码
-func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) bool {
+func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) *response.ResponseAPI {
 	if captcha == "" {
 		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Json()
-		return false
+		return response.New().WithCode(statuscode.SessionGetCaptchaEmptyError)
 	}
 	if captchaId == "" {
 		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Json()
-		return false
+		return response.New().WithCode(statuscode.CaptchaNotFoundError)
 	}
 
 	// 校验验证码
 	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
 		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		response.New(ctx).WithCode(statuscode.CaptchaVerifyError).Json()
-		return false
+		return response.New().WithCode(statuscode.CaptchaVerifyError)
 	}
-	return true
+	return response.New()
 }

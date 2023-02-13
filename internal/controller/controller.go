@@ -17,5 +17,5 @@ func Ping(ctx *gin.Context) {
 // SayHello 接口测试
 func SayHello(ctx *gin.Context) {
 	name := ctx.DefaultQuery("name", "")
-	response.New(ctx).WithData("hello," + name).Json()
+	response.New().WithData("hello," + name).Json(ctx)
 }

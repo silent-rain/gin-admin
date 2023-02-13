@@ -17,18 +17,18 @@ import (
 
 // UserService 用户管理
 type UserService interface {
-	All(ctx *gin.Context)
-	List(ctx *gin.Context, req systemDTO.QueryUserReq)
-	Add(ctx *gin.Context, req systemDTO.AddUserReq)
-	Update(ctx *gin.Context, user systemModel.User, roleIds []uint)
-	Delete(ctx *gin.Context, id uint)
-	BatchDelete(ctx *gin.Context, ids []uint)
-	Status(ctx *gin.Context, id uint, status uint)
-	UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq)
-	ResetPassword(ctx *gin.Context, id uint, password string)
-	UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq)
-	UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq)
-	Info(ctx *gin.Context, userId uint)
+	All(ctx *gin.Context) *response.ResponseAPI
+	List(ctx *gin.Context, req systemDTO.QueryUserReq) *response.ResponseAPI
+	Add(ctx *gin.Context, req systemDTO.AddUserReq) *response.ResponseAPI
+	Update(ctx *gin.Context, user systemModel.User, roleIds []uint) *response.ResponseAPI
+	Delete(ctx *gin.Context, id uint) *response.ResponseAPI
+	BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI
+	Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI
+	UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq) *response.ResponseAPI
+	ResetPassword(ctx *gin.Context, id uint, password string) *response.ResponseAPI
+	UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) *response.ResponseAPI
+	UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) *response.ResponseAPI
+	Info(ctx *gin.Context, userId uint) *response.ResponseAPI
 }
 
 // 用户管理
@@ -46,44 +46,40 @@ func NewUserService() *userService {
 }
 
 // All 获取所有用户列表
-func (h *userService) All(ctx *gin.Context) {
+func (h *userService) All(ctx *gin.Context) *response.ResponseAPI {
 	results, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
-	response.New(ctx).WithDataList(results, total).Json()
+	return response.New().WithDataList(results, total)
 }
 
 // List 获取用户列表
-func (h *userService) List(ctx *gin.Context, req systemDTO.QueryUserReq) {
+func (h *userService) List(ctx *gin.Context, req systemDTO.QueryUserReq) *response.ResponseAPI {
 	results, total, err := h.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
-	response.New(ctx).WithDataList(results, total).Json()
+	return response.New().WithDataList(results, total)
 }
 
 // Add 添加用户
-func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) {
+func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) *response.ResponseAPI {
 	// 注册入口检查验证码
 	if ctx.Request.URL.Path == "/api/v1/register" {
-		if !chechkCaptcha(ctx, req.CaptchaId, req.Captcha) {
-			return
+		if reult := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); reult.Error() != nil {
+			return reult
 		}
 	}
 
 	// 判断用户是否存在 邮件/手机号
 	if h.chechkPhone(ctx, req.Phone) {
-		response.New(ctx).WithCode(statuscode.ExistPhoneError).WithMsg("手机号已存在").Json()
-		return
+		return response.New().WithCode(statuscode.ExistPhoneError).WithMsg("手机号已存在")
 	}
 	if h.chechkEmail(ctx, req.Email) {
-		response.New(ctx).WithCode(statuscode.ExistEmailError).WithMsg("邮箱已存在").Json()
-		return
+		return response.New().WithCode(statuscode.ExistEmailError).WithMsg("邮箱已存在")
 	}
 
 	// 密码加密
@@ -91,19 +87,17 @@ func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) {
 
 	// 数据转换
 	user := new(systemModel.User)
-	if err := http.ApiJsonConvertJson(ctx, req, user); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
-		return
+	if reult := http.ApiJsonConvertJson(ctx, req, user); reult.Error() != nil {
+		return reult
 	}
 	user.Status = 1
 
 	// 数据入库
 	if err := h.dao.Add(*user, req.RoleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.UserRegisterError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.UserRegisterError).Json()
-		return
+		return response.New().WithCode(statuscode.UserRegisterError)
 	}
-	response.New(ctx).WithMsg("用户注册成功").Json()
+	return response.New().WithMsg("用户注册成功")
 }
 
 // 检查手机号是否存在
@@ -138,164 +132,145 @@ func (h *userService) chechkEmail(ctx *gin.Context, email string) bool {
 }
 
 // Update 更新用户详情信息
-func (h *userService) Update(ctx *gin.Context, user systemModel.User, roleIds []uint) {
+func (h *userService) Update(ctx *gin.Context, user systemModel.User, roleIds []uint) *response.ResponseAPI {
 	if err := h.dao.Update(user, roleIds); err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).Json()
+	return response.New()
 }
 
 // Delete 删除用户
-func (h *userService) Delete(ctx *gin.Context, id uint) {
+func (h *userService) Delete(ctx *gin.Context, id uint) *response.ResponseAPI {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // BatchDelete 批量删除用户
-func (h *userService) BatchDelete(ctx *gin.Context, ids []uint) {
+func (h *userService) BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBBatchDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBBatchDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBBatchDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Status 更新用户状态
-func (h *userService) Status(ctx *gin.Context, id uint, status uint) {
+func (h *userService) Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI {
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateStatusError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateStatusError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateStatusError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // UpdatePassword 更新密码
-func (h *userService) UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq) {
+func (h *userService) UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq) *response.ResponseAPI {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.OldPassword)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if !ok {
 		log.New(ctx).WithCode(statuscode.UserOldPasswordError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.UserOldPasswordError).Json()
-		return
+		return response.New().WithCode(statuscode.UserOldPasswordError)
 	}
 
 	row, err := h.dao.UpdatePassword(req.ID, req.NewPassword)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // ResetPassword 重置密码
-func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) {
+func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) *response.ResponseAPI {
 	row, err := h.dao.ResetPassword(id, password)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBResetError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBResetError).Json()
-		return
+		return response.New().WithCode(statuscode.DBResetError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // UpdatePhone 更新手机号码
-func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) {
+func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) *response.ResponseAPI {
 	// 查看手机号码是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByPhone(req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if ok && user.ID == req.ID {
 		log.New(ctx).WithCode(statuscode.UserPhoneConsistentError).Error("")
-		response.New(ctx).WithCode(statuscode.UserPhoneConsistentError).Json()
-		return
+		return response.New().WithCode(statuscode.UserPhoneConsistentError)
 	}
 	if ok {
 		log.New(ctx).WithCode(statuscode.DBDataExistError).Error("手机号码已被使用")
-		response.New(ctx).WithCode(statuscode.DBDataExistError).WithMsg("手机号码已被使用").Json()
-		return
+		return response.New().WithCode(statuscode.DBDataExistError).WithMsg("手机号码已被使用")
 	}
 	row, err := h.dao.UpdatePhone(req.ID, req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // UpdateEmail 更新邮箱
-func (h *userService) UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) {
+func (h *userService) UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) *response.ResponseAPI {
 	// 查看邮箱是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByEmail(req.Email)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if ok && user.ID == req.ID {
 		log.New(ctx).WithCode(statuscode.UserEmailConsistentError).Error("")
-		response.New(ctx).WithCode(statuscode.UserEmailConsistentError).Json()
-		return
+		return response.New().WithCode(statuscode.UserEmailConsistentError)
 	}
 	if ok {
 		log.New(ctx).WithCode(statuscode.DBDataExistError).Error("邮箱已被使用")
-		response.New(ctx).WithCode(statuscode.DBDataExistError).WithMsg("邮箱已被使用").Json()
-		return
+		return response.New().WithCode(statuscode.DBDataExistError).WithMsg("邮箱已被使用")
 	}
 	row, err := h.dao.UpdateEmail(req.ID, req.Email)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Info 获取用户信息
-func (h *userService) Info(ctx *gin.Context, userId uint) {
+func (h *userService) Info(ctx *gin.Context, userId uint) *response.ResponseAPI {
 	user, ok, err := h.dao.Info(userId)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if !ok {
 		log.New(ctx).WithCode(statuscode.DBQueryEmptyError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryEmptyError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryEmptyError)
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
-		response.New(ctx).WithCode(statuscode.UserDisableError).Json()
-		return
+		return response.New().WithCode(statuscode.UserDisableError)
 	}
 
 	// 根据角色获取菜单列表
 	roleMenus, err := h.getRoleMenuList(user.Roles)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	// 菜单路由列表：菜单类型为菜单的数据解析
 	menus := h.getMenuList(roleMenus)
@@ -313,7 +288,7 @@ func (h *userService) Info(ctx *gin.Context, userId uint) {
 	}
 	// 避免角色数据反复嵌套
 	result.User.Roles = nil
-	response.New(ctx).WithData(result).Json()
+	return response.New().WithData(result)
 }
 
 // 根据角色获取菜单列表

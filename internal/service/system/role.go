@@ -14,13 +14,13 @@ import (
 )
 
 type RoleService interface {
-	All(ctx *gin.Context)
-	List(ctx *gin.Context, req systemDTO.QueryRoleReq)
-	Add(ctx *gin.Context, role systemModel.Role)
-	Update(ctx *gin.Context, role systemModel.Role)
-	Delete(ctx *gin.Context, id uint)
-	BatchDelete(ctx *gin.Context, ids []uint)
-	Status(ctx *gin.Context, id uint, status uint)
+	All(ctx *gin.Context) *response.ResponseAPI
+	List(ctx *gin.Context, req systemDTO.QueryRoleReq) *response.ResponseAPI
+	Add(ctx *gin.Context, role systemModel.Role) *response.ResponseAPI
+	Update(ctx *gin.Context, role systemModel.Role) *response.ResponseAPI
+	Delete(ctx *gin.Context, id uint) *response.ResponseAPI
+	BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI
+	Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI
 }
 
 // 角色
@@ -36,89 +36,82 @@ func NewRoleService() *roleService {
 }
 
 // All 获取所有角色列表
-func (s *roleService) All(ctx *gin.Context) {
+func (s *roleService) All(ctx *gin.Context) *response.ResponseAPI {
 	roles, total, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
+
 	}
-	response.New(ctx).WithDataList(roles, total).Json()
+	return response.New().WithDataList(roles, total)
 }
 
 // List 获取用角色列表
-func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) {
+func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) *response.ResponseAPI {
 	roles, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
+
 	}
-	response.New(ctx).WithDataList(roles, total).Json()
+	return response.New().WithDataList(roles, total)
 }
 
 // Add 添加角色
-func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) {
+func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) *response.ResponseAPI {
 	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBQueryError).Json()
-		return
+		return response.New().WithCode(statuscode.DBQueryError)
 	}
 	if ok {
 		log.New(ctx).WithCode(statuscode.DBDataExistError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBDataExistError).WithMsg("角色已存在").Json()
-		return
+		return response.New().WithCode(statuscode.DBDataExistError).WithMsg("角色已存在")
 	}
 
 	if _, err := h.dao.Add(role); err != nil {
 		log.New(ctx).WithCode(statuscode.DBAddError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBAddError).Json()
-		return
+		return response.New().WithCode(statuscode.DBAddError)
 	}
-	response.New(ctx).Json()
+	return response.New()
 }
 
 // Update 更新角色
-func (h *roleService) Update(ctx *gin.Context, role systemModel.Role) {
+func (h *roleService) Update(ctx *gin.Context, role systemModel.Role) *response.ResponseAPI {
 	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Delete 删除角色
-func (h *roleService) Delete(ctx *gin.Context, id uint) {
+func (h *roleService) Delete(ctx *gin.Context, id uint) *response.ResponseAPI {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // BatchDelete 批量删除角色
-func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) {
+func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBBatchDeleteError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBBatchDeleteError).Json()
-		return
+		return response.New().WithCode(statuscode.DBBatchDeleteError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }
 
 // Status 更新角色状态
-func (h *roleService) Status(ctx *gin.Context, id uint, status uint) {
+func (h *roleService) Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI {
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(statuscode.DBUpdateStatusError).Errorf("%v", err)
-		response.New(ctx).WithCode(statuscode.DBUpdateStatusError).Json()
-		return
+		return response.New().WithCode(statuscode.DBUpdateStatusError)
 	}
-	response.New(ctx).WithData(row).Json()
+	return response.New().WithData(row)
 }

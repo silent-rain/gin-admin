@@ -7,7 +7,6 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -27,80 +26,81 @@ func NewRoleController() *roleController {
 
 // All 获取所有角色列表
 func (c *roleController) All(ctx *gin.Context) {
-	c.service.All(ctx)
+	c.service.All(ctx).Json(ctx)
 }
 
 // List 获取用角色列表
 func (c *roleController) List(ctx *gin.Context) {
 	req := systemDTO.QueryRoleReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.List(ctx, req)
+	c.service.List(ctx, req).Json(ctx)
 }
 
 // Add 添加角色
 func (c *roleController) Add(ctx *gin.Context) {
 	req := systemDTO.AddRoleReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	role := systemModel.Role{}
-	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+	if result := http.ApiJsonConvertJson(ctx, req, &role); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Add(ctx, role)
+	c.service.Add(ctx, role).Json(ctx)
 }
 
 // Update 更新角色
 func (c *roleController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateRoleReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	role := systemModel.Role{}
-	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+	if result := http.ApiJsonConvertJson(ctx, req, &role); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Update(ctx, role)
+	c.service.Update(ctx, role).Json(ctx)
 }
 
 // Delete 删除角色
 func (c *roleController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Delete(ctx, req.ID)
+	c.service.Delete(ctx, req.ID).Json(ctx)
 }
 
 // BatchDelete 批量删除角色
 func (c *roleController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.BatchDelete(ctx, req.Ids)
+	c.service.BatchDelete(ctx, req.Ids).Json(ctx)
 }
 
 // Status 更新角色状态
 func (c *roleController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Status(ctx, req.ID, req.Status)
+	c.service.Status(ctx, req.ID, req.Status).Json(ctx)
 }

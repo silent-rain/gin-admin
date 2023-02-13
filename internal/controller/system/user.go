@@ -9,7 +9,6 @@ import (
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
 	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
 	service "gin-admin/internal/service/system"
 
@@ -30,87 +29,88 @@ func NewUserController() *userController {
 
 // All 获取所有用户列表
 func (c *userController) All(ctx *gin.Context) {
-	c.service.All(ctx)
+	c.service.All(ctx).Json(ctx)
 }
 
 // List 获取用户列表
 func (c *userController) List(ctx *gin.Context) {
 	req := systemDTO.QueryUserReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.List(ctx, req)
+	c.service.List(ctx, req).Json(ctx)
 }
 
 // Add 添加用户
 func (c *userController) Add(ctx *gin.Context) {
 	req := systemDTO.AddUserReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Add(ctx, req)
+	c.service.Add(ctx, req).Json(ctx)
 }
 
 // Update 更新用户详情信息
 func (c *userController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateUserReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
 	// 数据转换
 	user := systemModel.User{}
-	if err := http.ApiJsonConvertJson(ctx, req, &user); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("数据转换失败, %v", err)
+	if result := http.ApiJsonConvertJson(ctx, req, &user); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 	roleIds := req.RoleIds
 
-	c.service.Update(ctx, user, roleIds)
+	c.service.Update(ctx, user, roleIds).Json(ctx)
 }
 
 // Delete 删除用户
 func (c *userController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Delete(ctx, req.ID)
+	c.service.Delete(ctx, req.ID).Json(ctx)
 }
 
 // BatchDelete 批量删除用户
 func (c *userController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.BatchDelete(ctx, req.Ids)
+	c.service.BatchDelete(ctx, req.Ids).Json(ctx)
 }
 
 // Status 更新用户状态
 func (c *userController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.Status(ctx, req.ID, req.Status)
+	c.service.Status(ctx, req.ID, req.Status).Json(ctx)
 }
 
 // UpdatePassword 更新密码
 func (c *userController) UpdatePassword(ctx *gin.Context) {
 	req := systemDTO.UpdateUserPasswordReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
@@ -118,48 +118,48 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 	req.OldPassword = utils.Md5(req.OldPassword)
 	req.NewPassword = utils.Md5(req.NewPassword)
 
-	c.service.UpdatePassword(ctx, req)
+	c.service.UpdatePassword(ctx, req).Json(ctx)
 }
 
 // ResetPassword 重置密码
 func (c *userController) ResetPassword(ctx *gin.Context) {
 	req := systemDTO.ResetUserPasswordReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
 	// 默认密码加密
 	password := utils.Md5(conf.ServerUserDefaultPwd)
 
-	c.service.ResetPassword(ctx, req.ID, password)
+	c.service.ResetPassword(ctx, req.ID, password).Json(ctx)
 }
 
 // UpdatePhone 更新手机号码
 func (c *userController) UpdatePhone(ctx *gin.Context) {
 	req := systemDTO.UpdateUserPhoneReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.UpdatePhone(ctx, req)
+	c.service.UpdatePhone(ctx, req).Json(ctx)
 }
 
 // UpdateEmail 更新邮箱
 func (c *userController) UpdateEmail(ctx *gin.Context) {
 	req := systemDTO.UpdateUserEmailReq{}
-	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		log.New(ctx).WithField("data", req).Errorf("参数解析失败, %v", err)
+	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
+		result.Json(ctx)
 		return
 	}
 
-	c.service.UpdateEmail(ctx, req)
+	c.service.UpdateEmail(ctx, req).Json(ctx)
 }
 
 // Info 获取用户信息
 func (c *userController) Info(ctx *gin.Context) {
 	userId := context.GetUserId(ctx)
 
-	c.service.Info(ctx, userId)
+	c.service.Info(ctx, userId).Json(ctx)
 }
