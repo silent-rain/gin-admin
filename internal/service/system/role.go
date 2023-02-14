@@ -47,7 +47,7 @@ func (s *roleService) All(ctx *gin.Context) *response.ResponseAPI {
 	return response.New().WithDataList(roles, total)
 }
 
-// List 获取用角色列表
+// List 获取所有角色列表
 func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) *response.ResponseAPI {
 	roles, total, err := s.dao.List(req)
 	if err != nil {

@@ -18,8 +18,8 @@ type roleMenuRelController struct {
 	service service.RoleMenuRelService
 }
 
-// NewMenuRelController 创建角色菜单关系对象
-func NewMenuRelController() *roleMenuRelController {
+// NewRoleMenuRelController 创建角色菜单关系对象
+func NewRoleMenuRelController() *roleMenuRelController {
 	return &roleMenuRelController{
 		service: service.NewRoleMenuRelService(),
 	}

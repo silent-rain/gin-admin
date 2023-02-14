@@ -118,9 +118,9 @@ func NewApiV1(engine *gin.Engine) {
 	roleMenuRel := v1.Group("/roleMenuRel")
 	{
 		// 获取角色关联的菜单列表
-		roleMenuRel.GET("/list", system.NewMenuRelController().List)
+		roleMenuRel.GET("/list", system.NewRoleMenuRelController().List)
 		// 更新角色菜单关联关系
-		roleMenuRel.PUT("/update", system.NewMenuRelController().Update)
+		roleMenuRel.PUT("/update", system.NewRoleMenuRelController().Update)
 	}
 
 	// 配置管理
@@ -140,5 +140,19 @@ func NewApiV1(engine *gin.Engine) {
 		config.DELETE("/batchDelete", system.NewConfigController().BatchDelete)
 		// 更新配置状态
 		config.PUT("/status", system.NewConfigController().Status)
+	}
+
+	// 网络请求管理
+	httpLog := v1.Group("/httpLog")
+	{
+		// 获取网络请求日志列表
+		httpLog.GET("/list", system.NewHttpLogController().List)
+	}
+
+	// 系统日志管理
+	systemLog := v1.Group("/systemLog")
+	{
+		// 获取系统日志列表
+		systemLog.GET("/list", system.NewSystemLogController().List)
 	}
 }

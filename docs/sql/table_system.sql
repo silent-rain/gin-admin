@@ -155,6 +155,7 @@ CREATE TABLE sys_user_login (
 CREATE TABLE sys_http_log (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT NULL COMMENT '请求用户ID',
+    `parent_trace_id` VARCHAR(32) NULL COMMENT '上游请求traceId',
     `trace_id` VARCHAR(32) NULL COMMENT '请求traceId',
     `status_code` INT(10) NOT NULL COMMENT '请求状态码',
     `method` VARCHAR(10) NOT NULL COMMENT '请求方法',
