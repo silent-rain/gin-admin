@@ -31,6 +31,16 @@
 - [x] 全部展开 sys:menu:expand
 - [x] 全部折叠 sys:menu:collapse
 
+# 配置管理
+- [x] 查询配置 sys:config:list
+- [x] 添加配置 sys:config:add
+- [x] 修改配置 sys:config:update
+- [x] 删除配置 sys:config:delete
+- [ ] 批量删除 sys:config:delall
+- [x] 设置状态 sys:config:status
+- [x] 添加子级 sys:config:addchild
+- [x] 全部展开 sys:config:expand
+- [x] 全部折叠 sys:config:collapse
 
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate

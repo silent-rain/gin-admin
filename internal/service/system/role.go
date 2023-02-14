@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RoleService 角色接口
 type RoleService interface {
 	All(ctx *gin.Context) *response.ResponseAPI
 	List(ctx *gin.Context, req systemDTO.QueryRoleReq) *response.ResponseAPI

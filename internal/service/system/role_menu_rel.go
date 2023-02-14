@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RoleMenuRelService 角色菜单接口
 type RoleMenuRelService interface {
 	List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) *response.ResponseAPI
 	Update(ctx *gin.Context, roleId uint, menuIds []uint) *response.ResponseAPI

@@ -124,6 +124,7 @@ func (d *menu) ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error) {
 		Joins("left join sys_role_menu_rel on sys_role_menu_rel.menu_id = sys_menu.id").
 		Where("sys_role_menu_rel.role_id in ?", roleIds).
 		Where("sys_menu.status = 1").
+		Order("sort ASC").Order("id ASC").
 		Distinct("sys_menu.*").
 		Find(&beans)
 	if result.Error != nil {
@@ -132,7 +133,7 @@ func (d *menu) ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error) {
 	return beans, nil
 }
 
-// 通过父 ID 获取子菜单列表
+// ChildrenMenu 通过父 ID 获取子菜单列表
 func (d *menu) ChildrenMenu(parentId uint) ([]systemModel.Menu, error) {
 	bean := make([]systemModel.Menu, 0)
 	result := d.db.Where("parent_id=?", parentId).

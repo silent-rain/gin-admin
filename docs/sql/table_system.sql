@@ -185,3 +185,18 @@ CREATE TABLE sys_system_log (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '系统日志';
+
+-- 应用配置表
+CREATE TABLE sys_config (
+    `id` INT AUTO_INCREMENT COMMENT '配置ID',
+    `parent_id` INT(11) DEFAULT NULL COMMENT '父节点ID',
+    `name` VARCHAR(32) NOT NULL COMMENT '配置名称',
+    `key` VARCHAR(32) NOT NULL UNIQUE COMMENT '配置参数(英文)',
+    `value` TEXT COMMENT '配置参数值',
+    `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
+    `note` VARCHAR(32) DEFAULT NULL COMMENT '配置描述',
+    `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用,0:禁用,1:启用',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '应用配置表';

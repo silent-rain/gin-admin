@@ -112,7 +112,6 @@ func NewApiV1(engine *gin.Engine) {
 		menu.DELETE("/batchDelete", system.NewMenuController().BatchDelete)
 		// 更新菜单状态
 		menu.PUT("/status", system.NewMenuController().Status)
-
 	}
 
 	// 角色菜单关系管理
@@ -122,5 +121,24 @@ func NewApiV1(engine *gin.Engine) {
 		roleMenuRel.GET("/list", system.NewMenuRelController().List)
 		// 更新角色菜单关联关系
 		roleMenuRel.PUT("/update", system.NewMenuRelController().Update)
+	}
+
+	// 配置管理
+	config := v1.Group("/config")
+	{
+		// 获取所有配置树
+		config.GET("/allTree", system.NewConfigController().AllTree)
+		// 获取配置树
+		config.GET("/tree", system.NewConfigController().Tree)
+		// 添加配置
+		config.POST("/add", system.NewConfigController().Add)
+		// 更新配置
+		config.PUT("/update", system.NewConfigController().Update)
+		// 删除配置
+		config.DELETE("/delete", system.NewConfigController().Delete)
+		// 批量删除配置
+		config.DELETE("/batchDelete", system.NewConfigController().BatchDelete)
+		// 更新配置状态
+		config.PUT("/status", system.NewConfigController().Status)
 	}
 }
