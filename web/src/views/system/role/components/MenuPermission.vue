@@ -5,19 +5,21 @@
     width="400px"
     :before-close="handleClose"
   >
-    <el-tree
-      ref="treeRef"
-      :data="treeData"
-      show-checkbox
-      default-expand-all
-      node-key="id"
-      highlight-current
-      :props="{
-        children: 'children',
-        label: 'title',
-      }"
-      style="height: 400px"
-    />
+    <el-scrollbar height="400px">
+      <el-tree
+        ref="treeRef"
+        :data="treeData"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        highlight-current
+        :props="{
+          children: 'children',
+          label: 'title',
+        }"
+        style="height: 400px"
+      />
+    </el-scrollbar>
 
     <template #footer>
       <span class="dialog-footer">
