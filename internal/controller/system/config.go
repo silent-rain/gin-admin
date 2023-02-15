@@ -7,20 +7,20 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 配置
 type configController struct {
-	service service.ConfigService
+	service systemService.ConfigService
 }
 
 // NewConfigController 创建配置对象
 func NewConfigController() *configController {
 	return &configController{
-		service: service.NewConfigService(),
+		service: systemService.NewConfigService(),
 	}
 }
 

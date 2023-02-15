@@ -8,20 +8,20 @@ import (
 	"gin-admin/internal/pkg/context"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 菜单
 type menuController struct {
-	service service.MenuService
+	service systemService.MenuService
 }
 
 // NewMenuController 创建菜单对象
 func NewMenuController() *menuController {
 	return &menuController{
-		service: service.NewMenuService(),
+		service: systemService.NewMenuService(),
 	}
 }
 

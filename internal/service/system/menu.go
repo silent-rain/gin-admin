@@ -1,5 +1,5 @@
 /*菜单*/
-package service
+package system
 
 import (
 	systemDAO "gin-admin/internal/dao/system"

@@ -8,7 +8,7 @@ import (
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -16,13 +16,13 @@ import (
 
 // 用户登录/登出
 type userLoginController struct {
-	service service.UserLoginService
+	service systemService.UserLoginService
 }
 
 // NewUserLoginController 创建用户登录/登出 对象
 func NewUserLoginController() *userLoginController {
 	return &userLoginController{
-		service: service.NewUserLoginService(),
+		service: systemService.NewUserLoginService(),
 	}
 }
 

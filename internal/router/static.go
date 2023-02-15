@@ -11,7 +11,7 @@
 package router
 
 import (
-	controller "gin-admin/internal/controller/static"
+	"gin-admin/internal/controller"
 
 	"github.com/gin-gonic/gin"
 )

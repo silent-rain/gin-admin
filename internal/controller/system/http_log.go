@@ -6,20 +6,20 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 网络请求日志
 type httpLogController struct {
-	service service.HttpLogService
+	service systemService.HttpLogService
 }
 
 // NewHttpLogController 创建网络请求日志对象
 func NewHttpLogController() *httpLogController {
 	return &httpLogController{
-		service: service.NewHttpLogService(),
+		service: systemService.NewHttpLogService(),
 	}
 }
 

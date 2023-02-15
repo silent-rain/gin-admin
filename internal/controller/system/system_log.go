@@ -6,20 +6,20 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 系统日志
 type systemLogController struct {
-	service service.SystemLogService
+	service systemService.SystemLogService
 }
 
 // NewSystemLogController 创建系统日志对象
 func NewSystemLogController() *systemLogController {
 	return &systemLogController{
-		service: service.NewSystemLogService(),
+		service: systemService.NewSystemLogService(),
 	}
 }
 

@@ -5,20 +5,20 @@ import (
 	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 上传
 type uploadController struct {
-	service service.UploadService
+	service systemService.UploadService
 }
 
 // NewUploadController 创建上传对象
 func NewUploadController() *uploadController {
 	return &uploadController{
-		service: service.NewUploadService(),
+		service: systemService.NewUploadService(),
 	}
 }
 

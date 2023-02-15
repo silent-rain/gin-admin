@@ -8,20 +8,20 @@ import (
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 角色菜单关系
 type roleMenuRelController struct {
-	service service.RoleMenuRelService
+	service systemService.RoleMenuRelService
 }
 
 // NewRoleMenuRelController 创建角色菜单关系对象
 func NewRoleMenuRelController() *roleMenuRelController {
 	return &roleMenuRelController{
-		service: service.NewRoleMenuRelService(),
+		service: systemService.NewRoleMenuRelService(),
 	}
 }
 

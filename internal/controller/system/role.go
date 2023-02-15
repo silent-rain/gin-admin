@@ -8,20 +8,20 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 角色
 type roleController struct {
-	service service.RoleService
+	service systemService.RoleService
 }
 
 // NewRoleController 创建角色对象
 func NewRoleController() *roleController {
 	return &roleController{
-		service: service.NewRoleService(),
+		service: systemService.NewRoleService(),
 	}
 }
 

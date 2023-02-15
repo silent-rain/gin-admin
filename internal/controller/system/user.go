@@ -11,20 +11,20 @@ import (
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/internal/pkg/utils"
-	service "gin-admin/internal/service/system"
+	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 用户管理
 type userController struct {
-	service service.UserService
+	service systemService.UserService
 }
 
 // 创建用户对象
 func NewUserController() *userController {
 	return &userController{
-		service: service.NewUserService(),
+		service: systemService.NewUserService(),
 	}
 }
 

@@ -143,7 +143,7 @@ func newDbLoggerAsyncer() *dbLoggerAsyncer {
 	return base
 }
 
-// 定义Write方法以实现Sink接口
+// Write 定义Write方法以实现Sink接口
 func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
 	sysLog := systemModel.SystemLog{}
 	if err := json.Unmarshal(p, &sysLog); err != nil {
@@ -156,13 +156,13 @@ func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// 定义Close方法以实现Sink接口
+// Close 定义Close方法以实现Sink接口
 func (d dbLoggerAsyncer) Close() error {
 	// 涉及不到关闭对象的问题, 所以return就可以
 	return nil
 }
 
-// 定义Sync方法以实现Sink接口
+// Sync 定义Sync方法以实现Sink接口
 func (d *dbLoggerAsyncer) Sync() error {
 	// 涉及不到缓存同步问题, 所以return就可以
 	return nil
