@@ -9,9 +9,9 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
@@ -193,7 +193,7 @@ func New(ctx *gin.Context) *logger {
 }
 
 // WithCode 添加错误码
-func (l *logger) WithCode(code statuscode.StatusCode) *logger {
+func (l *logger) WithCode(code code_errors.StatusCode) *logger {
 	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Msg()))
 	return l
 }

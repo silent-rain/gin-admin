@@ -2,7 +2,7 @@
 package utils
 
 import (
-	statuscode "gin-admin/internal/pkg/status_code"
+	"gin-admin/internal/pkg/code_errors"
 	"image/color"
 	"time"
 
@@ -115,7 +115,7 @@ func (r captcha) MekeCaptcha(captchaType string) (string, string, error) {
 	case "digit":
 		driver = r.digitConfig()
 	default:
-		return "", "", statuscode.CaptchaTypeError.Error()
+		return "", "", code_errors.CaptchaTypeError.Error()
 	}
 
 	// 创建验证码并传入创建的类型的配置，以及存储的对象

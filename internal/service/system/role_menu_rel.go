@@ -5,17 +5,17 @@ package service
 import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
+	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
 )
 
 // RoleMenuRelService 角色菜单接口
 type RoleMenuRelService interface {
-	List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) *response.ResponseAPI
-	Update(ctx *gin.Context, roleId uint, menuIds []uint) *response.ResponseAPI
+	List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error)
+	Update(ctx *gin.Context, roleId uint, menuIds []uint) error
 }
 
 // 角色菜单关系
@@ -31,20 +31,20 @@ func NewRoleMenuRelService() *roleMenuRelService {
 }
 
 // List 获取角色关联的菜单列表
-func (s *roleMenuRelService) List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) *response.ResponseAPI {
+func (s *roleMenuRelService) List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return nil, 0, code_errors.New(code_errors.DBQueryError)
 	}
-	return response.New().WithDataList(results, total)
+	return results, total, nil
 }
 
 // Update 更新角色菜单关联关系
-func (h *roleMenuRelService) Update(ctx *gin.Context, roleId uint, menuIds []uint) *response.ResponseAPI {
+func (h *roleMenuRelService) Update(ctx *gin.Context, roleId uint, menuIds []uint) error {
 	if err := h.dao.Update(roleId, menuIds); err != nil {
-		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBUpdateError)
+		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
+		return code_errors.New(code_errors.DBUpdateError)
 	}
-	return response.New()
+	return nil
 }

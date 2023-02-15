@@ -4,32 +4,31 @@ package http
 import (
 	"encoding/json"
 
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ParsingReqParams 将请求参数解析到结构体
-func ParsingReqParams(ctx *gin.Context, req interface{}) *response.ResponseAPI {
+func ParsingReqParams(ctx *gin.Context, req interface{}) error {
 	if err := ctx.ShouldBind(req); err != nil {
-		log.New(ctx).WithCode(statuscode.ReqParameterParsingError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.ReqParameterParsingError)
+		log.New(ctx).WithCode(code_errors.ReqParameterParsingError).Errorf("%v", err)
+		return code_errors.New(code_errors.ReqParameterParsingError)
 	}
-	return response.New()
+	return nil
 }
 
 // ApiJsonConvertJson 结构体转换
-func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) *response.ResponseAPI {
+func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) error {
 	bytes, err := json.Marshal(src)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.JsonDataEncodeError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.JsonDataEncodeError)
+		log.New(ctx).WithCode(code_errors.JsonDataEncodeError).Errorf("%v", err)
+		return code_errors.New(code_errors.JsonDataEncodeError)
 	}
 	if err := json.Unmarshal(bytes, dst); err != nil {
-		log.New(ctx).WithCode(statuscode.JsonDataDecodeError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.JsonDataDecodeError)
+		log.New(ctx).WithCode(code_errors.JsonDataDecodeError).Errorf("%v", err)
+		return code_errors.New(code_errors.JsonDataDecodeError)
 	}
-	return response.New()
+	return nil
 }

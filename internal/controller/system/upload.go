@@ -2,9 +2,9 @@
 package system
 
 import (
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -27,10 +27,15 @@ func (c *uploadController) Avatar(ctx *gin.Context) {
 	// 单文件
 	file, err := ctx.FormFile("file")
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.UploadFileParserError).Errorf("%v", err)
-		response.New().WithCode(statuscode.UploadFileParserError).Json(ctx)
+		log.New(ctx).WithCode(code_errors.UploadFileParserError).Errorf("%v", err)
+		response.New(ctx).WithCode(code_errors.UploadFileParserError).Json()
 		return
 	}
 
-	c.service.Avatar(ctx, file).Json(ctx)
+	result, err := c.service.Avatar(ctx, file)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithData(result).Json()
 }

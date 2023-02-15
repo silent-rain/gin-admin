@@ -7,6 +7,7 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
+	"gin-admin/internal/pkg/response"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -26,81 +27,116 @@ func NewRoleController() *roleController {
 
 // All 获取所有角色列表
 func (c *roleController) All(ctx *gin.Context) {
-	c.service.All(ctx).Json(ctx)
+	results, total, err := c.service.All(ctx)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, total).Json()
 }
 
 // List 获取用角色列表
 func (c *roleController) List(ctx *gin.Context) {
 	req := systemDTO.QueryRoleReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.List(ctx, req).Json(ctx)
+	results, total, err := c.service.List(ctx, req)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, total).Json()
 }
 
 // Add 添加角色
 func (c *roleController) Add(ctx *gin.Context) {
 	req := systemDTO.AddRoleReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 	role := systemModel.Role{}
-	if result := http.ApiJsonConvertJson(ctx, req, &role); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.Add(ctx, role).Json(ctx)
+	_, err := c.service.Add(ctx, role)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }
 
 // Update 更新角色
 func (c *roleController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateRoleReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 	role := systemModel.Role{}
-	if result := http.ApiJsonConvertJson(ctx, req, &role); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.Update(ctx, role).Json(ctx)
+	_, err := c.service.Update(ctx, role)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }
 
 // Delete 删除角色
 func (c *roleController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.Delete(ctx, req.ID).Json(ctx)
+	_, err := c.service.Delete(ctx, req.ID)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }
 
 // BatchDelete 批量删除角色
 func (c *roleController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.BatchDelete(ctx, req.Ids).Json(ctx)
+	_, err := c.service.BatchDelete(ctx, req.Ids)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }
 
 // Status 更新角色状态
 func (c *roleController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.Status(ctx, req.ID, req.Status).Json(ctx)
+	_, err := c.service.Status(ctx, req.ID, req.Status)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }

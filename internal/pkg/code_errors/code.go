@@ -1,11 +1,6 @@
 /*业务状态码
  */
-package statuscode
-
-import (
-	"errors"
-	"fmt"
-)
+package code_errors
 
 // 业务状态码
 type StatusCode uint
@@ -86,83 +81,23 @@ const (
 	DirNotFoundError                            // 文件夹不存在
 )
 
-// 状态码映射具体消息
-var statusCodeMsg = map[StatusCode]error{
-	Ok:            nil,
-	InternalError: errors.New("内部错误"),
-	UnknownError:  errors.New("未知错误"),
-	// 请求
-	ReqParameterParsingError:    errors.New("请求参数解析错误"),
-	ReqContentTypeNotFoundError: errors.New("请求 Content-Type 参数不存在"),
-	ReqContentTypeParamsError:   errors.New("请求 Content-Type 参数错误"),
-	// 数据解析
-	JsonDataEncodeError: errors.New("数据编码错误"),
-	JsonDataDecodeError: errors.New("数据解码错误"),
-	// 数据库
-	DBQueryError:             errors.New("数据查询错误"),
-	DBQueryEmptyError:        errors.New("数据不存在"),
-	DBAddError:               errors.New("数据添加失败"),
-	DBUpdateError:            errors.New("数据更新失败"),
-	DBDeleteError:            errors.New("数据删除失败"),
-	DBBatchDeleteError:       errors.New("数据批量删除失败"),
-	DBUpdateStatusError:      errors.New("更新状态失败"),
-	DBResetError:             errors.New("数据重置失败"),
-	DBDataExistError:         errors.New("数据已存在"),
-	DBDataExistChildrenError: errors.New("存在子项"),
-	// 鉴权
-	TokenGenerateError: errors.New("生成 Token 失败"),
-	TokenNotFound:      errors.New("鉴权信息不存在"),
-	TokenParsingError:  errors.New("解析 Token 失败"),
-	TokeConvertError:   errors.New("转换 Token 失败"),
-	TokenInvalidError:  errors.New("无效鉴权"),
-	TokenExpiredError:  errors.New("鉴权过期"),
-	// 系统管理
-	UserRegisterError:           errors.New("用户注册失败"),
-	UserLoginError:              errors.New("用户登录失败"),
-	UserLogoutError:             errors.New("用户注销失败"),
-	UserDisableError:            errors.New("您的账号已被禁用,请联系管理员"),
-	UserOldPasswordError:        errors.New("旧密码不正确"),
-	UserPhoneConsistentError:    errors.New("新旧手机号码一致, 未更新"),
-	UserEmailConsistentError:    errors.New("新旧邮箱一致, 未更新"),
-	CaptchaTypeError:            errors.New("验证码类型错误, 不支持的类型"),
-	CaptchaEtxNotFoundError:     errors.New("验证码格式异常"),
-	CaptchaNotFoundError:        errors.New("验证码不存在"),
-	CaptchaGenerateError:        errors.New("生成验证码失败"),
-	CaptchaVerifyError:          errors.New("验证码错误"),
-	SessionGetCaptchaEmptyError: errors.New("验证码为空"),
-	ExistPhoneError:             errors.New("手机号已存在"),
-	ExistEmailError:             errors.New("邮箱已存在"),
-	// 文件上传
-	UploadFileParserError: errors.New("上传文件解析失败"),
-	UploadFileSaveError:   errors.New("上传文件保存失败"),
-	// 系统操作
-	FileNotFoundError: errors.New("文件不存在"),
-	DirNotFoundError:  errors.New("文件夹不存在"),
-}
-
 // Error 返回状态码错误信息
 func (r StatusCode) Error() error {
-	msg, ok := statusCodeMsg[r]
+	msg, ok := statusCodeMsgZH[r]
 	if !ok {
-		return statusCodeMsg[UnknownError]
+		return statusCodeMsgZH[UnknownError]
 	}
 	return msg
 }
 
-// 返回附加错误信息
-func (r StatusCode) WithError(msg string) error {
-	return fmt.Errorf("%s error: %w", msg, r.Error())
-}
-
 // Msg 返回状态码信息
 func (r StatusCode) Msg() string {
-	errObj, ok := statusCodeMsg[r]
-	if !ok {
-		return statusCodeMsg[UnknownError].Error()
-	}
-	// Ok
-	if errObj == nil {
+	if r == Ok {
 		return "Ok"
+	}
+	errObj, ok := statusCodeMsgZH[r]
+	if !ok {
+		return statusCodeMsgZH[UnknownError].Error()
 	}
 	return errObj.Error()
 }

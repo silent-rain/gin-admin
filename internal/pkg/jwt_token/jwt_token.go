@@ -5,8 +5,8 @@ package jwt_token
 import (
 	"time"
 
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -49,13 +49,13 @@ func ParseToken(tokenString string) (*Token, error) {
 	})
 	claims, ok := token.Claims.(*Token)
 	if !ok {
-		return nil, statuscode.TokenInvalidError.Error()
+		return nil, code_errors.TokenInvalidError.Error()
 	} else if !claims.VerifyIssuer(conf.TokenIssuer, true) {
-		return nil, statuscode.TokenInvalidError.Error()
+		return nil, code_errors.TokenInvalidError.Error()
 	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
-		return nil, statuscode.TokenExpiredError.Error()
+		return nil, code_errors.TokenExpiredError.Error()
 	} else if !token.Valid {
-		return nil, statuscode.TokenInvalidError.Error()
+		return nil, code_errors.TokenInvalidError.Error()
 	}
 	return claims, nil
 }

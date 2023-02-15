@@ -7,12 +7,12 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	jwtToken "gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
+	systemVO "gin-admin/internal/vo/system"
 
 	"github.com/dchest/captcha"
 	"github.com/gin-contrib/sessions"
@@ -21,12 +21,12 @@ import (
 
 // UserLoginService 用户登录/登出
 type UserLoginService interface {
-	Login(ctx *gin.Context, req systemDTO.UserLoginReq) *response.ResponseAPI
-	Logout(ctx *gin.Context) *response.ResponseAPI
-	Captcha(ctx *gin.Context) *response.ResponseAPI
-	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI
-	Captcha2(ctx *gin.Context) *response.ResponseAPI
-	Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI
+	Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemDTO.UserLoginRsp, error)
+	Logout(ctx *gin.Context) (systemDTO.UserLoginRsp, error)
+	Captcha(ctx *gin.Context) (systemVO.Captcha, error)
+	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) error
+	Captcha2(ctx *gin.Context) ([]byte, error)
+	Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) error
 }
 
 // 用户登录/登出
@@ -42,77 +42,81 @@ func NewUserLoginService() *userLoginService {
 }
 
 // Login 登录
-func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) *response.ResponseAPI {
-	if result := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); result.Error() != nil {
-		return result
+func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemDTO.UserLoginRsp, error) {
+	// 返回 Token
+	result := systemDTO.UserLoginRsp{
+		Token: "",
+	}
+
+	if err := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); err != nil {
+		return result, err
 	}
 
 	// 查询用户
 	user, ok, err := h.dao.GetUsername(req.Username, req.Password)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return result, code_errors.New(code_errors.DBQueryError)
 	}
 	if !ok {
-		log.New(ctx).WithCode(statuscode.DBQueryEmptyError).Error("用户名或者密码不正确")
-		return response.New().WithCode(statuscode.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
+		log.New(ctx).WithCode(code_errors.DBQueryEmptyError).Error("用户名或者密码不正确")
+		return result, code_errors.New(code_errors.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
-		log.New(ctx).WithCode(statuscode.UserDisableError).Error("")
-		return response.New().WithCode(statuscode.UserDisableError)
+		log.New(ctx).WithCode(code_errors.UserDisableError).Error("")
+		return result, code_errors.New(code_errors.UserDisableError)
 	}
 
 	// 生成 Token
 	token, err := jwtToken.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.TokenGenerateError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.TokenGenerateError)
+		log.New(ctx).WithCode(code_errors.TokenGenerateError).Errorf("%v", err)
+		return result, code_errors.New(code_errors.TokenGenerateError)
 	}
-
-	// 返回 Token
-	result := systemDTO.UserLoginRsp{
-		Token: token,
-	}
-	return response.New().WithMsg("登录成功").WithData(result)
+	result.Token = token
+	return result, nil
 }
 
 // Logout 注销系统
-func (h *userLoginService) Logout(ctx *gin.Context) *response.ResponseAPI {
+func (h *userLoginService) Logout(ctx *gin.Context) (systemDTO.UserLoginRsp, error) {
 	result := systemDTO.UserLoginRsp{}
-	return response.New().WithMsg("注销成功").WithData(result)
+	return result, nil
 }
 
 // Captcha 验证码
-func (h *userLoginService) Captcha(ctx *gin.Context) *response.ResponseAPI {
-	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
-	if err != nil {
-		log.New(ctx).WithCode(statuscode.CaptchaGenerateError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.CaptchaGenerateError)
+func (h *userLoginService) Captcha(ctx *gin.Context) (systemVO.Captcha, error) {
+	result := systemVO.Captcha{
+		CaptchaId: "",
+		B64s:      "",
 	}
 
-	result := map[string]string{
-		"captcha_id": captchaId,
-		"b64s":       b64s,
+	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
+	if err != nil {
+		log.New(ctx).WithCode(code_errors.CaptchaGenerateError).Errorf("%v", err)
+		return result, code_errors.New(code_errors.CaptchaGenerateError)
 	}
-	return response.New().WithMsg("登录成功").WithData(result)
+
+	result.CaptchaId = captchaId
+	result.B64s = b64s
+	return result, nil
 }
 
 // CaptchaVerify 验证码验证
-func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI {
+func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) error {
 	// 校验验证码
 	// 注意 Verify(id, VerifyValue, true) 中的 true参数
 	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
 	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
-		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		return response.New().WithCode(statuscode.CaptchaVerifyError)
+		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
+		return code_errors.New(code_errors.CaptchaVerifyError)
 	}
-	return response.New().WithMsg("验证成功")
+	return nil
 }
 
 // Captcha2 验证码
-func (h *userLoginService) Captcha2(ctx *gin.Context) *response.ResponseAPI {
+func (h *userLoginService) Captcha2(ctx *gin.Context) ([]byte, error) {
 	captchaId := captcha.NewLen(5)
 
 	var content bytes.Buffer
@@ -125,7 +129,8 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) *response.ResponseAPI {
 		ctx.Header("Content-Type", "audio/x-wav")
 		captcha.WriteAudio(&content, captchaId, "zh")
 	default:
-		return response.New().WithCode(statuscode.CaptchaEtxNotFoundError)
+		log.New(ctx).WithCode(code_errors.CaptchaEtxNotFoundError).Error("")
+		return nil, code_errors.New(code_errors.CaptchaEtxNotFoundError)
 	}
 
 	download := false
@@ -137,34 +142,34 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) *response.ResponseAPI {
 	session.Set("captcha_id", captchaId)
 	_ = session.Save()
 
-	return response.New().WithData(content.Bytes())
+	return content.Bytes(), nil
 }
 
 // Captcha2Verify 验证码验证
-func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) *response.ResponseAPI {
+func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) error {
 	if !captcha.VerifyString(captchaId, verifyValue) {
-		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		return response.New().WithCode(statuscode.CaptchaVerifyError)
+		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
+		return code_errors.New(code_errors.CaptchaVerifyError)
 
 	}
-	return response.New().WithMsg("验证成功")
+	return nil
 }
 
 // 检查验证码
-func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) *response.ResponseAPI {
+func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) error {
 	if captcha == "" {
-		log.New(ctx).WithCode(statuscode.SessionGetCaptchaEmptyError).Error("")
-		return response.New().WithCode(statuscode.SessionGetCaptchaEmptyError)
+		log.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Error("")
+		return code_errors.New(code_errors.SessionGetCaptchaEmptyError)
 	}
 	if captchaId == "" {
-		log.New(ctx).WithCode(statuscode.CaptchaNotFoundError).Error("")
-		return response.New().WithCode(statuscode.CaptchaNotFoundError)
+		log.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Error("")
+		return code_errors.New(code_errors.CaptchaNotFoundError)
 	}
 
 	// 校验验证码
 	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
-		log.New(ctx).WithCode(statuscode.CaptchaVerifyError).Error("")
-		return response.New().WithCode(statuscode.CaptchaVerifyError)
+		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
+		return code_errors.New(code_errors.CaptchaVerifyError)
 	}
-	return response.New()
+	return nil
 }

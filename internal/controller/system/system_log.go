@@ -5,6 +5,7 @@ package system
 import (
 	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/http"
+	"gin-admin/internal/pkg/response"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +26,15 @@ func NewSystemLogController() *systemLogController {
 // List 获取系统日志列表
 func (c *systemLogController) List(ctx *gin.Context) {
 	req := systemDTO.QuerySystemLogReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.List(ctx, req).Json(ctx)
+	results, total, err := c.service.List(ctx, req)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, total).Json()
 }

@@ -1,11 +1,13 @@
 /*业务状态码
  */
-package statuscode
+package code_errors
 
 import (
 	"errors"
 	"fmt"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Error(t *testing.T) {
@@ -66,5 +68,12 @@ func Test_statuScode_Error(t *testing.T) {
 				t.Errorf("statuScode.Error() error = %v, msg = %v, wantErr %v", err, tt.msg, tt.wantErr)
 			}
 		})
+	}
+}
+
+func TestErrors(t *testing.T) {
+	var e1 = errors.New("xxx")
+	if errors.Is(e1, e1) {
+		assert.Equal(t, e1, e1)
 	}
 }

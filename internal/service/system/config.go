@@ -5,22 +5,21 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ConfigService 配置接口
 type ConfigService interface {
-	AllTree(ctx *gin.Context) *response.ResponseAPI
-	Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) *response.ResponseAPI
-	Add(ctx *gin.Context, menu systemModel.Config) *response.ResponseAPI
-	Update(ctx *gin.Context, menu systemModel.Config) *response.ResponseAPI
-	Delete(ctx *gin.Context, id uint) *response.ResponseAPI
-	BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI
-	Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI
+	AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error)
+	Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
+	Add(ctx *gin.Context, menu systemModel.Config) (uint, error)
+	Update(ctx *gin.Context, menu systemModel.Config) (int64, error)
+	Delete(ctx *gin.Context, id uint) (int64, error)
+	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
+	Status(ctx *gin.Context, id uint, status uint) (int64, error)
 }
 
 // 配置
@@ -36,28 +35,28 @@ func NewConfigService() *configService {
 }
 
 // AllTree 获取所有配置树
-func (s *configService) AllTree(ctx *gin.Context) *response.ResponseAPI {
+func (s *configService) AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error) {
 	results, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return nil, 0, code_errors.New(code_errors.DBQueryError)
 	}
 	// 配置列表数据转为树结构
 	tree := configListToTree(results, nil)
-	return response.New().WithDataList(tree, int64(len(tree)))
+	return tree, int64(len(tree)), nil
 }
 
 // Tree 获取配置树
-func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) *response.ResponseAPI {
+func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
 	configList, _, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return nil, 0, code_errors.New(code_errors.DBQueryError)
 	}
 	configAll, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return nil, 0, code_errors.New(code_errors.DBQueryError)
 	}
 
 	// 配置列表数据转为树结构
@@ -72,67 +71,67 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) *re
 			}
 		}
 	}
-	return response.New().WithDataList(treeFilter, int64(len(tree)))
+	return treeFilter, int64(len(tree)), nil
 }
 
 // Add 添加配置
-func (s *configService) Add(ctx *gin.Context, config systemModel.Config) *response.ResponseAPI {
-	if _, err := s.dao.Add(config); err != nil {
-		log.New(ctx).WithCode(statuscode.DBAddError).Errorf("%v", err)
-
-		return response.New().WithCode(statuscode.DBAddError)
+func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, error) {
+	id, err := s.dao.Add(config)
+	if err != nil {
+		log.New(ctx).WithCode(code_errors.DBAddError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBAddError)
 	}
-	return response.New()
+	return id, nil
 }
 
 // Update 更新配置
-func (s *configService) Update(ctx *gin.Context, config systemModel.Config) *response.ResponseAPI {
+func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int64, error) {
 	row, err := s.dao.Update(config)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBUpdateError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBUpdateError)
+		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBUpdateError)
 	}
-	return response.New().WithData(row)
+	return row, nil
 }
 
 // Delete 删除配置
-func (s *configService) Delete(ctx *gin.Context, id uint) *response.ResponseAPI {
+func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenConfig, err := s.dao.Children(id)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBQueryError)
 	}
 	if len(childrenConfig) > 0 {
-		log.New(ctx).WithCode(statuscode.DBDataExistChildrenError).Errorf("删除失败, 存在子配置, %v", err)
-		return response.New().WithCode(statuscode.DBDataExistChildrenError).WithMsg("删除失败, 存在子配置")
+		log.New(ctx).WithCode(code_errors.DBDataExistChildrenError).Errorf("删除失败, 存在子配置, %v", err)
+		return 0, code_errors.New(code_errors.DBDataExistChildrenError).WithMsg("删除失败, 存在子配置")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBDeleteError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBDeleteError)
+		log.New(ctx).WithCode(code_errors.DBDeleteError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBDeleteError)
 	}
-	return response.New().WithData(row)
+	return row, nil
 }
 
 // BatchDelete 批量删除配置, 批量删除，不校验是否存在子配置
-func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) *response.ResponseAPI {
+func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBBatchDeleteError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBBatchDeleteError)
+		log.New(ctx).WithCode(code_errors.DBBatchDeleteError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBBatchDeleteError)
 	}
-	return response.New().WithData(row)
+	return row, nil
 }
 
 // Status 更新配置状态
-func (s *configService) Status(ctx *gin.Context, id uint, status uint) *response.ResponseAPI {
+func (s *configService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
 	row, err := s.dao.Status(id, status)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBUpdateStatusError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBUpdateStatusError)
+		log.New(ctx).WithCode(code_errors.DBUpdateStatusError).Errorf("%v", err)
+		return 0, code_errors.New(code_errors.DBUpdateStatusError)
 	}
-	return response.New().WithData(row)
+	return row, nil
 }
 
 // 配置列表数据转为树结构

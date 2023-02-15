@@ -3,41 +3,52 @@
 package response
 
 import (
-	"fmt"
 	"net/http"
 
-	statuscode "gin-admin/internal/pkg/status_code"
+	"gin-admin/internal/pkg/code_errors"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ResponseAPI API响应结构
 type ResponseAPI struct {
-	Code statuscode.StatusCode `json:"code"` // 状态码
-	Msg  string                `json:"msg"`  // 状态码信息
-	Data interface{}           `json:"data"` // 返回数据
+	Code code_errors.StatusCode `json:"code"` // 状态码
+	Msg  string                 `json:"msg"`  // 状态码信息
+	Data interface{}            `json:"data"` // 返回数据
+	ctx  *gin.Context           `json:"-"`
 }
 
 // New 返回 API 响应结构对象
-//
 // 返回默认 Ok 状态码及对应的状态码信息
-func New() *ResponseAPI {
+func New(ctx *gin.Context) *ResponseAPI {
 	return &ResponseAPI{
-		Code: statuscode.Ok,
-		Msg:  statuscode.Ok.Msg(),
+		Code: code_errors.Ok,
+		Msg:  code_errors.Ok.Msg(),
+		ctx:  ctx,
 	}
 }
 
+// WithMsg 添加返回信息
+func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
+	r.Msg = msg
+	return r
+}
+
 // WithCode 添加响应状态码及状态码对应的信息
-func (r *ResponseAPI) WithCode(code statuscode.StatusCode) *ResponseAPI {
+func (r *ResponseAPI) WithCode(code code_errors.StatusCode) *ResponseAPI {
 	r.Code = code
 	r.Msg = code.Msg()
 	return r
 }
 
-// WithMsg 添加响应信息
-func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
-	r.Msg = msg
+// WithCodeError 添加响应状态码及状态码对应的信息
+func (r *ResponseAPI) WithCodeError(err error) *ResponseAPI {
+	code, ok := err.(*code_errors.CError)
+	if !ok {
+		return r.WithCode(code_errors.UnknownError)
+	}
+	r.Code = code.Code
+	r.Msg = code.Msg
 	return r
 }
 
@@ -56,18 +67,7 @@ func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
 	return r
 }
 
-// Error 返回状态码错误
-func (r *ResponseAPI) Error() error {
-	if r.Code == statuscode.Ok {
-		return r.Code.Error()
-	}
-	if r.Msg == r.Code.Msg() {
-		return r.Code.Error()
-	}
-	return fmt.Errorf("%s, %w", r.Msg, r.Code.Error())
-}
-
 // Json 返回接口
-func (r *ResponseAPI) Json(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, r)
+func (r *ResponseAPI) Json() {
+	r.ctx.JSON(http.StatusOK, r)
 }

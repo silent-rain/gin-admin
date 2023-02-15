@@ -6,12 +6,12 @@ import (
 	"errors"
 	"strings"
 
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
 	jwtToken "gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
@@ -50,8 +50,8 @@ func CheckLogin() gin.HandlerFunc {
 		// 从请求头中获取Token
 		token := ctx.GetHeader(conf.TokenHeader)
 		if token == "" {
-			log.New(ctx).WithCode(statuscode.TokenNotFound).Errorf("")
-			response.New().WithCode(statuscode.TokenNotFound).Json(ctx)
+			log.New(ctx).WithCode(code_errors.TokenNotFound).Errorf("")
+			response.New(ctx).WithCode(code_errors.TokenNotFound).Json()
 			ctx.Abort()
 			return
 		}
@@ -74,18 +74,18 @@ func parseTokenErr(ctx *gin.Context, err error) error {
 	if err == nil {
 		return nil
 	}
-	if errors.Is(err, statuscode.TokenParsingError.Error()) {
-		log.New(ctx).WithCode(statuscode.TokenParsingError).Errorf("%v", err)
-		response.New().WithCode(statuscode.TokenParsingError).Json(ctx)
-	} else if errors.Is(err, statuscode.TokeConvertError.Error()) {
-		log.New(ctx).WithCode(statuscode.TokeConvertError).Errorf("%v", err)
-		response.New().WithCode(statuscode.TokeConvertError).Json(ctx)
-	} else if errors.Is(err, statuscode.TokenInvalidError.Error()) {
-		log.New(ctx).WithCode(statuscode.TokenInvalidError).Errorf("%v", err)
-		response.New().WithCode(statuscode.TokenInvalidError).Json(ctx)
-	} else if errors.Is(err, statuscode.TokenExpiredError.Error()) {
-		log.New(ctx).WithCode(statuscode.TokenExpiredError).Errorf("%v", err)
-		response.New().WithCode(statuscode.TokenExpiredError).Json(ctx)
+	if errors.Is(err, code_errors.TokenParsingError.Error()) {
+		log.New(ctx).WithCode(code_errors.TokenParsingError).Errorf("%v", err)
+		response.New(ctx).WithCode(code_errors.TokenParsingError).Json()
+	} else if errors.Is(err, code_errors.TokeConvertError.Error()) {
+		log.New(ctx).WithCode(code_errors.TokeConvertError).Errorf("%v", err)
+		response.New(ctx).WithCode(code_errors.TokeConvertError).Json()
+	} else if errors.Is(err, code_errors.TokenInvalidError.Error()) {
+		log.New(ctx).WithCode(code_errors.TokenInvalidError).Errorf("%v", err)
+		response.New(ctx).WithCode(code_errors.TokenInvalidError).Json()
+	} else if errors.Is(err, code_errors.TokenExpiredError.Error()) {
+		log.New(ctx).WithCode(code_errors.TokenExpiredError).Errorf("%v", err)
+		response.New(ctx).WithCode(code_errors.TokenExpiredError).Json()
 	}
 	return err
 }

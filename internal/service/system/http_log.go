@@ -5,16 +5,16 @@ package service
 import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
+	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 
 	"github.com/gin-gonic/gin"
 )
 
 // HttpLogService 网络请求日志接口
 type HttpLogService interface {
-	List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) *response.ResponseAPI
+	List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error)
 }
 
 // 网络请求日志
@@ -30,12 +30,12 @@ func NewHttpLogService() *httpLogService {
 }
 
 // List 获取网络请求日志列表
-func (s *httpLogService) List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) *response.ResponseAPI {
-	roles, total, err := s.dao.List(req)
+func (s *httpLogService) List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error) {
+	results, total, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(statuscode.DBQueryError).Errorf("%v", err)
-		return response.New().WithCode(statuscode.DBQueryError)
+		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
+		return nil, 0, code_errors.New(code_errors.DBQueryError)
 
 	}
-	return response.New().WithDataList(roles, total)
+	return results, total, nil
 }

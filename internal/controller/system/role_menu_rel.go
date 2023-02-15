@@ -4,10 +4,10 @@ package system
 
 import (
 	systemDTO "gin-admin/internal/dto/system"
+	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	statuscode "gin-admin/internal/pkg/status_code"
 	service "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -28,26 +28,35 @@ func NewRoleMenuRelController() *roleMenuRelController {
 // List 获取角色关联的菜单列表
 func (c *roleMenuRelController) List(ctx *gin.Context) {
 	req := systemDTO.QueryRoleMenuRelReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 	if req.RoleId == 0 && req.MenuId == 0 {
 		log.New(ctx).WithField("data", req).Errorf("role_id/menu_id 不能同时为空")
-		response.New().WithCode(statuscode.ReqParameterParsingError).WithMsg("role_id/menu_id 不能同时为空").Json(ctx)
+		response.New(ctx).WithCode(code_errors.ReqParameterParsingError).WithMsg("role_id/menu_id 不能同时为空")
 		return
 	}
 
-	c.service.List(ctx, req).Json(ctx)
+	results, total, err := c.service.List(ctx, req)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, total).Json()
 }
 
 // Update 更新角色菜单关联关系
 func (c *roleMenuRelController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateRoleMenuRelReq{}
-	if result := http.ParsingReqParams(ctx, &req); result.Error() != nil {
-		result.Json(ctx)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	c.service.Update(ctx, req.RoleId, req.MenuIds).Json(ctx)
+	if err := c.service.Update(ctx, req.RoleId, req.MenuIds); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
 }
