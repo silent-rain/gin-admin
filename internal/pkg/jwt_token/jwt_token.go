@@ -49,13 +49,13 @@ func ParseToken(tokenString string) (*Token, error) {
 	})
 	claims, ok := token.Claims.(*Token)
 	if !ok {
-		return nil, code_errors.TokenInvalidError.Error()
+		return nil, code_errors.New(code_errors.TokenInvalidError)
 	} else if !claims.VerifyIssuer(conf.TokenIssuer, true) {
-		return nil, code_errors.TokenInvalidError.Error()
+		return nil, code_errors.New(code_errors.TokenInvalidError)
 	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
-		return nil, code_errors.TokenExpiredError.Error()
+		return nil, code_errors.New(code_errors.TokenExpiredError)
 	} else if !token.Valid {
-		return nil, code_errors.TokenInvalidError.Error()
+		return nil, code_errors.New(code_errors.TokenInvalidError)
 	}
 	return claims, nil
 }

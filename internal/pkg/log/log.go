@@ -198,6 +198,18 @@ func (l *logger) WithCode(code code_errors.StatusCode) *logger {
 	return l
 }
 
+// WithCodeError 添加响应状态码及状态码对应的信息
+func (l *logger) WithCodeError(err error) *logger {
+	code, ok := err.(*code_errors.CError)
+	if !ok {
+		l.fields = append(l.fields, zap.Uint("error_code", uint(code_errors.UnknownError)),
+			zap.String("error_msg", code_errors.UnknownError.Msg()))
+		return l
+	}
+	l.fields = append(l.fields, zap.Uint("error_code", uint(code.Code)), zap.String("error_msg", code.Msg))
+	return l
+}
+
 // WithField 添加扩展字段
 func (l *logger) WithField(key string, value interface{}) *logger {
 	l.extends[key] = value

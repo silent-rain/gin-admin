@@ -3,13 +3,12 @@
 package middleware
 
 import (
-	"errors"
 	"strings"
 
 	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
-	jwtToken "gin-admin/internal/pkg/jwt_token"
+	"gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/internal/pkg/utils"
@@ -58,34 +57,14 @@ func CheckLogin() gin.HandlerFunc {
 		// 字符串替换
 		token = strings.Replace(token, "Bearer ", "", 1)
 		// Token 解析
-		claim, err := jwtToken.ParseToken(token)
+		claim, err := jwt_token.ParseToken(token)
 		if err != nil {
-			parseTokenErr(ctx, err)
+			log.New(ctx).WithCodeError(err).Errorf("")
+			response.New(ctx).WithCodeError(err).Json()
 			ctx.Abort()
 			return
 		}
 		ctx.Set(context.GinContextToken, *claim)
 		ctx.Next()
 	}
-}
-
-// Token 解析异常处理
-func parseTokenErr(ctx *gin.Context, err error) error {
-	if err == nil {
-		return nil
-	}
-	if errors.Is(err, code_errors.TokenParsingError.Error()) {
-		log.New(ctx).WithCode(code_errors.TokenParsingError).Errorf("%v", err)
-		response.New(ctx).WithCode(code_errors.TokenParsingError).Json()
-	} else if errors.Is(err, code_errors.TokeConvertError.Error()) {
-		log.New(ctx).WithCode(code_errors.TokeConvertError).Errorf("%v", err)
-		response.New(ctx).WithCode(code_errors.TokeConvertError).Json()
-	} else if errors.Is(err, code_errors.TokenInvalidError.Error()) {
-		log.New(ctx).WithCode(code_errors.TokenInvalidError).Errorf("%v", err)
-		response.New(ctx).WithCode(code_errors.TokenInvalidError).Json()
-	} else if errors.Is(err, code_errors.TokenExpiredError.Error()) {
-		log.New(ctx).WithCode(code_errors.TokenExpiredError).Errorf("%v", err)
-		response.New(ctx).WithCode(code_errors.TokenExpiredError).Json()
-	}
-	return err
 }
