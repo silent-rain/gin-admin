@@ -3,12 +3,13 @@
 package utils
 
 import (
-	"database/sql/driver"
 	"fmt"
 	"time"
+
+	"database/sql/driver"
 )
 
-// LocalTime grom数据库查询时间格式设置
+// LocalTime grom 数据库查询时间格式设置
 type LocalTime time.Time
 
 // MarshalJSON 重写 MarshalJSON ⽅法来实现数据解析

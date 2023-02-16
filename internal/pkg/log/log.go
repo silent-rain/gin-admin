@@ -144,10 +144,10 @@ func newDbLoggerAsyncer() *dbLoggerAsyncer {
 }
 
 // Write 定义Write方法以实现Sink接口
-func (d dbLoggerAsyncer) Write(p []byte) (n int, err error) {
+func (d dbLoggerAsyncer) Write(p []byte) (int, error) {
 	sysLog := systemModel.SystemLog{}
 	if err := json.Unmarshal(p, &sysLog); err != nil {
-		return len(p), nil
+		return len(p), err
 	}
 	go func() {
 		systemDAO.NewSystemLogDao().Add(sysLog)
