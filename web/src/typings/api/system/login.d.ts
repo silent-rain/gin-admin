@@ -1,4 +1,4 @@
-/**登录 */
+/** 登录 */
 
 export interface GetCaptchaRsp {
   b64s: string;

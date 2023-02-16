@@ -44,9 +44,9 @@
               target="_blank"
               href="https://github.jzfai.top/low-code-platform"
             >
-              <el-dropdown-item>{{
-                langTitle('LowCodePlatFrom')
-              }}</el-dropdown-item>
+              <el-dropdown-item>
+                {{ langTitle('LowCodePlatFrom') }}
+              </el-dropdown-item>
             </a>
             <!--<el-dropdown-item>修改密码</el-dropdown-item>-->
             <el-dropdown-item divided @click="loginOut">

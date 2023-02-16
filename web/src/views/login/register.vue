@@ -64,7 +64,7 @@
       </el-form-item>
 
       <div class="form-submit">
-        <el-button type="" link @click="handleLogin"> 返回登录 </el-button>
+        <el-button type="" link @click="handleLogin">返回登录</el-button>
         <el-button type="primary" @click="submitForm(ruleFormRef)">
           提交
         </el-button>

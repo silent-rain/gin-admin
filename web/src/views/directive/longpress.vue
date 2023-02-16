@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button v-longpress="setData"> 长按指令 </el-button>
+    <el-button v-longpress="setData">长按指令</el-button>
     <p>{{ data }}</p>
   </div>
 </template>

@@ -132,8 +132,8 @@
                   placement="top"
                 >
                   <el-icon style="margin-right: 2px">
-                    <QuestionFilled
-                  /></el-icon>
+                    <QuestionFilled />
+                  </el-icon>
                 </el-tooltip>
                 <span>外链地址</span>
               </div>
@@ -163,8 +163,8 @@
                   placement="top"
                 >
                   <el-icon style="margin-right: 2px">
-                    <QuestionFilled
-                  /></el-icon>
+                    <QuestionFilled />
+                  </el-icon>
                 </el-tooltip>
                 <span>内链地址</span>
               </div>
@@ -195,12 +195,12 @@
             <!-- 按钮设置 -->
             <el-radio-group v-model="props.data.hidden">
               <el-radio :label="0">可用</el-radio>
-              <el-radio :label="1"
-                >禁用
+              <el-radio :label="1">
+                禁用
                 <el-tooltip content="选择禁用, 按钮将不能点击" placement="top">
                   <el-icon style="margin-left: 1px">
-                    <QuestionFilled
-                  /></el-icon>
+                    <QuestionFilled />
+                  </el-icon>
                 </el-tooltip>
               </el-radio>
             </el-radio-group>
@@ -208,15 +208,15 @@
           <el-form-item v-else label="是否隐藏" prop="hidden">
             <el-radio-group v-model="props.data.hidden">
               <el-radio :label="0">显示</el-radio>
-              <el-radio :label="1"
-                >隐藏
+              <el-radio :label="1">
+                隐藏
                 <el-tooltip
                   content="选择隐藏, 注册路由不显示在侧边栏"
                   placement="top"
                 >
                   <el-icon style="margin-left: 1px">
-                    <QuestionFilled
-                  /></el-icon>
+                    <QuestionFilled />
+                  </el-icon>
                 </el-tooltip>
               </el-radio>
             </el-radio-group>
@@ -242,15 +242,15 @@
               :disabled="props.data.menu_type === MenuType.Button"
             >
               <el-radio :label="1">显示</el-radio>
-              <el-radio :label="0"
-                >隐藏
+              <el-radio :label="0">
+                隐藏
                 <el-tooltip
                   content="选择隐藏当只有一个子菜单时不显示根菜单"
                   placement="top"
                 >
                   <el-icon style="margin-left: 1px">
-                    <QuestionFilled
-                  /></el-icon>
+                    <QuestionFilled />
+                  </el-icon>
                 </el-tooltip>
               </el-radio>
             </el-radio-group>

@@ -1,4 +1,4 @@
-/**配置
+/** 配置
  *
  */
 import axiosReq from '@/utils/axios-req';

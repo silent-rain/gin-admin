@@ -1,4 +1,4 @@
-/**角色菜单关系 */
+/** 角色菜单关系 */
 import axiosReq from '@/utils/axios-req';
 
 // 获取角色菜单列表

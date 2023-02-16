@@ -7,12 +7,14 @@
     :size="props.size"
     :disabled="isDisabledButton(props.permission)"
     @click="handleClick"
-    ><slot />
+  >
+    <slot />
   </el-button>
 </template>
 
 <script setup lang="ts">
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
+
 const props = withDefaults(
   defineProps<{
     permission: string;

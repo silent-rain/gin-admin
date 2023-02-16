@@ -1,4 +1,4 @@
-/*用户
+/* 用户
  */
 
 export interface User {

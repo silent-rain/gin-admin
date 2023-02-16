@@ -38,5 +38,4 @@ export interface rawConfig {
 export type RouteRawConfig = RouteRecordRaw & rawConfig;
 export type RouterTypes = Array<rawProp>;
 
-
 export {};

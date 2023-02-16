@@ -2,9 +2,9 @@
   <div class="app-container">
     <aside class="font-bold">
       {{ t('guide.description') }}
-      <a href="https://github.com/kamranahmedse/driver.js" target="_blank"
-        >driver.js.</a
-      >
+      <a href="https://github.com/kamranahmedse/driver.js" target="_blank">
+        driver.js.
+      </a>
     </aside>
     <el-button
       class="mt-20px"

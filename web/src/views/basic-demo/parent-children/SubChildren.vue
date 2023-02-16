@@ -13,7 +13,7 @@
     <div class="modal">
       <div>
         to container
-        <el-button @click="modalOpen = false"> Close </el-button>
+        <el-button @click="modalOpen = false">Close</el-button>
       </div>
     </div>
   </teleport>
@@ -21,7 +21,7 @@
   <!--  <teleport v-if="modalOpen" to="body">-->
   <!--    <div>to body</div>-->
   <!--  </teleport>-->
-  <el-button @click="showModalOpen"> showModalOpen </el-button>
+  <el-button @click="showModalOpen">showModalOpen</el-button>
 </template>
 
 <script setup lang="ts">

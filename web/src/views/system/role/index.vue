@@ -2,7 +2,7 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:role:list')" class="filter">
-      <label>角色名称: </label>
+      <label>角色名称:</label>
       <el-input
         v-model="listQuery.name"
         class="filter-name"
@@ -16,7 +16,8 @@
           :icon="Search"
           :disabled="isDisabledButton('sys:role:list')"
           @click="handleFilter"
-          >查询
+        >
+          查询
         </el-button>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
       </el-button-group>
@@ -30,7 +31,8 @@
           type="primary"
           :icon="Plus"
           @click="handleAdd"
-          >添加
+        >
+          添加
         </ButtonPermission>
         <el-popconfirm
           confirm-button-text="确认"
@@ -46,18 +48,19 @@
               permission="sys:role:delall"
               type="danger"
               :icon="Delete"
-              >批量删除
+            >
+              批量删除
             </ButtonPermission>
           </template>
         </el-popconfirm>
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchRoleList"
           v-model:size="tableSize"
-          :screenFullElement="'el-table-role'"
-          :checkAllList="checkAllList"
           v-model:checkedDict="checkedDict"
+          :screen-full-element="'el-table-role'"
+          :check-all-list="checkAllList"
+          @refreshEvent="fetchRoleList"
         />
       </div>
     </div>
@@ -155,7 +158,8 @@
             size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
-            >修改
+          >
+            修改
           </ButtonPermission>
           <ButtonPermission
             permission="sys:role:permission"
@@ -164,7 +168,8 @@
             size="small"
             :icon="Finished"
             @click="handleMenuPermission(scope.row)"
-            >分配权限
+          >
+            分配权限
           </ButtonPermission>
           <el-popconfirm
             confirm-button-text="确认"
@@ -182,7 +187,8 @@
                 type="danger"
                 size="small"
                 :icon="Delete"
-                >删除
+              >
+                删除
               </ButtonPermission>
             </template>
           </el-popconfirm>
@@ -201,7 +207,6 @@
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
-import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
   Search,
@@ -211,6 +216,7 @@ import {
   Plus,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import { useBasicStore } from '@/store/basic';
 import {
   getRoleList,
   updateRoleStatus,

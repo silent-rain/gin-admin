@@ -1,4 +1,4 @@
-/**菜单 */
+/** 菜单 */
 
 // 菜单类型
 export enum MenuType {

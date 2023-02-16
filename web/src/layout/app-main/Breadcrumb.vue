@@ -12,9 +12,9 @@
         >
           {{ langTitle(item.meta?.title) }}
         </span>
-        <a v-else @click.prevent="handleLink(item)">{{
-          langTitle(item.meta?.title)
-        }}</a>
+        <a v-else @click.prevent="handleLink(item)">
+          {{ langTitle(item.meta?.title) }}
+        </a>
       </el-breadcrumb-item>
     </transition-group>
     <!--no transition-->
@@ -28,9 +28,9 @@
         >
           {{ langTitle(item.meta?.title) }}
         </span>
-        <a v-else @click.prevent="handleLink(item)">{{
-          langTitle(item.meta?.title)
-        }}</a>
+        <a v-else @click.prevent="handleLink(item)">
+          {{ langTitle(item.meta?.title) }}
+        </a>
       </el-breadcrumb-item>
     </template>
   </el-breadcrumb>

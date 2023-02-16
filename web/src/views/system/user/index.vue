@@ -29,7 +29,8 @@
           type="primary"
           :icon="Search"
           @click="handleFilter"
-          >查询
+        >
+          查询
         </ButtonPermission>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
       </el-button-group>
@@ -43,7 +44,8 @@
           type="primary"
           :icon="Plus"
           @click="handleAdd"
-          >添加
+        >
+          添加
         </ButtonPermission>
         <el-popconfirm
           confirm-button-text="确认"
@@ -59,7 +61,8 @@
               permission="sys:user:delall"
               type="danger"
               :icon="Delete"
-              >批量删除
+            >
+              批量删除
             </ButtonPermission>
           </template>
         </el-popconfirm>
@@ -68,22 +71,24 @@
           permission="sys:user:import"
           type=""
           @click="handleImportEvent"
-          >导入
+        >
+          导入
         </ButtonPermission>
         <ButtonPermission
           permission="sys:user:export"
           type=""
           @click="handleExportEvent"
-          >导出
+        >
+          导出
         </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchUserList"
           v-model:size="tableSize"
-          :screenFullElement="'el-table-user'"
-          :checkAllList="checkAllList"
           v-model:checkedDict="checkedDict"
+          :screen-full-element="'el-table-user'"
+          :check-all-list="checkAllList"
+          @refreshEvent="fetchUserList"
         />
       </div>
     </div>
@@ -191,7 +196,8 @@
             v-for="(item, _) in scope.row.roles"
             :key="item.id"
             size="small"
-            >{{ item.name }}
+          >
+            {{ item.name }}
           </el-tag>
         </template>
       </el-table-column>
@@ -245,7 +251,8 @@
             :icon="EditPen"
             link
             @click="handleEdit(scope.row)"
-            >修改
+          >
+            修改
           </ButtonPermission>
 
           <el-popconfirm
@@ -264,7 +271,8 @@
                 size="small"
                 :icon="Delete"
                 link
-                >删除
+              >
+                删除
               </ButtonPermission>
             </template>
           </el-popconfirm>
@@ -285,7 +293,8 @@
                 size="small"
                 :icon="Finished"
                 link
-                >重置密码
+              >
+                重置密码
               </ButtonPermission>
             </template>
           </el-popconfirm>
@@ -304,7 +313,6 @@
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
-import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
   Search,
@@ -314,6 +322,7 @@ import {
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import { useBasicStore } from '@/store/basic';
 import {
   getUserList,
   updateUserStatus,
@@ -481,7 +490,7 @@ const handleStatusChange = async (row: User) => {
 // 重置密码
 const handleResetUserPwd = async (id: number) => {
   const data = {
-    id: id,
+    id,
   };
   try {
     await resetUserPwd(data);

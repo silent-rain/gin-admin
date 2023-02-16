@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button v-waves type="primary"> 水波纹效果指令 </el-button>
+    <el-button v-waves type="primary">水波纹效果指令</el-button>
     <div v-waves class="box" />
   </div>
 </template>

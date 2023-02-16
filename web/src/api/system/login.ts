@@ -1,4 +1,4 @@
-/*注册/登录/登出/验证码
+/* 注册/登录/登出/验证码
  */
 import axiosReq from '@/utils/axios-req';
 

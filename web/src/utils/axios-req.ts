@@ -24,13 +24,13 @@ service.interceptors.request.use(
 
     // token setting
     // @ts-ignore
-    request.headers['authorization'] = useUserStore().token;
-    /* download file*/
+    request.headers.authorization = useUserStore().token;
+    /* download file */
     // @ts-ignore
     if (request.isDownLoadFile) {
       request.responseType = 'blob';
     }
-    /* upload file*/
+    /* upload file */
     // @ts-ignore
     if (request.isUploadFile) {
       // @ts-ignore
@@ -107,9 +107,9 @@ service.interceptors.response.use(
       });
     }
 
-    //返回错误信息
-    //如果未catch 走unhandledrejection进行收集
-    //注：如果没有return 则，会放回到请求方法中.then ,返回的res为 undefined
+    // 返回错误信息
+    // 如果未catch 走unhandledrejection进行收集
+    // 注：如果没有return 则，会放回到请求方法中.then ,返回的res为 undefined
     return Promise.reject(res.data);
   },
   // 响应报错
@@ -122,8 +122,8 @@ service.interceptors.response.use(
       duration: 2 * 1000,
     });
 
-    //如果是跨域
-    //Network Error,cross origin
+    // 如果是跨域
+    // Network Error,cross origin
     const errObj = {
       msg: err.toString(),
       reqUrl: reqConfig.baseURL + reqConfig.url,
@@ -158,17 +158,17 @@ export default function axiosReq({
 }) {
   // @ts-ignore
   return service({
-    url: url,
-    method: method,
-    data: data,
-    isParams: isParams,
-    bfLoading: bfLoading,
-    afHLoading: afHLoading,
-    isUploadFile: isUploadFile,
-    isDownLoadFile: isDownLoadFile,
-    isAlertErrorMsg: isAlertErrorMsg,
-    baseURL: baseURL,
-    timeout: timeout,
+    url,
+    method,
+    data,
+    isParams,
+    bfLoading,
+    afHLoading,
+    isUploadFile,
+    isDownLoadFile,
+    isAlertErrorMsg,
+    baseURL,
+    timeout,
   });
 }
 

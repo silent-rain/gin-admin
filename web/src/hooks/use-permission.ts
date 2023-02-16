@@ -29,8 +29,8 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
       elSvgIcon: menu.el_svg_icon,
       icon: menu.icon,
     };
-    parentNode.alwaysShow = menu.always_show === 1 ? true : false;
-    parentNode.hidden = menu.hidden === 1 ? true : false;
+    parentNode.alwaysShow = menu.always_show === 1;
+    parentNode.hidden = menu.hidden === 1;
 
     if (menu.children) {
       parentNode.children = asyncRoutesByMenus(menu.children);
@@ -61,7 +61,7 @@ export const filterAsyncRouter = (menus: Menu[]) => {
 export const buttonPermissions = (permissions: ButtonPermission[]) => {
   const permissionHash = {};
   for (const item of permissions) {
-    permissionHash[item.permission] = item.disabled === 0 ? false : true;
+    permissionHash[item.permission] = item.disabled !== 0;
   }
   usePermissionStore().setButtonPermission(permissions, permissionHash);
 };
@@ -82,7 +82,7 @@ export const isDisabledButton = (value: string): boolean => {
   return perm;
 };
 
-//重置路由
+// 重置路由
 export function resetRouter() {
   // 移除之前存在的路由
   const routeNameSet: Set<RouteRecordName> = new Set();
@@ -102,7 +102,7 @@ export function resetState() {
   usePermissionStore().resetState();
 }
 
-//刷新路由
+// 刷新路由
 export function freshRouter(data: any) {
   resetRouter();
   filterAsyncRouter(data);

@@ -11,7 +11,7 @@
     </div>
 
     <div class="mt-20px">
-      <el-button type="primary" @click="goToConfig"> 去配置 </el-button>
+      <el-button type="primary" @click="goToConfig">去配置</el-button>
     </div>
   </div>
 </template>

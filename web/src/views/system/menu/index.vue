@@ -2,7 +2,7 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:menu:list')" class="filter">
-      <label>一级菜单筛选: </label>
+      <label>一级菜单筛选:</label>
       <el-input
         v-model="listQuery.title"
         class="filter-name"
@@ -16,7 +16,8 @@
           :icon="Search"
           :disabled="isDisabledButton('sys:menu:list')"
           @click="handleFilter"
-          >查询
+        >
+          查询
         </el-button>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
       </el-button-group>
@@ -30,7 +31,8 @@
           type="primary"
           :icon="Plus"
           @click="handleAdd"
-          >添加
+        >
+          添加
         </ButtonPermission>
         <el-popconfirm
           confirm-button-text="确认"
@@ -46,7 +48,8 @@
               permission="sys:menu:delall"
               type="danger"
               :icon="Delete"
-              >批量删除
+            >
+              批量删除
             </ButtonPermission>
           </template>
         </el-popconfirm>
@@ -54,22 +57,24 @@
           permission="sys:menu:expand"
           type=""
           @click="handleExpandAllEvent(true)"
-          >全部展开
+        >
+          全部展开
         </ButtonPermission>
         <ButtonPermission
           permission="sys:menu:collapse"
           type=""
           @click="handleExpandAllEvent(false)"
-          >全部折叠
+        >
+          全部折叠
         </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchMenuTree"
           v-model:size="tableSize"
-          :screenFullElement="'el-table-menu'"
-          :checkAllList="checkAllList"
           v-model:checkedDict="checkedDict"
+          :screen-full-element="'el-table-menu'"
+          :check-all-list="checkAllList"
+          @refreshEvent="fetchMenuTree"
         />
       </div>
     </div>
@@ -84,8 +89,8 @@
     />
 
     <el-table
-      class="el-table-menu"
       ref="tableRef"
+      class="el-table-menu"
       :data="tableData"
       :size="tableSize"
       row-key="id"
@@ -107,8 +112,8 @@
         show-overflow-tooltip
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.menu_type === MenuType.Button" type="success"
-            >按钮
+          <el-tag v-if="scope.row.menu_type === MenuType.Button" type="success">
+            按钮
           </el-tag>
           <el-tag v-else>菜单</el-tag>
         </template>
@@ -120,18 +125,20 @@
         show-overflow-tooltip
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.open_type === OpenType.Component"
-            >菜单</el-tag
-          >
+          <el-tag v-if="scope.row.open_type === OpenType.Component">
+            菜单
+          </el-tag>
           <el-tag
             v-else-if="scope.row.open_type === OpenType.Link"
             type="success"
-            >按钮
+          >
+            按钮
           </el-tag>
           <el-tag
             v-else-if="scope.row.open_type === OpenType.OuterLink"
             type="info"
-            >按钮
+          >
+            按钮
           </el-tag>
         </template>
       </el-table-column>
@@ -181,17 +188,19 @@
           <el-tag
             v-if="scope.row.menu_type === MenuType.Button && scope.row.hidden"
             type="info"
-            >禁用
+          >
+            禁用
           </el-tag>
           <el-tag
             v-else-if="
               scope.row.menu_type === MenuType.Button && !scope.row.hidden
             "
             type="success"
-            >可用
+          >
+            可用
           </el-tag>
           <el-tag v-else-if="scope.row.hidden">隐藏</el-tag>
-          <el-tag v-else type="success">显示 </el-tag>
+          <el-tag v-else type="success">显示</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -202,7 +211,7 @@
       >
         <template #default="scope">
           <el-tag v-if="scope.row.always_show" type="success">显示</el-tag>
-          <el-tag v-else> 隐藏</el-tag>
+          <el-tag v-else>隐藏</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -262,7 +271,8 @@
             size="small"
             :icon="Plus"
             @click="handleAddById(scope.row)"
-            >添加
+          >
+            添加
           </ButtonPermission>
           <ButtonPermission
             permission="sys:menu:update"
@@ -271,7 +281,8 @@
             size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
-            >修改
+          >
+            修改
           </ButtonPermission>
           <el-popconfirm
             confirm-button-text="确认"
@@ -289,7 +300,8 @@
                 type="danger"
                 size="small"
                 :icon="Delete"
-                >删除
+              >
+                删除
               </ButtonPermission>
             </template>
           </el-popconfirm>
@@ -308,7 +320,6 @@
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
   Search,
@@ -317,6 +328,7 @@ import {
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage, TableInstance } from 'element-plus';
+import { useBasicStore } from '@/store/basic';
 import {
   getMenuTree,
   updateMenuStatus,

@@ -5,7 +5,8 @@
       type="primary"
       :icon="Plus"
       @click="handleAddEvent"
-      >添加
+    >
+      添加
     </el-button>
     <el-popconfirm
       v-if="buttonDict.batchDelete"
@@ -18,14 +19,14 @@
       @cancel="handleBatchDeleteCancelEvent"
     >
       <template #reference>
-        <el-button type="danger" :icon="Delete">批量删除 </el-button>
+        <el-button type="danger" :icon="Delete">批量删除</el-button>
       </template>
     </el-popconfirm>
-    <el-button v-if="buttonDict.expand" @click="handleExpandAllEvent(true)"
-      >全部展开
+    <el-button v-if="buttonDict.expand" @click="handleExpandAllEvent(true)">
+      全部展开
     </el-button>
-    <el-button v-if="buttonDict.collapse" @click="handleExpandAllEvent(false)"
-      >全部折叠
+    <el-button v-if="buttonDict.collapse" @click="handleExpandAllEvent(false)">
+      全部折叠
     </el-button>
     <el-button v-if="buttonDict.import" @click="handleImportEvent">
       <slot name="import">导入</slot>

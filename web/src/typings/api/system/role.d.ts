@@ -1,4 +1,4 @@
-/*角色
+/* 角色
  */
 export interface Role {
   id: number;

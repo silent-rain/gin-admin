@@ -3,7 +3,7 @@
     <span>
       {{ value.toFixed(2) }}
     </span>
-    <el-button class="ml-1" type="primary" @click="toggle"> 开始 </el-button>
+    <el-button class="ml-1" type="primary" @click="toggle">开始</el-button>
   </div>
 </template>
 <script setup>

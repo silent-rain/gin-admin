@@ -27,7 +27,7 @@
         />
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="backClick"> 返回 </el-button>
+    <el-button type="primary" @click="backClick">返回</el-button>
   </div>
 </template>
 

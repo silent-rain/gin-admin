@@ -5,8 +5,9 @@
         v-for="item in tableColums"
         :key="item.prop"
         :label="item.prop"
-        >{{ item.title }}</el-checkbox
       >
+        {{ item.title }}
+      </el-checkbox>
     </el-checkbox-group>
     <el-table :data="tableData">
       <template v-for="item in tableColums" :key="item.prop">

@@ -39,7 +39,8 @@
                   size="small"
                   :icon="EditPen"
                   @click="state.isPhoneEdit = true"
-                  >修改
+                >
+                  修改
                 </el-button>
               </template>
               <template v-else>
@@ -54,10 +55,11 @@
                   size="small"
                   style="margin-left: 3px"
                   @click="handleUpdatePhone"
-                  >保存
+                >
+                  保存
                 </el-button>
-                <el-button link size="small" @click="state.isPhoneEdit = false"
-                  >取消
+                <el-button link size="small" @click="state.isPhoneEdit = false">
+                  取消
                 </el-button>
               </template>
             </div>
@@ -79,7 +81,8 @@
                   size="small"
                   :icon="EditPen"
                   @click="state.isEmailEdit = true"
-                  >修改
+                >
+                  修改
                 </el-button>
               </template>
               <template v-else>
@@ -94,10 +97,11 @@
                   size="small"
                   style="margin-left: 3px"
                   @click="handleUpdateEmail"
-                  >保存
+                >
+                  保存
                 </el-button>
-                <el-button link size="small" @click="state.isEmailEdit = false"
-                  >取消
+                <el-button link size="small" @click="state.isEmailEdit = false">
+                  取消
                 </el-button>
               </template>
             </div>
@@ -393,7 +397,7 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   uploadFile,
 ) => {
   // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
-  state.imageUrl = '/' + response.data.url;
+  state.imageUrl = `/${response.data.url}`;
 };
 // 上传头像事件
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -407,7 +411,8 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   if (imgfileType.indexOf(rawFile.type) === -1) {
     ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!');
     return false;
-  } else if (rawFile.size / 1024 / 1024 > 2) {
+  }
+  if (rawFile.size / 1024 / 1024 > 2) {
     ElMessage.error('Avatar picture size can not exceed 2MB!');
     return false;
   }

@@ -1,9 +1,9 @@
 <template>
   <div class="scroll-y">
     <div class="mb-10px">
-      <el-button @click="setTinyContent"> 设置文本消息 </el-button>
-      <el-button @click="getTinyContent"> 获取文本消息 </el-button>
-      <el-button @click="clearTinyContent"> 清空内容 </el-button>
+      <el-button @click="setTinyContent">设置文本消息</el-button>
+      <el-button @click="getTinyContent">获取文本消息</el-button>
+      <el-button @click="clearTinyContent">清空内容</el-button>
     </div>
     <Tinymce ref="refTinymce" />
   </div>

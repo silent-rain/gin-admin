@@ -2,7 +2,7 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:config:list')" class="filter">
-      <label>一级配置筛选: </label>
+      <label>一级配置筛选:</label>
       <el-input
         v-model="listQuery.title"
         class="filter-name"
@@ -16,7 +16,8 @@
           :icon="Search"
           :disabled="isDisabledButton('sys:config:list')"
           @click="handleFilter"
-          >查询
+        >
+          查询
         </el-button>
         <el-button type="primary" :icon="Delete" @click="handleCleanFilter" />
       </el-button-group>
@@ -30,7 +31,8 @@
           type="primary"
           :icon="Plus"
           @click="handleAdd"
-          >添加
+        >
+          添加
         </ButtonPermission>
         <el-popconfirm
           confirm-button-text="确认"
@@ -46,7 +48,8 @@
               permission="sys:config:delall"
               type="danger"
               :icon="Delete"
-              >批量删除
+            >
+              批量删除
             </ButtonPermission>
           </template>
         </el-popconfirm>
@@ -54,22 +57,24 @@
           permission="sys:config:expand"
           type=""
           @click="handleExpandAllEvent(true)"
-          >全部展开
+        >
+          全部展开
         </ButtonPermission>
         <ButtonPermission
           permission="sys:config:collapse"
           type=""
           @click="handleExpandAllEvent(false)"
-          >全部折叠
+        >
+          全部折叠
         </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
-          @refreshEvent="fetchConfigTree"
           v-model:size="tableSize"
-          :screenFullElement="'el-table-config'"
-          :checkAllList="checkAllList"
           v-model:checkedDict="checkedDict"
+          :screen-full-element="'el-table-config'"
+          :check-all-list="checkAllList"
+          @refreshEvent="fetchConfigTree"
         />
       </div>
     </div>
@@ -83,8 +88,8 @@
     />
 
     <el-table
-      class="el-table-config"
       ref="tableRef"
+      class="el-table-config"
       :data="tableData"
       :size="tableSize"
       row-key="id"
@@ -168,7 +173,8 @@
             size="small"
             :icon="Plus"
             @click="handleAddById(scope.row)"
-            >添加
+          >
+            添加
           </ButtonPermission>
           <ButtonPermission
             permission="sys:config:update"
@@ -177,7 +183,8 @@
             size="small"
             :icon="EditPen"
             @click="handleEdit(scope.row)"
-            >修改
+          >
+            修改
           </ButtonPermission>
           <el-popconfirm
             confirm-button-text="确认"
@@ -195,7 +202,8 @@
                 type="danger"
                 size="small"
                 :icon="Delete"
-                >删除
+              >
+                删除
               </ButtonPermission>
             </template>
           </el-popconfirm>
@@ -214,7 +222,6 @@
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useBasicStore } from '@/store/basic';
 import {
   EditPen,
   Search,
@@ -223,6 +230,7 @@ import {
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage, TableInstance } from 'element-plus';
+import { useBasicStore } from '@/store/basic';
 import {
   getConfigTree,
   updateConfigStatus,

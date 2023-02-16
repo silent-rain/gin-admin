@@ -30,9 +30,9 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="resetPageReq"> search </el-button>
+        <el-button type="primary" @click="resetPageReq">search</el-button>
 
-        <el-button type="primary" @click="resetForm"> reset </el-button>
+        <el-button type="primary" @click="resetForm">reset</el-button>
       </el-form-item>
     </el-form>
 

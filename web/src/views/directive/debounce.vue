@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button v-debounce="getData(123)" type="primary"> 防抖按钮 </el-button>
+    <el-button v-debounce="getData(123)" type="primary">防抖按钮</el-button>
   </div>
 </template>
 

@@ -12,11 +12,13 @@ module.exports = {
         parser: '@typescript-eslint/parser',
     },
     extends: [
-        'eslint:recommended',
-        'plugin:vue/vue3-essential',
-        'plugin:@typescript-eslint/recommended',
+        "plugin:vue/vue3-recommended",
+        // "airbnb-base",
+        "plugin:prettier/recommended",
         'prettier',
-        'plugin:prettier/recommended',
+        // 'eslint:recommended',
+        // 'plugin:vue/vue3-essential',
+        'plugin:@typescript-eslint/recommended',
         './.eslintrc-auto-import.json', //自动导入忽略
     ],
     plugins: ['vue', '@typescript-eslint', 'prettier'],

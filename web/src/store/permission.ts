@@ -31,10 +31,7 @@ export const usePermissionStore = defineStore('permission', {
       });
     },
     // 设置按钮权限
-    setButtonPermission(
-      permissions: ButtonPermission[],
-      permissionHash: any,
-    ) {
+    setButtonPermission(permissions: ButtonPermission[], permissionHash: any) {
       this.$patch((state) => {
         state.permissions = permissions;
         state.permissionHash = permissionHash;

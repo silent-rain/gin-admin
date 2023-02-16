@@ -1,26 +1,22 @@
 <template>
   <div class="scroll-y">
     <div class="mt-20px mb-5px font-bold">throw unhandledrejection</div>
-    <el-button type="primary" @click="handle"> unhandledrejection </el-button>
+    <el-button type="primary" @click="handle">unhandledrejection</el-button>
 
     <div class="mt-20px mb-5px font-bold">throw console.error</div>
-    <el-button type="primary" @click="consoleErrorFun">
-      console.error
-    </el-button>
+    <el-button type="primary" @click="consoleErrorFun">console.error</el-button>
 
     <div class="mt-20px mb-5px font-bold">throw normalError</div>
-    <el-button type="primary" @click="normalError"> normalError </el-button>
+    <el-button type="primary" @click="normalError">normalError</el-button>
 
     <!--req relative-->
     <div class="mt-20px mb-5px font-bold">throw req cross origin</div>
-    <el-button type="primary" @click="reqCrossOrigin">
-      reqCrossOrigin
-    </el-button>
+    <el-button type="primary" @click="reqCrossOrigin">reqCrossOrigin</el-button>
     <div class="mt-20px mb-5px font-bold">throw req 404 error</div>
-    <el-button type="primary" @click="req404"> req404 </el-button>
+    <el-button type="primary" @click="req404">req404</el-button>
     <!-- resource load error   -->
     <div class="mt-20px mb-5px font-bold">throw image load error</div>
-    <el-button type="primary" @click="errorLogImg"> imageLoadError </el-button>
+    <el-button type="primary" @click="errorLogImg">imageLoadError</el-button>
     <!--image load error demo-->
     <img v-if="imgShow" src="http://img.png" />
   </div>

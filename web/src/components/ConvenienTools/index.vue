@@ -24,10 +24,11 @@
           v-model="checkAll"
           :indeterminate="isIndeterminate"
           @change="handleCheckAllChange"
-          >列展示
+        >
+          列展示
         </el-checkbox>
-        <el-button type="primary" text @click="handleCheckdReset"
-          >重置
+        <el-button type="primary" text @click="handleCheckdReset">
+          重置
         </el-button>
       </div>
 
@@ -40,7 +41,8 @@
           :label="item.value"
           :disabled="item.disabled"
           style="width: 100%"
-          >{{ item.label }}
+        >
+          {{ item.label }}
         </el-checkbox>
       </el-checkbox-group>
     </el-popover>
@@ -53,7 +55,8 @@
             <el-dropdown-item
               v-for="(item, _) in sizeOptions"
               :command="item.value"
-              >{{ item.label }}
+            >
+              {{ item.label }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -184,14 +187,14 @@ const checkedListToMap = () => {
 // 全屏
 const screenFullFlag = ref(false);
 const handleScreenFull = () => {
-  let element = document.getElementsByClassName(
+  const element = document.getElementsByClassName(
     props.screenFullElement as string,
   )[0];
   if (!element) {
     return;
   }
   // 不全屏是null,返回false,
-  screenFullFlag.value = document.fullscreenElement === null ? false : true;
+  screenFullFlag.value = document.fullscreenElement !== null;
   // false是进入全屏状态
   if (screenFullFlag.value) {
     // 退出全屏

@@ -1,7 +1,7 @@
 <template>
   <div class="scroll-y">
     <div class="font-bold mb-10px">call child method</div>
-    <el-button @click="childMethod"> call childMethod </el-button>
+    <el-button @click="childMethod">call childMethod</el-button>
     <!--v-model sync -->
     <Children
       ref="refChildren"

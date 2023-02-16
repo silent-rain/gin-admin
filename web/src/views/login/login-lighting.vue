@@ -69,8 +69,7 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { User, Lock } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
 import { useUserStore } from '@/store/user';
-import { login } from '@/api/system/login';
-import { getCaptcha } from '@/api/system/login';
+import { login, getCaptcha } from '@/api/system/login';
 import { GetCaptchaRsp } from '~/api/system/login';
 import { md5Encode } from '@/utils/md5';
 
@@ -135,7 +134,7 @@ watch(
 );
 
 // 登录
-let subLoading = ref(false);
+const subLoading = ref(false);
 const refLoginForm = ref<FormInstance>();
 const handleLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;

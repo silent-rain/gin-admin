@@ -12,9 +12,9 @@
     <div class="mb-10px">codes 页面权限控制</div>
     <div>{{ codes }}</div>
     <el-button @click="freshCodes([1])">Codes切换为[1]</el-button>
-    <el-button @click="freshCodes([16, 9, 10, 11, 12, 13, 15])"
-      >C odes切换为[16]</el-button
-    >
+    <el-button @click="freshCodes([16, 9, 10, 11, 12, 13, 15])">
+      C odes切换为[16]
+    </el-button>
   </div>
 </template>
 

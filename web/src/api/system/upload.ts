@@ -1,4 +1,4 @@
-/**文件上传 */
+/** 文件上传 */
 
 // 文件上传地址
 export const uploadAvatar = `${

@@ -1,4 +1,4 @@
-/**角色菜单关系 */
+/** 角色菜单关系 */
 export interface RoleMenuRel {
   id: number;
   role_id: number;

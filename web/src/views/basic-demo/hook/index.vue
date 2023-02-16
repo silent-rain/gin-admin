@@ -3,7 +3,7 @@
     <div class="font-bold mb-20px">
       引入use-common.ts中的copyValueToClipboard
     </div>
-    <el-button @click="hookExample"> 执行hook方法 </el-button>
+    <el-button @click="hookExample">执行hook方法</el-button>
   </div>
 </template>
 

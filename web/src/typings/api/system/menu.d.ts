@@ -1,4 +1,4 @@
-/*菜单
+/* 菜单
  */
 
 export interface Menu {
