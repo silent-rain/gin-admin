@@ -6,8 +6,8 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,8 +39,8 @@ func NewRoleService() *roleService {
 func (s *roleService) All(ctx *gin.Context) ([]systemModel.Role, int64, error) {
 	roles, total, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 
 	}
 	return roles, total, nil
@@ -50,8 +50,8 @@ func (s *roleService) All(ctx *gin.Context) ([]systemModel.Role, int64, error) {
 func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) ([]systemModel.Role, int64, error) {
 	roles, total, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 
 	}
 	return roles, total, nil
@@ -61,18 +61,18 @@ func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) ([]syst
 func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) (uint, error) {
 	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if ok {
-		log.New(ctx).WithCode(code_errors.DBDataExistError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBDataExistError).WithMsg("角色已存在")
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDataExistError).WithMsg("角色已存在")
 	}
 
 	id, err := h.dao.Add(role)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBAddError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBAddError)
+		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBAddError)
 	}
 	return id, nil
 }
@@ -81,8 +81,8 @@ func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) (uint, error)
 func (h *roleService) Update(ctx *gin.Context, role systemModel.Role) (int64, error) {
 	row, err := h.dao.Update(role)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateError)
+		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateError)
 	}
 	return row, nil
 }
@@ -91,8 +91,8 @@ func (h *roleService) Update(ctx *gin.Context, role systemModel.Role) (int64, er
 func (h *roleService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBDeleteError)
+		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDeleteError)
 	}
 	return row, nil
 }
@@ -101,8 +101,8 @@ func (h *roleService) Delete(ctx *gin.Context, id uint) (int64, error) {
 func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBBatchDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBBatchDeleteError)
+		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBBatchDeleteError)
 	}
 	return row, nil
 }
@@ -111,8 +111,8 @@ func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 func (h *roleService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
 	row, err := h.dao.Status(id, status)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateStatusError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateStatusError)
+		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateStatusError)
 	}
 	return row, nil
 }

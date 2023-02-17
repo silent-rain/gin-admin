@@ -1,6 +1,6 @@
 /*业务状态码
  */
-package code_errors
+package errcode
 
 import (
 	"errors"
@@ -55,7 +55,7 @@ func Test_Errors_Is(t *testing.T) {
 func Test_statuScode_Error(t *testing.T) {
 	tests := []struct {
 		name    string
-		r       StatusCode
+		r       ErrorCode
 		msg     string
 		wantErr bool
 	}{

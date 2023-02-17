@@ -157,7 +157,7 @@ CREATE TABLE sys_http_log (
     `user_id` INT NULL COMMENT '请求用户ID',
     `parent_trace_id` VARCHAR(32) NULL COMMENT '上游请求traceId',
     `trace_id` VARCHAR(32) NULL COMMENT '请求traceId',
-    `status_code` INT(10) NOT NULL COMMENT '请求状态码',
+    `error_code` INT(10) NOT NULL COMMENT '请求状态码',
     `method` VARCHAR(10) NOT NULL COMMENT '请求方法',
     `path` VARCHAR(500) NOT NULL COMMENT '请求地址路径',
     `query` VARCHAR(500) NULL COMMENT '请求参数',

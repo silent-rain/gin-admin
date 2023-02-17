@@ -6,8 +6,8 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,8 +34,8 @@ func NewRoleMenuRelService() *roleMenuRelService {
 func (s *roleMenuRelService) List(ctx *gin.Context, req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 	return results, total, nil
 }
@@ -43,8 +43,8 @@ func (s *roleMenuRelService) List(ctx *gin.Context, req systemDTO.QueryRoleMenuR
 // Update 更新角色菜单关联关系
 func (h *roleMenuRelService) Update(ctx *gin.Context, roleId uint, menuIds []uint) error {
 	if err := h.dao.Update(roleId, menuIds); err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
-		return code_errors.New(code_errors.DBUpdateError)
+		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
+		return errcode.New(errcode.DBUpdateError)
 	}
 	return nil
 }

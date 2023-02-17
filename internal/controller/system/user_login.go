@@ -4,11 +4,11 @@ package system
 
 import (
 	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -66,13 +66,13 @@ func (c *userLoginController) CaptchaVerify(ctx *gin.Context) {
 	verifyValue := ctx.DefaultQuery("captcha", "")
 	captchaId := ctx.DefaultQuery("captcha_id", "")
 	if verifyValue == "" {
-		log.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Json()
+		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
+		response.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Json()
 		return
 	}
 	if captchaId == "" {
-		log.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Json()
+		log.New(ctx).WithCode(errcode.CaptchaNotFoundError).Error("")
+		response.New(ctx).WithCode(errcode.CaptchaNotFoundError).Json()
 		return
 	}
 
@@ -101,16 +101,16 @@ func (c *userLoginController) Captcha2(ctx *gin.Context) {
 func (c *userLoginController) Captcha2Verify(ctx *gin.Context) {
 	value := ctx.DefaultQuery("captcha_id", "")
 	if value == "" {
-		log.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Json()
+		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
+		response.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Json()
 		return
 	}
 
 	session := sessions.Default(ctx)
 	captchaId := session.Get("captcha_id")
 	if captchaId == nil {
-		log.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Json()
+		log.New(ctx).WithCode(errcode.CaptchaNotFoundError).Error("")
+		response.New(ctx).WithCode(errcode.CaptchaNotFoundError).Json()
 		return
 	}
 	session.Delete("captcha")

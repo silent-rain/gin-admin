@@ -1,10 +1,10 @@
-/*业务码中文消息*/
-package code_errors
+/*业务码消息 中文-中国*/
+package errcode
 
 import "errors"
 
 // 状态码映射具体消息
-var statusCodeMsgZH = map[StatusCode]error{
+var MsgZHCN = map[ErrorCode]error{
 	Ok:            nil,
 	InternalError: errors.New("内部错误"),
 	UnknownError:  errors.New("未知错误"),

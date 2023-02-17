@@ -9,9 +9,9 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
@@ -193,17 +193,17 @@ func New(ctx *gin.Context) *logger {
 }
 
 // WithCode 添加错误码
-func (l *logger) WithCode(code code_errors.StatusCode) *logger {
+func (l *logger) WithCode(code errcode.ErrorCode) *logger {
 	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Msg()))
 	return l
 }
 
 // WithCodeError 添加响应状态码及状态码对应的信息
 func (l *logger) WithCodeError(err error) *logger {
-	code, ok := err.(*code_errors.CError)
+	code, ok := err.(*errcode.Error)
 	if !ok {
-		l.fields = append(l.fields, zap.Uint("error_code", uint(code_errors.UnknownError)),
-			zap.String("error_msg", code_errors.UnknownError.Msg()))
+		l.fields = append(l.fields, zap.Uint("error_code", uint(errcode.UnknownError)),
+			zap.String("error_msg", errcode.UnknownError.Msg()))
 		return l
 	}
 	l.fields = append(l.fields, zap.Uint("error_code", uint(code.Code)), zap.String("error_msg", code.Msg))

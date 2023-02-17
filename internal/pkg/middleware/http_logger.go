@@ -46,7 +46,7 @@ func HttpLogger() gin.HandlerFunc {
 		htppLog := systemModel.HttpLog{
 			UserId:     context.GetUserId(ctx),
 			TraceId:    context.GetTraceId(ctx),
-			StatusCode: ctx.Writer.Status(),
+			ErrorCode:  ctx.Writer.Status(),
 			Method:     ctx.Request.Method,
 			Path:       ctx.Request.URL.Path,
 			Query:      ctx.Request.URL.RawQuery,
@@ -69,7 +69,7 @@ func HttpLogger() gin.HandlerFunc {
 		ctx.Next()
 
 		// 响应
-		htppLog.StatusCode = ctx.Writer.Status()
+		htppLog.ErrorCode = ctx.Writer.Status()
 		htppLog.Cost = time.Since(start).Nanoseconds()
 		htppLog.HttpType = "RSP"
 		htppLog.Body = blw.Body.String()

@@ -5,25 +5,25 @@ package response
 import (
 	"net/http"
 
-	"gin-admin/internal/pkg/code_errors"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
 
 // ResponseAPI API响应结构
 type ResponseAPI struct {
-	Code code_errors.StatusCode `json:"code"` // 状态码
-	Msg  string                 `json:"msg"`  // 状态码信息
-	Data interface{}            `json:"data"` // 返回数据
-	ctx  *gin.Context           `json:"-"`
+	Code errcode.ErrorCode `json:"code"` // 状态码
+	Msg  string            `json:"msg"`  // 状态码信息
+	Data interface{}       `json:"data"` // 返回数据
+	ctx  *gin.Context      `json:"-"`
 }
 
 // New 返回 API 响应结构对象
 // 返回默认 Ok 状态码及对应的状态码信息
 func New(ctx *gin.Context) *ResponseAPI {
 	return &ResponseAPI{
-		Code: code_errors.Ok,
-		Msg:  code_errors.Ok.Msg(),
+		Code: errcode.Ok,
+		Msg:  errcode.Ok.Msg(),
 		ctx:  ctx,
 	}
 }
@@ -35,7 +35,7 @@ func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
 }
 
 // WithCode 添加响应状态码及状态码对应的信息
-func (r *ResponseAPI) WithCode(code code_errors.StatusCode) *ResponseAPI {
+func (r *ResponseAPI) WithCode(code errcode.ErrorCode) *ResponseAPI {
 	r.Code = code
 	r.Msg = code.Msg()
 	return r
@@ -43,9 +43,9 @@ func (r *ResponseAPI) WithCode(code code_errors.StatusCode) *ResponseAPI {
 
 // WithCodeError 添加响应状态码及状态码对应的信息
 func (r *ResponseAPI) WithCodeError(err error) *ResponseAPI {
-	code, ok := err.(*code_errors.CError)
+	code, ok := err.(*errcode.Error)
 	if !ok {
-		return r.WithCode(code_errors.UnknownError)
+		return r.WithCode(errcode.UnknownError)
 	}
 	r.Code = code.Code
 	r.Msg = code.Msg

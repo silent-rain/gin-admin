@@ -5,8 +5,8 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,8 +38,8 @@ func NewConfigService() *configService {
 func (s *configService) AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error) {
 	results, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 	// 配置列表数据转为树结构
 	tree := configListToTree(results, nil)
@@ -50,13 +50,13 @@ func (s *configService) AllTree(ctx *gin.Context) ([]systemModel.Config, int64, 
 func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
 	configList, _, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 	configAll, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 
 	// 配置列表数据转为树结构
@@ -78,8 +78,8 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, error) {
 	id, err := s.dao.Add(config)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBAddError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBAddError)
+		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBAddError)
 	}
 	return id, nil
 }
@@ -88,8 +88,8 @@ func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, 
 func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int64, error) {
 	row, err := s.dao.Update(config)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateError)
+		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateError)
 	}
 	return row, nil
 }
@@ -98,18 +98,18 @@ func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int
 func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenConfig, err := s.dao.Children(id)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if len(childrenConfig) > 0 {
-		log.New(ctx).WithCode(code_errors.DBDataExistChildrenError).Errorf("删除失败, 存在子配置, %v", err)
-		return 0, code_errors.New(code_errors.DBDataExistChildrenError).WithMsg("删除失败, 存在子配置")
+		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子配置, %v", err)
+		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子配置")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBDeleteError)
+		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDeleteError)
 	}
 	return row, nil
 }
@@ -118,8 +118,8 @@ func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBBatchDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBBatchDeleteError)
+		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBBatchDeleteError)
 	}
 	return row, nil
 }
@@ -128,8 +128,8 @@ func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 func (s *configService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
 	row, err := s.dao.Status(id, status)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateStatusError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateStatusError)
+		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateStatusError)
 	}
 	return row, nil
 }

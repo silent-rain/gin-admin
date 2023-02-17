@@ -2,10 +2,10 @@
 package system
 
 import (
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,8 +27,8 @@ func (c *uploadController) Avatar(ctx *gin.Context) {
 	// 单文件
 	file, err := ctx.FormFile("file")
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.UploadFileParserError).Errorf("%v", err)
-		response.New(ctx).WithCode(code_errors.UploadFileParserError).Json()
+		log.New(ctx).WithCode(errcode.UploadFileParserError).Errorf("%v", err)
+		response.New(ctx).WithCode(errcode.UploadFileParserError).Json()
 		return
 	}
 

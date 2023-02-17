@@ -20,7 +20,7 @@ type HttpLog struct {
 	UserId        uint      `json:"user_id" gorm:"column:user_id"`                            // 请求用户ID
 	ParentTraceId string    `json:"parent_trace_id" gorm:"column:parent_trace_id"`            // 上游请求traceId
 	TraceId       string    `json:"trace_id" gorm:"column:trace_id"`                          // 请求traceId
-	StatusCode    int       `json:"status_code" gorm:"column:status_code"`                    // 请求状态码
+	ErrorCode     int       `json:"error_code" gorm:"column:error_code"`                    // 请求状态码
 	Method        string    `json:"method" gorm:"column:method"`                              // 请求方法
 	Path          string    `json:"path" gorm:"column:path"`                                  // 请求地址路径
 	Query         string    `json:"query" gorm:"column:query"`                                // 请求参数

@@ -5,8 +5,8 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/log"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -38,8 +38,8 @@ func NewMenuService() *menuService {
 func (s *menuService) AllTree(ctx *gin.Context) ([]systemModel.Menu, int64, error) {
 	menus, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 
 	}
 	// 菜单列表数据转为树结构
@@ -51,13 +51,13 @@ func (s *menuService) AllTree(ctx *gin.Context) ([]systemModel.Menu, int64, erro
 func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) ([]systemModel.Menu, int64, error) {
 	menuList, _, err := s.dao.List(req)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 	menuAll, _, err := s.dao.All()
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return nil, 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
 	}
 
 	// 菜单列表数据转为树结构
@@ -79,8 +79,8 @@ func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) ([]syst
 func (s *menuService) Add(ctx *gin.Context, menu systemModel.Menu) (uint, error) {
 	id, err := s.dao.Add(menu)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBAddError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBAddError)
+		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBAddError)
 	}
 	return id, nil
 }
@@ -89,8 +89,8 @@ func (s *menuService) Add(ctx *gin.Context, menu systemModel.Menu) (uint, error)
 func (s *menuService) Update(ctx *gin.Context, menu systemModel.Menu) (int64, error) {
 	row, err := s.dao.Update(menu)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateError)
+		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateError)
 	}
 	return row, nil
 }
@@ -99,18 +99,18 @@ func (s *menuService) Update(ctx *gin.Context, menu systemModel.Menu) (int64, er
 func (s *menuService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenMenu, err := s.dao.ChildrenMenu(id)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if len(childrenMenu) > 0 {
-		log.New(ctx).WithCode(code_errors.DBDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
-		return 0, code_errors.New(code_errors.DBDataExistChildrenError).WithMsg("删除失败, 存在子菜单")
+		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
+		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子菜单")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBDeleteError)
+		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDeleteError)
 	}
 	return row, nil
 }
@@ -119,8 +119,8 @@ func (s *menuService) Delete(ctx *gin.Context, id uint) (int64, error) {
 func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBBatchDeleteError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBBatchDeleteError)
+		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBBatchDeleteError)
 	}
 	return row, nil
 }
@@ -129,8 +129,8 @@ func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 func (s *menuService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
 	row, err := s.dao.Status(id, status)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBUpdateStatusError).Errorf("%v", err)
-		return 0, code_errors.New(code_errors.DBUpdateStatusError)
+		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBUpdateStatusError)
 	}
 	return row, nil
 }

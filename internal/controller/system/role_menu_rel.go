@@ -4,11 +4,11 @@ package system
 
 import (
 	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,7 +34,7 @@ func (c *roleMenuRelController) List(ctx *gin.Context) {
 	}
 	if req.RoleId == 0 && req.MenuId == 0 {
 		log.New(ctx).WithField("data", req).Errorf("role_id/menu_id 不能同时为空")
-		response.New(ctx).WithCode(code_errors.ReqParameterParsingError).WithMsg("role_id/menu_id 不能同时为空")
+		response.New(ctx).WithCode(errcode.ReqParameterParsingError).WithMsg("role_id/menu_id 不能同时为空")
 		return
 	}
 

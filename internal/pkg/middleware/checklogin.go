@@ -5,13 +5,13 @@ package middleware
 import (
 	"strings"
 
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/context"
 	"gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/internal/pkg/utils"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -49,8 +49,8 @@ func CheckLogin() gin.HandlerFunc {
 		// 从请求头中获取Token
 		token := ctx.GetHeader(conf.TokenHeader)
 		if token == "" {
-			log.New(ctx).WithCode(code_errors.TokenNotFound).Errorf("")
-			response.New(ctx).WithCode(code_errors.TokenNotFound).Json()
+			log.New(ctx).WithCode(errcode.TokenNotFound).Errorf("")
+			response.New(ctx).WithCode(errcode.TokenNotFound).Json()
 			ctx.Abort()
 			return
 		}

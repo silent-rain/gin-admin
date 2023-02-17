@@ -11,11 +11,11 @@ import (
 	"strconv"
 	"time"
 
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
 	systemVO "gin-admin/internal/vo/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -48,14 +48,14 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 	err := ctx.SaveUploadedFile(file, dst)
 	if errors.Is(err, fs.ErrNotExist) {
 		if err := os.MkdirAll(dst, os.ModePerm); err != nil {
-			log.New(ctx).WithCode(code_errors.DirNotFoundError).Errorf("%v", err)
-			return result, code_errors.New(code_errors.DirNotFoundError).
+			log.New(ctx).WithCode(errcode.DirNotFoundError).Errorf("%v", err)
+			return result, errcode.New(errcode.DirNotFoundError).
 				WithMsg(fmt.Sprintf("%s not found", dst))
 		}
 	}
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.UploadFileSaveError).Errorf("%v", err)
-		return result, code_errors.New(code_errors.UploadFileSaveError)
+		log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
+		return result, errcode.New(errcode.UploadFileSaveError)
 	}
 
 	return result, nil

@@ -7,12 +7,12 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/code_errors"
 	"gin-admin/internal/pkg/conf"
 	jwtToken "gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
 	systemVO "gin-admin/internal/vo/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/dchest/captcha"
 	"github.com/gin-contrib/sessions"
@@ -55,24 +55,24 @@ func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (
 	// 查询用户
 	user, ok, err := h.dao.GetUsername(req.Username, req.Password)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.DBQueryError).Errorf("%v", err)
-		return result, code_errors.New(code_errors.DBQueryError)
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return result, errcode.New(errcode.DBQueryError)
 	}
 	if !ok {
-		log.New(ctx).WithCode(code_errors.DBQueryEmptyError).Error("用户名或者密码不正确")
-		return result, code_errors.New(code_errors.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
+		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Error("用户名或者密码不正确")
+		return result, errcode.New(errcode.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
-		log.New(ctx).WithCode(code_errors.UserDisableError).Error("")
-		return result, code_errors.New(code_errors.UserDisableError)
+		log.New(ctx).WithCode(errcode.UserDisableError).Error("")
+		return result, errcode.New(errcode.UserDisableError)
 	}
 
 	// 生成 Token
 	token, err := jwtToken.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.TokenGenerateError).Errorf("%v", err)
-		return result, code_errors.New(code_errors.TokenGenerateError)
+		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
+		return result, errcode.New(errcode.TokenGenerateError)
 	}
 	result.Token = token
 	return result, nil
@@ -93,8 +93,8 @@ func (h *userLoginService) Captcha(ctx *gin.Context) (systemVO.Captcha, error) {
 
 	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
 	if err != nil {
-		log.New(ctx).WithCode(code_errors.CaptchaGenerateError).Errorf("%v", err)
-		return result, code_errors.New(code_errors.CaptchaGenerateError)
+		log.New(ctx).WithCode(errcode.CaptchaGenerateError).Errorf("%v", err)
+		return result, errcode.New(errcode.CaptchaGenerateError)
 	}
 
 	result.CaptchaId = captchaId
@@ -109,8 +109,8 @@ func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, ver
 	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
 	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
-		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
-		return code_errors.New(code_errors.CaptchaVerifyError)
+		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
+		return errcode.New(errcode.CaptchaVerifyError)
 	}
 	return nil
 }
@@ -129,8 +129,8 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) ([]byte, error) {
 		ctx.Header("Content-Type", "audio/x-wav")
 		captcha.WriteAudio(&content, captchaId, "zh")
 	default:
-		log.New(ctx).WithCode(code_errors.CaptchaEtxNotFoundError).Error("")
-		return nil, code_errors.New(code_errors.CaptchaEtxNotFoundError)
+		log.New(ctx).WithCode(errcode.CaptchaEtxNotFoundError).Error("")
+		return nil, errcode.New(errcode.CaptchaEtxNotFoundError)
 	}
 
 	download := false
@@ -148,8 +148,8 @@ func (h *userLoginService) Captcha2(ctx *gin.Context) ([]byte, error) {
 // Captcha2Verify 验证码验证
 func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) error {
 	if !captcha.VerifyString(captchaId, verifyValue) {
-		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
-		return code_errors.New(code_errors.CaptchaVerifyError)
+		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
+		return errcode.New(errcode.CaptchaVerifyError)
 
 	}
 	return nil
@@ -158,18 +158,18 @@ func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, ve
 // 检查验证码
 func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) error {
 	if captcha == "" {
-		log.New(ctx).WithCode(code_errors.SessionGetCaptchaEmptyError).Error("")
-		return code_errors.New(code_errors.SessionGetCaptchaEmptyError)
+		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
+		return errcode.New(errcode.SessionGetCaptchaEmptyError)
 	}
 	if captchaId == "" {
-		log.New(ctx).WithCode(code_errors.CaptchaNotFoundError).Error("")
-		return code_errors.New(code_errors.CaptchaNotFoundError)
+		log.New(ctx).WithCode(errcode.CaptchaNotFoundError).Error("")
+		return errcode.New(errcode.CaptchaNotFoundError)
 	}
 
 	// 校验验证码
 	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
-		log.New(ctx).WithCode(code_errors.CaptchaVerifyError).Error("")
-		return code_errors.New(code_errors.CaptchaVerifyError)
+		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
+		return errcode.New(errcode.CaptchaVerifyError)
 	}
 	return nil
 }
