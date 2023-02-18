@@ -1,29 +1,16 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 00:26:00
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 17:38:49
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/router/v1.go
- * @Descripttion:
- */
-/**Api version 1 路由
+/*系统路由
  */
 package router
 
 import (
-	"gin-admin/internal/controller"
 	"gin-admin/internal/controller/system"
 
 	"github.com/gin-gonic/gin"
 )
 
-// NewApiV1 API V1 路由
-func NewApiV1(engine *gin.Engine) {
+// NewSystemApiV1 系统路由
+func NewSystemApiV1(engine *gin.Engine) {
 	v1 := engine.Group("/api/v1")
-	// 接口测试
-	v1.GET("/sayHello", controller.SayHello)
 
 	// 注册/登录/登出/验证码
 	userLogin := v1.Group("/")

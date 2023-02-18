@@ -10,7 +10,6 @@ import (
 	systemService "gin-admin/internal/service/system"
 	"gin-admin/pkg/errcode"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -81,43 +80,4 @@ func (c *userLoginController) CaptchaVerify(ctx *gin.Context) {
 		return
 	}
 	response.New(ctx).Json()
-}
-
-// Captcha2 验证码
-func (c *userLoginController) Captcha2(ctx *gin.Context) {
-	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
-	ctx.Header("Pragma", "no-cache")
-	ctx.Header("Expires", "0")
-
-	result, err := c.service.Captcha2(ctx)
-	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
-		return
-	}
-	ctx.Writer.Write(result)
-}
-
-// Captcha2Verify 验证码验证
-func (c *userLoginController) Captcha2Verify(ctx *gin.Context) {
-	value := ctx.DefaultQuery("captcha_id", "")
-	if value == "" {
-		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
-		response.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Json()
-		return
-	}
-
-	session := sessions.Default(ctx)
-	captchaId := session.Get("captcha_id")
-	if captchaId == nil {
-		log.New(ctx).WithCode(errcode.CaptchaNotFoundError).Error("")
-		response.New(ctx).WithCode(errcode.CaptchaNotFoundError).Json()
-		return
-	}
-	session.Delete("captcha")
-	_ = session.Save()
-
-	if err := c.service.Captcha2Verify(ctx, captchaId.(string), value); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
-		return
-	}
 }

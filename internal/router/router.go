@@ -28,6 +28,6 @@ func Init(engine *gin.Engine) {
 	// 服务健康检查
 	engine.GET("/api/ping", controller.Ping)
 
-	// api v1
-	NewApiV1(engine)
+	// 系统路由
+	NewSystemApiV1(engine)
 }

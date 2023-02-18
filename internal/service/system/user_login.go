@@ -3,8 +3,6 @@
 package system
 
 import (
-	"bytes"
-
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/conf"
@@ -14,8 +12,6 @@ import (
 	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
 
-	"github.com/dchest/captcha"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -26,8 +22,6 @@ type UserLoginService interface {
 	Logout(ctx *gin.Context) (systemDTO.UserLoginRsp, error)
 	Captcha(ctx *gin.Context) (systemVO.Captcha, error)
 	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) error
-	Captcha2(ctx *gin.Context) ([]byte, error)
-	Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) error
 }
 
 // 用户登录/登出
@@ -114,46 +108,6 @@ func (h *userLoginService) CaptchaVerify(ctx *gin.Context, captchaId string, ver
 	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
 		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
 		return errcode.New(errcode.CaptchaVerifyError)
-	}
-	return nil
-}
-
-// Captcha2 验证码
-func (h *userLoginService) Captcha2(ctx *gin.Context) ([]byte, error) {
-	captchaId := captcha.NewLen(5)
-
-	var content bytes.Buffer
-	ext := ".png"
-	switch ext {
-	case ".png":
-		ctx.Header("Content-Type", "image/png")
-		captcha.WriteImage(&content, captchaId, captcha.StdWidth, captcha.StdHeight)
-	case ".wav":
-		ctx.Header("Content-Type", "audio/x-wav")
-		captcha.WriteAudio(&content, captchaId, "zh")
-	default:
-		log.New(ctx).WithCode(errcode.CaptchaEtxNotFoundError).Error("")
-		return nil, errcode.New(errcode.CaptchaEtxNotFoundError)
-	}
-
-	download := false
-	if download {
-		ctx.Header("Content-Type", "application/octet-stream")
-	}
-
-	session := sessions.Default(ctx)
-	session.Set("captcha_id", captchaId)
-	_ = session.Save()
-
-	return content.Bytes(), nil
-}
-
-// Captcha2Verify 验证码验证
-func (h *userLoginService) Captcha2Verify(ctx *gin.Context, captchaId string, verifyValue string) error {
-	if !captcha.VerifyString(captchaId, verifyValue) {
-		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
-		return errcode.New(errcode.CaptchaVerifyError)
-
 	}
 	return nil
 }

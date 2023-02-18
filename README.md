@@ -15,8 +15,9 @@
 - [x] API接口状态码
 - [x] 自定义API接口返回结构
 - [x] 数据库 gorm
-  - [x] 数据库类型 sqlite3/mysql
-  - [x] DB 全局实例
+  - [x] mysql 全局实例
+    - [x] 只读实例
+    - [x] 读写实例
 - [x] 日志 zap
   - [x] 本地滚动日志 - 文本日志
   - [x] 数据库日志 
@@ -37,6 +38,9 @@
 - [ ] 定时任务调度
   - [ ] 即时任务
   - [ ] 定时任务
+- [ ] 优雅关机
+  - [ ] 数据库
+  - [ ] HTTP 服务
 
 ## 系统功能列表
 - [ ] 权限管理
@@ -60,7 +64,6 @@
   - [ ] 系统日志
     - [ ] ui
   - [ ] 登录管理
-
 
 ## 待处理
 - 便捷工具，列展示功能待优化
@@ -95,7 +98,7 @@ chmod 755 main
 # 运行
 ./main
 # 后端访问地址
-http://127.0.0.1:8080/ping
+http://127.0.0.1:8080/api/ping
 ```
 ### 前端编译&运行
 - 安装依赖
@@ -145,3 +148,20 @@ air
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
 - [参考项目](http://manage.pro.layui.javaweb.vip/index)
 
+### go-api 设计参考
+https://github.com/flipped-aurora/gin-vue-admin/tree/main/server
+https://github.com/go-admin-team/go-admin
+https://github.com/GoAdminGroup/go-admin
+https://github.com/eddycjy/go-gin-example
+https://github.com/xinliangnote/go-gin-api
+https://github.com/bg-vc/vc-gin-api
+https://github.com/fyonecon/ginlaravel
+https://github.com/mritd/ginmvc
+### 日志
+https://zhuanlan.zhihu.com/p/430224518
+https://zhuanlan.zhihu.com/p/553995164
+
+### 定时任务
+https://www.cnblogs.com/hsyw/p/16006799.html
+https://blog.csdn.net/JineD/article/details/121214032
+https://zhuanlan.zhihu.com/p/402210167
