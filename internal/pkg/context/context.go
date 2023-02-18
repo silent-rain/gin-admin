@@ -23,6 +23,8 @@ const (
 	GinContextToken = "token"
 	// GinContextToken set/get trace_id 信息
 	GinContextTraceTd = "trace_id"
+	// GinContextToken set/get span_id 信息
+	GinContextSpanId = "span_id"
 )
 
 // GetUserId 获取用户 ID
@@ -38,10 +40,16 @@ func GetUserId(ctx *gin.Context) uint {
 // GetTraceId 获取请求 TraceTd
 func GetTraceId(ctx *gin.Context) string {
 	var traceTd = ctx.Request.Header.Get(GinContextTraceTd)
-	if traceTd == "" {
-		traceTd = GenerateTraceId(ctx)
-	}
 	return traceTd
+}
+
+// GetSpanId 获取请求 SpanId
+func GetSpanId(ctx *gin.Context) string {
+	var spanId = ctx.Request.Header.Get(GinContextSpanId)
+	if spanId == "" {
+		spanId = GenerateTraceId(ctx)
+	}
+	return spanId
 }
 
 // GenerateTraceId 生成 traceId
