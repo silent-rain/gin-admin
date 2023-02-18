@@ -33,11 +33,6 @@ type UserLoginReq struct {
 	Captcha   string `json:"captcha" form:"captcha"`                      // 验证码
 }
 
-// UserLoginRsp 登录响应
-type UserLoginRsp struct {
-	Token string `json:"token"` // 令牌
-}
-
 // UserInfoRsp 用户信息响应
 type UserInfoRsp struct {
 	User        systemModel.User   `json:"user"`        // 用户信息

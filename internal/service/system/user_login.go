@@ -18,8 +18,8 @@ import (
 
 // UserLoginService 用户登录/登出
 type UserLoginService interface {
-	Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemDTO.UserLoginRsp, error)
-	Logout(ctx *gin.Context) (systemDTO.UserLoginRsp, error)
+	Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemVO.UserLogin, error)
+	Logout(ctx *gin.Context) (systemVO.UserLogin, error)
 	Captcha(ctx *gin.Context) (systemVO.Captcha, error)
 	CaptchaVerify(ctx *gin.Context, captchaId string, verifyValue string) error
 }
@@ -37,9 +37,9 @@ func NewUserLoginService() *userLoginService {
 }
 
 // Login 登录
-func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemDTO.UserLoginRsp, error) {
+func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemVO.UserLogin, error) {
 	// 返回 Token
-	result := systemDTO.UserLoginRsp{
+	result := systemVO.UserLogin{
 		Token: "",
 	}
 
@@ -76,8 +76,8 @@ func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (
 }
 
 // Logout 注销系统
-func (h *userLoginService) Logout(ctx *gin.Context) (systemDTO.UserLoginRsp, error) {
-	result := systemDTO.UserLoginRsp{}
+func (h *userLoginService) Logout(ctx *gin.Context) (systemVO.UserLogin, error) {
+	result := systemVO.UserLogin{}
 	return result, nil
 }
 
