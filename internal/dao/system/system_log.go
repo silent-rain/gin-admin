@@ -55,7 +55,7 @@ func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemL
 
 	beans := make([]systemModel.SystemLog, 0)
 	result := stats().Offset(req.Offset()).Limit(req.PageSize).
-		Order("updated_at DESC").
+		Order("created_at DESC").
 		Find(&beans)
 	if result.Error != nil {
 		return nil, 0, result.Error

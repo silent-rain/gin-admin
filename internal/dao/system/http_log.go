@@ -58,7 +58,7 @@ func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, in
 
 	beans := make([]systemModel.HttpLog, 0)
 	result := stats().Offset(req.Offset()).Limit(req.PageSize).
-		Order("updated_at DESC").
+		Order("created_at DESC").
 		Find(&beans)
 	if result.Error != nil {
 		return nil, 0, result.Error

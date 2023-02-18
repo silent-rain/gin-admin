@@ -12,7 +12,6 @@ type QueryConfigReq struct {
 
 // AddConfigReq 添加配置
 type AddConfigReq struct {
-	ID       uint   `json:"id" form:"id"`
 	ParentId *uint  `json:"parent_id" form:"parent_id"`
 	Name     string `json:"name" form:"name" binding:"required"`
 	Key      string `json:"key" form:"key" binding:"required"`
