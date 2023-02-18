@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect

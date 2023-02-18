@@ -1,4 +1,4 @@
-/*业务码消息 中文-中国*/
+/*业务码消息 简体中文-中国*/
 package errcode
 
 import "errors"

@@ -85,7 +85,7 @@ func getConsoleEncoder() zapcore.Encoder {
 
 // 日志写入文件日志配置
 func newWriteFileSyncer() zapcore.WriteSyncer {
-	config := conf.Instance().LoggerConfig
+	config := conf.Instance().Logger
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   config.Filename,   // 日志文件位置
 		MaxSize:    config.MaxSize,    // 进行切割之前，日志文件最大值(单位：MB)，默认100MB
@@ -100,7 +100,7 @@ func newWriteFileSyncer() zapcore.WriteSyncer {
 // 自定义日志级别
 func getLevelEnabler() zapcore.Level {
 	var level = zapcore.DebugLevel
-	switch conf.Instance().LoggerConfig.Level {
+	switch conf.Instance().Logger.Level {
 	case "info":
 		level = zapcore.InfoLevel
 	case "warn":

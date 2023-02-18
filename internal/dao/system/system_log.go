@@ -5,7 +5,7 @@ package systemDAO
 import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/database"
+	"gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )
@@ -18,20 +18,20 @@ type SystemLog interface {
 
 // 系统日志
 type systemLog struct {
-	db *gorm.DB
+	db mysql.DBRepo
 }
 
 // 创建系统日志对象
 func NewSystemLogDao() *systemLog {
 	return &systemLog{
-		db: database.Instance(),
+		db: mysql.Instance(),
 	}
 }
 
 // List 查询系统日志列表
 func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemLog, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db
+		stats := d.db.GetDbR()
 		if req.UserId != 0 {
 			stats = stats.Where("user_id = ?", req.UserId)
 		}
@@ -67,7 +67,7 @@ func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemL
 
 // Add 添加系统日志
 func (d *systemLog) Add(bean systemModel.SystemLog) (uint, error) {
-	result := d.db.Create(&bean)
+	result := d.db.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
 	}

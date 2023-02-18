@@ -22,11 +22,11 @@ func Init(engine *gin.Engine) {
 	// engine.SetTrustedProxies([]string{"127.0.0.1"})
 	engine.SetTrustedProxies(nil)
 
+	// 设置静态资源
+	setStaticApi(engine)
+
 	// 服务健康检查
 	engine.GET("/api/ping", controller.Ping)
-
-	//  静态资源路由
-	NewStaticApi(engine)
 
 	// api v1
 	NewApiV1(engine)

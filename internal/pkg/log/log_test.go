@@ -11,7 +11,7 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	conf.InitLoadConfig("../../../cmd/conf.yaml")
+	conf.Init("../../../cmd/conf.yaml")
 	Init()
 	zap.L().Debug("this is debug")
 	zap.L().Info("this is info")

@@ -1,44 +1,30 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-05 00:22:11
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 18:47:40
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/cmd/main.go
- * @Descripttion:
- */
-/**系统入口文件
+/*系统入口
  *
  */
 package main
 
 import (
 	"fmt"
-	"html/template"
-	"net/http"
 
-	"gin-admin/assets"
 	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/database"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
-	"gin-admin/internal/pkg/utils"
+	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/router"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 配置初始化
-	conf.InitLoadConfig(conf.ConfigFile)
-	// 日志初始化
+	// 初始化配置
+	conf.Init(conf.ConfigFile)
+	// 初始化日志
 	log.Init()
-	// 数据库初始化
-	database.Init()
+	// 初始化数据库
+	mysql.Init()
 
 	// 调试模式
-	gin.SetMode(conf.Instance().EnvConfig.Env())
+	gin.SetMode(conf.Instance().Environment.Active())
 	// 强制终端日志有色显示
 	gin.ForceConsoleColor()
 
@@ -62,20 +48,10 @@ func main() {
 	// 接口请求日志中间件，日志输出至数据库
 	engine.Use(middleware.HttpLogger())
 
-	// 加载静态资源
-	engine.StaticFS("/static", http.FS(utils.NewResource()))
-	// Api Docs 静态内嵌资源
-	engine.StaticFS("/docs", http.FS(utils.NewDocsResource()))
-	// 本地静态资源
-	engine.Static("/upload", conf.Instance().UploadConfig.FilePath)
-	// WEB 首页模板
-	templ := template.Must(template.New("").ParseFS(assets.WebAssets, "dist/*.html"))
-	engine.SetHTMLTemplate(templ)
-
 	// 路由初始化
 	router.Init(engine)
 	// 服务运行
-	if err := engine.Run(conf.Instance().ServerConfig.ServerAddress()); err != nil {
+	if err := engine.Run(conf.Instance().Server.ServerAddress()); err != nil {
 		panic(fmt.Sprintf("server run failed, err: %v", err))
 	}
 }

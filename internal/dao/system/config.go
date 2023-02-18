@@ -4,7 +4,7 @@ package systemDAO
 import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/database"
+	"gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )
@@ -23,20 +23,20 @@ type Config interface {
 
 // 配置
 type config struct {
-	db *gorm.DB
+	db mysql.DBRepo
 }
 
 // 创建配置对象
 func NewConfigDao() *config {
 	return &config{
-		db: database.Instance(),
+		db: mysql.Instance(),
 	}
 }
 
 // All 获取所有配置列表
 func (d *config) All() ([]systemModel.Config, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db
+		stats := d.db.GetDbR()
 		return stats
 	}
 
@@ -52,7 +52,7 @@ func (d *config) All() ([]systemModel.Config, int64, error) {
 // List 查询配置列表
 func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db
+		stats := d.db.GetDbR()
 		if req.Name != "" {
 			stats = stats.Where("name like ?", "%"+req.Name+"%")
 		}
@@ -76,7 +76,7 @@ func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64
 
 // Add 添加配置
 func (d *config) Add(bean systemModel.Config) (uint, error) {
-	result := d.db.Create(&bean)
+	result := d.db.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -85,13 +85,13 @@ func (d *config) Add(bean systemModel.Config) (uint, error) {
 
 // Update 更新配置
 func (d *config) Update(bean systemModel.Config) (int64, error) {
-	result := d.db.Select("*").Omit("created_at").Updates(&bean)
+	result := d.db.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除配置
 func (d *config) Delete(id uint) (int64, error) {
-	result := d.db.Delete(&systemModel.Config{
+	result := d.db.GetDbW().Delete(&systemModel.Config{
 		ID: id,
 	})
 	return result.RowsAffected, result.Error
@@ -105,13 +105,13 @@ func (d *config) BatchDelete(ids []uint) (int64, error) {
 			ID: id,
 		})
 	}
-	result := d.db.Delete(&beans)
+	result := d.db.GetDbW().Delete(&beans)
 	return result.RowsAffected, result.Error
 }
 
 // Status 更新状态
 func (d *config) Status(id uint, status uint) (int64, error) {
-	result := d.db.Select("status").Updates(&systemModel.Config{
+	result := d.db.GetDbW().Select("status").Updates(&systemModel.Config{
 		ID:     id,
 		Status: status,
 	})
@@ -121,7 +121,7 @@ func (d *config) Status(id uint, status uint) (int64, error) {
 // Children 通过父 ID 获取子配置列表
 func (d *config) Children(parentId uint) ([]systemModel.Config, error) {
 	beans := make([]systemModel.Config, 0)
-	result := d.db.Where("parent_id=?", parentId).
+	result := d.db.GetDbR().Where("parent_id=?", parentId).
 		Order("sort ASC").Order("id ASC").
 		Find(&beans)
 	if result.Error != nil {

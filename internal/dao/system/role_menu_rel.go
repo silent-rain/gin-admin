@@ -6,7 +6,7 @@ import (
 	DAO "gin-admin/internal/dao"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/database"
+	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/pkg/utils"
 
 	"go.uber.org/zap"
@@ -22,21 +22,21 @@ type RoleMenuRel interface {
 // 角色菜单关系
 type roleMenuRel struct {
 	*DAO.Transaction
-	db *gorm.DB
+	db mysql.DBRepo
 }
 
 // 创建角色菜单关系 Dao 对象
 func NewRoleMenuRelDao() *roleMenuRel {
 	return &roleMenuRel{
-		Transaction: DAO.NewTransaction(database.Instance()),
-		db:          database.Instance(),
+		Transaction: DAO.NewTransaction(mysql.Instance().GetDbW()),
+		db:          mysql.Instance(),
 	}
 }
 
 // List 角色关联的菜单列表
 func (d *roleMenuRel) List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db
+		stats := d.db.GetDbR()
 		if req.MenuId != 0 {
 			stats = stats.Where("menu_id = ?", req.MenuId)
 		}

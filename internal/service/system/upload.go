@@ -43,7 +43,7 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 	ext := path.Ext(file.Filename)
 	filename := utils.Md5(file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
 	// 上传文件到指定的 dst
-	dst := conf.Instance().UploadConfig.FilePath + "/avatar/" + filename
+	dst := conf.Instance().Server.Upload.FilePath + "/avatar/" + filename
 
 	err := ctx.SaveUploadedFile(file, dst)
 	if errors.Is(err, fs.ErrNotExist) {

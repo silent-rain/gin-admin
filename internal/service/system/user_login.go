@@ -17,6 +17,7 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // UserLoginService 用户登录/登出
@@ -62,6 +63,8 @@ func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Error("用户名或者密码不正确")
 		return result, errcode.New(errcode.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
 	}
+	zap.S().Errorf("========== %#v", user)
+
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(errcode.UserDisableError).Error("")

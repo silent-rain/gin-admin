@@ -11,13 +11,30 @@
 package router
 
 import (
+	"html/template"
+	"net/http"
+
+	"gin-admin/assets"
 	"gin-admin/internal/controller"
+	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-// NewStaticApi 静态资源路由
-func NewStaticApi(engine *gin.Engine) {
+// 设置静态资源
+func setStaticApi(engine *gin.Engine) {
+
+	// 加载静态资源
+	engine.StaticFS("/static", http.FS(utils.NewResource()))
+	// Api Docs 静态内嵌资源
+	engine.StaticFS("/docs", http.FS(utils.NewDocsResource()))
+	// 本地静态资源
+	engine.Static("/upload", conf.Instance().Server.Upload.FilePath)
+	// WEB 首页模板
+	templ := template.Must(template.New("").ParseFS(assets.WebAssets, "dist/*.html"))
+	engine.SetHTMLTemplate(templ)
+
 	engine.GET("/", controller.Index)
 	engine.GET("/favicon.ico", controller.FaviconIco)
 }
