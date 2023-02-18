@@ -5,7 +5,7 @@ import (
 	"gin-admin/internal/dto"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
@@ -63,7 +63,7 @@ func (c *menuController) Add(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	userId := context.GetUserId(ctx)
+	userId := core.GetContext(ctx).UserId
 	menu.CreateUserId = userId
 	menu.UpdateUserId = userId
 
@@ -87,7 +87,7 @@ func (c *menuController) Update(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	userId := context.GetUserId(ctx)
+	userId := core.GetContext(ctx).UserId
 	menu.UpdateUserId = userId
 
 	_, err := c.service.Update(ctx, menu)

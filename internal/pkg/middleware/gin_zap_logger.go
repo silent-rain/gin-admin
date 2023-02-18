@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -35,9 +35,9 @@ func GinZapLogger() gin.HandlerFunc {
 			zap.String("user_agent", ctx.Request.UserAgent()),
 			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
-			// 待替换
-			zap.String("trace_id", context.GetTraceId(ctx)),
-			zap.Uint("user_id", context.GetUserId(ctx)),
+			zap.String("trace_id", core.GetContext(ctx).TraceId),
+			zap.String("span_id", core.GetContext(ctx).SpanId),
+			zap.Uint("user_id", core.GetContext(ctx).UserId),
 		)
 	}
 }

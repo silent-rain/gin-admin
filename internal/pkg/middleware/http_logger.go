@@ -18,7 +18,7 @@ import (
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/log"
 
 	"github.com/gin-gonic/gin"
@@ -44,10 +44,10 @@ func HttpLogger() gin.HandlerFunc {
 		ctx.Writer = blw
 
 		htppLog := systemModel.HttpLog{
-			UserId:     context.GetUserId(ctx),
-			TraceId:    context.GetTraceId(ctx),
-			SpanId:     context.GetSpanId(ctx),
-			ErrorCode:  ctx.Writer.Status(),
+			UserId:     core.GetContext(ctx).UserId,
+			TraceId:    core.GetContext(ctx).TraceId,
+			SpanId:     core.GetContext(ctx).SpanId,
+			StatusCode: ctx.Writer.Status(),
 			Method:     ctx.Request.Method,
 			Path:       ctx.Request.URL.Path,
 			Query:      ctx.Request.URL.RawQuery,
@@ -70,9 +70,9 @@ func HttpLogger() gin.HandlerFunc {
 		ctx.Next()
 
 		// 响应
-		htppLog.ErrorCode = ctx.Writer.Status()
+		htppLog.StatusCode = ctx.Writer.Status()
 		htppLog.Cost = time.Since(start).Nanoseconds()
-		htppLog.HttpType = "RSP"
+		htppLog.HttpType = "RESP"
 		htppLog.Body = blw.Body.String()
 		go func(htppLog systemModel.HttpLog) {
 			systemDAO.NewHttpLogDao().Add(htppLog)

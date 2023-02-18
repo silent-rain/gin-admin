@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -64,7 +64,7 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		ctx.Set(context.GinContextToken, *claim)
+		core.GetContext(ctx).UserId = claim.UserId
 		ctx.Next()
 	}
 }

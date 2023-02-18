@@ -10,7 +10,7 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
@@ -178,9 +178,10 @@ type logger struct {
 
 // New 创建日志对象
 func New(ctx *gin.Context) *logger {
-	traceId := context.GetTraceId(ctx)
-	spanId := context.GetSpanId(ctx)
-	userId := context.GetUserId(ctx)
+	extCtx := core.GetContext(ctx)
+	traceId := extCtx.TraceId
+	spanId := extCtx.SpanId
+	userId := extCtx.UserId
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.String("span_id", spanId),

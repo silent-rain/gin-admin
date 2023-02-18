@@ -13,7 +13,7 @@ import (
 
 // Token 令牌
 type Token struct {
-	UserId   int
+	UserId   uint
 	phone    string
 	email    string
 	password string
@@ -23,7 +23,7 @@ type Token struct {
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, phone, email, password string) (string, error) {
 	cla := Token{
-		UserId:   int(userId),
+		UserId:   userId,
 		phone:    phone,
 		email:    email,
 		password: password,

@@ -38,8 +38,8 @@ func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, in
 		if req.TraceId != "" {
 			stats = stats.Where("trace_id = ? OR parent_trace_id = ?", req.TraceId, req.TraceId)
 		}
-		if req.ErrorCode != 0 {
-			stats = stats.Where("error_code = ?", req.ErrorCode)
+		if req.StatusCode != 0 {
+			stats = stats.Where("status_code = ?", req.StatusCode)
 		}
 		if req.Method != "" {
 			stats = stats.Where("method = ?", req.Method)

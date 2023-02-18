@@ -7,7 +7,7 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/context"
+	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/internal/pkg/utils"
@@ -206,7 +206,7 @@ func (c *userController) UpdateEmail(ctx *gin.Context) {
 
 // Info 获取用户信息
 func (c *userController) Info(ctx *gin.Context) {
-	userId := context.GetUserId(ctx)
+	userId := core.GetContext(ctx).UserId
 
 	result, err := c.service.Info(ctx, userId)
 	if err != nil {
