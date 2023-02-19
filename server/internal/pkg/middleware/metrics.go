@@ -19,7 +19,7 @@ import (
 // Metrics 指标记录
 func Metrics() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if !conf.Instance().Server.Base.EnablePrometheus {
+		if !conf.Instance().Server.Base.EnableRecordMetrics {
 			ctx.Next()
 			return
 		}

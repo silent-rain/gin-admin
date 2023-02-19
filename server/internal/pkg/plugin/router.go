@@ -19,7 +19,7 @@ func RegisterPprof(engine *gin.Engine) {
 	pprof.Register(engine)
 }
 
-// RegisterPrometheus Prometheus 监控指标
+// RegisterPrometheus Prometheus 监控指标工具
 func RegisterPrometheus(engine *gin.Engine) {
 	if !conf.Instance().Server.Base.EnablePrometheus {
 		return

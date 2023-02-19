@@ -13,6 +13,7 @@ env = "dev" # prod/test/dev
     max_requests_per_second = 10000 # 是否启用限速
     enable_pprof = true # 是否启用 pprof 性能剖析工具
     enable_prometheus = false # 是否启用 Prometheus 监控指标
+    enable_record_metrics = false # 是否启用 记录指标
     enable_swagger = false # 是否启用 swagger API 文档
     enable_open_browser = false # 是否启用服务启动后打开浏览器
     open_browser_url = "http://127.0.0.1:5005" # 启动后在浏览器中打开的 URL
