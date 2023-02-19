@@ -63,6 +63,16 @@ func (e *excel) Read() *excel {
 	return e
 }
 
+// GetHeader 获取 Headers 列表
+// 如没有指定 Headers 第一行将作为 Headers
+func (e *excel) GetHeader() []string {
+	headers := make([]string, 0)
+	if len(e.headers) == 0 {
+		headers = e.data[1]
+	}
+	return headers
+}
+
 // GetRawData 获取原始数据
 func (e *excel) GetRawData() [][]string {
 	if len(e.data) == 0 {
@@ -78,7 +88,7 @@ func (e *excel) GetMapData() []map[string]string {
 		return nil
 	}
 	dataList := make([]map[string]string, 0)
-	n := 0
+	n := 1
 	headers := make([]string, 0)
 	if len(e.headers) == 0 {
 		headers = e.data[1]
