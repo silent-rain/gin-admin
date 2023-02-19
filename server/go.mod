@@ -75,6 +75,7 @@ require (
 	golang.org/x/text v0.6.0 // indirect
 	golang.org/x/time v0.3.0
 	google.golang.org/protobuf v1.28.1 // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/sqlite v1.4.4
