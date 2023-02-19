@@ -1,4 +1,7 @@
 # Gin-Admin 后台管理系统
+`Gin-Admin`后端是基于[Gin](https://github.com/gin-gonic/gin) 进行模块化设计的 API 框架，封装了常用的框架功能，使用简单，致力于快速的业务研发。
+前端是基于[Vue框架模板](https://github.com/jzfai/vue3-admin-plus)进行设计的前端管理框架，封装了常用的权限管理、系统管理功能，致力于一套开箱即用的权限系统。
+同时支持将web服务内置于go的编译包中，编译后可直接访问前后端。
 
 ## 开发环境
 - 系统版本: deepin v20.8
