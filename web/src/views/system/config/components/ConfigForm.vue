@@ -19,7 +19,7 @@
           node-key="id"
           :props="{
             children: 'children',
-            label: 'title',
+            label: 'name',
           }"
           :render-after-expand="false"
           filterable
@@ -39,10 +39,19 @@
         <el-input v-model="props.data.name" placeholder="请输入配置名称" />
       </el-form-item>
       <el-form-item label="配置KEY" prop="key">
-        <el-input v-model="props.data.key" placeholder="请输入配置KEY" />
+        <el-input
+          v-model="props.data.key"
+          :disabled="props.type !== 'add'"
+          placeholder="请输入配置KEY"
+        />
       </el-form-item>
       <el-form-item label="配置值" prop="value">
-        <el-input v-model="props.data.value" placeholder="请输入配置值" />
+        <el-input
+          v-model="props.data.value"
+          type="textarea"
+          :rows="4"
+          placeholder="请输入配置值"
+        />
       </el-form-item>
       <el-form-item label="排序号" prop="sort">
         <el-input-number v-model="props.data.sort" :min="1" />
