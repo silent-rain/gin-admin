@@ -141,7 +141,7 @@
             <el-input v-model="props.data.password" placeholder="请输入密码" />
           </el-form-item>
         </el-col>
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="头像" prop="status">
             <el-upload
               class="avatar-uploader"
@@ -158,6 +158,25 @@
               />
               <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
             </el-upload>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="分配角色" prop="role_ids">
+            <el-select
+              v-model="roleIds"
+              multiple
+              filterable
+              clearable
+              placeholder="Select"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in roleList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -193,18 +212,6 @@
               v-model="props.data.note"
               type="textarea"
               placeholder="请输入备注"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="分配角色" prop="role_ids">
-            <el-transfer
-              v-model="roleIds"
-              filterable
-              filter-placeholder="筛选角色"
-              :data="roleList"
-              :props="{ key: 'id', label: 'name' }"
-              :titles="['可选角色', '已选角色']"
             />
           </el-form-item>
         </el-col>

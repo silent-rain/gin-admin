@@ -22,6 +22,7 @@ var (
 		"^/favicon.ico$",
 		"^/$",
 		"^/static/.*",
+		"^/upload/.*",
 
 		// pprof 性能剖析工具
 		"^/debug/pprof",
