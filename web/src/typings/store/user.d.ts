@@ -1,4 +1,4 @@
-import { User } from '~/api/system/user';
+import { User } from '@/typings/api/permission/user';
 import { Role } from '~/api/system/role';
 import { Menu } from '~/api/system/menu';
 

@@ -329,8 +329,8 @@ import {
   deleteUser,
   batchDeleteUser,
   resetUserPwd,
-} from '@/api/system/user';
-import { UserListRsp, User } from '~/api/system/user';
+} from '@/api/permission/user';
+import { UserListRsp, User } from '@/typings/api/permission/user';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';

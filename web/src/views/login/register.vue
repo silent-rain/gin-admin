@@ -80,7 +80,7 @@ import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
 import { useUserStore } from '@/store/user';
 import { register, getCaptcha } from '@/api/system/login';
-import { User } from '~/api/system/user';
+import { User } from '@/typings/api/permission/user';
 import { GetCaptchaRsp } from '~/api/system/login';
 
 const route = useRoute();

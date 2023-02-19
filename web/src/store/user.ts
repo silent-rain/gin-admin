@@ -1,9 +1,9 @@
 import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import router from '@/router';
-import { getUserInfo } from '@/api/system/user';
-import { User } from '~/api/system/user';
-import { Role } from '~/api/system/role';
+import { getUserInfo } from '@/api/permission/user';
+import { User } from '@/typings/api/permission/user';
+import { Role } from '~/api/permission/role';
 import { UserTry } from '~/store/user';
 
 export const useUserStore = defineStore('user', {

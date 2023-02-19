@@ -222,8 +222,8 @@ import {
   updateRoleStatus,
   deleteRole,
   batchDeleteRole,
-} from '@/api/system/role';
-import { RoleListRsp, Role } from '~/api/system/role';
+} from '@/api/permission/role';
+import { RoleListRsp, Role } from '~/api/permission/role';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';

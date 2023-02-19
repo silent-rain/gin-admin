@@ -4,7 +4,7 @@ import Layout from '@/layout/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import { useUserStore } from '@/store/user';
 import { RouteRawConfig } from '~/store/router';
-import { ButtonPermission, Menu } from '~/api/system/menu';
+import { ButtonPermission, Menu } from '~/api/permission/menu';
 
 // 菜单列表转为路由列表
 export const asyncRoutesByMenus = (menus: Menu[]) => {

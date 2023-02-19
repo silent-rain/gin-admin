@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { RouteRawConfig, RouterTypes } from '~/store/router';
-import { Menu, ButtonPermission } from '~/api/system/menu';
+import { Menu, ButtonPermission } from '~/api/permission/menu';
 
 export const usePermissionStore = defineStore('permission', {
   state: () => {

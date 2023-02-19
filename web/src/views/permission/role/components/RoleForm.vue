@@ -43,8 +43,8 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateRole, addRole } from '@/api/system/role';
-import { Role } from '~/api/system/role';
+import { updateRole, addRole } from '@/api/permission/role';
+import { Role } from '~/api/permission/role';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 

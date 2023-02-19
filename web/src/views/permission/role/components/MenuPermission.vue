@@ -32,14 +32,14 @@
 
 <script setup lang="ts">
 import { ElMessage, ElTree } from 'element-plus';
-import { getAllMenuTree } from '@/api/system/menu';
+import { getAllMenuTree } from '@/api/permission/menu';
 import {
   getRoleMenuRelList,
   updateRoleMenuRel,
-} from '@/api/system/role-menu-rel';
-import { Role } from '~/api/system/role';
-import { MenuListRsp, Menu } from '~/api/system/menu';
-import { RoleMenuRelListRsp } from '~/api/system/role-menu-rel';
+} from '@/api/permission/role-menu-rel';
+import { Role } from '~/api/permission/role';
+import { MenuListRsp, Menu } from '~/api/permission/menu';
+import { RoleMenuRelListRsp } from '~/api/permission/role-menu-rel';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 

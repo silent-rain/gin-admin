@@ -237,12 +237,12 @@ import {
   addUser,
   updatePhone,
   updateEmail,
-} from '@/api/system/user';
-import { getAllRole } from '@/api/system/role';
+} from '@/api/permission/user';
+import { getAllRole } from '@/api/permission/role';
 import { useUserStore } from '@/store/user';
 import { uploadAvatar } from '@/api/system/upload';
-import { User } from '~/api/system/user';
-import { RoleListRsp, Role } from '~/api/system/role';
+import { User } from '@/typings/api/permission/user';
+import { RoleListRsp, Role } from '~/api/permission/role';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 

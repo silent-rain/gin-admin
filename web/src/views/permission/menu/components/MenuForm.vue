@@ -291,9 +291,9 @@
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { QuestionFilled } from '@element-plus/icons-vue';
-import { updateMenu, addMenu, getAllMenuTree } from '@/api/system/menu';
-import { Menu, MenuListRsp } from '~/api/system/menu';
-import { MenuType, OpenType } from '@/constant/system/menu';
+import { updateMenu, addMenu, getAllMenuTree } from '@/api/permission/menu';
+import { Menu, MenuListRsp } from '~/api/permission/menu';
+import { MenuType, OpenType } from '@/constant/permission/menu';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 

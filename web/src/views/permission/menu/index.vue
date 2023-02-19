@@ -334,9 +334,9 @@ import {
   updateMenuStatus,
   deleteMenu,
   batchDeleteMenu,
-} from '@/api/system/menu';
-import { MenuListRsp, Menu } from '~/api/system/menu';
-import { MenuType, OpenType } from '@/constant/system/menu';
+} from '@/api/permission/menu';
+import { MenuListRsp, Menu } from '~/api/permission/menu';
+import { MenuType, OpenType } from '@/constant/permission/menu';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';
