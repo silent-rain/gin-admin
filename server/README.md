@@ -81,13 +81,16 @@
   - 导入
   - 角色权限优化
 
-1. 支持 panic 异常时邮件通知 
-2. 1. 支持 trace 项目内部链路追踪 
+1. 支持 panic 异常时邮件通知
+Excel
+缓存
+redis
+订阅模式
+2. 支持 trace 项目内部链路追踪 
 3. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
 4. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 5. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
-6. http限速、500报错拦截、
-7. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
+6. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
 /app/Ruler/Task/ ※ app全局定时任务，默认20s精度
 
 
