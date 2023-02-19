@@ -12,19 +12,21 @@ import (
 
 // ResponseAPI API响应结构
 type ResponseAPI struct {
-	Code errcode.ErrorCode `json:"code"` // 状态码
-	Msg  string            `json:"msg"`  // 状态码信息
-	Data interface{}       `json:"data"` // 返回数据
-	ctx  *gin.Context      `json:"-"`
+	Code       errcode.ErrorCode `json:"code"` // 状态码
+	Msg        string            `json:"msg"`  // 状态码信息
+	Data       interface{}       `json:"data"` // 返回数据
+	httpStatus int               `json:"-"`    // HTTP 状态码
+	ctx        *gin.Context      `json:"-"`
 }
 
 // New 返回 API 响应结构对象
 // 返回默认 Ok 状态码及对应的状态码信息
 func New(ctx *gin.Context) *ResponseAPI {
 	return &ResponseAPI{
-		Code: errcode.Ok,
-		Msg:  errcode.Ok.Msg(),
-		ctx:  ctx,
+		Code:       errcode.Ok,
+		Msg:        errcode.Ok.Msg(),
+		ctx:        ctx,
+		httpStatus: http.StatusOK,
 	}
 }
 
@@ -38,6 +40,12 @@ func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
 func (r *ResponseAPI) WithCode(code errcode.ErrorCode) *ResponseAPI {
 	r.Code = code
 	r.Msg = code.Msg()
+	return r
+}
+
+// WithHttpStatus 添加请求状态码
+func (r *ResponseAPI) WithHttpStatus(code int) *ResponseAPI {
+	r.httpStatus = code
 	return r
 }
 
@@ -69,5 +77,5 @@ func (r *ResponseAPI) WithDataList(data interface{}, total int64) *ResponseAPI {
 
 // Json 返回接口
 func (r *ResponseAPI) Json() {
-	r.ctx.JSON(http.StatusOK, r)
+	r.ctx.JSON(r.httpStatus, r)
 }

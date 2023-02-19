@@ -37,7 +37,7 @@ func main() {
 	// 针对路由组的中间件
 	{
 		// 异常恢复
-		engine.Use(gin.Recovery())
+		engine.Use(middleware.Recover())
 		// 鉴权表
 		engine.Use(middleware.AuthTable())
 		// 接口限流
@@ -57,6 +57,8 @@ func main() {
 		engine.Use(middleware.TraceLogger())
 		// 接口请求日志中间件，日志输出至数据库
 		engine.Use(middleware.HttpLogger())
+		// 指标记录
+		engine.Use(middleware.Metrics())
 	}
 
 	// 路由初始化

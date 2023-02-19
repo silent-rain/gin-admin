@@ -10,6 +10,8 @@ const (
 	InternalError                                 // 内部错误
 	UnknownError                                  // 未知错误
 	HttpServerCloseError                          // Http 服务关闭错误
+	RouteNotFoundError                            // 404 接口不存在
+	InternalServerError                           // 500 服务器内部错误
 )
 
 // 请求

@@ -8,6 +8,7 @@ import (
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/response"
 	systemVO "gin-admin/internal/vo/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,4 +28,9 @@ func Health(ctx *gin.Context) {
 		Status:      "ok",
 	}
 	response.New(ctx).WithData(result).Json()
+}
+
+// NotFound 404 接口不存在
+func NotFound(ctx *gin.Context) {
+	response.New(ctx).WithHttpStatus(http.StatusNotFound).WithCode(errcode.RouteNotFoundError).Json()
 }

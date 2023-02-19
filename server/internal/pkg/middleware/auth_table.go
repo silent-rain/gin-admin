@@ -7,7 +7,6 @@ import (
 	"gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 var (
@@ -43,7 +42,6 @@ func AuthTable() gin.HandlerFunc {
 			reg := regexp.MustCompile(item)
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
-				zap.S().Error(result)
 				core.GetContext(ctx).DisableCheckLogin = true
 			}
 		}
@@ -53,7 +51,6 @@ func AuthTable() gin.HandlerFunc {
 			reg := regexp.MustCompile(item)
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
-				zap.S().Error(result)
 				core.GetContext(ctx).DisableCheckLogin = true
 			}
 		}

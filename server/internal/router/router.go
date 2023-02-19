@@ -25,4 +25,7 @@ func Init(engine *gin.Engine) {
 
 	// 系统路由
 	apiv1.NewSystemApi(engine)
+
+	// 404 接口不存在
+	engine.NoRoute(controller.NotFound)
 }
