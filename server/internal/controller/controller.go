@@ -9,6 +9,7 @@ import (
 	"gin-admin/internal/pkg/response"
 	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
+	"gin-admin/pkg/timeutil"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +23,8 @@ func Ping(ctx *gin.Context) {
 // Health 服务健康检查
 func Health(ctx *gin.Context) {
 	result := systemVO.Health{
-		Timestamp:   time.Now(),
-		Environment: conf.Instance().Environment.Active(),
+		Timestamp:   time.Now().Local().Format(timeutil.CSTMilliLayout),
+		Environment: conf.Instance().Environment.Env,
 		Host:        ctx.Request.Host,
 		Status:      "ok",
 	}

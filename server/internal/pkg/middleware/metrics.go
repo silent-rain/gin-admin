@@ -39,7 +39,7 @@ func Metrics() gin.HandlerFunc {
 
 		metrics.RecordHandler(systemModel.MetricsMessage{
 			ProjectName: constant.ProjectName,
-			Env:         conf.Instance().Environment.Active(),
+			Env:         conf.Instance().Environment.Env,
 			TraceID:     core.GetContext(ctx).TraceId,
 			HOST:        ctx.Request.Host,
 			Path:        ctx.Request.URL.Path,
