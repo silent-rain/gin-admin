@@ -1,0 +1,14 @@
+# tmp
+cmd/tmp
+tmp
+
+# log
+logs/*
+cmd/logs
+internal/pkg/log/logs
+
+# embed web
+assets/dist/*
+
+# upload
+cmd/upload/*

@@ -100,20 +100,22 @@
 - 热重启, 修改代码后自动编译运行
 
 ```shell
-# 项目根目录
+# 进入后端项目
+cd server
+# 执行air指令即可启动项目
 air
 ```
 - 手动调式运行
 
 ```shell
-cd cmd
+cd server/cmd
 go run main.go
 ```
 #### 发布模式
 - 项目编译
 
 ```shell
-cd cmd
+cd server/cmd
 # 编译
 go build -o ./main .
 ```
