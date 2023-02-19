@@ -49,16 +49,13 @@ func main() {
 	// zap 接收 gin 框架默认的日志
 	// engine.Use(middleware.GinZapLogger(), middleware.GinZapRecovery(true))
 	// 接口请求日志中间件，日志输出至数据库
-	engine.Use(middleware.HttpLogger())
+	// engine.Use(middleware.HttpLogger())
 
 	// 路由初始化
 	router.Init(engine)
 
 	// 插件
-	// 服务启动后在浏览器中打开 URI
-	plugin.OpenBrowser()
-	// 服务启动后显示 logo
-	plugin.ShowLogo()
+	plugin.Init(engine)
 
 	// 服务运行
 	if err := engine.Run(conf.Instance().Server.ServerAddress()); err != nil {

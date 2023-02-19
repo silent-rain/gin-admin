@@ -32,6 +32,7 @@
   - [ ] 登录表 鉴权
   - [x] API 鉴权
   - [ ] API Token 鉴权
+  - [x] [rate](https://golang.org/x/time/rate) 接口限流 
 - [x] API 文档
   - [x] ApiPost 接口工具
   - [x] 内置接口文档
@@ -41,7 +42,12 @@
 - [ ] 优雅关机
   - [ ] 数据库
   - [ ] HTTP 服务
-
+- [ ] 插件
+  - [x] 服务启动logo
+  - [x] [pprof](https://github.com/gin-contrib/pprof) 性能剖析工具
+  - [x] [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
+  - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档
+  - [x] 服务启动后打开浏览器
 ## 系统功能列表
 - [ ] 权限管理
   - [x] 注册/登录/退出/验证码
@@ -71,12 +77,8 @@
 - 用户页面
   - 导入
   - 角色权限优化
-1. 支持 [rate](https://golang.org/x/time/rate) 接口限流 
 1. 支持 panic 异常时邮件通知 
-2. 1. 支持 [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
-1. 支持 [Swagger](https://github.com/swaggo/gin-swagger) 接口文档生成  --- 
 2. 1. 支持 trace 项目内部链路追踪 
-3. 1. 支持 [pprof](https://github.com/gin-contrib/pprof) 性能剖析
 1. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
 1. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 1. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
@@ -90,31 +92,41 @@
 ## 项目编译&运行
 ### 后端
 此后端内嵌web静态资源，打包后可直接访问。
+#### 开发模式
 - 热重启, 修改代码后自动编译运行
 
 ```shell
 # 项目根目录
 air
 ```
-- 项目调式运行
+- 手动调式运行
 
 ```shell
 cd cmd
 go run main.go
 ```
-- 项目编译&运行
+#### 发布模式
+- 项目编译
 
 ```shell
 cd cmd
 # 编译
 go build -o ./main .
+```
+
+- 运行
+```shell
 # 添加执行权限
 chmod 755 main
 # 运行
 ./main
-# 后端访问地址
-http://127.0.0.1:8080/api/ping
 ```
+#### 访问服务
+- [接口连接测试](http://127.0.0.1:8080/api/ping)
+- [内嵌前端](http://127.0.0.1:8080/)
+- [pprof 性能剖析工具](http://127.0.0.1:8080/debug/pprof/)
+- [Prometheus 监控指标](http://127.0.0.1:8080/metrics)
+
 ### 前端编译&运行
 - 安装依赖
 
@@ -162,6 +174,7 @@ air
 - [Gorm](https://gorm.io/zh_CN/)
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
 - [参考项目](http://manage.pro.layui.javaweb.vip/index)
+- [为 Go 应用添加 Prometheus 监控指标](https://blog.csdn.net/weixin_40046357/article/details/120620433)
 
 ### go-api 设计参考
 https://github.com/flipped-aurora/gin-vue-admin/tree/main/server

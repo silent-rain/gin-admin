@@ -28,8 +28,8 @@ func Open(uri string) error {
 	return cmd.Start()
 }
 
-// OpenBrowser 服务启动后在浏览器中打开 URI
-func OpenBrowser() {
+// RegisterOpenBrowser 服务启动后在浏览器中打开 URI
+func RegisterOpenBrowser() {
 	if !conf.Instance().Server.Base.EnableOpenBrowser {
 		return
 	}

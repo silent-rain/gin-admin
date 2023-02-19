@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 00:00:18
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 21:34:35
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/router/router.go
- * @Descripttion:路由
+/*路由
  */
 package router
 

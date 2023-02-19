@@ -18,8 +18,8 @@ const logo = `
  ╚═════╝  ╚═════╝        ╚═════╝ ╚═╝╚═╝  ╚═══╝      ╚═╝  ╚═╝╚═╝     ╚═╝
 `
 
-// ShowLogo 服务启动后显示 logo
-func ShowLogo() {
+// RegisterLogo 服务启动后显示 logo
+func RegisterLogo() {
 	if !conf.Instance().Server.Base.EnableLogo {
 		return
 	}
