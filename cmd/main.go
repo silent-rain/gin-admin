@@ -4,13 +4,16 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
 	"gin-admin/internal/pkg/plugin"
 	"gin-admin/internal/pkg/repository/mysql"
+	"gin-admin/internal/pkg/shutdown"
 	"gin-admin/internal/router"
 
 	"github.com/gin-gonic/gin"
@@ -62,8 +65,23 @@ func main() {
 	// 插件
 	plugin.Init(engine)
 
-	// 服务运行
-	if err := engine.Run(conf.Instance().Server.ServerAddress()); err != nil {
-		panic(fmt.Sprintf("server run failed, err: %v", err))
+	srv := &http.Server{
+		Addr:    conf.Instance().Server.ServerAddress(),
+		Handler: engine,
 	}
+
+	// 启动服务
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+			panic(fmt.Sprintf("server run failed, err: %v", err))
+		}
+	}()
+
+	// 关闭资源
+	shutdown.NewHook().Close(
+		// 关闭 Mysql 服务
+		shutdown.WithCloseMysql,
+		// 服务关闭后的消息提示
+		shutdown.WithCloseInfo,
+	)
 }

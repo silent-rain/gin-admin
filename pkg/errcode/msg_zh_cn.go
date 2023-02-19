@@ -26,6 +26,8 @@ var MsgZHCN = map[ErrorCode]error{
 	DBResetError:             errors.New("数据重置失败"),
 	DBDataExistError:         errors.New("数据已存在"),
 	DBDataExistChildrenError: errors.New("存在子项"),
+	DBWriteCloseError:        errors.New("读写数据库实例关闭失败"),
+	DBReadCloseError:         errors.New("只读数据库实例关闭失败"),
 	// 鉴权
 	TokenGenerateError: errors.New("生成 Token 失败"),
 	TokenNotFound:      errors.New("鉴权信息不存在"),

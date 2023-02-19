@@ -21,14 +21,17 @@ type etxContext struct {
 
 // GetContext 获取扩展 Context
 func GetContext(ctx *gin.Context) *etxContext {
-	c, ok := ctx.Get(contextKey)
-	if ok {
-		return c.(*etxContext)
-	}
 	newC := &etxContext{
 		DisableCheckLogin:  false,
 		DisableRateLimiter: false,
 	}
-	ctx.Set(contextKey, newC)
-	return newC
+	if ctx == nil {
+		return newC
+	}
+	c, ok := ctx.Get(contextKey)
+	if !ok {
+		ctx.Set(contextKey, newC)
+		return newC
+	}
+	return c.(*etxContext)
 }

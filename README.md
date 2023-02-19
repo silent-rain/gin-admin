@@ -39,9 +39,9 @@
 - [ ] 定时任务调度
   - [ ] 即时任务
   - [ ] 定时任务
-- [ ] 优雅关机
-  - [ ] 数据库
-  - [ ] HTTP 服务
+- [x] 优雅关机
+  - [x] HTTP 服务
+  - [x] Mysql 数据库
 - [ ] 插件
   - [x] 服务启动logo
   - [x] [pprof](https://github.com/gin-contrib/pprof) 性能剖析工具
@@ -77,13 +77,14 @@
 - 用户页面
   - 导入
   - 角色权限优化
+- 内嵌前端打包异常，动态路由导致的
 1. 支持 panic 异常时邮件通知 
 2. 1. 支持 trace 项目内部链路追踪 
-1. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
-1. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
-1. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
-2. http限速、500报错拦截、
-3. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
+3. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
+4. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
+5. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
+6. http限速、500报错拦截、
+7. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
 /app/Ruler/Task/ ※ app全局定时任务，默认20s精度
 
 

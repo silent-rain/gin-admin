@@ -36,6 +36,8 @@ const (
 	DBResetError                                      // 数据重置失败
 	DBDataExistError                                  // 数据已存在
 	DBDataExistChildrenError                          // 存在子项
+	DBWriteCloseError                                 // 读写数据库实例关闭失败
+	DBReadCloseError                                  // 只读数据库实例关闭失败
 )
 
 // 鉴权
