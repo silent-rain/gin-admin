@@ -9,6 +9,7 @@ import { ButtonPermission, Menu } from '~/api/system/menu';
 // 菜单列表转为路由列表
 export const asyncRoutesByMenus = (menus: Menu[]) => {
   const routes: RouteRawConfig[] = [];
+  const modules = import.meta.glob('../views/**/**.vue');
   for (const menu of menus) {
     const parentNode: RouteRawConfig = {} as RouteRawConfig;
     parentNode.path = menu.path;
@@ -19,7 +20,8 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
     } else {
       const url = menu.component.replace('@', '..');
       // parentNode.component = importModule(url);
-      parentNode.component = () => import(/* @vite-ignore */ url);
+      // parentNode.component = () => import(/* @vite-ignore */ url);
+      parentNode.component = modules[url];
       // parentNode.component = defineAsyncComponent(
       //   () => import(/* @vite-ignore */ url),
       // );

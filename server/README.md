@@ -80,7 +80,7 @@
 - 用户页面
   - 导入
   - 角色权限优化
-- 内嵌前端打包异常，动态路由导致的
+
 1. 支持 panic 异常时邮件通知 
 2. 1. 支持 trace 项目内部链路追踪 
 3. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件

@@ -1,14 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 22:57:57
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 17:17:48
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/assets/assets_test.go
- * @Descripttion:
- */
-/**内嵌外部资源测试
+/*内嵌外部资源测试
  * go test -v
  * go test -v assets_test.go assets.go
  */
