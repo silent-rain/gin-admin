@@ -25,8 +25,10 @@ func Init(engine *gin.Engine) {
 	// 设置静态资源
 	setStaticApi(engine)
 
-	// 服务健康检查
+	// 服务连接测试
 	engine.GET("/api/ping", controller.Ping)
+	// 健康检查
+	engine.GET("/api/health", controller.Health)
 
 	// 系统路由
 	NewSystemApiV1(engine)

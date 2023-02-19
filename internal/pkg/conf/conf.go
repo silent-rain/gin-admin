@@ -57,8 +57,13 @@ type Config struct {
 type ServerConfig struct {
 	// 服务配置
 	Base struct {
-		Address string `toml:"address"` // 服务地址
-		Port    int    `toml:"port"`    // 服务端口
+		Address              string `toml:"address"`                 // 服务地址
+		Port                 int    `toml:"port"`                    // 服务端口
+		EnableLogo           bool   `toml:"enable_logo"`             // 是否启用 Logo
+		EnableRateLimiter    bool   `toml:"enable_rate_limiter"`     // 是否启用限速
+		MaxRequestsPerSecond int    `toml:"max_requests_per_second"` // 每秒最大请求量
+		EnableOpenBrowser    bool   `toml:"enable_open_browser"`     // 是否启用服务启动后打开浏览器
+		OpenBrowserUrl       string `toml:"open_browser_url"`        // 启动后在浏览器中打开的 URL
 	} `toml:"base"`
 	// 上传路径配置
 	Upload struct {

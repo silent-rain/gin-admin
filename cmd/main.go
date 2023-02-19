@@ -9,6 +9,7 @@ import (
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
+	"gin-admin/internal/pkg/plugin"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/router"
 
@@ -31,6 +32,8 @@ func main() {
 	engine := gin.Default()
 	engine.Use(gin.Recovery())
 
+	// 限速器中间件
+	engine.Use(middleware.RateLimiter())
 	// 跨域处理中间件
 	engine.Use(middleware.Cros())
 	// Session 中间件
@@ -50,6 +53,13 @@ func main() {
 
 	// 路由初始化
 	router.Init(engine)
+
+	// 插件
+	// 服务启动后在浏览器中打开 URI
+	plugin.OpenBrowser()
+	// 服务启动后显示 logo
+	plugin.ShowLogo()
+
 	// 服务运行
 	if err := engine.Run(conf.Instance().Server.ServerAddress()); err != nil {
 		panic(fmt.Sprintf("server run failed, err: %v", err))

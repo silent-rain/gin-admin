@@ -8,6 +8,11 @@ env = "dev" # prod/test/dev
   [server.base]
     address = "127.0.0.1" # 服务地址
     port = 8080 # 服务端口
+    enable_logo = true # 是否启用 Logo
+    enable_rate_limiter = true # 是否限速
+    max_requests_per_second = 10000 # 是否启用限速
+    enable_open_browser = false # 是否启用服务启动后打开浏览器
+    open_browser_url = "http://127.0.0.1:5005" # 启动后在浏览器中打开的 URL
   # 上传路径配置
   [server.upload]
     filepath = "./upload" # 上传文件路径
