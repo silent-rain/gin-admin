@@ -25,7 +25,7 @@ var Assets embed.FS
 //go:embed dist
 var WebAssets embed.FS
 
-//go:embed dist/static dist/static/js/_plugin-vue_export-helper-*.js
+//go:embed dist/static
 var WebStaticAssets embed.FS
 
 //go:embed docs

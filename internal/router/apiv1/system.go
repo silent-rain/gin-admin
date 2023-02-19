@@ -1,6 +1,6 @@
 /*系统路由
  */
-package router
+package apiv1
 
 import (
 	"gin-admin/internal/controller/system"
@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// NewSystemApiV1 系统路由
-func NewSystemApiV1(engine *gin.Engine) {
+// NewSystemApi 系统路由
+func NewSystemApi(engine *gin.Engine) {
 	v1 := engine.Group("/api/v1")
 
 	// 注册/登录/登出/验证码

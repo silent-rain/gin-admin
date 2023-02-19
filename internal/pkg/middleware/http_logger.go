@@ -1,17 +1,10 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-08 00:47:40
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-12 22:05:28
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/middleware/htpp_logger.go
- * @Descripttion: 接口请求日志中间件，日志输出至数据库
+/*接口请求日志中间件，日志输出至数据库
  */
 package middleware
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"strings"
 	"time"
@@ -20,6 +13,7 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/log"
+	"gin-admin/internal/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -73,7 +67,12 @@ func HttpLogger() gin.HandlerFunc {
 		htppLog.StatusCode = ctx.Writer.Status()
 		htppLog.Cost = time.Since(start).Nanoseconds()
 		htppLog.HttpType = "RESP"
-		htppLog.Body = blw.Body.String()
+
+		// 判断是否为接口, 当为接口时记录返回信息
+		if err := json.Unmarshal(blw.Body.Bytes(), &response.ResponseAPI{}); err == nil {
+			htppLog.Body = blw.Body.String()
+			return
+		}
 		go func(htppLog systemModel.HttpLog) {
 			systemDAO.NewHttpLogDao().Add(htppLog)
 		}(htppLog)

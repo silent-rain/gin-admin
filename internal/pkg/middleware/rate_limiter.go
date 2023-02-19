@@ -2,16 +2,24 @@
 package middleware
 
 import (
-	"gin-admin/internal/pkg/conf"
 	"time"
+
+	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
-// RateLimiter 限速器中间件
+// RateLimiter 接口限流中间件
 func RateLimiter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		// 请求禁用接口限流
+		if core.GetContext(ctx).DisableCheckLogin {
+			ctx.Next()
+			return
+		}
+
 		cfg := conf.Instance().Server.Base
 		if !cfg.EnableRateLimiter {
 			ctx.Next()

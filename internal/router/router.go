@@ -4,6 +4,7 @@ package router
 
 import (
 	"gin-admin/internal/controller"
+	"gin-admin/internal/router/apiv1"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,8 +15,8 @@ func Init(engine *gin.Engine) {
 	// engine.SetTrustedProxies([]string{"127.0.0.1"})
 	engine.SetTrustedProxies(nil)
 
-	// 设置静态资源
-	setStaticApi(engine)
+	// 设置静态资源路由
+	setStaticRouter(engine)
 
 	// 服务连接测试
 	engine.GET("/api/ping", controller.Ping)
@@ -23,5 +24,5 @@ func Init(engine *gin.Engine) {
 	engine.GET("/api/health", controller.Health)
 
 	// 系统路由
-	NewSystemApiV1(engine)
+	apiv1.NewSystemApi(engine)
 }

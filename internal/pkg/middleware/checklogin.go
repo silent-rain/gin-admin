@@ -10,22 +10,10 @@ import (
 	"gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	"gin-admin/internal/pkg/utils"
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
-
-// 放行白名单
-var apiWhiteList = []string{
-	// API
-	"/api/ping",
-	"/api/v1/sayHello",
-	"/api/v1/register",
-	"/api/v1/captcha",
-	"/api/v1/captcha/verify",
-	"/api/v1/login",
-}
 
 // CheckLogin 登录验证中间件
 func CheckLogin() gin.HandlerFunc {
@@ -35,13 +23,8 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-		// 请求白名单过滤
-		if utils.IndexOfArray(apiWhiteList, ctx.Request.URL.Path) != -1 {
-			ctx.Next()
-			return
-		}
-		// 非 API 请求过滤
-		if !strings.HasPrefix(ctx.Request.URL.Path, "/api") {
+		// 请求是否禁用登录检查
+		if core.GetContext(ctx).DisableCheckLogin {
 			ctx.Next()
 			return
 		}

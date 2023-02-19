@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "vite --mode serve-dev",
     "test": "vite --mode serve-test",
-    "build:test": "vite build --mode  build-test",
-    "build": "vite build --mode build",
+    "build:test": "vite build --mode serve-test",
+    "build": "vite build --mode serve-prod",
     "preview:build": "npm run build && vite preview ",
-    "preview": "vite preview ",
+    "preview": "vite preview --mode serve-dev",
     "lint": "eslint --ext .js,.jsx,.vue,.ts,.tsx src --fix",
     "prepare": "husky install",
     "test:unit": "vue-cli-service test:unit",

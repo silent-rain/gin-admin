@@ -13,6 +13,10 @@ type etxContext struct {
 	// 日志
 	TraceId string
 	SpanId  string
+
+	// 中间件处理
+	DisableCheckLogin  bool // 禁用登录检查
+	DisableRateLimiter bool // 禁用接口限流
 }
 
 // GetContext 获取扩展 Context
@@ -21,7 +25,10 @@ func GetContext(ctx *gin.Context) *etxContext {
 	if ok {
 		return c.(*etxContext)
 	}
-	newC := &etxContext{}
+	newC := &etxContext{
+		DisableCheckLogin:  false,
+		DisableRateLimiter: false,
+	}
 	ctx.Set(contextKey, newC)
 	return newC
 }
