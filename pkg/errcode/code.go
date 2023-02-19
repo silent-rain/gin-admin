@@ -6,9 +6,10 @@ package errcode
 type ErrorCode uint
 
 const (
-	Ok            ErrorCode = iota + 10000 // 访问成功
-	InternalError                          // 内部错误
-	UnknownError                           // 未知错误
+	Ok                   ErrorCode = iota + 10000 // 访问成功
+	InternalError                                 // 内部错误
+	UnknownError                                  // 未知错误
+	HttpServerCloseError                          // Http 服务关闭错误
 )
 
 // 请求

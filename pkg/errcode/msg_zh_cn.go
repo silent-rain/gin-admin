@@ -5,9 +5,10 @@ import "errors"
 
 // 状态码映射具体消息
 var MsgZHCN = map[ErrorCode]error{
-	Ok:            nil,
-	InternalError: errors.New("内部错误"),
-	UnknownError:  errors.New("未知错误"),
+	Ok:                   nil,
+	InternalError:        errors.New("内部错误"),
+	UnknownError:         errors.New("未知错误"),
+	HttpServerCloseError: errors.New("http 服务关闭错误"),
 	// 请求
 	ReqParameterParsingError:    errors.New("请求参数解析错误"),
 	ReqContentTypeNotFoundError: errors.New("请求 Content-Type 参数不存在"),

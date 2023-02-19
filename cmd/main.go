@@ -72,16 +72,18 @@ func main() {
 
 	// 启动服务
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			panic(fmt.Sprintf("server run failed, err: %v", err))
 		}
 	}()
 
 	// 关闭资源
 	shutdown.NewHook().Close(
+		// 关闭 Http 服务
+		shutdown.WithCloseHttpServer(srv),
 		// 关闭 Mysql 服务
-		shutdown.WithCloseMysql,
+		shutdown.WithCloseMysql(),
 		// 服务关闭后的消息提示
-		shutdown.WithCloseInfo,
+		shutdown.WithCloseInfo(),
 	)
 }
