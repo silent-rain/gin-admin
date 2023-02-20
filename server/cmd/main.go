@@ -36,29 +36,30 @@ func main() {
 
 	// 针对路由组的中间件
 	{
-		// 异常恢复
-		engine.Use(middleware.Recover())
-		// 鉴权表
-		engine.Use(middleware.AuthTable())
-		// 接口限流
-		engine.Use(middleware.RateLimiter())
 		// 跨域处理
 		engine.Use(middleware.Cros())
-		// 登录验证
-		engine.Use(middleware.CheckLogin())
+		// 鉴权表
+		engine.Use(middleware.AuthTable())
+		// 日志链路跟踪
+		engine.Use(middleware.TraceLogger())
 		// Session
 		engine.Use(middleware.Session())
+		// 接口限流
+		engine.Use(middleware.RateLimiter())
+		// 登录验证
+		engine.Use(middleware.CheckLogin())
+		// 指标记录
+		engine.Use(middleware.Metrics())
 
 		// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 		engine.Use(gin.Logger())
 		// zap 接收 gin 框架默认的日志
 		// engine.Use(middleware.GinZapLogger(), middleware.GinZapRecovery(true))
-		// 日志链路跟踪中间件
-		engine.Use(middleware.TraceLogger())
 		// 接口请求日志中间件，日志输出至数据库
 		engine.Use(middleware.HttpLogger())
-		// 指标记录
-		engine.Use(middleware.Metrics())
+
+		// 异常恢复
+		engine.Use(middleware.Recover())
 	}
 
 	// 路由初始化

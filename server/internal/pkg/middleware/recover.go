@@ -2,15 +2,14 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"runtime/debug"
 
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 // Recover 异常恢复
@@ -19,10 +18,9 @@ func Recover() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				// 打印错误堆栈信息
-				zap.S().Error("got panic",
-					zap.String("panic", fmt.Sprintf("%+v", err)),
-					zap.String("stack", string(debug.Stack())),
-				)
+				log.New(ctx).WithCode(errcode.InternalServerError).
+					WithField("stack", string(debug.Stack())).
+					Panicf("%v", err)
 				response.New(ctx).WithHttpStatus(http.StatusInternalServerError).
 					WithCode(errcode.InternalServerError).Json()
 			}
