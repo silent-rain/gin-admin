@@ -20,7 +20,7 @@ func RateLimiter() gin.HandlerFunc {
 			return
 		}
 
-		cfg := conf.Instance().Server.Base
+		cfg := conf.Instance().Server.Plugin
 		if !cfg.EnableRateLimiter {
 			ctx.Next()
 			return

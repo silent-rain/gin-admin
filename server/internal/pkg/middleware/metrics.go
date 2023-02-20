@@ -19,7 +19,7 @@ import (
 // Metrics 指标记录
 func Metrics() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if !conf.Instance().Server.Base.EnableRecordMetrics {
+		if !conf.Instance().Server.Plugin.EnableRecordMetrics {
 			ctx.Next()
 			return
 		}

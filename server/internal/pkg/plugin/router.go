@@ -13,7 +13,7 @@ import (
 
 // RegisterPprof pprof 性能剖析工具
 func RegisterPprof(engine *gin.Engine) {
-	if !conf.Instance().Server.Base.EnablePprof {
+	if !conf.Instance().Server.Plugin.EnablePprof {
 		return
 	}
 	pprof.Register(engine)
@@ -21,7 +21,7 @@ func RegisterPprof(engine *gin.Engine) {
 
 // RegisterPrometheus Prometheus 监控指标工具
 func RegisterPrometheus(engine *gin.Engine) {
-	if !conf.Instance().Server.Base.EnablePrometheus {
+	if !conf.Instance().Server.Plugin.EnablePrometheus {
 		return
 	}
 	engine.GET("/metrics", gin.WrapH(promhttp.Handler()))
@@ -29,7 +29,7 @@ func RegisterPrometheus(engine *gin.Engine) {
 
 // RegisterSwagger swagger API 文档
 func RegisterSwagger(engine *gin.Engine) {
-	if !conf.Instance().Server.Base.EnableSwagger {
+	if !conf.Instance().Server.Plugin.EnableSwagger {
 		return
 	}
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -8,7 +8,9 @@ env = "dev" # prod/test/dev
   [server.base]
     address = "127.0.0.1" # 服务地址
     port = 8080 # 服务端口
-    enable_logo = true # 是否启用 Logo
+  # 插件配置
+  [server.plugin]
+    enable_logo = true # 是否启用启动后显示 logo
     enable_rate_limiter = true # 是否限速
     max_requests_per_second = 10000 # 是否启用限速
     enable_pprof = true # 是否启用 pprof 性能剖析工具

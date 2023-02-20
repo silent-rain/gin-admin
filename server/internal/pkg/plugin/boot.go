@@ -20,7 +20,7 @@ const logo = `
 
 // RegisterLogo 服务启动后显示 logo
 func RegisterLogo() {
-	if !conf.Instance().Server.Base.EnableLogo {
+	if !conf.Instance().Server.Plugin.EnableLogo {
 		return
 	}
 	fmt.Println(color.Blue(logo))
