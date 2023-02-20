@@ -172,16 +172,19 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { Search, Delete } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
 import { getSystemLogList } from '@/api/system/log';
-import { RoleListRsp, Role } from '~/api/permission/role';
+import { SystemLog, SystemLogListRsp } from '~/api/permission/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
 const { settings } = storeToRefs(useBasicStore());
+const route = useRoute();
+const router = useRouter();
 
 // 筛选过滤条件
 const listQuery = ref<any>({
@@ -226,6 +229,10 @@ const levelOptions = [
 
 // 过滤事件
 const handleFilter = () => {
+  router.push({
+    path: route.path,
+    query: listQuery.value,
+  });
   fetchSystemLogList();
 };
 // 清空过滤条件
@@ -236,14 +243,14 @@ const handleCleanFilter = () => {
 const checkAllList = [
   { label: '日志ID', value: 'id', disabled: false, enabled: false },
   { label: '用户ID', value: 'user_id', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: false, enabled: true },
-  { label: '日志级别', value: 'level', disabled: false, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
+  { label: '日志级别', value: 'level', disabled: true, enabled: true },
   { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
-  { label: '业务错误码', value: 'error_code', disabled: false, enabled: true },
+  { label: '业务错误码', value: 'error_code', disabled: true, enabled: true },
   {
     label: '业务错误信息',
     value: 'error_msg',
-    disabled: false,
+    disabled: true,
     enabled: true,
   },
   { label: '日志消息', value: 'msg', disabled: false, enabled: false },
@@ -253,17 +260,24 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<Role[]>();
+const tableData = ref<SystemLog[]>();
 const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
+  defaultQuery();
   fetchSystemLogList();
 });
+
+// 默认请求参数
+const defaultQuery = () => {
+  listQuery.value.trace_id = route.query.trace_id;
+};
 
 // 获取网络请求日志列表
 const fetchSystemLogList = async () => {
   try {
-    const resp = (await getSystemLogList(listQuery.value)).data as RoleListRsp;
+    const resp = (await getSystemLogList(listQuery.value))
+      .data as SystemLogListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {

@@ -38,3 +38,20 @@ func (c *httpLogController) List(ctx *gin.Context) {
 	}
 	response.New(ctx).WithDataList(results, total).Json()
 }
+
+// GetBody 获取网络请求日志的 body 信息
+// 由于该信息过长，单独获取
+func (c *httpLogController) GetBody(ctx *gin.Context) {
+	req := systemDTO.QueryHttpLogBodyReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+
+	result, err := c.service.GetBody(ctx, req.Id)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithData(result).Json()
+}

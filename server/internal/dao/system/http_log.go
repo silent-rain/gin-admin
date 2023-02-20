@@ -3,6 +3,7 @@
 package systemDAO
 
 import (
+	"errors"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/repository/mysql"
@@ -14,6 +15,7 @@ import (
 type HttpLog interface {
 	List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error)
 	Add(bean systemModel.HttpLog) (uint, error)
+	GetBody(id uint) (systemModel.HttpLog, bool, error)
 }
 
 // 网络请求日志结构
@@ -75,4 +77,19 @@ func (d *httpLog) Add(bean systemModel.HttpLog) (uint, error) {
 		return 0, result.Error
 	}
 	return bean.ID, nil
+}
+
+// GetBody 获取 body 信息
+func (d *httpLog) GetBody(id uint) (systemModel.HttpLog, bool, error) {
+	bean := systemModel.HttpLog{
+		ID: id,
+	}
+	result := d.db.GetDbR().First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }

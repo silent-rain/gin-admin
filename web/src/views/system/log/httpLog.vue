@@ -105,7 +105,16 @@
         prop="trace_id"
         label="Trace ID"
         show-overflow-tooltip
-      />
+      >
+        <template #default="scope">
+          <el-link
+            type="primary"
+            :src="`/system/log/systemLog?trace_id=${scope.row.trace_id}`"
+          >
+            {{ scope.row.trace_id }}
+          </el-link>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="checkedDict.span_id"
         prop="span_id"
@@ -158,7 +167,17 @@
         prop="body"
         label="请求体/响应体"
         show-overflow-tooltip
-      />
+      >
+        <template #default="scope">
+          <el-button
+            type="primary"
+            text
+            @click="fetchHttpLogBody(scope.row.id)"
+          >
+            查看
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="checkedDict.remote_addr"
         prop="remote_addr"
@@ -217,12 +236,12 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { Search, Delete } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
-import { getHttpLogList, getSystemLogList } from '@/api/system/log';
-import { RoleListRsp, Role } from '~/api/permission/role';
+import { getHttpLogList, getHttpLogBody } from '@/api/system/log';
+import { HttpLog, HttpLogListRsp } from '~/api/permission/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
@@ -253,24 +272,25 @@ const handleCleanFilter = () => {
 const checkAllList = [
   { label: '日志ID', value: 'id', disabled: false, enabled: false },
   { label: '用户ID', value: 'user_id', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: false, enabled: true },
-  { label: 'Span ID', value: 'span_id', disabled: false, enabled: true },
-  { label: '状态码', value: 'status_code', disabled: false, enabled: true },
-  { label: '路径', value: 'method', disabled: false, enabled: true },
-  { label: '请求方法', value: 'path', disabled: false, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
+  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
+  { label: '状态码', value: 'status_code', disabled: true, enabled: true },
+  { label: '路径', value: 'method', disabled: true, enabled: true },
+  { label: '请求方法', value: 'path', disabled: true, enabled: true },
   { label: '请求参数', value: 'query', disabled: false, enabled: false },
   { label: '请求体/响应体', value: 'body', disabled: false, enabled: false },
   { label: '请求IP', value: 'remote_addr', disabled: false, enabled: false },
   { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
   { label: '耗时(纳秒)', value: 'cost', disabled: false, enabled: false },
-  { label: '请求类型', value: 'htpp_type', disabled: false, enabled: true },
+  { label: '请求类型', value: 'htpp_type', disabled: true, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
   { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
 ];
 const checkedDict = ref<any>({});
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<Role[]>();
+const tableData = ref<HttpLog[]>();
 const tableDataTotal = ref<number>(0);
+const logBody = ref<string>('');
 
 onBeforeMount(() => {
   fetchHttpLogList();
@@ -279,9 +299,23 @@ onBeforeMount(() => {
 // 获取网络请求日志列表
 const fetchHttpLogList = async () => {
   try {
-    const resp = (await getHttpLogList(listQuery.value)).data as RoleListRsp;
+    const resp = (await getHttpLogList(listQuery.value)).data as HttpLogListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
+  } catch (error) {
+    console.log(error);
+  }
+};
+// 获取网络请求日志 body
+const fetchHttpLogBody = async (id: number) => {
+  try {
+    const resp = (
+      await getHttpLogBody({
+        id: id,
+      })
+    ).data;
+    logBody.value = resp.body;
+    console.log(logBody.value);
   } catch (error) {
     console.log(error);
   }

@@ -7,6 +7,7 @@ import (
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/log"
+	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ import (
 // HttpLogService 网络请求日志接口
 type HttpLogService interface {
 	List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error)
+	GetBody(ctx *gin.Context, id uint) (systemVO.QueryHttpLogBody, error)
 }
 
 // 网络请求日志
@@ -38,4 +40,23 @@ func (s *httpLogService) List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) (
 
 	}
 	return results, total, nil
+}
+
+// GetBody 获取 body 信息
+func (h *httpLogService) GetBody(ctx *gin.Context, id uint) (systemVO.QueryHttpLogBody, error) {
+	result := systemVO.QueryHttpLogBody{
+		Body: "",
+	}
+	resp, ok, err := h.dao.GetBody(id)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return result, errcode.New(errcode.DBQueryError)
+	}
+	if !ok {
+		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
+		return result, errcode.New(errcode.DBQueryEmptyError)
+	}
+
+	result.Body = resp.Body
+	return result, nil
 }

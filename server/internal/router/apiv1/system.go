@@ -134,6 +134,7 @@ func NewSystemApi(engine *gin.Engine) {
 	{
 		// 获取网络请求日志列表
 		httpLog.GET("/list", system.NewHttpLogController().List)
+		httpLog.GET("/body", system.NewHttpLogController().GetBody)
 	}
 
 	// 系统日志管理

@@ -15,3 +15,8 @@ type QueryHttpLogReq struct {
 	RemoteAddr string `json:"remote_addr" form:"remote_addr"`
 	HttpType   string `json:"htpp_type" form:"htpp_type"`
 }
+
+// QueryHttpLogBodyReq 查询条件 网络请求日志的 body 信息
+type QueryHttpLogBodyReq struct {
+	Id uint `json:"user_id" form:"id" binding:"required"`
+}
