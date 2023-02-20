@@ -62,7 +62,16 @@ type MenuType uint
 
 const (
 	MenuTypeByMenu MenuType = iota
-	MenuTypeByBUtton
+	MenuTypeByButton
+)
+
+// 菜单打开类型
+type MenuOpenType uint
+
+const (
+	MenuOpenTypeByComponent MenuOpenType = iota
+	MenuOpenTypeByInnerLink
+	MenuOpenTypeByOutLink
 )
 
 // 菜单是否可见类型

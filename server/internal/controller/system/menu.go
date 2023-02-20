@@ -63,6 +63,16 @@ func (c *menuController) Add(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
+
+	// 设置菜单类型为按钮的参数
+	menu = c.setMenuTypeByButtonParams(menu)
+	// 设置菜单打开类型为组件的参数
+	menu = c.setMenuOpenTypeByComponentParams(menu)
+	// 设置菜单打开类型为外链接的参数
+	menu = c.setMenuOpenTypeByOutLinkParams(menu)
+	// 设置菜单打开类型为内链接的参数
+	menu = c.setMenuOpenTypeByInnerLinkParams(menu)
+
 	userId := core.GetContext(ctx).UserId
 	menu.CreateUserId = userId
 	menu.UpdateUserId = userId
@@ -73,6 +83,55 @@ func (c *menuController) Add(ctx *gin.Context) {
 		return
 	}
 	response.New(ctx).Json()
+}
+
+// 设置菜单类型为按钮的参数
+func (c *menuController) setMenuTypeByButtonParams(menu systemModel.Menu) systemModel.Menu {
+	if menu.MenuType != uint(systemModel.MenuTypeByButton) {
+		return menu
+	}
+	menu.ElSvgIcon = ""
+	menu.Icon = ""
+	menu.Name = ""
+	menu.Path = ""
+	menu.Component = ""
+	menu.Redirect = ""
+	menu.Link = ""
+	return menu
+}
+
+// 设置菜单打开类型为组件的参数
+func (c *menuController) setMenuOpenTypeByComponentParams(menu systemModel.Menu) systemModel.Menu {
+	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(systemModel.MenuOpenTypeByComponent)) {
+		return menu
+	}
+	menu.Permission = ""
+	return menu
+}
+
+// 设置菜单打开类型为外链接的参数
+func (c *menuController) setMenuOpenTypeByOutLinkParams(menu systemModel.Menu) systemModel.Menu {
+	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(systemModel.MenuOpenTypeByOutLink)) {
+		return menu
+	}
+	menu.Name = ""
+	menu.Permission = ""
+	menu.Component = ""
+	menu.Redirect = ""
+	return menu
+}
+
+// 设置菜单打开类型为内链接的参数
+func (c *menuController) setMenuOpenTypeByInnerLinkParams(menu systemModel.Menu) systemModel.Menu {
+	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(systemModel.MenuOpenTypeByInnerLink)) {
+		return menu
+	}
+	menu.Permission = ""
+	menu.Redirect = ""
+	return menu
 }
 
 // Update 更新菜单
@@ -87,6 +146,16 @@ func (c *menuController) Update(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
+
+	// 设置菜单类型为按钮的参数
+	menu = c.setMenuTypeByButtonParams(menu)
+	// 设置菜单打开类型为组件的参数
+	menu = c.setMenuOpenTypeByComponentParams(menu)
+	// 设置菜单打开类型为外链接的参数
+	menu = c.setMenuOpenTypeByOutLinkParams(menu)
+	// 设置菜单打开类型为内链接的参数
+	menu = c.setMenuOpenTypeByInnerLinkParams(menu)
+
 	userId := core.GetContext(ctx).UserId
 	menu.UpdateUserId = userId
 

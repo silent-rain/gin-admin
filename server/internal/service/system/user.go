@@ -327,7 +327,7 @@ func (h *userService) getPermissionList(menus []systemModel.Menu) []systemDTO.Bu
 	}
 	for _, item := range menus {
 		// 过滤禁用按钮, 过滤菜单路由，过滤空权限
-		if item.Status == 1 && item.MenuType == uint(systemModel.MenuTypeByBUtton) &&
+		if item.Status == 1 && item.MenuType == uint(systemModel.MenuTypeByButton) &&
 			item.Permission != "" {
 			results = append(results, systemDTO.ButtonPermission{
 				Permission: item.Permission,
