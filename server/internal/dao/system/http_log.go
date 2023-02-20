@@ -31,7 +31,7 @@ func NewHttpLogDao() *httpLog {
 // List 查询网络请求日志列表
 func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db.GetDbR()
+		stats := d.db.GetDbR().Omit("body")
 		if req.UserId != 0 {
 			stats = stats.Where("user_id = ?", req.UserId)
 		}

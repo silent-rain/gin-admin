@@ -24,11 +24,11 @@ type HttpLog struct {
 	Method     string    `json:"method" gorm:"column:method"`                              // 请求方法
 	Path       string    `json:"path" gorm:"column:path"`                                  // 请求地址路径
 	Query      string    `json:"query" gorm:"column:query"`                                // 请求参数
-	Body       string    `json:"body" gorm:"column:body"`                                  // 请求体/响应体
+	Body       string    `json:"body" gorm:"column:body;"`                                 // 请求体/响应体
 	RemoteAddr string    `json:"remote_addr" gorm:"column:remote_addr"`                    // 请求IP
 	UserAgent  string    `json:"user_agent" gorm:"column:user_agent"`                      // 用户代理
 	Cost       int64     `json:"cost" gorm:"column:cost"`                                  // 耗时,纳秒
-	HttpType   string    `json:"htpp_type" gorm:"column:htpp_type"`                        // 日志类型:req/rsp
+	HttpType   string    `json:"htpp_type" gorm:"column:htpp_type"`                        // 请求类型:req/rsp
 	Note       string    `json:"note" gorm:"column:note"`                                  // 备注
 	CreatedAt  time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli"` // 创建时间
 }

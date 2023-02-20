@@ -42,6 +42,12 @@
 - [x] 全部展开 sys:config:expand
 - [x] 全部折叠 sys:config:collapse
 
+# 请求日志管理
+- [x] 查询列表 sys:httplog:list
+# 系统日志管理
+- [x] 查询列表 sys:systemlog:list
+
+
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate
 修改代码生成 sys:generate:batchGenerate

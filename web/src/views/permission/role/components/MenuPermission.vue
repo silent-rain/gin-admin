@@ -103,7 +103,6 @@ const handleSubmit = async () => {
       role_id: props.data.id,
       menu_ids: treeRef.value!.getCheckedKeys(false),
     };
-    console.log(data);
     await updateRoleMenuRel(data);
     emit('update:visible', false);
     emit('update:data', {});

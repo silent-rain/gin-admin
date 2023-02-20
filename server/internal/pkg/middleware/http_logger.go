@@ -71,7 +71,6 @@ func HttpLogger() gin.HandlerFunc {
 		// 判断是否为接口, 当为接口时记录返回信息
 		if err := json.Unmarshal(blw.Body.Bytes(), &response.ResponseAPI{}); err == nil {
 			htppLog.Body = blw.Body.String()
-			return
 		}
 		go func(htppLog systemModel.HttpLog) {
 			systemDAO.NewHttpLogDao().Add(htppLog)
