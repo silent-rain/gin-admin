@@ -38,13 +38,14 @@
 - [x] API 文档
   - [x] ApiPost 接口工具
   - [x] 内置接口文档
-- [ ] 定时任务调度
+- [x] 定时任务调度
   - [x] 即时任务
-  - [ ] 定时任务
+  - [x] 定时任务
 - [x] 优雅关机
   - [x] HTTP 服务
   - [x] Mysql 数据库
-- [ ] 插件
+  - [x] Cron 定时任务
+- [x] 插件
   - [x] 服务启动logo
   - [x] [pprof](https://github.com/gin-contrib/pprof) 性能剖析工具
   - [x] [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
