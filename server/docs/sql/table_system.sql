@@ -32,8 +32,8 @@ CREATE TABLE sys_system_log (
     `caller_line` VARCHAR(100) NOT NULL COMMENT '日志发生位置',
     `error_code` INT(10) NULL COMMENT '业务错误码',
     `error_msg` VARCHAR(500) NOT NULL COMMENT '业务错误信息',
-    `TEXT` VARCHAR(100) NULL COMMENT '日志消息',
-    `extend` VARCHAR(500) NOT NULL COMMENT '日志扩展信息/json',
+    `msg` TEXT NULL COMMENT '日志消息',
+    `extend` TEXT NULL COMMENT '日志扩展信息/json',
     `note` VARCHAR(255) NULL COMMENT '备注',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`)

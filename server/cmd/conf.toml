@@ -75,3 +75,8 @@ env = "dev" # prod/test/dev
   max_age = 30 # 日志过期时间
   color = true # 是否输出颜色
 
+# 定时任务
+[tasks]
+  [tasks.ticker] # 即时器
+    enable_demo = false # 启用demo任务
+  [tasks.timer] # 定时器

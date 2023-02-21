@@ -51,6 +51,7 @@ type Config struct {
 	Redis       *RedisConfig       `toml:"redis"`       // redis 数据库配置
 	Sqlite      *SqliteConfig      `toml:"sqlite"`      // sqlite 数据库配置
 	Logger      *LoggerConfig      `toml:"logger"`      // 日志配置
+	Tasks       *TasksConfig       `toml:"tasks"`       // 定时任务
 }
 
 // ServerConfig 系统服务配置
@@ -151,6 +152,30 @@ func (r EnvironmentConfig) Active() string {
 		mode = gin.DebugMode
 	}
 	return mode
+}
+
+// TasksConfig 定时任务
+type TasksConfig struct {
+	Ticker map[string]bool `toml:"ticker"` // 即时器
+	Timer  map[string]bool `toml:"timer"`  // 定时器
+}
+
+// IsEnableTicker 是否启用即时器
+func (t *TasksConfig) IsEnableTicker(taskName string) bool {
+	falg, ok := t.Ticker[taskName]
+	if !ok {
+		return false
+	}
+	return falg
+}
+
+// IsEnableTicker 是否启用定时器
+func (t *TasksConfig) IsEnableTimer(taskName string) bool {
+	falg, ok := t.Timer[taskName]
+	if !ok {
+		return false
+	}
+	return falg
 }
 
 // Init 加载配置文件

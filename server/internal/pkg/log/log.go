@@ -221,6 +221,12 @@ func (l *logger) WithField(key string, value interface{}) *logger {
 	return l
 }
 
+// WithStack 添加堆栈信息
+func (l *logger) WithStack(value []byte) *logger {
+	l.extends["stack"] = string(value)
+	return l
+}
+
 // 获取日志字段
 func (l *logger) getFields() []zap.Field {
 	buf, err := json.Marshal(l.extends)

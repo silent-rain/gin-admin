@@ -14,6 +14,12 @@ const (
 	InternalServerError                           // 500 服务器内部错误
 )
 
+// 定时任务
+const (
+	TickerRunnerError ErrorCode = iota + 10050 // 即时器执行错误
+	TickerPanicError                           // 即时器严重错误
+)
+
 // 请求
 const (
 	ReqParameterParsingError    ErrorCode = iota + 10100 // 请求参数解析错误

@@ -11,10 +11,11 @@ import (
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
-	"gin-admin/internal/pkg/plugin"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/pkg/shutdown"
 	"gin-admin/internal/router"
+	"gin-admin/pkg/plugin"
+	"gin-admin/tasks"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,8 @@ func main() {
 	log.Init()
 	// 初始化数据库
 	mysql.Init()
+	// 初始化定时任务
+	tasks.Init()
 
 	// 调试模式
 	gin.SetMode(conf.Instance().Environment.Active())
@@ -62,10 +65,10 @@ func main() {
 		engine.Use(middleware.Recover())
 	}
 
-	// 路由初始化
+	// 初始化路由
 	router.Init(engine)
 
-	// 插件
+	// 初始化插件
 	plugin.Init(engine)
 
 	srv := &http.Server{
