@@ -14,6 +14,8 @@ var MsgZHCN = map[ErrorCode]error{
 	// 定时任务
 	TickerRunnerError: errors.New("即时器执行错误"),
 	TickerPanicError:  errors.New("即时器严重错误"),
+	TimerRunnerError:  errors.New("定时器执行错误"),
+	TimerPanicError:   errors.New("定时器严重错误"),
 	// 请求
 	ReqParameterParsingError:    errors.New("请求参数解析错误"),
 	ReqContentTypeNotFoundError: errors.New("请求 Content-Type 参数不存在"),

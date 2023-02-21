@@ -1,4 +1,4 @@
-/*即时器*/
+/*即时器任务*/
 package tickerTask
 
 import (
@@ -10,7 +10,7 @@ import (
 func Init() {
 	cfg := conf.Instance().Tasks
 	// 添加任务
-	ticker.Add(ticker.New("demo", 10, RegisterDemoPrintln, cfg.IsEnableTicker("enable_demo")))
+	ticker.Add(ticker.New("demo", 10, cfg.IsEnableTicker("enable_demo"), RegisterDemoPrintln))
 
 	// 开始执行任务
 	ticker.Start()

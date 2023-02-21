@@ -18,6 +18,8 @@ const (
 const (
 	TickerRunnerError ErrorCode = iota + 10050 // 即时器执行错误
 	TickerPanicError                           // 即时器严重错误
+	TimerRunnerError                           // 定时器执行错误
+	TimerPanicError                            // 定时器严重错误
 )
 
 // 请求

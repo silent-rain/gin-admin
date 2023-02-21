@@ -48,7 +48,7 @@
   - [x] 服务启动logo
   - [x] [pprof](https://github.com/gin-contrib/pprof) 性能剖析工具
   - [x] [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
-  - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档
+  - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档, apipost 工具代替
   - [x] 服务启动后打开浏览器
 ## 系统功能列表
 - [ ] 权限管理

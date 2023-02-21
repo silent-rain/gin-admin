@@ -12,9 +12,9 @@ import (
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
 	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/internal/pkg/shutdown"
 	"gin-admin/internal/router"
 	"gin-admin/pkg/plugin"
+	"gin-admin/pkg/shutdown"
 	"gin-admin/tasks"
 
 	"github.com/gin-gonic/gin"
@@ -87,6 +87,8 @@ func main() {
 	shutdown.NewHook().Close(
 		// 关闭 Http 服务
 		shutdown.WithCloseHttpServer(srv),
+		// 关闭定时任务
+		shutdown.WithCloseCron(),
 		// 关闭 Mysql 服务
 		shutdown.WithCloseMysql(),
 		// 服务关闭后的消息提示

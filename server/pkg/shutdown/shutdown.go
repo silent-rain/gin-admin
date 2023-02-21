@@ -13,6 +13,8 @@ import (
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/pkg/color"
+	"gin-admin/pkg/cron/ticker"
+	"gin-admin/pkg/cron/timer"
 	"gin-admin/pkg/errcode"
 )
 
@@ -64,6 +66,16 @@ func WithCloseHttpServer(server *http.Server) func() {
 		if err := server.Shutdown(ctx); err != nil {
 			log.New(nil).WithCode(errcode.HttpServerCloseError).Error("")
 		}
+		fmt.Println(color.Blue("server closed ..."))
+	}
+}
+
+// WithCloseCron 关闭定时任务
+func WithCloseCron() func() {
+	return func() {
+		ticker.Stop()
+		timer.Stop()
+		fmt.Println(color.Blue("cron closed ..."))
 	}
 }
 
@@ -81,6 +93,7 @@ func WithCloseMysql() func() {
 		if err := db.DbRClose(); err != nil {
 			log.New(nil).WithCode(errcode.DBReadCloseError).Error("")
 		}
+		fmt.Println(color.Blue("mysql closed ..."))
 	}
 }
 

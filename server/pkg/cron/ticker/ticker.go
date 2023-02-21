@@ -9,13 +9,13 @@ import (
 	"gin-admin/pkg/errcode"
 )
 
-var tickerTasks []*ticker
+var tickerTasks []*tickerTask
 
-// TickerFn 定义执行函数类型
+// TickerFn 定义即时器执行函数类型
 type TickerFn func() error
 
-// 定时器中的成员
-type ticker struct {
+// 即时器中的成员
+type tickerTask struct {
 	*time.Ticker          // 即时器
 	name         string   // 任务名称
 	interval     int      // 间隔周期
@@ -24,7 +24,7 @@ type ticker struct {
 }
 
 // Add 将即时器添加到任务列表中
-func Add(ticke ...*ticker) {
+func Add(ticke ...*tickerTask) {
 	tickerTasks = append(tickerTasks, ticke...)
 }
 
@@ -35,12 +35,19 @@ func Start() {
 	}
 }
 
+// Stop 关闭即时器, 无法关闭已经开始的任务
+func Stop() {
+	for _, task := range tickerTasks {
+		task.Stop()
+	}
+}
+
 // New 创建一个即时器
 // name: 任务名称
 // interval: 间隔周期(秒)
 // fn: 回调函数
-func New(name string, interval int, fn TickerFn, enable bool) *ticker {
-	return &ticker{
+func New(name string, interval int, enable bool, fn TickerFn) *tickerTask {
+	return &tickerTask{
 		Ticker:   time.NewTicker(time.Duration(interval) * time.Second),
 		name:     name,
 		interval: interval,
@@ -50,25 +57,24 @@ func New(name string, interval int, fn TickerFn, enable bool) *ticker {
 }
 
 // 任务包装, 异常捕获
-func (t *ticker) runTask() {
+func (t *tickerTask) runTask() {
 	defer func() {
 		if err := recover(); err != nil {
 			log.New(nil).
 				WithCode(errcode.TickerPanicError).
 				WithStack(debug.Stack()).
 				Errorf("%v", err)
-			return
 		}
-
+		log.New(nil).WithCode(errcode.Ok).Debugf("ticker end: %s, interval: %d", t.name, t.interval)
 	}()
-
+	log.New(nil).WithCode(errcode.Ok).Debugf("ticker start: %s, interval: %d", t.name, t.interval)
 	if err := t.runner(); err != nil {
 		log.New(nil).WithCode(errcode.TickerRunnerError).Errorf("%v", err)
 	}
 }
 
 // Start 启动即时器需要执行的任务
-func (t *ticker) Start() {
+func (t *tickerTask) Start() {
 	if !t.enable {
 		return
 	}
