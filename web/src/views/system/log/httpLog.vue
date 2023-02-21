@@ -101,6 +101,12 @@
         show-overflow-tooltip
       />
       <el-table-column
+        v-if="checkedDict.nickname"
+        prop="nickname"
+        label="用户昵称"
+        show-overflow-tooltip
+      />
+      <el-table-column
         v-if="checkedDict.trace_id"
         prop="trace_id"
         label="Trace ID"
@@ -271,7 +277,8 @@ const handleCleanFilter = () => {
 
 const checkAllList = [
   { label: '日志ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: true, enabled: true },
+  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
   { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
   { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
   { label: '状态码', value: 'status_code', disabled: true, enabled: true },
