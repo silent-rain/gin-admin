@@ -64,7 +64,7 @@ func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (
 	}
 
 	// 生成 Token
-	token, err := jwtToken.GenerateToken(user.ID, user.Phone, user.Email, user.Password)
+	token, err := jwtToken.GenerateToken(user.ID, user.Nickname, user.Phone, user.Email, user.Password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
 		return result, errcode.New(errcode.TokenGenerateError)

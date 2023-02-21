@@ -14,6 +14,7 @@ import (
 // Token 令牌
 type Token struct {
 	UserId   uint
+	Nickname string
 	phone    string
 	email    string
 	password string
@@ -21,9 +22,10 @@ type Token struct {
 }
 
 // GenerateToken 生成 Token
-func GenerateToken(userId uint, phone, email, password string) (string, error) {
+func GenerateToken(userId uint, nickname, phone, email, password string) (string, error) {
 	cla := Token{
 		UserId:   userId,
+		Nickname: nickname,
 		phone:    phone,
 		email:    email,
 		password: password,

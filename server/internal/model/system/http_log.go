@@ -18,6 +18,7 @@ import (
 type HttpLog struct {
 	ID         uint      `json:"id" gorm:"column:id;primaryKey"`                           // 自增ID
 	UserId     uint      `json:"user_id" gorm:"column:user_id"`                            // 请求用户ID
+	Nickname   string    `json:"nickname" gorm:"column:nickname"`                          // 昵称
 	TraceId    string    `json:"trace_id" gorm:"column:trace_id"`                          // 上游请求traceId
 	SpanId     string    `json:"span_id" gorm:"column:span_id"`                            // 请求spanId
 	StatusCode int       `json:"status_code" gorm:"column:status_code"`                    // 请求状态码

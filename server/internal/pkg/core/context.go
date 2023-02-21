@@ -8,7 +8,8 @@ var contextKey = "__context__"
 // 扩展 Context
 type etxContext struct {
 	// 用户信息
-	UserId uint // 用户 ID
+	UserId   uint   // 用户 ID
+	Nickname string // 用户昵称
 
 	// 日志
 	TraceId string

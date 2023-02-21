@@ -56,6 +56,7 @@ declare global {
   const getConfigTree: typeof import('../api/system/config')['getConfigTree']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getHttpLogBody: typeof import('../api/system/log')['getHttpLogBody']
   const getHttpLogList: typeof import('../api/system/log')['getHttpLogList']
   const getLangInstance: typeof import('../hooks/use-common')['getLangInstance']
   const getMenuTree: typeof import('../api/permission/menu')['getMenuTree']

@@ -48,6 +48,7 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 		core.GetContext(ctx).UserId = claim.UserId
+		core.GetContext(ctx).Nickname = claim.Nickname
 		ctx.Next()
 	}
 }

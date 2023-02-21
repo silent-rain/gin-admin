@@ -39,6 +39,7 @@ func HttpLogger() gin.HandlerFunc {
 
 		htppLog := systemModel.HttpLog{
 			UserId:     core.GetContext(ctx).UserId,
+			Nickname:   core.GetContext(ctx).Nickname,
 			TraceId:    core.GetContext(ctx).TraceId,
 			SpanId:     core.GetContext(ctx).SpanId,
 			StatusCode: ctx.Writer.Status(),

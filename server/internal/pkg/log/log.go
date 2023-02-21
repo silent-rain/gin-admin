@@ -182,10 +182,12 @@ func New(ctx *gin.Context) *logger {
 	traceId := extCtx.TraceId
 	spanId := extCtx.SpanId
 	userId := extCtx.UserId
+	nickname := extCtx.Nickname
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.String("span_id", spanId),
 		zap.Uint("user_id", userId),
+		zap.String("nickname", nickname),
 	}
 	return &logger{
 		ctx:     ctx,
