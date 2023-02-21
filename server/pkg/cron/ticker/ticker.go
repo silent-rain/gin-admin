@@ -20,6 +20,7 @@ type ticker struct {
 	name         string   // 任务名称
 	interval     int      // 间隔周期
 	runner       TickerFn // 任务函数
+	enable       bool     // 是否启用
 }
 
 // Add 将即时器添加到任务列表中
@@ -38,12 +39,13 @@ func Start() {
 // name: 任务名称
 // interval: 间隔周期(秒)
 // fn: 回调函数
-func New(name string, interval int, fn TickerFn) *ticker {
+func New(name string, interval int, fn TickerFn, enable bool) *ticker {
 	return &ticker{
 		Ticker:   time.NewTicker(time.Duration(interval) * time.Second),
 		name:     name,
 		interval: interval,
 		runner:   fn,
+		enable:   enable,
 	}
 }
 
@@ -67,6 +69,9 @@ func (t *ticker) runTask() {
 
 // Start 启动即时器需要执行的任务
 func (t *ticker) Start() {
+	if !t.enable {
+		return
+	}
 	go func() {
 		for range t.C {
 			t.runTask()
