@@ -5,7 +5,7 @@ package jwt_token
 import (
 	"time"
 
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/constant"
 	"gin-admin/pkg/errcode"
 
 	"github.com/dgrijalva/jwt-go"
@@ -30,29 +30,29 @@ func GenerateToken(userId uint, nickname, phone, email, password string) (string
 		email:    email,
 		password: password,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(conf.TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    conf.TokenIssuer,                                // 签发人
+			ExpiresAt: time.Now().Add(constant.TokenExpireDuration).Unix(), // 过期时间
+			Issuer:    constant.TokenIssuer,                                // 签发人
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cla)
 	// 进行签名生成对应的token
-	tokenString, err := token.SignedString([]byte(conf.Secret))
+	tokenString, err := token.SignedString([]byte(constant.Secret))
 	if err != nil {
 		return "", err
 	}
-	tokenString = conf.TokenPrefix + tokenString
+	tokenString = constant.TokenPrefix + tokenString
 	return tokenString, nil
 }
 
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
 	token, _ := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(conf.Secret), nil
+		return []byte(constant.Secret), nil
 	})
 	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, errcode.New(errcode.TokenInvalidError)
-	} else if !claims.VerifyIssuer(conf.TokenIssuer, true) {
+	} else if !claims.VerifyIssuer(constant.TokenIssuer, true) {
 		return nil, errcode.New(errcode.TokenInvalidError)
 	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return nil, errcode.New(errcode.TokenExpiredError)

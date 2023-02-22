@@ -8,7 +8,6 @@ import (
 	"math/rand"
 	"time"
 
-	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
 
@@ -34,7 +33,7 @@ func generateSpanId(ctx *gin.Context) string {
 	rand.Seed(time.Now().UnixNano())
 	data := time.Now().UTC().GoString() + ctx.Request.URL.Path + ctx.ClientIP() + ctx.Request.UserAgent()
 	m := md5.New()
-	m.Write([]byte(conf.Secret))
+	m.Write([]byte(constant.Secret))
 	m.Write([]byte(data))
 	return hex.EncodeToString(m.Sum(nil))
 }

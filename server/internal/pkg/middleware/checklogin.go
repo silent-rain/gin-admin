@@ -5,7 +5,7 @@ package middleware
 import (
 	"strings"
 
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
@@ -30,7 +30,7 @@ func CheckLogin() gin.HandlerFunc {
 		}
 
 		// 从请求头中获取Token
-		token := ctx.GetHeader(conf.TokenHeader)
+		token := ctx.GetHeader(constant.TokenHeader)
 		if token == "" {
 			log.New(ctx).WithCode(errcode.TokenNotFound).Errorf("")
 			response.New(ctx).WithCode(errcode.TokenNotFound).Json()

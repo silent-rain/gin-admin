@@ -5,7 +5,7 @@ package system
 import (
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/constant"
 	jwtToken "gin-admin/internal/pkg/jwt_token"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/utils"
@@ -86,7 +86,7 @@ func (h *userLoginService) Captcha(ctx *gin.Context) (systemVO.Captcha, error) {
 		B64s:      "",
 	}
 
-	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(conf.CaptchaType)
+	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(constant.CaptchaType)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.CaptchaGenerateError).Errorf("%v", err)
 		return result, errcode.New(errcode.CaptchaGenerateError)

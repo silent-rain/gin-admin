@@ -3,7 +3,7 @@
 package middleware
 
 import (
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/constant"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -13,14 +13,14 @@ import (
 // Session 中间件
 func Session() gin.HandlerFunc {
 	store := sessionConfig()
-	return sessions.Sessions(conf.SessionKeyPairs, store)
+	return sessions.Sessions(constant.SessionKeyPairs, store)
 }
 
 // session 配置
 func sessionConfig() sessions.Store {
-	store := cookie.NewStore([]byte(conf.Secret))
+	store := cookie.NewStore([]byte(constant.Secret))
 	store.Options(sessions.Options{
-		MaxAge: int(conf.SessionMaxAge.Milliseconds()), // seconds
+		MaxAge: int(constant.SessionMaxAge.Milliseconds()), // seconds
 		Path:   "/",
 	})
 	return store
