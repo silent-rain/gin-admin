@@ -1,22 +1,24 @@
 <template>
-  <div class="app-main" :class="{ 'show-tag-view': settings.showTagsView }">
-    <router-view v-slot="{ Component }">
-      <!--has transition  setting by settings.mainNeedAnimation-->
-      <transition
-        v-if="settings.mainNeedAnimation"
-        name="fade-transform"
-        mode="out-in"
-      >
-        <keep-alive :include="cachedViews">
+  <el-scrollbar :class="{ 'show-tag-view': settings.showTagsView }">
+    <div class="app-main">
+      <router-view v-slot="{ Component }">
+        <!--has transition  setting by settings.mainNeedAnimation-->
+        <transition
+          v-if="settings.mainNeedAnimation"
+          name="fade-transform"
+          mode="out-in"
+        >
+          <keep-alive :include="cachedViews">
+            <component :is="Component" :key="key" />
+          </keep-alive>
+        </transition>
+        <!-- no transition -->
+        <keep-alive v-else :include="cachedViews">
           <component :is="Component" :key="key" />
         </keep-alive>
-      </transition>
-      <!-- no transition -->
-      <keep-alive v-else :include="cachedViews">
-        <component :is="Component" :key="key" />
-      </keep-alive>
-    </router-view>
-  </div>
+      </router-view>
+    </div>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">

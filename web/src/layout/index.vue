@@ -4,7 +4,9 @@
     <Sidebar v-if="settings.showLeftMenu" class="sidebar-container" />
     <!--right container-->
     <div class="main-container">
-      <Navbar v-if="settings.showTopNavbar" />
+      <div :class="{ 'fixed-header': settings.fixedHeader }">
+        <Navbar v-if="settings.showTopNavbar" />
+      </div>
       <TagsView v-if="settings.showTagsView" />
       <AppMain />
     </div>
@@ -66,5 +68,17 @@ resizeHandler();
   .main-container {
     margin-left: 0;
   }
+}
+
+.fixed-header {
+  position: fixed;
+  width: calc(100% - #{var(--side-bar-width)});
+  top: 0;
+  right: 0;
+  z-index: 9;
+  transition: width 0.28s;
+}
+.mobile .fixed-header {
+  width: 100%;
 }
 </style>

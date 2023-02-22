@@ -1,6 +1,7 @@
 /* settings */
 export interface SettingsConfig {
   title: string;
+  fixedHeader: boolean;
   sidebarLogo: boolean;
   showLeftMenu: boolean;
   ShowDropDown: boolean;
