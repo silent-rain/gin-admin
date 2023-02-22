@@ -1,16 +1,6 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-13 00:20:26
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 22:49:48
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/model/system/role.go
- * @Descripttion: 角色
+/*角色
  */
 package systemModel
-
-import "time"
 
 // Role 角色表
 type Role struct {
@@ -20,9 +10,9 @@ type Role struct {
 	Note   string `json:"note" gorm:"column:note"`        // 备注
 	Status uint   `json:"status" gorm:"column:status"`    // 角色状态,0:停用,1:启用
 	// 创建时间
-	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP;<-:create"`
+	CreatedAt string `json:"created_at" gorm:"column:created_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP;<-:create"`
 	// 更新时间
-	UpdatedAt time.Time `json:"updated_at" gorm:"column:updated_at;autoUpdateTime:milli;type:TIMESTAMP;default:CURRENT_TIMESTAMP  on update current_timestamp"`
+	UpdatedAt string `json:"updated_at" gorm:"column:updated_at;type:TIMESTAMP;default:CURRENT_TIMESTAMP  on update current_timestamp"`
 }
 
 // TableName 表名重写

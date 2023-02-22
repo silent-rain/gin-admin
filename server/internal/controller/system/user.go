@@ -6,7 +6,7 @@ import (
 	"gin-admin/internal/dto"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/conf"
+	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
@@ -165,7 +165,7 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 	}
 
 	// 默认密码加密
-	password := utils.Md5(conf.ServerUserDefaultPwd)
+	password := utils.Md5(constant.ServerUserDefaultPwd)
 
 	if _, err := c.service.ResetPassword(ctx, req.ID, password); err != nil {
 		response.New(ctx).WithCodeError(err).Json()

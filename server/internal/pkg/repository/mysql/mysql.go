@@ -122,7 +122,7 @@ func dbConnect(host string, port int, username, password, dbName string) (*gorm.
 	sqlDB.SetConnMaxLifetime(time.Minute * cfg.ConnMaxLifeTime)
 
 	// 使用插件
-	// db.Use(&LocalTimePlugin{})
+	db.Use(&LocalTimePlugin{})
 
 	return db, nil
 }
@@ -135,8 +135,8 @@ func SourceDsn(host string, port int, username, password, dbName string) string 
 		host,
 		port,
 		dbName,
-		true,
-		"Local",
+		false,
+		"Asia%2FShanghai", // or Local
 	)
 }
 
