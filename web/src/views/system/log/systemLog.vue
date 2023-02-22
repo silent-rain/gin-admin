@@ -2,13 +2,13 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:systemlog:list')" class="filter">
-      <el-input
+      <!-- <el-input
         v-model="listQuery.user_id"
         class="filter-name"
         :disabled="isDisabledButton('sys:systemlog:list')"
         placeholder="请输入用户ID"
         @keyup.enter.native="handleFilter"
-      />
+      /> -->
       <el-input
         v-model="listQuery.trace_id"
         class="filter-name"
@@ -30,13 +30,13 @@
           :value="item.level"
         />
       </el-select>
-      <el-input
+      <!-- <el-input
         v-model="listQuery.error_code"
         class="filter-name"
         :disabled="isDisabledButton('sys:systemlog:list')"
         placeholder="请输入业务错误码"
         @keyup.enter.native="handleFilter"
-      />
+      /> -->
       <el-input
         v-model="listQuery.error_msg"
         class="filter-name"
@@ -139,7 +139,7 @@
       <el-table-column
         v-if="checkedDict.error_msg"
         prop="error_msg"
-        label="业务错误信息"
+        label="业务码信息"
         show-overflow-tooltip
       />
       <el-table-column
@@ -151,7 +151,7 @@
       <el-table-column
         v-if="checkedDict.extend"
         prop="extend"
-        label="日志扩展信息"
+        label="扩展信息"
         show-overflow-tooltip
       />
       <el-table-column
@@ -253,15 +253,15 @@ const checkAllList = [
   { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
   { label: '日志级别', value: 'level', disabled: true, enabled: true },
   { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
-  { label: '业务错误码', value: 'error_code', disabled: true, enabled: true },
+  { label: '业务码', value: 'error_code', disabled: true, enabled: true },
   {
-    label: '业务错误信息',
+    label: '业务码信息',
     value: 'error_msg',
     disabled: true,
     enabled: true,
   },
-  { label: '日志消息', value: 'msg', disabled: false, enabled: false },
-  { label: '日志扩展信息', value: 'extend', disabled: false, enabled: true },
+  { label: '日志消息', value: 'msg', disabled: false, enabled: true },
+  { label: '扩展信息', value: 'extend', disabled: false, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
   { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
 ];
@@ -296,7 +296,7 @@ const fetchSystemLogList = async () => {
 <style scoped lang="scss">
 .filter {
   .filter-name {
-    width: 200px;
+    width: 180px;
   }
 }
 

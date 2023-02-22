@@ -41,7 +41,6 @@ func HttpLogger() gin.HandlerFunc {
 			UserId:     core.GetContext(ctx).UserId,
 			Nickname:   core.GetContext(ctx).Nickname,
 			TraceId:    core.GetContext(ctx).TraceId,
-			SpanId:     core.GetContext(ctx).SpanId,
 			StatusCode: ctx.Writer.Status(),
 			Method:     ctx.Request.Method,
 			Path:       ctx.Request.URL.Path,

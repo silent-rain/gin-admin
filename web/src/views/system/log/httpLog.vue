@@ -2,13 +2,13 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:httplog:list')" class="filter">
-      <el-input
+      <!-- <el-input
         v-model="listQuery.user_id"
         class="filter-name"
         :disabled="isDisabledButton('sys:httplog:list')"
         placeholder="请输入用户ID"
         @keyup.enter.native="handleFilter"
-      />
+      /> -->
       <el-input
         v-model="listQuery.trace_id"
         class="filter-name"
@@ -50,7 +50,7 @@
         placeholder="请输入请求IP"
         @keyup.enter.native="handleFilter"
       />
-      <el-select
+      <!-- <el-select
         v-model="listQuery.htpp_type"
         class="filter-name"
         :disabled="isDisabledButton('sys:httplog:list')"
@@ -59,7 +59,7 @@
       >
         <el-option label="REQ" value="REQ" />
         <el-option label="RESP" value="RESP" />
-      </el-select>
+      </el-select> -->
       <el-button-group>
         <el-button
           type="primary"
@@ -121,12 +121,6 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column
-        v-if="checkedDict.span_id"
-        prop="span_id"
-        label="Span ID"
-        show-overflow-tooltip
-      />
       <el-table-column
         v-if="checkedDict.status_code"
         prop="status_code"
@@ -280,13 +274,13 @@ const checkAllList = [
   { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
   { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
   { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
-  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
+  { label: 'Span ID', value: '', disabled: true, enabled: true },
   { label: '状态码', value: 'status_code', disabled: true, enabled: true },
   { label: '路径', value: 'method', disabled: true, enabled: true },
   { label: '请求方法', value: 'path', disabled: true, enabled: true },
   { label: '请求参数', value: 'query', disabled: false, enabled: false },
   { label: '请求体/响应体', value: 'body', disabled: false, enabled: false },
-  { label: '请求IP', value: 'remote_addr', disabled: false, enabled: false },
+  { label: '请求IP', value: 'remote_addr', disabled: false, enabled: true },
   { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
   { label: '耗时(纳秒)', value: 'cost', disabled: false, enabled: false },
   { label: '请求类型', value: 'htpp_type', disabled: true, enabled: true },
@@ -332,7 +326,7 @@ const fetchHttpLogBody = async (id: number) => {
 <style scoped lang="scss">
 .filter {
   .filter-name {
-    width: 200px;
+    width: 180px;
   }
 }
 

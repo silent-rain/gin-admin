@@ -180,7 +180,7 @@ type logger struct {
 func New(ctx *gin.Context) *logger {
 	extCtx := core.GetContext(ctx)
 	traceId := extCtx.TraceId
-	spanId := extCtx.SpanId
+	spanId := extCtx.Span.SpanId()
 	userId := extCtx.UserId
 	nickname := extCtx.Nickname
 	fields := []zapcore.Field{

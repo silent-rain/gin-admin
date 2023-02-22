@@ -36,7 +36,7 @@ func GinZapLogger() gin.HandlerFunc {
 			zap.String("errors", ctx.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
 			zap.String("trace_id", core.GetContext(ctx).TraceId),
-			zap.String("span_id", core.GetContext(ctx).SpanId),
+			zap.String("span_id", ""),
 			zap.Uint("user_id", core.GetContext(ctx).UserId),
 		)
 	}

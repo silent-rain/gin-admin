@@ -7,7 +7,6 @@ CREATE TABLE sys_http_log (
     `user_id` INT NULL COMMENT '请求用户ID',
     `nickname` VARCHAR(32) NULL COMMENT '昵称',
     `trace_id` VARCHAR(32) NULL COMMENT '上游请求traceId',
-    `span_id` VARCHAR(32) NULL COMMENT '请求spanId',
     `error_code` INT(10) NOT NULL COMMENT '请求状态码',
     `method` VARCHAR(10) NOT NULL COMMENT '请求方法',
     `path` VARCHAR(500) NOT NULL COMMENT '请求地址路径',

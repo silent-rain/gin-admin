@@ -17,19 +17,18 @@ import (
 // TraceLogger 日志链路跟踪中间件
 func TraceLogger() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var traceId = ctx.Request.Header.Get(constant.HeaderTraceTd)
-		var spanId = generateSpanId(ctx)
-		// 设置请求头
-		ctx.Header(constant.HeaderTraceTd, spanId)
+		traceId := ctx.Request.Header.Get(constant.HeaderTraceTd)
+		if traceId == "" {
+			traceId = generateTraceId(ctx)
+		}
 		// 设置上下文
 		core.GetContext(ctx).TraceId = traceId
-		core.GetContext(ctx).SpanId = spanId
 		ctx.Next()
 	}
 }
 
-// 生成 spanId
-func generateSpanId(ctx *gin.Context) string {
+// 生成 traceId
+func generateTraceId(ctx *gin.Context) string {
 	rand.Seed(time.Now().UnixNano())
 	data := time.Now().UTC().GoString() + ctx.Request.URL.Path + ctx.ClientIP() + ctx.Request.UserAgent()
 	m := md5.New()
