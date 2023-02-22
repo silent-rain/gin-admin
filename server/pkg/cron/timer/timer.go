@@ -2,7 +2,6 @@
 package timer
 
 import (
-	"runtime/debug"
 	"time"
 
 	"gin-admin/internal/pkg/log"
@@ -63,7 +62,7 @@ func (t *timerTask) Run() {
 		if err := recover(); err != nil {
 			log.New(nil).
 				WithCode(errcode.TimerPanicError).
-				WithStack(debug.Stack()).
+				WithStack().
 				Errorf("%v", err)
 		}
 		log.New(nil).WithCode(errcode.Ok).Debugf("ticker end: %s, spec: %s", t.name, t.spec)

@@ -3,7 +3,6 @@ package middleware
 
 import (
 	"net/http"
-	"runtime/debug"
 
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -19,8 +18,8 @@ func Recover() gin.HandlerFunc {
 			if err := recover(); err != nil {
 				// 打印错误堆栈信息
 				log.New(ctx).WithCode(errcode.InternalServerError).
-					WithField("stack", string(debug.Stack())).
-					Panicf("%v", err)
+					WithStack().
+					Errorf("%v", err)
 				response.New(ctx).WithHttpStatus(http.StatusInternalServerError).
 					WithCode(errcode.InternalServerError).Json()
 			}

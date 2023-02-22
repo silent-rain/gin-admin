@@ -13,6 +13,7 @@ type SystemLog struct {
 	ErrorCode  uint   `json:"error_code" gorm:"column:error_code"`   // 业务错误码
 	ErrorMsg   string `json:"error_msg" gorm:"column:error_msg"`     // 业务错误信息
 	Msg        string `json:"msg" gorm:"column:msg"`                 // 日志消息
+	Stack      string `json:"stack" gorm:"column:stack"`             // 堆栈信息
 	Extend     string `json:"extend" gorm:"column:extend"`           // 日志扩展信息/json
 	Note       string `json:"note" gorm:"column:note"`               // 备注
 	CreatedAt  string `json:"created_at" gorm:"column:created_at"`   // 创建时间

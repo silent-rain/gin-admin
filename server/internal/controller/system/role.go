@@ -48,6 +48,8 @@ func (c *roleController) List(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
+	panic("xxxxxxxsssssss")
+
 	response.New(ctx).WithDataList(results, total).Json()
 }
 

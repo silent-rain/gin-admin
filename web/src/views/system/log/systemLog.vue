@@ -149,6 +149,12 @@
         show-overflow-tooltip
       />
       <el-table-column
+        v-if="checkedDict.stack"
+        prop="stack"
+        label="堆栈信息"
+        show-overflow-tooltip
+      />
+      <el-table-column
         v-if="checkedDict.extend"
         prop="extend"
         label="扩展信息"
@@ -261,6 +267,12 @@ const checkAllList = [
     enabled: true,
   },
   { label: '日志消息', value: 'msg', disabled: false, enabled: true },
+  {
+    label: '堆栈信息',
+    value: 'stack',
+    disabled: false,
+    enabled: true,
+  },
   { label: '扩展信息', value: 'extend', disabled: false, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
   { label: '创建时间', value: 'created_at', disabled: false, enabled: true },

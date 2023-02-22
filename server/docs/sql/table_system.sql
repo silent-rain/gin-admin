@@ -32,6 +32,7 @@ CREATE TABLE sys_system_log (
     `error_code` INT(10) NULL COMMENT '业务错误码',
     `error_msg` VARCHAR(500) NOT NULL COMMENT '业务错误信息',
     `msg` TEXT NULL COMMENT '日志消息',
+    `stack` TEXT NULL COMMENT '堆栈信息',
     `extend` TEXT NULL COMMENT '日志扩展信息/json',
     `note` VARCHAR(255) NULL COMMENT '备注',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

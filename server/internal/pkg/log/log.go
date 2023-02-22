@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	systemDAO "gin-admin/internal/dao/system"
 	systemModel "gin-admin/internal/model/system"
@@ -222,8 +223,8 @@ func (l *logger) WithField(key string, value interface{}) *logger {
 }
 
 // WithStack 添加堆栈信息
-func (l *logger) WithStack(value []byte) *logger {
-	l.extends["stack"] = string(value)
+func (l *logger) WithStack() *logger {
+	l.fields = append(l.fields, zap.String("stack", string(debug.Stack())))
 	return l
 }
 

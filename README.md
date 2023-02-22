@@ -75,16 +75,18 @@
 ## 待处理
 - 用户页面
   - 导入
+- 日志优化 spanid
+- 堆栈信息单独一个字段
 
 1. 支持 panic 异常时邮件通知
 缓存
 redis
 订阅模式
-2. 支持 trace 项目内部链路追踪 
-3. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
-4. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
-5. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
-6. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
+1. 支持 trace 项目内部链路追踪 
+2. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
+3. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
+4. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
+5. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
 /app/Ruler/Task/ ※ app全局定时任务，默认20s精度
 
 

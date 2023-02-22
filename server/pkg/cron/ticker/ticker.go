@@ -2,7 +2,6 @@
 package ticker
 
 import (
-	"runtime/debug"
 	"time"
 
 	"gin-admin/internal/pkg/log"
@@ -62,7 +61,7 @@ func (t *tickerTask) runTask() {
 		if err := recover(); err != nil {
 			log.New(nil).
 				WithCode(errcode.TickerPanicError).
-				WithStack(debug.Stack()).
+				WithStack().
 				Errorf("%v", err)
 		}
 		log.New(nil).WithCode(errcode.Ok).Debugf("ticker end: %s, interval: %d", t.name, t.interval)
