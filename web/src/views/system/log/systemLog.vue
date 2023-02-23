@@ -158,12 +158,14 @@
       >
         <template #default="scope">
           <el-button
+            v-if="scope.row.stack"
             type="primary"
             text
             @click="handleShowStack(scope.row.stack)"
           >
             查看
           </el-button>
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -173,9 +175,15 @@
         show-overflow-tooltip
       >
         <template #default="scope">
-          <span @click="handleShowExtend(scope.row.extend)">
-            {{ scope.row.extend }}
-          </span>
+          <el-button
+            v-if="scope.row.extend !== '{}'"
+            type="primary"
+            text
+            @click="handleShowExtend(scope.row.extend)"
+          >
+            查看
+          </el-button>
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -200,6 +208,7 @@
 
     <!-- 扩展信息 -->
     <LogDrawer
+      v-if="state.extend.visible"
       v-model="state.extend.visible"
       :data="state.extend.data"
       :key="state.extend.key"
@@ -208,6 +217,7 @@
 
     <!-- 堆栈信息 -->
     <LogDrawer
+      v-if="state.extend.visible"
       v-model="state.extend.visible"
       :data="state.extend.data"
       :key="state.extend.key"
@@ -328,7 +338,7 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<SystemLog[]>();
+const tableData = ref<SystemLog[]>([]);
 const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
