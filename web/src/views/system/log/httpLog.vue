@@ -232,6 +232,14 @@
       :total="tableDataTotal"
       @pagination="fetchHttpLogList"
     />
+
+    <!-- 日志详情 -->
+    <LogDrawer
+      v-model="state.body.visible"
+      :data="state.body.data"
+      :key="state.body.key"
+      language="json"
+    ></LogDrawer>
   </el-card>
 </template>
 
@@ -245,6 +253,7 @@ import { HttpLog, HttpLogListRsp } from '~/api/permission/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
+import LogDrawer from './LogDrawer.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 
@@ -260,14 +269,13 @@ const listQuery = ref<any>({
   remote_addr: '',
   htpp_type: '',
 });
-// 过滤事件
-const handleFilter = () => {
-  fetchHttpLogList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-};
+const state = reactive({
+  body: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+});
 
 const checkAllList = [
   { label: '日志ID', value: 'id', disabled: false, enabled: false },
@@ -279,7 +287,7 @@ const checkAllList = [
   { label: '路径', value: 'method', disabled: true, enabled: true },
   { label: '请求方法', value: 'path', disabled: true, enabled: true },
   { label: '请求参数', value: 'query', disabled: false, enabled: false },
-  { label: '请求体/响应体', value: 'body', disabled: false, enabled: false },
+  { label: '请求体/响应体', value: 'body', disabled: false, enabled: true },
   { label: '请求IP', value: 'remote_addr', disabled: false, enabled: true },
   { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
   { label: '耗时(纳秒)', value: 'cost', disabled: false, enabled: false },
@@ -291,7 +299,6 @@ const checkedDict = ref<any>({});
 const tableSize = ref<string>(settings.value.defaultSize);
 const tableData = ref<HttpLog[]>();
 const tableDataTotal = ref<number>(0);
-const logBody = ref<string>('');
 
 onBeforeMount(() => {
   fetchHttpLogList();
@@ -310,16 +317,32 @@ const fetchHttpLogList = async () => {
 // 获取网络请求日志 body
 const fetchHttpLogBody = async (id: number) => {
   try {
+    state.body.visible = true;
     const resp = (
       await getHttpLogBody({
         id: id,
       })
     ).data;
-    logBody.value = resp.body;
-    console.log(logBody.value);
+    state.body.data = '';
+    const data = resp.body;
+    if (data === '') {
+      return;
+    }
+    state.body.data = JSON.stringify(JSON.parse(data), null, 2);
+    state.body.key = new Date().getMilliseconds();
   } catch (error) {
     console.log(error);
+    state.body.visible = false;
   }
+};
+
+// 过滤事件
+const handleFilter = () => {
+  fetchHttpLogList();
+};
+// 清空过滤条件
+const handleCleanFilter = () => {
+  listQuery.value = {} as any;
 };
 </script>
 

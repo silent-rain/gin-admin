@@ -32,6 +32,11 @@ import 'element-plus/dist/index.css';
 // import vxe-table
 import 'vxe-table/lib/style.css';
 
+// highlight 的样式，依赖包，组件
+import 'highlight.js/styles/atom-one-dark.css';
+import 'highlight.js/lib/common';
+import hljsVuePlugin from '@highlightjs/vue-plugin';
+
 const app = createApp(App);
 
 // router
@@ -50,5 +55,8 @@ directive(app);
 // element-plus
 app.use(ElementPlus, { size: 'small', zIndex: 3000 });
 app.use(VXETable);
+
+// highlight;
+app.use(hljsVuePlugin);
 
 app.mount('#app');

@@ -153,13 +153,31 @@
         prop="stack"
         label="堆栈信息"
         show-overflow-tooltip
-      />
+        width="100"
+        align="center"
+      >
+        <template #default="scope">
+          <el-button
+            type="primary"
+            text
+            @click="handleShowStack(scope.row.stack)"
+          >
+            查看
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="checkedDict.extend"
         prop="extend"
         label="扩展信息"
         show-overflow-tooltip
-      />
+      >
+        <template #default="scope">
+          <span @click="handleShowExtend(scope.row.extend)">
+            {{ scope.row.extend }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="checkedDict.note"
         prop="note"
@@ -179,6 +197,23 @@
       :total="tableDataTotal"
       @pagination="fetchSystemLogList"
     />
+
+    <!-- 扩展信息 -->
+    <LogDrawer
+      v-model="state.extend.visible"
+      :data="state.extend.data"
+      :key="state.extend.key"
+      language="json"
+    ></LogDrawer>
+
+    <!-- 堆栈信息 -->
+    <LogDrawer
+      v-model="state.extend.visible"
+      :data="state.extend.data"
+      :key="state.extend.key"
+      language="text"
+      size="800px"
+    ></LogDrawer>
   </el-card>
 </template>
 
@@ -193,6 +228,7 @@ import { SystemLog, SystemLogListRsp } from '~/api/permission/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
+import LogDrawer from './LogDrawer.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 const route = useRoute();
@@ -208,6 +244,19 @@ const listQuery = ref<any>({
   error_code: null,
   error_msg: null,
   msg: null,
+});
+
+const state = reactive({
+  extend: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+  stack: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
 });
 
 // 日志级别
@@ -302,6 +351,20 @@ const fetchSystemLogList = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const handleShowExtend = (v: string) => {
+  state.extend.key = new Date().getMilliseconds();
+  if (v) {
+    state.extend.data = JSON.stringify(JSON.parse(v), null, 2);
+  }
+  state.extend.visible = true;
+};
+
+const handleShowStack = (v: string) => {
+  state.extend.key = new Date().getMilliseconds();
+  state.extend.data = v;
+  state.extend.visible = true;
 };
 </script>
 
