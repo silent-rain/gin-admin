@@ -8,6 +8,7 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
+	"gin-admin/internal/pkg/tracer"
 	systemService "gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,9 @@ func (c *roleController) All(ctx *gin.Context) {
 
 // List 获取用角色列表
 func (c *roleController) List(ctx *gin.Context) {
+	span := tracer.SpanStart(ctx)
+	defer span.Finish()
+
 	req := systemDTO.QueryRoleReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
@@ -48,8 +52,6 @@ func (c *roleController) List(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	panic("xxxxxxxsssssss")
-
 	response.New(ctx).WithDataList(results, total).Json()
 }
 

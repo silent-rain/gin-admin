@@ -181,12 +181,10 @@ type logger struct {
 func New(ctx *gin.Context) *logger {
 	extCtx := core.GetContext(ctx)
 	traceId := extCtx.TraceId
-	spanId := extCtx.Span.SpanId()
 	userId := extCtx.UserId
 	nickname := extCtx.Nickname
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
-		zap.String("span_id", spanId),
 		zap.Uint("user_id", userId),
 		zap.String("nickname", nickname),
 	}
@@ -218,6 +216,7 @@ func (l *logger) WithCodeError(err error) *logger {
 
 // WithField 添加扩展字段
 func (l *logger) WithField(key string, value interface{}) *logger {
+	zap.S().Errorf("=================== %#v", value)
 	l.extends[key] = value
 	return l
 }
@@ -225,6 +224,12 @@ func (l *logger) WithField(key string, value interface{}) *logger {
 // WithStack 添加堆栈信息
 func (l *logger) WithStack() *logger {
 	l.fields = append(l.fields, zap.String("stack", string(debug.Stack())))
+	return l
+}
+
+// WithSpanId 添加日志链路 spanID
+func (l *logger) WithSpanId(value string) *logger {
+	l.fields = append(l.fields, zap.String("span_id", value))
 	return l
 }
 

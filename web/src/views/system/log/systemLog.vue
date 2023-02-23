@@ -104,6 +104,12 @@
         show-overflow-tooltip
       />
       <el-table-column
+        v-if="checkedDict.span_id"
+        prop="span_id"
+        label="Span ID"
+        show-overflow-tooltip
+      />
+      <el-table-column
         v-if="checkedDict.level"
         prop="level"
         label="日志级别"
@@ -316,6 +322,7 @@ const checkAllList = [
   { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
   { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
   { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
+  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
   { label: '日志级别', value: 'level', disabled: true, enabled: true },
   { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
   { label: '业务码', value: 'error_code', disabled: true, enabled: true },
