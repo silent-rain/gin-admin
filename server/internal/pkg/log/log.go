@@ -171,10 +171,11 @@ func (d *dbLoggerAsyncer) Sync() error {
 
 // 日志结构
 type logger struct {
-	ctx     *gin.Context
-	zapLog  *zap.Logger
-	fields  []zapcore.Field
-	extends map[string]interface{} // 消息扩展字段
+	ctx        *gin.Context
+	zapLog     *zap.Logger
+	fields     []zapcore.Field
+	extends    map[string]interface{} // 消息扩展字段
+	callerSkip int
 }
 
 // New 创建日志对象
@@ -189,10 +190,11 @@ func New(ctx *gin.Context) *logger {
 		zap.String("nickname", nickname),
 	}
 	return &logger{
-		ctx:     ctx,
-		zapLog:  zap.L().WithOptions(zap.AddCallerSkip(1)),
-		fields:  fields,
-		extends: make(map[string]interface{}, 0),
+		ctx:        ctx,
+		zapLog:     zap.L().WithOptions(zap.AddCallerSkip(1)),
+		fields:     fields,
+		extends:    make(map[string]interface{}, 0),
+		callerSkip: 1,
 	}
 }
 
@@ -216,7 +218,6 @@ func (l *logger) WithCodeError(err error) *logger {
 
 // WithField 添加扩展字段
 func (l *logger) WithField(key string, value interface{}) *logger {
-	zap.S().Errorf("=================== %#v", value)
 	l.extends[key] = value
 	return l
 }
@@ -233,6 +234,12 @@ func (l *logger) WithSpanId(value string) *logger {
 	return l
 }
 
+// WithCallerSkip 调整日志位置
+func (l *logger) WithCallerSkip(skip int) *logger {
+	l.callerSkip = skip
+	return l
+}
+
 // 获取日志字段
 func (l *logger) getFields() []zap.Field {
 	buf, err := json.Marshal(l.extends)
@@ -244,7 +251,7 @@ func (l *logger) getFields() []zap.Field {
 }
 
 func (l *logger) Debug(msg string) {
-	dbLogger.Debug(msg, l.getFields()...)
+	dbLogger.WithOptions(zap.AddCallerSkip(l.callerSkip)).Debug(msg, l.getFields()...)
 }
 
 func (l *logger) Debugf(template string, args ...interface{}) {
@@ -252,11 +259,11 @@ func (l *logger) Debugf(template string, args ...interface{}) {
 }
 
 func (l *logger) Info(msg string) {
-	dbLogger.Info(msg, l.getFields()...)
+	dbLogger.WithOptions(zap.AddCallerSkip(l.callerSkip)).Info(msg, l.getFields()...)
 }
 
 func (l *logger) Infof(template string, args ...interface{}) {
-	dbLogger.Info(fmt.Sprintf(template, args...), l.getFields()...)
+	dbLogger.WithOptions(zap.AddCallerSkip(l.callerSkip)).Info(fmt.Sprintf(template, args...), l.getFields()...)
 }
 
 func (l *logger) Warn(msg string) {

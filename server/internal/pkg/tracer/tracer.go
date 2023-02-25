@@ -58,6 +58,7 @@ func (s *logSpan) Finish() *logSpan {
 	s.SpanId = s.generateSpanId()
 
 	log.New(s.ctx).WithCode(errcode.Ok).
+		WithCallerSkip(1).
 		WithSpanId(s.SpanId).
 		WithField("data", *s).
 		Info("span 日志埋点")
