@@ -16,5 +16,6 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./../icons/SvgIcon.vue')['default']
     TestUnit: typeof import('./../components/TestUnit.vue')['default']
+    UploadAvatar: typeof import('./../components/Upload/UploadAvatar.vue')['default']
   }
 }

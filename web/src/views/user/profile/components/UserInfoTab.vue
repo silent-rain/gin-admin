@@ -104,24 +104,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="头像" prop="avatar">
-            <el-upload
+            <UploadAvatar
               v-if="state.userFormEdit"
               class="avatar-uploader"
-              :action="uploadAvatar"
-              :headers="headerObj"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img
-                v-if="remoteImageUrl"
-                :src="remoteImageUrl"
-                class="upload-avatar"
-              />
-              <el-icon v-else class="avatar-uploader-icon">
-                <Plus />
-              </el-icon>
-            </el-upload>
+              v-model:url="props.data.avatar"
+            ></UploadAvatar>
             <el-avatar v-else :size="60" :src="remoteImageUrl" />
           </el-form-item>
         </el-col>
@@ -142,11 +129,9 @@
 </template>
 
 <script setup lang="ts">
-import { Plus } from '@element-plus/icons-vue';
-import { ElMessage, FormInstance, FormRules, UploadProps } from 'element-plus';
-import { uploadAvatar } from '@/api/system/upload';
-import { useUserStore } from '@/store/user';
+import { ElMessage, FormInstance, FormRules } from 'element-plus';
 import { User } from '@/typings/api/permission/user';
+import UploadAvatar from '@/components/Upload/UploadAvatar.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -154,8 +139,6 @@ const props = withDefaults(
   }>(),
   {},
 );
-
-const userStore = useUserStore();
 
 const emits = defineEmits(['update:data', 'refresh']);
 
@@ -172,38 +155,6 @@ const userRules = reactive<FormRules>({
   gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
   birthday: [{ required: true, message: '请选择出生日期', trigger: 'blur' }],
 });
-
-const headerObj = {
-  authorization: userStore.token,
-};
-
-// 上传头像成功事件
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile,
-) => {
-  // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
-  props.data.avatar = `${response.data.url}`;
-};
-// 上传头像事件
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const imgfileType = [
-    'image/gif',
-    'image/jpg',
-    'image/jpeg',
-    'image/x-png',
-    'image/png',
-  ];
-  if (imgfileType.indexOf(rawFile.type) === -1) {
-    ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!');
-    return false;
-  }
-  if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!');
-    return false;
-  }
-  return true;
-};
 
 // 远程图片地址
 const remoteImageUrl = computed(() => {
@@ -259,30 +210,5 @@ const handleUserSubmit = async (formEl: FormInstance | undefined) => {
 .user-intro {
   padding: 0;
   margin: 0;
-}
-
-// 头像
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color-darker);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  border: 1px dashed var(--el-border-color-darker);
-}
-.upload-avatar {
-  width: 100px;
-  height: 100px;
 }
 </style>

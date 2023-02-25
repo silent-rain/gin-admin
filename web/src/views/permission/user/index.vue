@@ -95,6 +95,7 @@
 
     <!-- 添加/编辑表单 -->
     <UserForm
+      v-if="state.userForm.visible"
       v-model:data="state.userForm.data"
       v-model:visible="state.userForm.visible"
       :type="state.userForm.type"
@@ -433,6 +434,7 @@ const handleAdd = async () => {
   state.userForm.data.age = 0;
   state.userForm.data.sort = 1;
   state.userForm.data.gender = 0;
+  state.userForm.data.avatar = '';
   state.userForm.data.password = settings.value.defaultPassword;
   state.userForm.data.role_ids = [];
   state.userForm.type = 'add';

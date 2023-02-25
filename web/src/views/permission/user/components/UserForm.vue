@@ -143,21 +143,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="头像" prop="avatar">
-            <el-upload
+            <UploadAvatar
               class="avatar-uploader"
-              :action="uploadAvatar"
-              :headers="headerObj"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img
-                v-if="remoteImageUrl"
-                :src="remoteImageUrl"
-                class="upload-avatar"
-              />
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
+              v-model:url="props.data.avatar"
+            ></UploadAvatar>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -240,9 +229,9 @@ import {
 } from '@/api/permission/user';
 import { getAllRole } from '@/api/permission/role';
 import { useUserStore } from '@/store/user';
-import { uploadAvatar } from '@/api/system/upload';
 import { User } from '@/typings/api/permission/user';
 import { RoleListRsp, Role } from '~/api/permission/role';
+import UploadAvatar from '@/components/Upload/UploadAvatar.vue';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
@@ -465,30 +454,5 @@ watch(
   .el-button + .el-button {
     margin-left: 0px;
   }
-}
-
-// 头像
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color-darker);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  text-align: center;
-  border: 1px dashed var(--el-border-color-darker);
-}
-.upload-avatar {
-  width: 100px;
-  height: 100px;
 }
 </style>
