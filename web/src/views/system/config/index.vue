@@ -4,7 +4,7 @@
     <div v-if="hasButtonPermission('sys:config:list')" class="filter">
       <label>一级配置筛选:</label>
       <el-input
-        v-model="listQuery.title"
+        v-model="listQuery.name"
         class="filter-name"
         :disabled="isDisabledButton('sys:config:list')"
         placeholder="请输入一级配置名称"
@@ -248,9 +248,9 @@ const { settings } = storeToRefs(useBasicStore());
 
 // 筛选过滤条件
 const listQuery = reactive({
-  title: '',
   page: 1,
   page_size: 10,
+  name: '',
 });
 // 过滤事件
 const handleFilter = () => {
@@ -258,7 +258,7 @@ const handleFilter = () => {
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
-  listQuery.title = '';
+  listQuery.name = '';
 };
 
 const state = reactive({

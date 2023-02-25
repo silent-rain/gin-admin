@@ -2,6 +2,7 @@
 package systemDAO
 
 import (
+	"errors"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/repository/mysql"
@@ -13,6 +14,7 @@ import (
 type Config interface {
 	All() ([]systemModel.Config, int64, error)
 	List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
+	InfoByKey(key string) (systemModel.Config, bool, error)
 	Add(bean systemModel.Config) (uint, error)
 	Update(bean systemModel.Config) (int64, error)
 	Delete(id uint) (int64, error)
@@ -52,7 +54,7 @@ func (d *config) All() ([]systemModel.Config, int64, error) {
 // List 查询配置列表
 func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db.GetDbR()
+		stats := d.db.GetDbR().Debug()
 		if req.Name != "" {
 			stats = stats.Where("name like ?", "%"+req.Name+"%")
 		}
@@ -72,6 +74,19 @@ func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64
 	var total int64 = 0
 	stats().Model(&systemModel.Config{}).Count(&total)
 	return beans, total, nil
+}
+
+// Info 获取配置信息
+func (d *config) InfoByKey(key string) (systemModel.Config, bool, error) {
+	bean := systemModel.Config{}
+	result := d.db.GetDbR().Where("`key` = ?", key).First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }
 
 // Add 添加配置

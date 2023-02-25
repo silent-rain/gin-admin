@@ -44,7 +44,7 @@ CREATE TABLE sys_config (
     `id` INT AUTO_INCREMENT COMMENT '配置ID',
     `parent_id` INT(11) DEFAULT NULL COMMENT '父节点ID',
     `name` VARCHAR(32) NOT NULL COMMENT '配置名称',
-    `key` VARCHAR(32) NOT NULL UNIQUE COMMENT '配置参数(英文)',
+    `key` VARCHAR(32) NOT NULL UNIQUE COMMENT '配置项(英文)',
     `value` TEXT COMMENT '配置参数值',
     `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
     `note` VARCHAR(32) DEFAULT NULL COMMENT '配置描述',

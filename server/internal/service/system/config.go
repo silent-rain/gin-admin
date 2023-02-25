@@ -2,6 +2,8 @@
 package system
 
 import (
+	"errors"
+
 	systemDAO "gin-admin/internal/dao/system"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
@@ -9,6 +11,7 @@ import (
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // ConfigService 配置接口
@@ -64,9 +67,9 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 
 	// 过滤
 	treeFilter := make([]systemModel.Config, 0)
-	for _, itemA := range tree {
-		for _, item := range configList {
-			if itemA.Key == item.Key {
+	for _, item := range configList {
+		for _, itemA := range tree {
+			if item.Key == itemA.Key {
 				treeFilter = append(treeFilter, itemA)
 			}
 		}
@@ -76,7 +79,20 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 
 // Add 添加配置
 func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, error) {
+	_, ok, err := s.dao.InfoByKey(config.Key)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
+	}
+	if ok {
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDataExistError).WithMsg("配置项已存在")
+	}
+
 	id, err := s.dao.Add(config)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, nil
+	}
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBAddError)
