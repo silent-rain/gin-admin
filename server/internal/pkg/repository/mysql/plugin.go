@@ -6,7 +6,6 @@ import (
 
 	"gin-admin/pkg/timeutil"
 
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -27,8 +26,8 @@ func (p *LocalTimePlugin) Initialize(db *gorm.DB) (err error) {
 	// 结束后
 	// _ = db.Callback().Query().After("gorm:after_query").Register(callBackAfterName, after)
 	// _ = db.Callback().Create().After("gorm:after_create").Register(callBackAfterName, after)
-	_ = db.Callback().Delete().After("gorm:after_delete").Register("gorm:created_at", beforeByCreate)
-	_ = db.Callback().Update().After("gorm:after_update").Register("gorm:updated_at", beforeByUpdate)
+	// _ = db.Callback().Delete().After("gorm:after_delete").Register("gorm:created_at", beforeByCreate)
+	// _ = db.Callback().Update().After("gorm:after_update").Register("gorm:updated_at", beforeByUpdate)
 	return
 }
 
@@ -48,14 +47,5 @@ func beforeByUpdate(db *gorm.DB) {
 	t := time.Now().Format(timeutil.CSTMilliLayout)
 	if field := db.Statement.Schema.LookUpField("UpdatedAt"); field != nil {
 		db.Statement.SetColumn("updated_at", t)
-	}
-}
-
-// 查询注册, 查询时间格式化
-func beforeByQuery(db *gorm.DB) {
-	t := time.Now().Format(timeutil.CSTMilliLayout)
-	if field := db.Statement.Schema.LookUpField("UpdatedAt"); field != nil {
-		db.Statement.SetColumn("updated_at", t)
-		zap.S().Errorf("==============")
 	}
 }

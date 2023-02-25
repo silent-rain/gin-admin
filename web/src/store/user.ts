@@ -15,6 +15,8 @@ export const useUserStore = defineStore('user', {
       getUserInfo: false,
       // 用户信息
       userInfo: {} as User,
+      userId: undefined,
+      userAvatar: undefined,
       // 角色列表
       roles: [] as Role[],
       codes: [] as number[],
@@ -27,7 +29,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     // 获取用户信息
     async userInfo() {
-      const userData = (await getUserInfo({})).data;
+      const userData = (await getUserInfo()).data;
       return {
         userInfo: userData.user,
         roles: userData.roles,
@@ -43,12 +45,19 @@ export const useUserStore = defineStore('user', {
         state.token = data;
       });
     },
-    // 设置用户状态
+    // 设置用户信息
     setUserInfo(data: any) {
       this.$patch((state) => {
         state.roles = data.roles;
         state.codes = data.codes;
+
         state.getUserInfo = true;
+        state.userId = data.userInfo.id;
+
+        if (data.userInfo.avatar) {
+          state.userAvatar =
+            import.meta.env.VITE_APP_IMAGE_URL + data.userInfo.avatar;
+        }
         state.userInfo.nickname = data.userInfo.nickname;
         state.userInfo.avatar = data.userInfo.avatar;
       });

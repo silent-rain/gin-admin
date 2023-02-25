@@ -142,7 +142,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="头像" prop="status">
+          <el-form-item label="头像" prop="avatar">
             <el-upload
               class="avatar-uploader"
               :action="uploadAvatar"
@@ -353,11 +353,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 // 更新手机号码
 const handleUpdatePhone = async () => {
   if (state.newPhone.trim() === '') {
-    ElMessage.success('新手机号码不能为空');
+    ElMessage.warning('新手机号码不能为空');
     return;
   }
   if (state.newPhone.trim().length !== 11) {
-    ElMessage.success('非法手机号码');
+    ElMessage.warning('非法手机号码');
     return;
   }
 
@@ -379,7 +379,7 @@ const handleUpdatePhone = async () => {
 // 更新邮箱
 const handleUpdateEmail = async () => {
   if (state.newEmail.trim() === '') {
-    ElMessage.success('新邮箱不能为空');
+    ElMessage.warning('新邮箱不能为空');
     return;
   }
 
@@ -404,7 +404,7 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   uploadFile,
 ) => {
   // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
-  state.imageUrl = `/${response.data.url}`;
+  state.imageUrl = `${response.data.url}`;
 };
 // 上传头像事件
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {

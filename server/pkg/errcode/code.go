@@ -69,7 +69,9 @@ const (
 	UserLoginError                                       // 用户登录失败
 	UserLogoutError                                      // 用户注销失败
 	UserDisableError                                     // 您的账号已被禁用,请联系管理员
+	UserNamePasswordError                                // 账号或密码不正确
 	UserOldPasswordError                                 // 旧密码不正确
+	UserPasswordError                                    // 密码不正确
 	UserPhoneConsistentError                             // 新旧手机号码一致, 未更新
 	UserEmailConsistentError                             // 新旧邮箱一致, 未更新
 	CaptchaTypeError                                     // 验证码类型错误, 不支持的类型

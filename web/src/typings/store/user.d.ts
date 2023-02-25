@@ -6,6 +6,8 @@ export interface UserTry {
   token: string;
   getUserInfo: boolean;
   userInfo: User;
+  userId?: number;
+  userAvatar?: string;
   roles: Role[];
   codes: number[];
 }

@@ -12,7 +12,7 @@ CREATE TABLE sys_user (
     `gender` TINYINT(1) NULL COMMENT '0: 保密,1: 女,2: 男',
     `age` INT(11) NULL COMMENT '年龄',
     `birthday` VARCHAR(20) NULL COMMENT '出生日期',
-    `avatar` VARCHAR(60) NULL COMMENT '用户头像URL',
+    `avatar` VARCHAR(100) NULL COMMENT '用户头像URL',
     `phone` VARCHAR(20) NOT NULL COMMENT '手机号码',
     `email` VARCHAR(50) NULL COMMENT '邮件',
     `intro` VARCHAR(200) NULL COMMENT '介绍',

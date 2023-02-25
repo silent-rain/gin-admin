@@ -2,12 +2,12 @@
  */
 
 // 获取用户信息
-export const getUserInfo = async (params: any) => {
+export const getUserInfo = async () => {
   return axiosReq({
     url: '/user/info',
     method: 'get',
     isParams: true,
-    data: params,
+    data: {},
   });
 };
 

@@ -202,6 +202,17 @@ func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) 
 
 // UpdatePhone 更新手机号码
 func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) (int64, error) {
+	// 用户密码验证
+	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
+	}
+	if !ok {
+		log.New(ctx).WithCode(errcode.UserPasswordError).Errorf("%v", err)
+		return 0, errcode.New(errcode.UserPasswordError)
+	}
+
 	// 查看手机号码是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByPhone(req.Phone)
 	if err != nil {
@@ -226,6 +237,17 @@ func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhon
 
 // UpdateEmail 更新邮箱
 func (h *userService) UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) (int64, error) {
+	// 用户密码验证
+	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
+	}
+	if !ok {
+		log.New(ctx).WithCode(errcode.UserPasswordError).Errorf("%v", err)
+		return 0, errcode.New(errcode.UserPasswordError)
+	}
+
 	// 查看邮箱是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByEmail(req.Email)
 	if err != nil {

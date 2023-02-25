@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"time"
 
 	"gin-admin/internal/pkg/conf"
@@ -58,5 +59,6 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 		return result, errcode.New(errcode.UploadFileSaveError)
 	}
 
+	result.Url = strings.TrimPrefix(dst, ".")
 	return result, nil
 }

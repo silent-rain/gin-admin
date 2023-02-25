@@ -24,34 +24,24 @@
       <LangSelect />
       <el-dropdown trigger="click" size="medium">
         <div class="avatar-wrapper">
-          <img
-            src="https://github.jzfai.top/file/images/nav-right-logo.gif"
-            class="user-avatar"
-          />
+          <img :src="userStore.userAvatar" class="user-avatar" />
           <CaretBottom style="width: 1em; height: 1em; margin-left: 4px" />
         </div>
         <template #dropdown>
           <el-dropdown-menu>
             <router-link to="/">
-              <el-dropdown-item>
-                {{ langTitle('Home') }}
-              </el-dropdown-item>
+              <el-dropdown-item>首页</el-dropdown-item>
             </router-link>
-            <a target="_blank" href="https://github.com/jzfai/vue3-admin-plus">
+
+            <router-link to="/user/profile">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+
+            <a target="_blank" href="https://github.com/silent-rain/gin-admin">
               <el-dropdown-item>{{ langTitle('Github') }}</el-dropdown-item>
             </a>
-            <a
-              target="_blank"
-              href="https://github.jzfai.top/low-code-platform"
-            >
-              <el-dropdown-item>
-                {{ langTitle('LowCodePlatFrom') }}
-              </el-dropdown-item>
-            </a>
-            <!--<el-dropdown-item>修改密码</el-dropdown-item>-->
-            <el-dropdown-item divided @click="loginOut">
-              {{ langTitle('login out') }}
-            </el-dropdown-item>
+
+            <el-dropdown-item divided @click="loginOut">登出</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -74,11 +64,13 @@ import { resetState } from '@/hooks/use-permission';
 import { elMessage } from '@/hooks/use-element';
 import { langTitle } from '@/hooks/use-common';
 import { useBasicStore } from '@/store/basic';
+import { useUserStore } from '@/store/user';
 import { logout } from '@/api/system/login';
 
 const basicStore = useBasicStore();
 const { settings, sidebar, setToggleSideBar } = basicStore;
 const router = useRouter();
+const userStore = useUserStore();
 
 const toggleSideBar = () => {
   setToggleSideBar();
