@@ -13,6 +13,25 @@ export const getAllConfigTree = async () => {
   });
 };
 
+// 获取所有配置
+export const getConfigList = async (params: any) => {
+  return axiosReq({
+    url: '/config/list',
+    method: 'get',
+    isParams: true,
+    data: params,
+  });
+};
+
+// 通过上级 key 获取子配置列表
+export const getConfigChildrenByKey = async (params: any) => {
+  return axiosReq({
+    url: '/config/childrenByKey',
+    method: 'get',
+    isParams: true,
+    data: params,
+  });
+};
 // 获取配置树
 export const getConfigTree = async (params: any) => {
   return axiosReq({
@@ -36,6 +55,14 @@ export const addConfig = async (params: any) => {
 export const updateConfig = async (params: any) => {
   return axiosReq({
     url: '/config/update',
+    method: 'put',
+    data: params,
+  });
+};
+// 批量更新配置
+export const batchUpdateConfig = async (params: any) => {
+  return axiosReq({
+    url: '/config/batchUpdate',
     method: 'put',
     data: params,
   });

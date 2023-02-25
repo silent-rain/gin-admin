@@ -50,6 +50,38 @@ func (c *configController) Tree(ctx *gin.Context) {
 	response.New(ctx).WithDataList(results, total).Json()
 }
 
+// List 获取配置列表
+func (c *configController) List(ctx *gin.Context) {
+	req := systemDTO.QueryConfigReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+
+	results, total, err := c.service.List(ctx, req)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, total).Json()
+}
+
+// ChildrenByKey 通过父 key 获取子配置列表
+func (c *configController) ChildrenByKey(ctx *gin.Context) {
+	req := systemDTO.QueryConfigReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+
+	results, err := c.service.ChildrenByKey(ctx, req.Key)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, int64(len(results))).Json()
+}
+
 // Add 添加配置
 func (c *configController) Add(ctx *gin.Context) {
 	req := systemDTO.AddConfigReq{}

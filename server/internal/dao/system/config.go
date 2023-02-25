@@ -21,6 +21,7 @@ type Config interface {
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
 	Children(parentId uint) ([]systemModel.Config, error)
+	ChildrenByKey(key string) ([]systemModel.Config, error)
 }
 
 // 配置
@@ -137,6 +138,19 @@ func (d *config) Status(id uint, status uint) (int64, error) {
 func (d *config) Children(parentId uint) ([]systemModel.Config, error) {
 	beans := make([]systemModel.Config, 0)
 	result := d.db.GetDbR().Where("parent_id=?", parentId).
+		Order("sort ASC").Order("id ASC").
+		Find(&beans)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return beans, nil
+}
+
+// ChildrenByKey 通过父 key 获取子配置列表
+func (d *config) ChildrenByKey(key string) ([]systemModel.Config, error) {
+	beans := make([]systemModel.Config, 0)
+	subQuery := d.db.GetDbR().Model(&systemModel.Config{}).Where("`key` = ?", key).Select("id")
+	result := d.db.GetDbR().Debug().Model(&systemModel.Config{}).Where("parent_id = (?)", subQuery).
 		Order("sort ASC").Order("id ASC").
 		Find(&beans)
 	if result.Error != nil {

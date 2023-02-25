@@ -18,11 +18,13 @@ import (
 type ConfigService interface {
 	AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error)
 	Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
+	List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
 	Add(ctx *gin.Context, menu systemModel.Config) (uint, error)
 	Update(ctx *gin.Context, menu systemModel.Config) (int64, error)
 	Delete(ctx *gin.Context, id uint) (int64, error)
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
+	ChildrenByKey(ctx *gin.Context, key string) ([]systemModel.Config, error)
 }
 
 // 配置
@@ -75,6 +77,26 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 		}
 	}
 	return treeFilter, int64(len(tree)), nil
+}
+
+// List 获取配置列表
+func (s *configService) List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
+	configList, total, err := s.dao.List(req)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
+	}
+	return configList, total, nil
+}
+
+// ChildrenByKey 通过父 key 获取子配置列表
+func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]systemModel.Config, error) {
+	configList, err := s.dao.ChildrenByKey(key)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, errcode.New(errcode.DBQueryError)
+	}
+	return configList, nil
 }
 
 // Add 添加配置
