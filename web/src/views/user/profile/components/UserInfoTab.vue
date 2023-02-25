@@ -133,7 +133,7 @@
               type="textarea"
               placeholder="介绍内容"
             />
-            <span v-else>{{ props.data.intro }}</span>
+            <p class="user-intro" v-else>{{ props.data.intro }}</p>
           </el-form-item>
         </el-col>
       </el-row>
@@ -255,6 +255,10 @@ const handleUserSubmit = async (formEl: FormInstance | undefined) => {
       margin-top: 25px;
     }
   }
+}
+.user-intro {
+  padding: 0;
+  margin: 0;
 }
 
 // 头像
