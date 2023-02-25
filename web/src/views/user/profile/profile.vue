@@ -45,11 +45,7 @@
     </el-col>
     <el-col :span="16">
       <el-card class="user-config">
-        <el-tabs
-          v-model="activeName"
-          tab-position="top"
-          @tab-click="handleClick"
-        >
+        <el-tabs v-model="activeName" tab-position="top">
           <el-tab-pane class="user-config-user" label="基本信息" name="user">
             <UserInfoTab
               v-model:data="state.user"
@@ -112,10 +108,6 @@ const remoteImageUrl = computed(() => {
   }
   return import.meta.env.VITE_APP_IMAGE_URL + state.user.avatar;
 });
-
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event);
-};
 </script>
 
 <style scoped lang="scss">
