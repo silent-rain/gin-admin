@@ -104,6 +104,7 @@
         prop="title"
         label="菜单名称"
         show-overflow-tooltip
+        width="120"
       />
       <el-table-column
         v-if="checkedDict.menu_type"
@@ -387,7 +388,7 @@ const checkAllList = [
     disabled: false,
     enabled: false,
   },
-  { label: '排序', value: 'sort', disabled: false, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: false },
   { label: '状态', value: 'status', disabled: true, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
   { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
