@@ -84,9 +84,12 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { QuestionFilled } from '@element-plus/icons-vue';
-import { updateConfig, addConfig, getAllConfigTree } from '@/api/system/config';
-import { Config, ConfigListRsp } from '~/api/system/config';
+import {
+  updateConfig,
+  addConfig,
+  getAllConfigTree,
+} from '@/api/data-center/config';
+import { Config, ConfigListRsp } from '~/api/data-center/config';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 

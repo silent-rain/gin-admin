@@ -236,8 +236,8 @@ import {
   updateConfigStatus,
   deleteConfig,
   batchDeleteConfig,
-} from '@/api/system/config';
-import { ConfigListRsp, Config } from '~/api/system/config';
+} from '@/api/data-center/config';
+import { ConfigListRsp, Config } from '~/api/data-center/config';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';
