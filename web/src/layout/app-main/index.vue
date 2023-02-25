@@ -1,6 +1,6 @@
 <template>
-  <el-scrollbar :class="{ 'show-tag-view': settings.showTagsView }">
-    <div class="app-main">
+  <div class="app-main">
+    <el-scrollbar :class="{ 'show-tag-view': settings.showTagsView }">
       <router-view v-slot="{ Component }">
         <!--has transition  setting by settings.mainNeedAnimation-->
         <transition
@@ -17,8 +17,8 @@
           <component :is="Component" :key="key" />
         </keep-alive>
       </router-view>
-    </div>
-  </el-scrollbar>
+    </el-scrollbar>
+  </div>
 </template>
 
 <script setup lang="ts">
