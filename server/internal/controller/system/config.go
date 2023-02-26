@@ -124,6 +124,27 @@ func (c *configController) Update(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
+// BatchUpdate 批量更新配置
+func (c *configController) BatchUpdate(ctx *gin.Context) {
+	req := make([]systemDTO.UpdateConfigReq, 0)
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	var configs []systemModel.Config
+	if err := http.ApiJsonConvertJson(ctx, req, &configs); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+
+	err := c.service.BatchUpdate(ctx, configs)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).Json()
+}
+
 // Delete 删除配置
 func (c *configController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}

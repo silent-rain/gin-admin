@@ -65,16 +65,25 @@
   - [x] 动态路由
   - [x] 按钮权限权限
 - [ ] 系统管理
-  - [ ] 网站配置管理
+  - [x] 网站配置管理
   - [x] 请求日志管理
   - [x] 系统日志管理
   - [ ] 前端日志管理
   - [ ] 登录管理
 - [ ] 数据中心
   - [x] 全局配置管理
+  - [ ] Icon 图标管理
   - [ ] 字典管理
 - [ ] 系统监控
 
+
+https://blog.csdn.net/weixin_45731256/article/details/122822144
+https://wenku.baidu.com/view/234312467b3e0912a21614791711cc7931b778dd.html?_wkts_=1677230713539&bdQuery=vue%E6%94%B6+%E6%97%A5%E5%BF%97%E4%B8%8A%E6%8A%A5
+https://blog.csdn.net/karl982964/article/details/124112016
+
+https://blog.csdn.net/yi742891270/article/details/127391178
+
+https://blog.csdn.net/tiven_/article/details/123407630
 
 
 ## 待处理
@@ -182,6 +191,7 @@ air
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
 - [参考项目](http://manage.pro.layui.javaweb.vip/index)
 - [为 Go 应用添加 Prometheus 监控指标](https://blog.csdn.net/weixin_40046357/article/details/120620433)
+- [vue项目seo优化](https://www.jianshu.com/p/e47081dce0ad)
 
 ### go-api 设计参考
 https://github.com/flipped-aurora/gin-vue-admin/tree/main/server

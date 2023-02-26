@@ -19,8 +19,9 @@ type ConfigService interface {
 	AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error)
 	Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
 	List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
-	Add(ctx *gin.Context, menu systemModel.Config) (uint, error)
-	Update(ctx *gin.Context, menu systemModel.Config) (int64, error)
+	Add(ctx *gin.Context, config systemModel.Config) (uint, error)
+	Update(ctx *gin.Context, config systemModel.Config) (int64, error)
+	BatchUpdate(ctx *gin.Context, configs []systemModel.Config) error
 	Delete(ctx *gin.Context, id uint) (int64, error)
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
@@ -130,6 +131,16 @@ func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int
 		return 0, errcode.New(errcode.DBUpdateError)
 	}
 	return row, nil
+}
+
+// BatchUpdate 批量更新配置
+func (s *configService) BatchUpdate(ctx *gin.Context, configs []systemModel.Config) error {
+	err := s.dao.BatchUpdate(configs)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
+		return errcode.New(errcode.DBUpdateError)
+	}
+	return nil
 }
 
 // Delete 删除配置

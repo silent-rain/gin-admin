@@ -3,10 +3,12 @@ package systemDAO
 
 import (
 	"errors"
+	DAO "gin-admin/internal/dao"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/repository/mysql"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +19,7 @@ type Config interface {
 	InfoByKey(key string) (systemModel.Config, bool, error)
 	Add(bean systemModel.Config) (uint, error)
 	Update(bean systemModel.Config) (int64, error)
+	BatchUpdate(beans []systemModel.Config) error
 	Delete(id uint) (int64, error)
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
@@ -26,13 +29,15 @@ type Config interface {
 
 // 配置
 type config struct {
+	*DAO.Transaction
 	db mysql.DBRepo
 }
 
 // 创建配置对象
 func NewConfigDao() *config {
 	return &config{
-		db: mysql.Instance(),
+		Transaction: DAO.NewTransaction(mysql.Instance().GetDbW()),
+		db:          mysql.Instance(),
 	}
 }
 
@@ -103,6 +108,28 @@ func (d *config) Add(bean systemModel.Config) (uint, error) {
 func (d *config) Update(bean systemModel.Config) (int64, error) {
 	result := d.db.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
+}
+
+// BatchUpdate 批量更新配置
+func (d *config) BatchUpdate(beans []systemModel.Config) error {
+	d.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			d.Rollback()
+			zap.S().Panic("注批量更新配置异常, err: %v", err)
+		}
+	}()
+
+	for _, bean := range beans {
+		bean := bean
+		result := d.db.GetDbW().Omit("created_at").UpdateColumns(&bean)
+		if result.Error != nil {
+			d.Rollback()
+			return result.Error
+		}
+	}
+	d.Commit()
+	return nil
 }
 
 // Delete 删除配置

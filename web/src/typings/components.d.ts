@@ -10,12 +10,15 @@ declare module '@vue/runtime-core' {
     ButtonPermission: typeof import('./../components/ButtonPermission.vue')['default']
     ConvenienButtons: typeof import('./../components/ConvenienButtons/index.vue')['default']
     ConvenienTools: typeof import('./../components/ConvenienTools/index.vue')['default']
+    copy: typeof import('./../components/Upload/UploadAvatar copy.vue')['default']
     ElSvgIcon: typeof import('./../components/ElSvgIcon.vue')['default']
     Pagination: typeof import('./../components/Pagination.vue')['default']
+    PhotoWall: typeof import('./../components/Upload/PhotoWall.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./../icons/SvgIcon.vue')['default']
     TestUnit: typeof import('./../components/TestUnit.vue')['default']
     UploadAvatar: typeof import('./../components/Upload/UploadAvatar.vue')['default']
+    UploadLogo: typeof import('./../components/Upload/UploadLogo.vue')['default']
   }
 }

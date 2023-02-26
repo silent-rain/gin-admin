@@ -127,6 +127,8 @@ func NewSystemApi(engine *gin.Engine) {
 		config.POST("/add", system.NewConfigController().Add)
 		// 更新配置
 		config.PUT("/update", system.NewConfigController().Update)
+		// 批量更新配置
+		config.PUT("/batchUpdate", system.NewConfigController().BatchUpdate)
 		// 删除配置
 		config.DELETE("/delete", system.NewConfigController().Delete)
 		// 批量删除配置

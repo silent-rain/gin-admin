@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"gin-admin/internal/pkg/conf"
@@ -17,6 +16,7 @@ import (
 	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var (
@@ -73,7 +73,7 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 	}
 
 	result.Name = file.Filename
-	result.Url = strings.TrimPrefix(dst, ".")
+	result.Url = "/" + dst
 	return result, nil
 }
 
@@ -101,8 +101,9 @@ func (h *uploadService) Image(ctx *gin.Context, file *multipart.FileHeader) (sys
 		return result, errcode.New(errcode.UploadFileSaveError)
 	}
 
+	zap.S().Errorf("============= %#v", dst)
 	result.Name = file.Filename
-	result.Url = strings.TrimPrefix(dst, ".")
+	result.Url = "/" + dst
 	return result, nil
 }
 
@@ -132,8 +133,8 @@ func (h *uploadService) Images(ctx *gin.Context, files []*multipart.FileHeader) 
 		}
 
 		results = append(results, systemVO.Image{
-			Name: filename,
-			Url:  dst,
+			Name: file.Filename,
+			Url:  "/" + dst,
 		})
 	}
 

@@ -1,20 +1,25 @@
 <template>
   <el-upload
-    class="avatar-uploader"
-    :action="uploadAvatar"
+    class="img-uploader"
+    :action="uploadImage"
     :headers="headerObj"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
   >
-    <img v-if="remoteImageUrl" :src="remoteImageUrl" class="upload-avatar" />
-    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+    <img
+      v-if="remoteImageUrl"
+      :src="remoteImageUrl"
+      class="upload-img"
+      alt="LOGO"
+    />
+    <el-icon v-else class="img-uploader-icon"><Plus /></el-icon>
   </el-upload>
 </template>
 
 <script setup lang="ts">
 import { Plus } from '@element-plus/icons-vue';
-import { uploadAvatar } from '@/api/system/upload';
+import { uploadImage } from '@/api/system/upload';
 import { useUserStore } from '@/store/user';
 import { ElMessage, UploadProps } from 'element-plus';
 
@@ -22,8 +27,11 @@ const props = withDefaults(
   defineProps<{
     url: string;
     remoteUrl?: string;
+    imgSize?: number; // mb
   }>(),
-  {},
+  {
+    imgSize: 2,
+  },
 );
 
 const emits = defineEmits(['update:url', 'update:remoteUrl']);
@@ -34,7 +42,7 @@ const headerObj = {
   authorization: userStore.token,
 };
 
-// 上传头像成功事件
+// 上传成功事件
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile,
@@ -42,20 +50,17 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
   // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
   emits('update:url', response.data.url);
 };
-// 上传头像事件
+
+// 上传事件
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const imgfileType = [
-    'image/gif',
-    'image/jpg',
-    'image/jpeg',
-    'image/x-png',
-    'image/png',
-  ];
+  const imgfileType = ['image/icon', 'image/vnd.microsoft.icon'];
   if (imgfileType.indexOf(rawFile.type) === -1) {
-    ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!');
+    ElMessage.error(
+      `Avatar picture must be ICON format! , err: ${rawFile.type}`,
+    );
     return false;
   }
-  if (rawFile.size / 1024 / 1024 > 2) {
+  if (rawFile.size / 1024 / 1024 > props.imgSize) {
     ElMessage.error('Avatar picture size can not exceed 2MB!');
     return false;
   }
@@ -68,15 +73,13 @@ const remoteImageUrl = computed(() => {
     return '';
   }
   const url = import.meta.env.VITE_APP_IMAGE_URL + props.url;
-
   emits('update:remoteUrl', url);
   return url;
 });
 </script>
 
 <style scoped lang="scss">
-// 头像
-.avatar-uploader .el-upload {
+.img-uploader .el-upload {
   border: 1px dashed var(--el-border-color-darker);
   border-radius: 6px;
   cursor: pointer;
@@ -84,10 +87,10 @@ const remoteImageUrl = computed(() => {
   overflow: hidden;
   transition: var(--el-transition-duration-fast);
 }
-.avatar-uploader .el-upload:hover {
+.img-uploader .el-upload:hover {
   border-color: var(--el-color-primary);
 }
-.el-icon.avatar-uploader-icon {
+.el-icon.img-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 100px;
@@ -95,7 +98,7 @@ const remoteImageUrl = computed(() => {
   text-align: center;
   border: 1px dashed var(--el-border-color-darker);
 }
-.upload-avatar {
+.upload-img {
   width: 100px;
   height: 100px;
   border: 1px dashed var(--el-border-color-darker);

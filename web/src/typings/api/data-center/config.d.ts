@@ -22,13 +22,13 @@ export interface ConfigListRsp {
 // 网站配置
 export interface WebsiteConfig {
   website_title: Config;
-  website_intro: Config;
+  website_title_brief: Config;
+  website_description: Config;
+  website_keywords: Config;
   website_logo: Config;
   website_seo_title: Config;
   website_seo_desc: Config;
   website_copyright: Config;
-  website_keyword: Config;
-  website_desc: Config;
   website_company_address: Config;
   website_phone: Config;
   website_email: Config;

@@ -74,5 +74,5 @@ func (c *uploadController) Images(ctx *gin.Context) {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	response.New(ctx).WithData(result).Json()
+	response.New(ctx).WithDataList(result, int64(len(result))).Json()
 }

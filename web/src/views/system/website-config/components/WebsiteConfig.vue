@@ -12,53 +12,78 @@
         :placeholder="`请输入${configHash.website_title.name}`"
       />
     </el-form-item>
-    <el-form-item :label="configHash.website_intro.name" prop="website_intro">
-      <el-input
-        v-model="configHash.website_intro.value"
-        :placeholder="`请输入${configHash.website_intro.name}`"
-      />
-    </el-form-item>
     <el-form-item
-      :label="configHash.website_keyword.name"
-      prop="website_keyword"
+      :label="configHash.website_title_brief.name"
+      prop="website_title_brief"
     >
       <el-input
-        v-model="configHash.website_keyword.value"
-        :placeholder="`请输入${configHash.website_keyword.name}`"
-      />
-    </el-form-item>
-    <el-form-item :label="configHash.website_desc.name" prop="website_desc">
-      <el-input
-        v-model="configHash.website_desc.value"
-        :placeholder="`请输入${configHash.website_desc.name}`"
-      />
-    </el-form-item>
-    <el-form-item :label="configHash.website_tags.name" prop="website_tags">
-      <el-input
-        v-model="configHash.website_tags.value"
-        :placeholder="`请输入${configHash.website_tags.name}`"
+        v-model="configHash.website_title_brief.value"
+        :placeholder="`请输入${configHash.website_title_brief.name}`"
       />
     </el-form-item>
 
     <el-form-item :label="configHash.website_logo.name" prop="website_logo">
-      <el-input
-        v-model="configHash.website_logo.value"
-        placeholder="请输入网站LOGO"
-      />
+      <UploadLogo v-model:url="configHash.website_logo.value"></UploadLogo>
     </el-form-item>
     <el-form-item
       :label="configHash.website_propaganda.name"
       prop="website_propaganda"
     >
-      <el-input
-        v-model="configHash.website_propaganda.value"
-        placeholder="请输入网站宣传片"
-      />
+      <PhotoWall v-model:file-list="websitePropagandas"></PhotoWall>
     </el-form-item>
 
     <el-divider />
 
     <!-- 网站SEO设置 -->
+    <el-form-item
+      :label="configHash.website_description.name"
+      prop="website_description"
+    >
+      <el-input
+        v-model="configHash.website_description.value"
+        type="textarea"
+        :placeholder="`请输入${configHash.website_description.name}`"
+      />
+    </el-form-item>
+    <el-form-item
+      :label="configHash.website_keywords.name"
+      prop="website_keywords"
+    >
+      <el-select
+        v-model="state.websiteKeywords"
+        multiple
+        filterable
+        allow-create
+        no-match-text
+        :reserve-keyword="false"
+        :placeholder="`请输入${configHash.website_keywords.name}`"
+      >
+        <el-option
+          v-for="item in websiteKeywordsOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
+    <el-form-item :label="configHash.website_tags.name" prop="website_tags">
+      <el-select
+        v-model="state.websiteTags"
+        multiple
+        filterable
+        allow-create
+        no-match-text
+        :reserve-keyword="false"
+        :placeholder="`请输入${configHash.website_tags.name}`"
+      >
+        <el-option
+          v-for="item in websiteTagsOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-form-item>
     <el-form-item
       :label="configHash.website_seo_title.name"
       prop="website_title"
@@ -74,6 +99,7 @@
     >
       <el-input
         v-model="configHash.website_seo_desc.value"
+        type="textarea"
         :placeholder="`请输入${configHash.website_seo_desc.name}`"
       />
     </el-form-item>
@@ -142,8 +168,54 @@ import {
 } from '@/api/data-center/config';
 import { ConfigListRsp, WebsiteConfig } from '@/typings/api/data-center/config';
 import { WebsiteSettings } from '@/constant/data-center/config';
+import UploadLogo from '@/components/Upload/UploadLogo.vue';
+import PhotoWall from '@/components/Upload/PhotoWall.vue';
 
 const configHash = ref<WebsiteConfig>({} as WebsiteConfig);
+const state = reactive({
+  websiteTags: [] as string[],
+  websiteKeywords: [] as string[],
+});
+const websiteTagsOptions = computed(() => {
+  if (!configHash.value.website_tags.value) {
+    return [];
+  }
+  const tags = configHash.value.website_tags.value.split(',');
+  state.websiteTags = [...tags];
+  return tags.map((v) => {
+    return {
+      label: v,
+      value: v,
+    };
+  });
+});
+const websiteKeywordsOptions = computed(() => {
+  if (!configHash.value.website_keywords.value) {
+    return [];
+  }
+  const keywords = configHash.value.website_keywords.value.split(',');
+  state.websiteKeywords = [...keywords];
+  return keywords.map((v) => {
+    return {
+      label: v,
+      value: v,
+    };
+  });
+});
+
+const websitePropagandas = computed({
+  get() {
+    if (!configHash.value.website_propaganda.value) {
+      return [];
+    }
+    const list = JSON.parse(configHash.value.website_propaganda.value);
+    console.log(list);
+    return list;
+  },
+  set(val) {
+    configHash.value.website_propaganda.value = JSON.stringify(val);
+  },
+});
 
 onBeforeMount(() => {
   fetchConfigChildrenByKey();
@@ -159,7 +231,6 @@ const fetchConfigChildrenByKey = async () => {
     ).data as ConfigListRsp;
     for (const item of resp.data_list) {
       configHash.value[item.key] = item;
-      console.log(item.key);
     }
   } catch (error) {
     console.log(error);
@@ -168,8 +239,25 @@ const fetchConfigChildrenByKey = async () => {
 
 // 提交
 const submitForm = async () => {
+  const data = [] as any[];
+  for (const k in configHash.value) {
+    let value = configHash.value[k].value;
+    if (k == 'website_tags') {
+      value = state.websiteTags.join(',');
+    } else if (k == 'website_keywords') {
+      value = state.websiteKeywords.join(',');
+    }
+    data.push({
+      id: configHash.value[k].id,
+      name: configHash.value[k].name,
+      key: k,
+      value: value,
+    });
+  }
+
   try {
-    await batchUpdateConfig({});
+    await batchUpdateConfig(data);
+    await fetchConfigChildrenByKey();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
