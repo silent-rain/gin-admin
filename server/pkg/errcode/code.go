@@ -94,6 +94,7 @@ const (
 const (
 	FileNotFoundError ErrorCode = iota + 11200 // 文件不存在
 	DirNotFoundError                           // 文件夹不存在
+	DirCreateError                             // 文件夹创建失败
 )
 
 // Error 返回状态码错误信息

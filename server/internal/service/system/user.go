@@ -8,8 +8,8 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/utils"
 	"gin-admin/pkg/errcode"
+	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -82,7 +82,7 @@ func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) error {
 	}
 
 	// 密码加密
-	req.Password = utils.Md5(req.Password)
+	req.Password = utils.EncryptMd5(req.Password)
 
 	// 数据转换
 	user := new(systemModel.User)

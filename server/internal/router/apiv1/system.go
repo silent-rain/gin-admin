@@ -32,6 +32,10 @@ func NewSystemApi(engine *gin.Engine) {
 	{
 		// 上传用户头像
 		upload.POST("/avatar", system.NewUploadController().Avatar)
+		// 上传图片
+		upload.POST("/image", system.NewUploadController().Image)
+		// 上传图片列表
+		upload.POST("/images", system.NewUploadController().Images)
 	}
 
 	// 用户管理

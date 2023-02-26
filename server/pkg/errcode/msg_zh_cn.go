@@ -67,4 +67,5 @@ var MsgZHCN = map[ErrorCode]error{
 	// 系统操作
 	FileNotFoundError: errors.New("文件不存在"),
 	DirNotFoundError:  errors.New("文件夹不存在"),
+	DirCreateError:    errors.New("文件夹创建失败"),
 }

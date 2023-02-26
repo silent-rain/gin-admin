@@ -2,28 +2,35 @@
 package system
 
 import (
-	"errors"
 	"fmt"
-	"io/fs"
 	"mime/multipart"
-	"os"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/utils"
 	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
+	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	// 头像文件夹名称
+	avatarDirName = "avatar"
+	// 图片文件夹名称
+	imagesDirName = "images"
+)
+
 // UploadService 上传
 type UploadService interface {
-	Avatar(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Avatar, error)
+	Avatar(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Image, error)
+	Image(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Image, error)
+	Images(ctx *gin.Context, files []*multipart.FileHeader) ([]systemVO.Image, error)
 }
 
 // 上传
@@ -35,30 +42,100 @@ func NewUploadService() *uploadService {
 	return &uploadService{}
 }
 
-// All 获取所有角色列表
-func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Avatar, error) {
-	result := systemVO.Avatar{
-		Url: "",
+// Avatar 上传用户头像
+func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Image, error) {
+	result := systemVO.Image{}
+
+	// 文件夹是否存在, 不存在则创建
+	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, avatarDirName)
+	if err := utils.DirNotExistCreate(dstPath); err != nil {
+		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
+		return result, errcode.New(errcode.DirCreateError).
+			WithMsg(fmt.Sprintf("err: %v", err))
 	}
 
+	// 上传文件到指定位置
 	ext := path.Ext(file.Filename)
 	filename := utils.Md5(file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
-	// 上传文件到指定的 dst
-	dst := conf.Instance().Server.Upload.FilePath + "/avatar/" + filename
+	dst := filepath.Join(dstPath, filename)
 
-	err := ctx.SaveUploadedFile(file, dst)
-	if errors.Is(err, fs.ErrNotExist) {
-		if err := os.MkdirAll(dst, os.ModePerm); err != nil {
-			log.New(ctx).WithCode(errcode.DirNotFoundError).Errorf("%v", err)
-			return result, errcode.New(errcode.DirNotFoundError).
-				WithMsg(fmt.Sprintf("%s not found", dst))
-		}
+	// 文件夹不存在则创建
+	if err := utils.DirNotExistCreate(dstPath); err != nil {
+		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
+		return result, errcode.New(errcode.DirCreateError).
+			WithMsg(fmt.Sprintf("err: %v", err))
 	}
-	if err != nil {
+
+	// 保存文件
+	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
 		return result, errcode.New(errcode.UploadFileSaveError)
 	}
 
+	result.Name = file.Filename
 	result.Url = strings.TrimPrefix(dst, ".")
 	return result, nil
+}
+
+// Image 上传图片
+func (h *uploadService) Image(ctx *gin.Context, file *multipart.FileHeader) (systemVO.Image, error) {
+	result := systemVO.Image{}
+
+	// 文件夹是否存在, 不存在则创建
+	timePath := time.Now().Format("2006-01-02")
+	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, imagesDirName, timePath)
+	if err := utils.DirNotExistCreate(dstPath); err != nil {
+		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
+		return result, errcode.New(errcode.DirCreateError).
+			WithMsg(fmt.Sprintf("err: %v", err))
+	}
+
+	// 上传文件到指定位置
+	ext := path.Ext(file.Filename)
+	filename := utils.Md5(timePath+file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
+	dst := filepath.Join(dstPath, filename)
+
+	// 保存文件
+	if err := ctx.SaveUploadedFile(file, dst); err != nil {
+		log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
+		return result, errcode.New(errcode.UploadFileSaveError)
+	}
+
+	result.Name = file.Filename
+	result.Url = strings.TrimPrefix(dst, ".")
+	return result, nil
+}
+
+// Images 上传图片列表
+func (h *uploadService) Images(ctx *gin.Context, files []*multipart.FileHeader) ([]systemVO.Image, error) {
+	results := make([]systemVO.Image, 0)
+
+	timePath := time.Now().Format("2006-01-02")
+	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, imagesDirName, timePath)
+	// 文件夹是否存在, 不存在则创建
+	if err := utils.DirNotExistCreate(dstPath); err != nil {
+		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
+		return nil, errcode.New(errcode.DirCreateError).
+			WithMsg(fmt.Sprintf("err: %v", err))
+	}
+
+	for _, file := range files {
+		// 上传文件到指定位置
+		ext := path.Ext(file.Filename)
+		filename := utils.Md5(timePath+file.Filename+strconv.Itoa(int(file.Size))+time.Now().Local().String()) + ext
+		dst := filepath.Join(dstPath, filename)
+
+		// 保存文件
+		if err := ctx.SaveUploadedFile(file, dst); err != nil {
+			log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
+			return nil, errcode.New(errcode.UploadFileSaveError)
+		}
+
+		results = append(results, systemVO.Image{
+			Name: filename,
+			Url:  dst,
+		})
+	}
+
+	return results, nil
 }

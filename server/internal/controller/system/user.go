@@ -10,8 +10,8 @@ import (
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	"gin-admin/internal/pkg/utils"
 	systemService "gin-admin/internal/service/system"
+	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -146,8 +146,8 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 	}
 
 	// 密码加密
-	req.OldPassword = utils.Md5(req.OldPassword)
-	req.NewPassword = utils.Md5(req.NewPassword)
+	req.OldPassword = utils.EncryptMd5(req.OldPassword)
+	req.NewPassword = utils.EncryptMd5(req.NewPassword)
 
 	if _, err := c.service.UpdatePassword(ctx, req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
@@ -165,7 +165,7 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 	}
 
 	// 默认密码加密
-	password := utils.Md5(constant.ServerUserDefaultPwd)
+	password := utils.EncryptMd5(constant.ServerUserDefaultPwd)
 
 	if _, err := c.service.ResetPassword(ctx, req.ID, password); err != nil {
 		response.New(ctx).WithCodeError(err).Json()

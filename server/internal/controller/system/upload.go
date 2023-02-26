@@ -22,7 +22,7 @@ func NewUploadController() *uploadController {
 	}
 }
 
-// All 获取所有角色列表
+// Avatar 上传用户头像
 func (c *uploadController) Avatar(ctx *gin.Context) {
 	// 单文件
 	file, err := ctx.FormFile("file")
@@ -33,6 +33,43 @@ func (c *uploadController) Avatar(ctx *gin.Context) {
 	}
 
 	result, err := c.service.Avatar(ctx, file)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithData(result).Json()
+}
+
+// Image 上传图片
+func (c *uploadController) Image(ctx *gin.Context) {
+	// 单文件
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		log.New(ctx).WithCode(errcode.UploadFileParserError).Errorf("%v", err)
+		response.New(ctx).WithCode(errcode.UploadFileParserError).Json()
+		return
+	}
+
+	result, err := c.service.Image(ctx, file)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithData(result).Json()
+}
+
+// Images 上传图片列表
+func (c *uploadController) Images(ctx *gin.Context) {
+	// 多文件
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		log.New(ctx).WithCode(errcode.UploadFileParserError).Errorf("%v", err)
+		response.New(ctx).WithCode(errcode.UploadFileParserError).Json()
+		return
+	}
+	files := form.File["file"]
+
+	result, err := c.service.Images(ctx, files)
 	if err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
