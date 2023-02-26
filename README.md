@@ -68,7 +68,7 @@
   - [x] 网站配置管理
   - [x] 请求日志管理
   - [x] 系统日志管理
-  - [ ] 前端日志管理
+  - [x] WEB日志管理
   - [ ] 登录管理
 - [ ] 数据中心
   - [x] 全局配置管理
@@ -92,15 +92,13 @@ https://blog.csdn.net/tiven_/article/details/123407630
 - 前端全局标签异常，待修复
 
 1. 支持 panic 异常时邮件通知
-缓存
+内存缓存
 redis
 订阅模式
-1. 支持 trace 项目内部链路追踪 
 2. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
 3. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 4. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
 5. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
-/app/Ruler/Task/ ※ app全局定时任务，默认20s精度
 
 
 ## 项目编译&运行
@@ -191,7 +189,11 @@ air
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
 - [参考项目](http://manage.pro.layui.javaweb.vip/index)
 - [为 Go 应用添加 Prometheus 监控指标](https://blog.csdn.net/weixin_40046357/article/details/120620433)
+
+### SEO 优化
 - [vue项目seo优化](https://www.jianshu.com/p/e47081dce0ad)
+- [Vue实现seo优化+动态设置title](https://blog.csdn.net/karl982964/article/details/124112016)
+- [vue SEO的解决方案](https://blog.csdn.net/weixin_45731256/article/details/122822144)
 
 ### go-api 设计参考
 https://github.com/flipped-aurora/gin-vue-admin/tree/main/server

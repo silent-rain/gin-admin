@@ -67,6 +67,7 @@
 
     <!-- 添加/编辑表单 -->
     <RoleForm
+      v-if="state.roleForm.visible"
       v-model:data="state.roleForm.data"
       v-model:visible="state.roleForm.visible"
       :type="state.roleForm.type"

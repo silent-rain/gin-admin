@@ -1,25 +1,46 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div v-if="hasButtonPermission('sys:systemlog:list')" class="filter">
-      <!-- <el-input
-        v-model="listQuery.user_id"
-        class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
-        placeholder="请输入用户ID"
-        @keyup.enter.native="handleFilter"
-      /> -->
+    <div v-if="hasButtonPermission('sys:weblog:list')" class="filter">
       <el-input
-        v-model="listQuery.trace_id"
+        v-model="listQuery.nickname"
         class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
-        placeholder="请输入 Trace Id"
+        :disabled="isDisabledButton('sys:weblog:list')"
+        placeholder="请输入用户昵称"
         @keyup.enter.native="handleFilter"
       />
       <el-select
+        v-model="listQuery.os_type"
+        class="filter-name"
+        :disabled="isDisabledButton('sys:weblog:list')"
+        placeholder="请选择终端类型"
+        @change="handleFilter"
+      >
+        <el-option
+          v-for="(item, _) in osTypeOptions"
+          :key="item.value"
+          :label="item.lebal"
+          :value="item.value"
+        />
+      </el-select>
+      <el-select
+        v-model="listQuery.error_type"
+        class="filter-name"
+        :disabled="isDisabledButton('sys:weblog:list')"
+        placeholder="请选择错误类型"
+        @change="handleFilter"
+      >
+        <el-option
+          v-for="(item, _) in errorTypeOptions"
+          :key="item.value"
+          :label="item.lebal"
+          :value="item.value"
+        />
+      </el-select>
+      <el-select
         v-model="listQuery.level"
         class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
+        :disabled="isDisabledButton('sys:weblog:list')"
         placeholder="请选择日志级别"
         @change="handleFilter"
       >
@@ -30,24 +51,17 @@
           :value="item.level"
         />
       </el-select>
-      <!-- <el-input
-        v-model="listQuery.error_code"
-        class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
-        placeholder="请输入业务错误码"
-        @keyup.enter.native="handleFilter"
-      /> -->
       <el-input
-        v-model="listQuery.error_msg"
+        v-model="listQuery.url"
         class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
-        placeholder="请输入业务错误信息"
+        :disabled="isDisabledButton('sys:weblog:list')"
+        placeholder="请输入页面链接"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.msg"
         class="filter-name"
-        :disabled="isDisabledButton('sys:systemlog:list')"
+        :disabled="isDisabledButton('sys:weblog:list')"
         placeholder="请输入日志消息"
         @keyup.enter.native="handleFilter"
       />
@@ -55,7 +69,7 @@
         <el-button
           type="primary"
           :icon="Search"
-          :disabled="isDisabledButton('sys:systemlog:list')"
+          :disabled="isDisabledButton('sys:weblog:list')"
           @click="handleFilter"
         >
           查询
@@ -73,7 +87,7 @@
           v-model:checkedDict="checkedDict"
           :screen-full-element="'el-table-role'"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchSystemLogList"
+          @refreshEvent="fetchWebLogList"
         />
       </div>
     </div>
@@ -104,32 +118,53 @@
         show-overflow-tooltip
       />
       <el-table-column
-        v-if="checkedDict.span_id"
-        prop="span_id"
-        label="Span ID"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        v-if="checkedDict.level"
-        prop="level"
-        label="日志级别"
+        v-if="checkedDict.os_type"
+        prop="os_type"
+        label="终端类型"
         show-overflow-tooltip
         width="100"
         align="center"
       >
         <template #default="scope">
           <el-tag
-            v-for="(item, _) in levelOptions.filter(
-              (v) => v.level === scope.row.level,
+            v-for="(item, _) in osTypeOptions.filter(
+              (v) => v.value === scope.row.os_type,
             )"
             size="small"
-            :key="item.level"
+            :key="item.value"
             :type="item.type"
           >
-            {{ scope.row.level }}
+            {{ item.lebal }}
           </el-tag>
         </template>
       </el-table-column>
+      <el-table-column
+        v-if="checkedDict.error_type"
+        prop="error_type"
+        label="错误类型"
+        show-overflow-tooltip
+        width="100"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tag
+            v-for="(item, _) in errorTypeOptions.filter(
+              (v) => v.value === scope.row.error_type,
+            )"
+            size="small"
+            :key="item.value"
+            :type="item.type"
+          >
+            {{ item.lebal }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="checkedDict.level"
+        prop="level"
+        label="日志级别"
+        show-overflow-tooltip
+      />
       <el-table-column
         v-if="checkedDict.caller_line"
         prop="caller_line"
@@ -137,15 +172,9 @@
         show-overflow-tooltip
       />
       <el-table-column
-        v-if="checkedDict.error_code"
-        prop="error_code"
-        label="业务码"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        v-if="checkedDict.error_msg"
-        prop="error_msg"
-        label="业务码信息"
+        v-if="checkedDict.url"
+        prop="url"
+        label="错误页面"
         show-overflow-tooltip
       />
       <el-table-column
@@ -175,24 +204,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        v-if="checkedDict.extend"
-        prop="extend"
-        label="扩展信息"
-        show-overflow-tooltip
-      >
-        <template #default="scope">
-          <el-button
-            v-if="scope.row.extend !== '{}'"
-            type="primary"
-            text
-            @click="handleShowExtend(scope.row.extend)"
-          >
-            查看
-          </el-button>
-          <span v-else></span>
-        </template>
-      </el-table-column>
-      <el-table-column
         v-if="checkedDict.note"
         prop="note"
         label="备注"
@@ -209,17 +220,8 @@
       v-model:currentPage="listQuery.page"
       v-model:pageSize="listQuery.page_size"
       :total="tableDataTotal"
-      @pagination="fetchSystemLogList"
+      @pagination="fetchWebLogList"
     />
-
-    <!-- 扩展信息 -->
-    <LogDrawer
-      v-if="state.extend.visible"
-      v-model="state.extend.visible"
-      :data="state.extend.data"
-      :key="state.extend.key"
-      language="json"
-    ></LogDrawer>
 
     <!-- 堆栈信息 -->
     <LogDrawer
@@ -239,7 +241,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia/dist/pinia';
 import { Search, Delete } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
-import { getSystemLogList } from '@/api/system/log';
+import { getWebList } from '@/api/system/log';
 import { SystemLog, SystemLogListRsp } from '~/api/permission/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
@@ -254,20 +256,15 @@ const router = useRouter();
 const listQuery = ref<any>({
   page: 1,
   page_size: 10,
-  user_id: null,
-  trace_id: null,
+  nickname: null,
+  os_type: null,
+  error_type: null,
   level: null,
-  error_code: null,
-  error_msg: null,
+  url: null,
   msg: null,
 });
 
 const state = reactive({
-  extend: {
-    visible: false,
-    data: '',
-    key: new Date().getMilliseconds(),
-  },
   stack: {
     visible: false,
     data: '',
@@ -303,6 +300,42 @@ const levelOptions = [
     type: 'danger',
   },
 ];
+// 终端类型: 0: 未知,1: 安卓,2 :ios,3 :web
+const osTypeOptions = [
+  {
+    lebal: '未知',
+    value: 0,
+    type: 'info',
+  },
+  {
+    lebal: '安卓',
+    value: 1,
+    type: '',
+  },
+  {
+    lebal: 'IOS',
+    value: 2,
+    type: '',
+  },
+  {
+    lebal: 'WEB',
+    value: 3,
+    type: '',
+  },
+];
+// 错误类型: 1:接口报错,2:代码报错
+const errorTypeOptions = [
+  {
+    lebal: '代码报错',
+    value: 2,
+    type: 'success',
+  },
+  {
+    lebal: '接口报错',
+    value: 1,
+    type: '',
+  },
+];
 
 // 过滤事件
 const handleFilter = () => {
@@ -310,7 +343,7 @@ const handleFilter = () => {
     path: route.path,
     query: listQuery.value,
   });
-  fetchSystemLogList();
+  fetchWebLogList();
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
@@ -321,17 +354,12 @@ const checkAllList = [
   { label: '日志ID', value: 'id', disabled: false, enabled: false },
   { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
   { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
-  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: false, enabled: false },
+  { label: '终端类型', value: 'os_type', disabled: true, enabled: true },
+  { label: '错误类型', value: 'error_type', disabled: true, enabled: true },
   { label: '日志级别', value: 'level', disabled: true, enabled: true },
   { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
-  { label: '业务码', value: 'error_code', disabled: true, enabled: true },
-  {
-    label: '业务码信息',
-    value: 'error_msg',
-    disabled: true,
-    enabled: true,
-  },
+  { label: '错误页面', value: 'url', disabled: true, enabled: true },
   { label: '日志消息', value: 'msg', disabled: false, enabled: true },
   {
     label: '堆栈信息',
@@ -339,7 +367,6 @@ const checkAllList = [
     disabled: false,
     enabled: true,
   },
-  { label: '扩展信息', value: 'extend', disabled: false, enabled: true },
   { label: '备注', value: 'note', disabled: false, enabled: false },
   { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
 ];
@@ -350,7 +377,7 @@ const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
   defaultQuery();
-  fetchSystemLogList();
+  fetchWebLogList();
 });
 
 // 默认请求参数
@@ -358,25 +385,15 @@ const defaultQuery = () => {
   listQuery.value.trace_id = route.query.trace_id;
 };
 
-// 获取网络请求日志列表
-const fetchSystemLogList = async () => {
+// 获取 WEB 日志列表
+const fetchWebLogList = async () => {
   try {
-    const resp = (await getSystemLogList(listQuery.value))
-      .data as SystemLogListRsp;
+    const resp = (await getWebList(listQuery.value)).data as SystemLogListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
     console.log(error);
   }
-};
-
-// 显示扩展信息
-const handleShowExtend = (v: string) => {
-  state.extend.key = new Date().getMilliseconds();
-  if (v) {
-    state.extend.data = JSON.stringify(JSON.parse(v), null, 2);
-  }
-  state.extend.visible = true;
 };
 
 // 显示堆栈信息

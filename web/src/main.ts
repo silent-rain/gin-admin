@@ -37,6 +37,9 @@ import 'highlight.js/styles/atom-one-dark.css';
 import 'highlight.js/lib/common';
 import hljsVuePlugin from '@highlightjs/vue-plugin';
 
+// error 日志上报
+import * as errorLog from './utils/errorHandler';
+
 const app = createApp(App);
 
 // router
@@ -58,5 +61,10 @@ app.use(VXETable);
 
 // highlight;
 app.use(hljsVuePlugin);
+
+// vue error 错误日志监听上报
+app.config.warnHandler = errorLog.warnHandler;
+app.config.errorHandler = errorLog.errorHandler;
+window.onerror = errorLog.onerrorHandler;
 
 app.mount('#app');

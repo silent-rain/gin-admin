@@ -153,4 +153,13 @@ func NewSystemApi(engine *gin.Engine) {
 		// 获取系统日志列表
 		systemLog.GET("/list", system.NewSystemLogController().List)
 	}
+
+	// WEB 日志管理
+	webLog := v1.Group("/webLog")
+	{
+		// 获取 WEB 日志列表
+		webLog.GET("/list", system.NewWebLogController().List)
+		// 添加 WEB 日志
+		webLog.POST("/add", system.NewWebLogController().Add)
+	}
 }

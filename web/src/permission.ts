@@ -4,6 +4,7 @@ import { progressClose, progressStart } from '@/hooks/use-basic';
 import { langTitle } from '@/hooks/use-common';
 import { buttonPermissions, filterAsyncRouter } from './hooks/use-permission';
 import { useUserStore } from '@/store/user';
+import { useBasicStore } from '@/store/basic';
 
 // no redirect whitelist
 const whiteList = ['/login', '/register', '/404', '/401'];
@@ -17,6 +18,10 @@ router.beforeEach(async (to, from) => {
   document.title = langTitle(to.meta?.title);
   const userStore = useUserStore();
   const permissionStore = usePermissionStore();
+  const basicStore = useBasicStore();
+
+  // 设置终端类型
+  basicStore.setOsType();
 
   // 判断 Token, 不存在则跳转至登录
   if (!userStore.token) {

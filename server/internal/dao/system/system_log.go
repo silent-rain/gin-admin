@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// HttpLog 系统日志接口
+// SystemLog 系统日志接口
 type SystemLog interface {
 	List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemLog, int64, error)
 	Add(bean systemModel.SystemLog) (uint, error)
@@ -21,7 +21,7 @@ type systemLog struct {
 	db mysql.DBRepo
 }
 
-// 创建系统日志对象
+// NewSystemLogDao 创建系统日志对象
 func NewSystemLogDao() *systemLog {
 	return &systemLog{
 		db: mysql.Instance(),

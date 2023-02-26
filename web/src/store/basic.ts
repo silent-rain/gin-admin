@@ -13,6 +13,8 @@ export const useBasicStore = defineStore('basic', {
       // axios req collection
       axiosPromiseArr: [] as Array<ObjKeys>,
       settings: defaultSettings,
+      // 终端类型: 0:未知,1:安卓,2:ios,3:web
+      osType: 0,
     };
   },
   persist: {
@@ -30,6 +32,22 @@ export const useBasicStore = defineStore('basic', {
     setToggleSideBar() {
       this.$patch((state) => {
         state.sidebar.opened = !state.sidebar.opened;
+      });
+    },
+
+    // 设置终端类型
+    setOsType() {
+      const ua = window.navigator.userAgent;
+      let osType = 0;
+      if (/(Android)/.test(ua)) {
+        osType = 1;
+      } else if (/(iPhone|iPad)/.test(ua)) {
+        osType = 2;
+      } else {
+        osType = 3;
+      }
+      this.$patch((state) => {
+        state.osType = osType;
       });
     },
 

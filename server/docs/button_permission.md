@@ -48,6 +48,8 @@
 - [x] 查询列表 sys:httplog:list
 ## 系统日志管理
 - [x] 查询列表 sys:systemlog:list
+## WEB日志管理
+- [x] 查询列表 sys:weblog:list
 
 
 个人资料 sys:profile:list
