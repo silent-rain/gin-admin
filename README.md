@@ -60,7 +60,7 @@
   - [x] 角色管理
   - [ ] 菜单管理
     - [ ]    el_svg_icon: string;
-    - [ ]    icon: string;
+    - [ ]    icon: string; 使用 iocn 表管理
 - [x] 前端权限
   - [x] 动态路由
   - [x] 按钮权限权限
@@ -75,15 +75,6 @@
   - [ ] Icon 图标管理
   - [ ] 字典管理
 - [ ] 系统监控
-
-
-https://blog.csdn.net/weixin_45731256/article/details/122822144
-https://wenku.baidu.com/view/234312467b3e0912a21614791711cc7931b778dd.html?_wkts_=1677230713539&bdQuery=vue%E6%94%B6+%E6%97%A5%E5%BF%97%E4%B8%8A%E6%8A%A5
-https://blog.csdn.net/karl982964/article/details/124112016
-
-https://blog.csdn.net/yi742891270/article/details/127391178
-
-https://blog.csdn.net/tiven_/article/details/123407630
 
 
 ## 待处理
@@ -196,19 +187,20 @@ air
 - [vue SEO的解决方案](https://blog.csdn.net/weixin_45731256/article/details/122822144)
 
 ### go-api 设计参考
-https://github.com/flipped-aurora/gin-vue-admin/tree/main/server
-https://github.com/go-admin-team/go-admin
-https://github.com/GoAdminGroup/go-admin
-https://github.com/eddycjy/go-gin-example
-https://github.com/xinliangnote/go-gin-api
-https://github.com/bg-vc/vc-gin-api
-https://github.com/fyonecon/ginlaravel
-https://github.com/mritd/ginmvc
+- https://github.com/flipped-aurora/gin-vue-admin/tree/main/server
+- https://github.com/go-admin-team/go-admin
+- https://github.com/GoAdminGroup/go-admin
+- https://github.com/eddycjy/go-gin-example
+- https://github.com/xinliangnote/go-gin-api
+- https://github.com/bg-vc/vc-gin-api
+- https://github.com/fyonecon/ginlaravel
+- https://github.com/mritd/ginmvc
 ### 日志
-https://zhuanlan.zhihu.com/p/430224518
-https://zhuanlan.zhihu.com/p/553995164
+- https://zhuanlan.zhihu.com/p/430224518
+- https://zhuanlan.zhihu.com/p/553995164
 
 ### 定时任务
-https://www.cnblogs.com/hsyw/p/16006799.html
-https://blog.csdn.net/JineD/article/details/121214032
-https://zhuanlan.zhihu.com/p/402210167
+- https://www.cnblogs.com/hsyw/p/16006799.html
+- https://blog.csdn.net/JineD/article/details/121214032
+- https://zhuanlan.zhihu.com/p/402210167
+
