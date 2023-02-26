@@ -177,7 +177,7 @@ func (d *config) Children(parentId uint) ([]systemModel.Config, error) {
 func (d *config) ChildrenByKey(key string) ([]systemModel.Config, error) {
 	beans := make([]systemModel.Config, 0)
 	subQuery := d.db.GetDbR().Model(&systemModel.Config{}).Where("`key` = ?", key).Select("id")
-	result := d.db.GetDbR().Debug().Model(&systemModel.Config{}).Where("parent_id = (?)", subQuery).
+	result := d.db.GetDbR().Model(&systemModel.Config{}).Where("parent_id = (?)", subQuery).
 		Order("sort ASC").Order("id ASC").
 		Find(&beans)
 	if result.Error != nil {
