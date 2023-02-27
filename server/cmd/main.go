@@ -37,7 +37,7 @@ func main() {
 
 	engine := gin.Default()
 
-	// 针对路由组的中间件
+	// 全局路由的中间件
 	{
 		// 跨域处理
 		engine.Use(middleware.Cros())

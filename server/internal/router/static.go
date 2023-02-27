@@ -22,8 +22,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 设置静态资源路由
-func setStaticRouter(engine *gin.Engine) {
+// 初始化静态资源路由
+func InitStaticRouter(engine *gin.Engine) {
 	// 加载静态资源
 	engine.StaticFS("/static", http.FS(utils.NewResource()))
 	// Api Docs 静态内嵌资源
