@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	systemDAO "gin-admin/internal/dao/system"
-	systemModel "gin-admin/internal/model/system"
+	logDAO "gin-admin/internal/dao/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
@@ -37,7 +37,7 @@ func HttpLogger() gin.HandlerFunc {
 		blw := &ResponseWriterWrapper{Body: bytes.NewBufferString(""), ResponseWriter: ctx.Writer}
 		ctx.Writer = blw
 
-		htppLog := systemModel.HttpLog{
+		htppLog := logModel.HttpLog{
 			UserId:     core.GetContext(ctx).UserId,
 			Nickname:   core.GetContext(ctx).Nickname,
 			TraceId:    core.GetContext(ctx).TraceId,
@@ -57,8 +57,8 @@ func HttpLogger() gin.HandlerFunc {
 			htppLog.Body = ""
 		}
 
-		go func(htppLog systemModel.HttpLog) {
-			systemDAO.NewHttpLogDao().Add(htppLog)
+		go func(htppLog logModel.HttpLog) {
+			logDAO.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 
 		ctx.Next()
@@ -72,8 +72,8 @@ func HttpLogger() gin.HandlerFunc {
 		if err := json.Unmarshal(blw.Body.Bytes(), &response.ResponseAPI{}); err == nil {
 			htppLog.Body = blw.Body.String()
 		}
-		go func(htppLog systemModel.HttpLog) {
-			systemDAO.NewHttpLogDao().Add(htppLog)
+		go func(htppLog logModel.HttpLog) {
+			logDAO.NewHttpLogDao().Add(htppLog)
 		}(htppLog)
 	}
 }

@@ -1,6 +1,6 @@
 /*WEB 日志 DTO
  */
-package systemDTO
+package logDTO
 
 import "gin-admin/internal/dto"
 

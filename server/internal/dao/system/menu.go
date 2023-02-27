@@ -136,7 +136,7 @@ func (d *menu) ListByRoleIds(roleIds []uint) ([]systemModel.Menu, error) {
 // ChildrenMenu 通过父 ID 获取子菜单列表
 func (d *menu) ChildrenMenu(parentId uint) ([]systemModel.Menu, error) {
 	bean := make([]systemModel.Menu, 0)
-	result := d.db.GetDbR().Where("parent_id=?", parentId).
+	result := d.db.GetDbR().Where("status=1").Where("parent_id=?", parentId).
 		Order("sort ASC").Order("id ASC").
 		Find(&bean)
 	if result.Error != nil {

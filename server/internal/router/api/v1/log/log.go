@@ -2,7 +2,7 @@
 package log
 
 import (
-	"gin-admin/internal/controller/system"
+	"gin-admin/internal/controller/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,23 +13,23 @@ func InitLogRouter(group *gin.RouterGroup) {
 	httpLog := group.Group("/httpLog")
 	{
 		// 获取网络请求日志列表
-		httpLog.GET("/list", system.NewHttpLogController().List)
-		httpLog.GET("/body", system.NewHttpLogController().GetBody)
+		httpLog.GET("/list", log.NewHttpLogController().List)
+		httpLog.GET("/body", log.NewHttpLogController().GetBody)
 	}
 
 	// 系统日志管理
 	systemLog := group.Group("/systemLog")
 	{
 		// 获取系统日志列表
-		systemLog.GET("/list", system.NewSystemLogController().List)
+		systemLog.GET("/list", log.NewSystemLogController().List)
 	}
 
 	// WEB 日志管理
 	webLog := group.Group("/webLog")
 	{
 		// 获取 WEB 日志列表
-		webLog.GET("/list", system.NewWebLogController().List)
+		webLog.GET("/list", log.NewWebLogController().List)
 		// 添加 WEB 日志
-		webLog.POST("/add", system.NewWebLogController().Add)
+		webLog.POST("/add", log.NewWebLogController().Add)
 	}
 }

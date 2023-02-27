@@ -85,7 +85,7 @@ func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64
 // Info 获取配置信息
 func (d *config) InfoByKey(key string) (systemModel.Config, bool, error) {
 	bean := systemModel.Config{}
-	result := d.db.GetDbR().Where("`key` = ?", key).First(&bean)
+	result := d.db.GetDbR().Where("status=1").Where("`key` = ?", key).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return bean, false, nil
 	}
@@ -164,7 +164,7 @@ func (d *config) Status(id uint, status uint) (int64, error) {
 // Children 通过父 ID 获取子配置列表
 func (d *config) Children(parentId uint) ([]systemModel.Config, error) {
 	beans := make([]systemModel.Config, 0)
-	result := d.db.GetDbR().Where("parent_id=?", parentId).
+	result := d.db.GetDbR().Where("status=1").Where("parent_id=?", parentId).
 		Order("sort ASC").Order("id ASC").
 		Find(&beans)
 	if result.Error != nil {
@@ -176,8 +176,8 @@ func (d *config) Children(parentId uint) ([]systemModel.Config, error) {
 // ChildrenByKey 通过父 key 获取子配置列表
 func (d *config) ChildrenByKey(key string) ([]systemModel.Config, error) {
 	beans := make([]systemModel.Config, 0)
-	subQuery := d.db.GetDbR().Model(&systemModel.Config{}).Where("`key` = ?", key).Select("id")
-	result := d.db.GetDbR().Model(&systemModel.Config{}).Where("parent_id = (?)", subQuery).
+	subQuery := d.db.GetDbR().Model(&systemModel.Config{}).Where("status=1").Where("`key` = ?", key).Select("id")
+	result := d.db.GetDbR().Model(&systemModel.Config{}).Where("status=1").Where("parent_id = (?)", subQuery).
 		Order("sort ASC").Order("id ASC").
 		Find(&beans)
 	if result.Error != nil {

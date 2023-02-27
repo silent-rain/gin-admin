@@ -1,11 +1,11 @@
 /*网络请求日志
  */
-package system
+package log
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDAO "gin-admin/internal/dao/log"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/log"
 	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
@@ -15,24 +15,24 @@ import (
 
 // HttpLogService 网络请求日志接口
 type HttpLogService interface {
-	List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error)
+	List(ctx *gin.Context, req logDTO.QueryHttpLogReq) ([]logModel.HttpLog, int64, error)
 	GetBody(ctx *gin.Context, id uint) (systemVO.QueryHttpLogBody, error)
 }
 
 // 网络请求日志
 type httpLogService struct {
-	dao systemDAO.HttpLog
+	dao logDAO.HttpLog
 }
 
 // NewHttpLogService 创建网络请求日志对象
 func NewHttpLogService() *httpLogService {
 	return &httpLogService{
-		dao: systemDAO.NewHttpLogDao(),
+		dao: logDAO.NewHttpLogDao(),
 	}
 }
 
 // List 获取网络请求日志列表
-func (s *httpLogService) List(ctx *gin.Context, req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error) {
+func (s *httpLogService) List(ctx *gin.Context, req logDTO.QueryHttpLogReq) ([]logModel.HttpLog, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)

@@ -1,6 +1,6 @@
 /*网络请求日志 DTO
  */
-package systemDTO
+package logDTO
 
 import "gin-admin/internal/dto"
 

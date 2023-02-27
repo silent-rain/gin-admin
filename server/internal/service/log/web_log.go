@@ -1,11 +1,11 @@
 /*WEB 日志
  */
-package system
+package log
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDAO "gin-admin/internal/dao/log"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/pkg/errcode"
 
@@ -14,24 +14,24 @@ import (
 
 // WebLogService WEB 日志接口
 type WebLogService interface {
-	List(ctx *gin.Context, req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64, error)
-	Add(ctx *gin.Context, bean systemModel.WebLog) (uint, error)
+	List(ctx *gin.Context, req logDTO.QueryWebLogReq) ([]logModel.WebLog, int64, error)
+	Add(ctx *gin.Context, bean logModel.WebLog) (uint, error)
 }
 
 // WEB 日志
 type webLogService struct {
-	dao systemDAO.WebLog
+	dao logDAO.WebLog
 }
 
 // NewWebLogService 创建 WEB 日志对象
 func NewWebLogService() *webLogService {
 	return &webLogService{
-		dao: systemDAO.NewWebLogDao(),
+		dao: logDAO.NewWebLogDao(),
 	}
 }
 
 // List 获取 WEB 日志列表
-func (s *webLogService) List(ctx *gin.Context, req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64, error) {
+func (s *webLogService) List(ctx *gin.Context, req logDTO.QueryWebLogReq) ([]logModel.WebLog, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -42,7 +42,7 @@ func (s *webLogService) List(ctx *gin.Context, req systemDTO.QueryWebLogReq) ([]
 }
 
 // Add 添加 WEB 日志
-func (h *webLogService) Add(ctx *gin.Context, bean systemModel.WebLog) (uint, error) {
+func (h *webLogService) Add(ctx *gin.Context, bean logModel.WebLog) (uint, error) {
 	id, err := h.dao.Add(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)

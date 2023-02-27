@@ -1,31 +1,31 @@
 /*系统日志
  */
-package system
+package log
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
+	logDTO "gin-admin/internal/dto/log"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	logService "gin-admin/internal/service/log"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 系统日志
 type systemLogController struct {
-	service systemService.SystemLogService
+	service logService.SystemLogService
 }
 
 // NewSystemLogController 创建系统日志对象
 func NewSystemLogController() *systemLogController {
 	return &systemLogController{
-		service: systemService.NewSystemLogService(),
+		service: logService.NewSystemLogService(),
 	}
 }
 
 // List 获取系统日志列表
 func (c *systemLogController) List(ctx *gin.Context) {
-	req := systemDTO.QuerySystemLogReq{}
+	req := logDTO.QuerySystemLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

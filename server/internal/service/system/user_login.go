@@ -38,9 +38,7 @@ func NewUserLoginService() *userLoginService {
 // Login 登录
 func (h *userLoginService) Login(ctx *gin.Context, req systemDTO.UserLoginReq) (systemVO.UserLogin, error) {
 	// 返回 Token
-	result := systemVO.UserLogin{
-		Token: "",
-	}
+	result := systemVO.UserLogin{}
 
 	if err := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); err != nil {
 		return result, err

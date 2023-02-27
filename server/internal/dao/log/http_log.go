@@ -4,8 +4,8 @@ package systemDAO
 
 import (
 	"errors"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -13,9 +13,9 @@ import (
 
 // HttpLog 网络请求日志接口
 type HttpLog interface {
-	List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error)
-	Add(bean systemModel.HttpLog) (uint, error)
-	GetBody(id uint) (systemModel.HttpLog, bool, error)
+	List(req logDTO.QueryHttpLogReq) ([]logModel.HttpLog, int64, error)
+	Add(bean logModel.HttpLog) (uint, error)
+	GetBody(id uint) (logModel.HttpLog, bool, error)
 }
 
 // 网络请求日志结构
@@ -31,7 +31,7 @@ func NewHttpLogDao() *httpLog {
 }
 
 // List 查询网络请求日志列表
-func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, int64, error) {
+func (d *httpLog) List(req logDTO.QueryHttpLogReq) ([]logModel.HttpLog, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db.GetDbR().Omit("body")
 		if req.UserId != 0 {
@@ -58,7 +58,7 @@ func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, in
 		return stats
 	}
 
-	beans := make([]systemModel.HttpLog, 0)
+	beans := make([]logModel.HttpLog, 0)
 	result := stats().Offset(req.Offset()).Limit(req.PageSize).
 		Order("created_at DESC").
 		Find(&beans)
@@ -66,12 +66,12 @@ func (d *httpLog) List(req systemDTO.QueryHttpLogReq) ([]systemModel.HttpLog, in
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	stats().Model(&systemModel.HttpLog{}).Count(&total)
+	stats().Model(&logModel.HttpLog{}).Count(&total)
 	return beans, total, nil
 }
 
 // Add 添加网络请求日志
-func (d *httpLog) Add(bean systemModel.HttpLog) (uint, error) {
+func (d *httpLog) Add(bean logModel.HttpLog) (uint, error) {
 	result := d.db.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -80,8 +80,8 @@ func (d *httpLog) Add(bean systemModel.HttpLog) (uint, error) {
 }
 
 // GetBody 获取 body 信息
-func (d *httpLog) GetBody(id uint) (systemModel.HttpLog, bool, error) {
-	bean := systemModel.HttpLog{
+func (d *httpLog) GetBody(id uint) (logModel.HttpLog, bool, error) {
+	bean := logModel.HttpLog{
 		ID: id,
 	}
 	result := d.db.GetDbR().First(&bean)

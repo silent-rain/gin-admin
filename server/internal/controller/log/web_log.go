@@ -1,33 +1,33 @@
 /*WEB 日志
  */
-package system
+package log
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	logService "gin-admin/internal/service/log"
 
 	"github.com/gin-gonic/gin"
 )
 
 // WEB 日志
 type webLogController struct {
-	service systemService.WebLogService
+	service logService.WebLogService
 }
 
 // NewWebLogController 创建 WEB 日志对象
 func NewWebLogController() *webLogController {
 	return &webLogController{
-		service: systemService.NewWebLogService(),
+		service: logService.NewWebLogService(),
 	}
 }
 
 // List 获取 WEB 日志列表
 func (c *webLogController) List(ctx *gin.Context) {
-	req := systemDTO.QueryWebLogReq{}
+	req := logDTO.QueryWebLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -43,12 +43,12 @@ func (c *webLogController) List(ctx *gin.Context) {
 
 // Add 添加 WEB 日志
 func (c *webLogController) Add(ctx *gin.Context) {
-	req := systemDTO.AddWebLogReq{}
+	req := logDTO.AddWebLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	bean := systemModel.WebLog{}
+	bean := logModel.WebLog{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

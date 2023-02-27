@@ -3,8 +3,8 @@
 package systemDAO
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -12,8 +12,8 @@ import (
 
 // SystemLog 系统日志接口
 type SystemLog interface {
-	List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemLog, int64, error)
-	Add(bean systemModel.SystemLog) (uint, error)
+	List(req logDTO.QuerySystemLogReq) ([]logModel.SystemLog, int64, error)
+	Add(bean logModel.SystemLog) (uint, error)
 }
 
 // 系统日志
@@ -29,7 +29,7 @@ func NewSystemLogDao() *systemLog {
 }
 
 // List 查询系统日志列表
-func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemLog, int64, error) {
+func (d *systemLog) List(req logDTO.QuerySystemLogReq) ([]logModel.SystemLog, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db.GetDbR()
 		if req.UserId != 0 {
@@ -53,7 +53,7 @@ func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemL
 		return stats
 	}
 
-	beans := make([]systemModel.SystemLog, 0)
+	beans := make([]logModel.SystemLog, 0)
 	result := stats().Offset(req.Offset()).Limit(req.PageSize).
 		Order("created_at DESC").
 		Find(&beans)
@@ -61,12 +61,12 @@ func (d *systemLog) List(req systemDTO.QuerySystemLogReq) ([]systemModel.SystemL
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	stats().Model(&systemModel.SystemLog{}).Count(&total)
+	stats().Model(&logModel.SystemLog{}).Count(&total)
 	return beans, total, nil
 }
 
 // Add 添加系统日志
-func (d *systemLog) Add(bean systemModel.SystemLog) (uint, error) {
+func (d *systemLog) Add(bean logModel.SystemLog) (uint, error) {
 	result := d.db.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error

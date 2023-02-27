@@ -8,8 +8,8 @@ import (
 	"os"
 	"runtime/debug"
 
-	systemDAO "gin-admin/internal/dao/system"
-	systemModel "gin-admin/internal/model/system"
+	logDAO "gin-admin/internal/dao/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/pkg/errcode"
@@ -146,12 +146,12 @@ func newDbLoggerAsyncer() *dbLoggerAsyncer {
 
 // Write 定义Write方法以实现Sink接口
 func (d dbLoggerAsyncer) Write(p []byte) (int, error) {
-	sysLog := systemModel.SystemLog{}
+	sysLog := logModel.SystemLog{}
 	if err := json.Unmarshal(p, &sysLog); err != nil {
 		return len(p), err
 	}
 	go func() {
-		systemDAO.NewSystemLogDao().Add(sysLog)
+		logDAO.NewSystemLogDao().Add(sysLog)
 	}()
 	// 返回写入日志的长度,以及错误
 	return len(p), nil

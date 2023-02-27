@@ -3,8 +3,8 @@
 package systemDAO
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	logDTO "gin-admin/internal/dto/log"
+	logModel "gin-admin/internal/model/log"
 	"gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -12,8 +12,8 @@ import (
 
 // WebLog 系统日志接口
 type WebLog interface {
-	List(req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64, error)
-	Add(bean systemModel.WebLog) (uint, error)
+	List(req logDTO.QueryWebLogReq) ([]logModel.WebLog, int64, error)
+	Add(bean logModel.WebLog) (uint, error)
 }
 
 // WEB 日志
@@ -29,7 +29,7 @@ func NewWebLogDao() *webLog {
 }
 
 // List 查询 WEB 日志列表
-func (d *webLog) List(req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64, error) {
+func (d *webLog) List(req logDTO.QueryWebLogReq) ([]logModel.WebLog, int64, error) {
 	tx := d.db.GetDbR()
 	if req.Nickname != "" {
 		tx = tx.Where("nickname = ?", req.Nickname)
@@ -52,11 +52,11 @@ func (d *webLog) List(req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64
 	tx = tx.Session(&gorm.Session{})
 
 	var total int64 = 0
-	if result := tx.Model(&systemModel.WebLog{}).Count(&total); result.Error != nil {
+	if result := tx.Model(&logModel.WebLog{}).Count(&total); result.Error != nil {
 		return nil, 0, result.Error
 	}
 
-	beans := make([]systemModel.WebLog, 0)
+	beans := make([]logModel.WebLog, 0)
 	result := tx.Offset(req.Offset()).Limit(req.PageSize).
 		Order("created_at DESC").
 		Find(&beans)
@@ -67,7 +67,7 @@ func (d *webLog) List(req systemDTO.QueryWebLogReq) ([]systemModel.WebLog, int64
 }
 
 // Add 添加 WEB 日志
-func (d *webLog) Add(bean systemModel.WebLog) (uint, error) {
+func (d *webLog) Add(bean logModel.WebLog) (uint, error) {
 	result := d.db.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
