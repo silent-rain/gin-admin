@@ -33,14 +33,15 @@
     </div>
   </transition>
 </template>
-<script setup>
+
+<script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { ArrowRightBold, Unlock } from '@element-plus/icons-vue';
 import SvgIcon from '@/icons/SvgIcon.vue';
 
-const open = ref(false);
-const slider = ref(null);
-const sliderButton = ref(null);
+const open = ref<any>(false);
+const slider = ref<any>(null);
+const sliderButton = ref<any>(null);
 let startX = 0;
 let distance = 0;
 let maxDistance = 0;

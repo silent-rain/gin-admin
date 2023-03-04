@@ -40,17 +40,22 @@
 import { ref, watch } from 'vue';
 import { compile } from 'path-to-regexp';
 import { useRoute, useRouter } from 'vue-router';
-import type { RouterTypes } from '~/store/router';
+import type { RouterTypes, RouteRawConfig } from '~/store/router';
 import { useBasicStore } from '@/store/basic';
 import { langTitle } from '@/hooks/use-common';
 
-const levelList = ref();
 const { settings } = useBasicStore();
 const route = useRoute();
+const router = useRouter();
+
+const levelList = ref<RouterTypes>([]);
+
+// 获取面包屑显示的数组
 const getBreadcrumb = () => {
   // only show routes with has  meta.title
   let matched: RouterTypes = route.matched.filter((item) => item.meta?.title);
-  // 如果首页Dashboard,如果没有，添加Dashboard路由到第一个路由
+
+  // 如果首页 Dashboard, 如果没有，添加 Dashboard 路由到第一个路由
   const isHasDashboard =
     matched[0]?.name?.toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase();
   if (!isHasDashboard) {
@@ -58,24 +63,25 @@ const getBreadcrumb = () => {
       matched,
     );
   }
+
   // 过滤面包屑显示的数组
   levelList.value = matched.filter(
-    (item) => item.meta && item.meta.title && item.meta.breadcrumb !== false,
+    (item) => item.meta && item.meta.breadcrumb !== false && item.meta.title,
   );
 };
 
 // 页面跳转处理
-// compile函数将返回一个用于将参数转换为有效路径的函数：
+// compile 函数将返回一个用于将参数转换为有效路径的函数：
 // const  toPath =  compile ( "/user/:id" ,  {  encode : encodeURIComponent  } ) ;
 // toPath ( {  id : 123  } ) ; //=> "/user/123"
-const pathCompile = (path) => {
+const pathCompile = (path: string) => {
   const { params } = route;
   const toPath = compile(path);
   return toPath(params);
 };
-const router = useRouter();
+
 // 如果有redirect地址直接跳转，没有跳转path
-const handleLink = (item) => {
+const handleLink = (item: RouteRawConfig) => {
   const { redirect, path } = item;
   if (redirect) {
     router.push(redirect);
@@ -83,6 +89,7 @@ const handleLink = (item) => {
   }
   if (path) router.push(pathCompile(path));
 };
+
 // 监听路由路径刷新 面包屑显示数组
 watch(
   () => route.path,

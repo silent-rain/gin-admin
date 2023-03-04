@@ -41,13 +41,13 @@ const state = reactive({
 const { title, logo } = toRefs(state);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 //vue3.0 过度效果更改  enter-> enter-from   leave-> leave-from
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: var(--sidebar-logo-container-height);
+  line-height: var(--sidebar-logo-container-height);
   background: var(--sidebar-logo-background);
   padding-left: 14px;
   text-align: left;

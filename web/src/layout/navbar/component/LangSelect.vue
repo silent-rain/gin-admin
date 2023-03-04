@@ -38,7 +38,8 @@ const state = reactive({
 const configStore = useConfigStore();
 const { language } = storeToRefs(configStore);
 const route = useRoute();
-const handleSetLang = (lang) => {
+
+const handleSetLang = (lang: string) => {
   // refresh i18n
   configStore.setLanguage(lang, route.meta?.title);
 };

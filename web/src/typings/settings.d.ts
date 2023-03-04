@@ -9,6 +9,7 @@ export interface SettingsConfig {
   isNeedLogin: boolean;
   isNeedNprogress: boolean;
   showTagsView: boolean;
+  showFooter: boolean;
   tagsViewNum: number;
   openProdMock: boolean;
   errorLog: string | Array<string>;

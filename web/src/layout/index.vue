@@ -1,84 +1,106 @@
 <template>
-  <div :class="classObj" class="layout-wrapper">
-    <!--left side-->
-    <Sidebar v-if="settings.showLeftMenu" class="sidebar-container" />
-    <!--right container-->
-    <div class="main-container">
-      <div :class="{ 'fixed-header': settings.fixedHeader }">
+  <el-container :class="classObj">
+    <el-aside>
+      <Sidebar v-if="settings.showLeftMenu" />
+    </el-aside>
+
+    <el-container>
+      <el-header :class="headerClassObj">
         <Navbar v-if="settings.showTopNavbar" />
-      </div>
-      <TagsView v-if="settings.showTagsView" />
-      <AppMain />
-    </div>
-  </div>
+        <TagsView v-if="settings.showTagsView" />
+      </el-header>
+      <el-main>
+        <AppMain />
+      </el-main>
+      <el-footer>
+        <Footer v-if="settings.showFooter" />
+      </el-footer>
+    </el-container>
+  </el-container>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import Sidebar from './sidebar/index.vue';
+import Navbar from './navbar/index.vue';
+import TagsView from './tags-view/index.vue';
 import AppMain from './app-main/index.vue';
-import Navbar from './app-main/Navbar.vue';
-import TagsView from './app-main/TagsView.vue';
+import Footer from './footer/index.vue';
 import { useBasicStore } from '@/store/basic';
 import { resizeHandler } from '@/hooks/use-layout';
 
 const { sidebar, settings } = useBasicStore();
+const basicStore = useBasicStore();
+
 const classObj = computed(() => {
   return {
-    closeSidebar: !sidebar.opened,
-    hideSidebar: !settings.showLeftMenu,
+    container: true,
+    'close-sidebar': !sidebar.opened,
+    'hide-sidebar': !settings.showLeftMenu,
+    'fixed-header': settings.fixedHeader,
+    mobile: basicStore.device === 'mobile',
   };
 });
-resizeHandler();
+const headerClassObj = computed(() => {
+  return {
+    'show-navbar': settings.showTopNavbar,
+    'show-tags-view': settings.showTagsView,
+  };
+});
+
+onBeforeMount(() => {
+  resizeHandler();
+});
 </script>
 
 <style lang="scss" scoped>
-.main-container {
-  min-height: 100%;
-  transition: margin-left var(--sideBar-switch-duration);
-  margin-left: var(--side-bar-width);
-  position: relative;
-}
-.sidebar-container {
-  transition: width var(--sideBar-switch-duration);
-  width: var(--side-bar-width) !important;
-  background-color: var(--el-menu-bg-color);
-  height: 100%;
-  position: fixed;
-  font-size: 0;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1001;
-  overflow: hidden;
-  border-right: 0.5px solid var(--side-bar-border-right-color);
-}
-.closeSidebar {
-  .sidebar-container {
-    width: 54px !important;
+.container {
+  .el-aside {
+    width: var(--side-bar-width);
+    background-color: var(--el-menu-bg-color);
+    position: fixed;
   }
-  .main-container {
-    margin-left: 54px !important;
+
+  .el-container {
+    margin-left: var(--side-bar-width);
   }
 }
-.hideSidebar {
-  .sidebar-container {
-    width: 0 !important;
+.container.close-sidebar {
+  .el-aside {
+    width: var(--side-bar-min-width) !important;
   }
-  .main-container {
+
+  .el-container {
+    margin-left: var(--side-bar-min-width);
+  }
+}
+.container.hide-sidebar .el-aside {
+  width: 0 !important;
+
+  .el-container {
     margin-left: 0;
   }
 }
 
-.fixed-header {
-  position: fixed;
-  width: calc(100% - #{var(--side-bar-width)});
-  top: 0;
-  right: 0;
-  z-index: 9;
-  transition: width 0.28s;
+// footer
+
+// header
+.container .el-header {
+  height: auto;
 }
-.mobile .fixed-header {
-  width: 100%;
+// 固定 header
+.container.fixed-header .el-main {
+  height: calc(
+    100vh - #{var(--nav-bar-height)} - #{var(--tag-view-height)} - #{var(
+        --footer-height
+      )}
+  );
+}
+
+.el-footer {
+  height: var(--footer-height);
+  // position: absolute;
+  padding-top: 20px;
+  bottom: 0;
 }
 </style>

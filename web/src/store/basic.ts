@@ -15,6 +15,8 @@ export const useBasicStore = defineStore('basic', {
       settings: defaultSettings,
       // 终端类型: 0:未知,1:安卓,2:ios,3:web
       osType: 0,
+      // desktop/mobile
+      device: 'desktop',
     };
   },
   persist: {
@@ -50,14 +52,26 @@ export const useBasicStore = defineStore('basic', {
         state.osType = osType;
       });
     },
+    // 设置 Device
+    setDevice() {
+      const WIDTH = 992; // refer to Bootstrap's responsive design
+      const isMobile = document.body.getBoundingClientRect().width - 1 < WIDTH;
+      this.$patch((state) => {
+        state.device = isMobile ? 'mobile' : 'desktop';
+        // 移动端时默认隐藏侧边栏
+        state.sidebar.opened = !isMobile;
+      });
+      this.setOsType();
+    },
 
-    /* keepAlive缓存 */
+    /* keepAlive 缓存 */
     addCachedView(view) {
       this.$patch((state) => {
         if (state.cachedViews.includes(view)) return;
         state.cachedViews.push(view);
       });
     },
+    /* 删除 keepAlive 缓存 */
     delCachedView(view) {
       this.$patch((state) => {
         const index = state.cachedViews.indexOf(view);

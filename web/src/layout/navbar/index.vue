@@ -1,30 +1,35 @@
 <template>
-  <div class="navbar rowBC reset-el-dropdown">
-    <div class="rowSC">
-      <!--  切换sidebar按钮  -->
+  <div class="navbar">
+    <div class="heard-left">
+      <!-- 切换sidebar按钮  -->
       <hamburger
         v-if="settings.showHamburger"
         :is-active="sidebar.opened"
         class="hamburger-container"
         @toggleClick="toggleSideBar"
       />
-      <!--  面包屑导航  -->
+      <!-- 面包屑导航  -->
       <breadcrumb class="breadcrumb-container" />
     </div>
-    <!--导航标题-->
-    <div v-if="settings.showNavbarTitle" class="heardCenterTitle">
+
+    <!-- 导航标题 -->
+    <div v-if="settings.showNavbarTitle" class="heard-center-title">
       {{ settings.title }}
     </div>
+
     <!-- 下拉操作菜单 -->
-    <div v-if="settings.ShowDropDown" class="right-menu rowSC">
-      <ScreenFull />
-      <ScreenLock />
-      <ThemeSelect />
-      <SizeSelect />
-      <LangSelect />
+    <div v-if="settings.ShowDropDown" class="heard-right">
+      <div v-if="basicStore.device === 'desktop'" class="heard-righ-btn">
+        <ScreenFull />
+        <ScreenLock />
+        <ThemeSelect />
+        <SizeSelect />
+        <LangSelect />
+      </div>
+
       <el-dropdown trigger="click" size="medium">
         <div class="avatar-wrapper">
-          <img :src="userStore.userAvatar" class="user-avatar" />
+          <el-avatar shape="square" :size="40" :src="userStore.userAvatar" />
           <CaretBottom style="width: 1em; height: 1em; margin-left: 4px" />
         </div>
         <template #dropdown>
@@ -53,8 +58,8 @@
 import { nextTick } from 'vue';
 import { CaretBottom } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
-import Breadcrumb from './Breadcrumb.vue';
-import Hamburger from './Hamburger.vue';
+import Breadcrumb from './component/Breadcrumb.vue';
+import Hamburger from './component/Hamburger.vue';
 import LangSelect from './component/LangSelect.vue';
 import ScreenFull from './component/ScreenFull.vue';
 import SizeSelect from './component/SizeSelect.vue';
@@ -72,9 +77,11 @@ const { settings, sidebar, setToggleSideBar } = basicStore;
 const router = useRouter();
 const userStore = useUserStore();
 
+// 切换sidebar按钮
 const toggleSideBar = () => {
   setToggleSideBar();
 };
+
 // 退出登录
 const loginOut = async () => {
   try {
@@ -91,52 +98,43 @@ const loginOut = async () => {
 </script>
 
 <style lang="scss" scoped>
+// navbar
 .navbar {
   height: var(--nav-bar-height);
-  overflow: hidden;
-  position: relative;
-  background: var(--nav-bar-background);
-  box-shadow: var(--nav-bar-box-shadow);
-  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .heard-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .heard-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .heard-right .heard-right-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
 }
 
-//logo
+// logo
 .avatar-wrapper {
-  margin-top: 5px;
-  position: relative;
+  margin: 5px 0;
   cursor: pointer;
-
-  .user-avatar {
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-  }
-
-  .el-icon-caret-bottom {
-    cursor: pointer;
-    position: absolute;
-    right: -20px;
-    top: 25px;
-    font-size: 12px;
-  }
 }
 
-//center-title
-.heardCenterTitle {
+// 导航标题
+.heard-center-title {
   text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 46%;
   font-weight: 600;
   font-size: 20px;
-  transform: translate(-50%, -50%);
-}
-
-//drop-down
-.right-menu {
-  cursor: pointer;
-  margin-right: 40px;
-  background-color: var(--nav-bar-right-menu-background);
 }
 </style>

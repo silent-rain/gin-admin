@@ -48,6 +48,11 @@ export const settings: SettingsConfig = {
    * @description Whether show the top Navbar
    */
   showTopNavbar: true,
+  /**
+   * @type {boolean} true | false
+   * @description Whether show the bottom Footer
+   */
+  showFooter: true,
   /* page  animation related */
   /**
    * @type {boolean} true | false

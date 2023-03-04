@@ -1,24 +1,22 @@
 <template>
-  <div class="app-main">
-    <el-scrollbar :class="{ 'show-tag-view': settings.showTagsView }">
-      <router-view v-slot="{ Component }">
-        <!--has transition  setting by settings.mainNeedAnimation-->
-        <transition
-          v-if="settings.mainNeedAnimation"
-          name="fade-transform"
-          mode="out-in"
-        >
-          <keep-alive :include="cachedViews">
-            <component :is="Component" :key="key" />
-          </keep-alive>
-        </transition>
-        <!-- no transition -->
-        <keep-alive v-else :include="cachedViews">
+  <el-scrollbar>
+    <router-view v-slot="{ Component }">
+      <!--has transition  setting by settings.mainNeedAnimation-->
+      <transition
+        v-if="settings.mainNeedAnimation"
+        name="fade-transform"
+        mode="out-in"
+      >
+        <keep-alive :include="cachedViews">
           <component :is="Component" :key="key" />
         </keep-alive>
-      </router-view>
-    </el-scrollbar>
-  </div>
+      </transition>
+      <!-- no transition -->
+      <keep-alive v-else :include="cachedViews">
+        <component :is="Component" :key="key" />
+      </keep-alive>
+    </router-view>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
@@ -135,20 +133,4 @@ watch(
 );
 </script>
 
-<style scoped lang="scss">
-.app-main {
-  padding: var(--app-main-padding);
-  /*50 = navbar  */
-  position: relative;
-  overflow: hidden;
-  background-color: var(--app-main-background);
-}
-.show-tag-view {
-  height: calc(
-    100vh - #{var(--nav-bar-height)} - #{var(--tag-view-height)}
-  ) !important;
-}
-.fixed-header + .app-main {
-  padding-top: 50px;
-}
-</style>
+<style scoped lang="scss"></style>

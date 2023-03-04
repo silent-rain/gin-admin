@@ -17,6 +17,7 @@ html.base-theme {
   --hamburger-width: 20px;
   --hamburger-height: 20px;
   //Sidebar
+  --sidebar-logo-container-height:50px;
   --sidebar-el-icon-size: 20px;
   --sidebar-logo-background: #2b2f3a;
   --sidebar-logo-color: #ff9901;
@@ -24,6 +25,7 @@ html.base-theme {
   --sidebar-logo-height: 32px;
   --sidebar-logo-title-color: #fff;
   --side-bar-width: 210px;
+  --side-bar-min-width: 54px;
   --side-bar-border-right-color: '#ddd';
   //TagsView
   --tags-view-background: #fff;
@@ -32,7 +34,7 @@ html.base-theme {
   --tags-view-item-background: #fff;
   --tags-view-item-border-color: #d8dce5;
   --tags-view-item-color: #495060;
-  --tag-view-height: 50px;
+  --tag-view-height: 34px;
   --tags-view-item-active-background: #42b983;
   --tags-view-item-active-color: #fff;
   --tags-view-item-active-border-color: #42b983;
@@ -46,6 +48,8 @@ html.base-theme {
   //AppMain.vue
   --app-main-padding: 10px;
   --app-main-background: #fff;
+  // footer
+  --footer-height: 50px;
   //Navbar.vue
   --nav-bar-height: 50px;
   --nav-bar-background: #fff;

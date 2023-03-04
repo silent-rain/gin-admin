@@ -20,8 +20,8 @@ router.beforeEach(async (to, from) => {
   const permissionStore = usePermissionStore();
   const basicStore = useBasicStore();
 
-  // 设置终端类型
-  basicStore.setOsType();
+  // 设置 Device
+  basicStore.setDevice();
 
   // 判断 Token, 不存在则跳转至登录
   if (!userStore.token) {

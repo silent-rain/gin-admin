@@ -1,5 +1,9 @@
 <template>
-  <div id="tags-view-container" class="tags-view-container">
+  <div
+    v-if="basicStore.device === 'desktop'"
+    id="tags-view-container"
+    class="tags-view-container"
+  >
     <div class="tags-view-wrapper">
       <router-link
         v-for="tag in visitedViews"
@@ -9,7 +13,6 @@
         :to="{
           path: tag.path,
           query: tag.query,
-          fullPath: tag.fullPath,
         }"
         custom
       >
@@ -20,7 +23,7 @@
           @contextmenu.prevent="openMenu(tag, $event)"
           @click="navigate"
         >
-          {{ langTitle(tag.title) }}
+          {{ langTitle(tag.meta.title) }}
           <Close
             v-if="!isAffix(tag)"
             class="el-icon-close"
@@ -59,7 +62,7 @@ import {
 } from 'vue';
 import { Close } from '@element-plus/icons-vue';
 import { resolve } from 'path-browserify';
-import { useRoute, useRouter } from 'vue-router';
+import { RouteLocationNormalizedLoaded, useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia/dist/pinia';
 import type { RouterTypes } from '~/store/router';
 import { useBasicStore } from '@/store/basic';
@@ -69,15 +72,16 @@ import { langTitle } from '@/hooks/use-common';
 
 const route = useRoute();
 const router = useRouter();
+const basicStore = useBasicStore();
+const { visitedViews } = storeToRefs(useTagsViewStore());
+
 const state = reactive({
   visible: false,
   top: 0,
   left: 0,
-  selectedTag: {},
+  selectedTag: {} as RouteLocationNormalizedLoaded,
   affixTags: [] as RouterTypes,
 });
-
-const { visitedViews } = storeToRefs(useTagsViewStore());
 
 watch(
   () => route.path,
@@ -96,6 +100,7 @@ watch(
     }
   },
 );
+
 onMounted(() => {
   initTags();
   addTags();
@@ -145,6 +150,7 @@ const initTags = () => {
     }
   }
 };
+// 添加标签
 const addTags = () => {
   if (route?.name) {
     tagsViewStore.addVisitedView(route);
@@ -160,7 +166,7 @@ const openMenu = (tag, e) => {
   const offsetLeft = vm?.$el.getBoundingClientRect().left; // container margin left
   const offsetWidth = vm?.$el.offsetWidth; // container width
   const maxLeft = offsetWidth - menuMinWidth; // left boundary
-  const left = e.clientX - offsetLeft + 15; // 15: margin right
+  const left = e.clientX - offsetLeft + 230; // 15: margin right
 
   if (left > maxLeft) {
     state.left = maxLeft;
@@ -172,29 +178,27 @@ const openMenu = (tag, e) => {
   state.selectedTag = tag;
 };
 
-const basicStore = useBasicStore();
-
 // 关闭当前标签
-const closeSelectedTag = (view) => {
-  tagsViewStore.delVisitedView(view).then((visitedViews) => {
-    if (isActive(view)) {
-      toLastView(visitedViews, view);
+const closeSelectedTag = async (view: RouteLocationNormalizedLoaded) => {
+  const visitedViews = await tagsViewStore.delVisitedView(view);
+
+  if (isActive(view)) {
+    toLastView(visitedViews, view);
+  }
+  // remove keep-alive by the closeTabRmCache
+  if (view.meta?.closeTabRmCache) {
+    const routerLevel = view.matched.length;
+    if (routerLevel === 2) {
+      basicStore.delCachedView(view.name);
     }
-    // remove keep-alive by the closeTabRmCache
-    if (view.meta?.closeTabRmCache) {
-      const routerLevel = view.matched.length;
-      if (routerLevel === 2) {
-        basicStore.delCachedView(view.name);
-      }
-      if (routerLevel === 3) {
-        basicStore.delCacheViewDeep(view.name);
-      }
+    if (routerLevel === 3) {
+      basicStore.delCacheViewDeep(view.name);
     }
-  });
+  }
 };
 
 // 刷新标签
-const refreshSelectedTag = (view) => {
+const refreshSelectedTag = (view: RouteLocationNormalizedLoaded) => {
   const { fullPath } = view;
   nextTick(() => {
     router.replace({
@@ -208,24 +212,26 @@ const closeMenu = () => {
   state.visible = false;
 };
 // 关闭其他标签
-const closeOthersTags = () => {
+const closeOthersTags = async () => {
   router.push(state.selectedTag);
-  tagsViewStore.delOthersVisitedViews(state.selectedTag);
+  await tagsViewStore.delOthersVisitedViews(state.selectedTag);
 };
 // 关闭所有标签
-const closeAllTags = (view) => {
-  tagsViewStore.delAllVisitedViews().then((visitedViews) => {
-    if (state.affixTags.some((tag) => tag.path === view.path)) {
-      return;
-    }
-    toLastView(visitedViews, view);
-  });
+const closeAllTags = async (view: RouteLocationNormalizedLoaded) => {
+  const visitedViews = await tagsViewStore.delAllVisitedViews();
+  if (state.affixTags.some((tag) => tag.path === view.path)) {
+    return;
+  }
+  toLastView(visitedViews, view);
 };
 // 跳转最后一个标签
-const toLastView = (visitedViews, view) => {
-  // visitedViews.at(-1)获取数组最后一个元素
+const toLastView = (
+  visitedViews: RouteLocationNormalizedLoaded[],
+  view: RouteLocationNormalizedLoaded,
+) => {
+  // visitedViews.at(-1) 获取数组最后一个元素
   const latestView = visitedViews.at(-1);
-  if (latestView) {
+  if (latestView && latestView.fullPath) {
     router.push(latestView.fullPath);
   } else if (view.name === 'Dashboard') {
     // to reload home page
@@ -242,6 +248,7 @@ const { visible, top, left, selectedTag } = toRefs(state);
 <style lang="scss" scoped>
 .tags-view-container {
   height: var(--tag-view-height);
+  line-height: var(--tag-view-height);
   width: 100%;
   background: var(--tags-view-background);
   border-bottom: 1px solid var(--tags-view-border-bottom-color);
@@ -251,15 +258,14 @@ const { visible, top, left, selectedTag } = toRefs(state);
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 27px;
-      line-height: 26px;
+      height: 26px;
+      line-height: 27px;
       border: 1px solid var(--tags-view-item-border-color);
       color: var(--tags-view-item-color);
       background: var(--tags-view-item-background);
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
-      margin-top: 3px;
       &:first-of-type {
         margin-left: 10px;
       }
@@ -296,8 +302,10 @@ const { visible, top, left, selectedTag } = toRefs(state);
     color: var(--tags-view-contextmenu-color);
     box-shadow: var(--tags-view-contextmenu-box-shadow);
     li {
+      height: 28px;
+      line-height: 28px;
       margin: 0;
-      padding: 7px 16px;
+      padding: 0px 16px;
       cursor: pointer;
       &:hover {
         background: var(--tags-view-contextmenu-hover-background);
@@ -305,9 +313,7 @@ const { visible, top, left, selectedTag } = toRefs(state);
     }
   }
 }
-</style>
 
-<style lang="scss">
 //reset element css of el-icon-close
 .tags-view-wrapper {
   .tags-view-item {

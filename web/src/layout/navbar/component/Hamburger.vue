@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 0 12px" @click="toggleClick">
+  <div style="padding: 0 0" @click="toggleClick">
     <svg-icon
       icon-class="hamburger"
       :class="{ 'is-active': isActive }"
@@ -18,6 +18,7 @@ defineProps({
   },
 });
 const emit = defineEmits(['toggleClick']);
+
 // 切换左侧栏关闭和隐藏
 const toggleClick = () => {
   emit('toggleClick');
