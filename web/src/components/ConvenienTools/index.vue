@@ -34,17 +34,19 @@
 
       <el-divider style="margin: 4px 0" />
 
-      <el-checkbox-group v-model="checkedList" @change="handleCheckedChange">
-        <el-checkbox
-          v-for="item in checkAllList"
-          :key="item.value"
-          :label="item.value"
-          :disabled="item.disabled"
-          style="width: 100%"
-        >
-          {{ item.label }}
-        </el-checkbox>
-      </el-checkbox-group>
+      <el-scrollbar class="checked-list">
+        <el-checkbox-group v-model="checkedList" @change="handleCheckedChange">
+          <el-checkbox
+            v-for="item in checkAllList"
+            :key="item.value"
+            :label="item.value"
+            :disabled="item.disabled"
+            style="width: 100%"
+          >
+            {{ item.label }}
+          </el-checkbox>
+        </el-checkbox-group>
+      </el-scrollbar>
     </el-popover>
 
     <el-tooltip content="密度" placement="top">
@@ -215,5 +217,10 @@ const handleScreenFull = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.checked-list {
+  height: 50vh;
+  max-height: 50vh;
 }
 </style>
