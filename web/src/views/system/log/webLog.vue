@@ -9,7 +9,7 @@
         placeholder="请输入用户昵称"
         @keyup.enter.native="handleFilter"
       />
-      <el-select
+      <!-- <el-select
         v-model="listQuery.os_type"
         class="filter-name"
         :disabled="isDisabledButton('sys:weblog:list')"
@@ -22,7 +22,7 @@
           :label="item.lebal"
           :value="item.value"
         />
-      </el-select>
+      </el-select> -->
       <el-select
         v-model="listQuery.error_type"
         class="filter-name"
