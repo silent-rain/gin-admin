@@ -209,7 +209,6 @@ const websitePropagandas = computed({
       return [];
     }
     const list = JSON.parse(configHash.value.website_propaganda.value);
-    console.log(list);
     return list;
   },
   set(val) {
