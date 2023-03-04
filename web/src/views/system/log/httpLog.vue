@@ -115,7 +115,8 @@
         <template #default="scope">
           <el-link
             type="primary"
-            :src="`/system/log/systemLog?trace_id=${scope.row.trace_id}`"
+            target="_blank"
+            :href="`/#/system/log/systemLog?trace_id=${scope.row.trace_id}`"
           >
             {{ scope.row.trace_id }}
           </el-link>
