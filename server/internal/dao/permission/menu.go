@@ -28,7 +28,7 @@ type menu struct {
 	db mysql.DBRepo
 }
 
-// 创建菜单 Dao 对象
+// NewMenuDao 创建菜单 Dao 对象
 func NewMenuDao() *menu {
 	return &menu{
 		db: mysql.Instance(),

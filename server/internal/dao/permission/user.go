@@ -42,7 +42,7 @@ type user struct {
 	db mysql.DBRepo
 }
 
-// 创建用户 Dao 对象
+// NewUserDao 创建用户 Dao 对象
 func NewUserDao() *user {
 	return &user{
 		Transaction: DAO.NewTransaction(mysql.Instance().GetDbW()),

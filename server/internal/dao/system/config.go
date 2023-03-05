@@ -33,7 +33,7 @@ type config struct {
 	db mysql.DBRepo
 }
 
-// 创建配置对象
+// NewConfigDao 创建配置对象
 func NewConfigDao() *config {
 	return &config{
 		Transaction: DAO.NewTransaction(mysql.Instance().GetDbW()),

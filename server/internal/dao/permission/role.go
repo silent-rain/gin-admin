@@ -29,7 +29,7 @@ type role struct {
 	db mysql.DBRepo
 }
 
-// 创建角色 Dao 对象
+// NewRoleDao 创建角色 Dao 对象
 func NewRoleDao() *role {
 	return &role{
 		db: mysql.Instance(),

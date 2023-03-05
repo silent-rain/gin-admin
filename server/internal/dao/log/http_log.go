@@ -23,7 +23,7 @@ type httpLog struct {
 	db mysql.DBRepo
 }
 
-// 创建网络请求日志 Dao 对象
+// NewHttpLogDao 创建网络请求日志 Dao 对象
 func NewHttpLogDao() *httpLog {
 	return &httpLog{
 		db: mysql.Instance(),

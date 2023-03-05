@@ -20,7 +20,7 @@ type login struct {
 	db mysql.DBRepo
 }
 
-// 创建登录对象
+// NewLoginDao 创建登录对象
 func NewLoginDao() *login {
 	return &login{
 		db: mysql.Instance(),

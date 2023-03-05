@@ -25,7 +25,7 @@ type roleMenuRel struct {
 	db mysql.DBRepo
 }
 
-// 创建角色菜单关系 Dao 对象
+// NewRoleMenuRelDao 创建角色菜单关系 Dao 对象
 func NewRoleMenuRelDao() *roleMenuRel {
 	return &roleMenuRel{
 		Transaction: DAO.NewTransaction(mysql.Instance().GetDbW()),
