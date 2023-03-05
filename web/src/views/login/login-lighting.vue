@@ -264,4 +264,10 @@ $light_gray: #eee;
   top: 50%;
   transform: translateY(-50%);
 }
+.columnCE {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
 </style>

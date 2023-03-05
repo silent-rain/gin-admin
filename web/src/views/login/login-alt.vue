@@ -301,4 +301,11 @@ $light_gray: #eee;
 :deep(.el-input__wrapper.is-focus) {
   box-shadow: 0 0 0 1px $bg inset;
 }
+
+.columnCC {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 </style>

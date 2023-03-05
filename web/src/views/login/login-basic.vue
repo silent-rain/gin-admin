@@ -253,4 +253,11 @@ $light_gray: #eee;
   width: 100%;
   margin-bottom: 10px;
 }
+
+.columnCE {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+}
 </style>
