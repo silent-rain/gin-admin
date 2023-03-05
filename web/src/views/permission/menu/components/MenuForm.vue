@@ -69,7 +69,7 @@
 
         <el-divider />
 
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="菜单图标" prop="icon">
             <IconMenu
               v-model:icon="props.data.icon"

@@ -51,6 +51,8 @@
 ## WEB日志管理
 - [x] 查询列表 sys:weblog:list
 
+## 登录管理
+- [x] 查询列表 sys:userlogin:list
 
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate
