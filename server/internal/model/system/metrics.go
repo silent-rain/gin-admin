@@ -1,5 +1,5 @@
 /*指标信息*/
-package systemModel
+package system
 
 import "encoding/json"
 

@@ -1,6 +1,6 @@
 /*角色
  */
-package systemDTO
+package system
 
 import "gin-admin/internal/dto"
 

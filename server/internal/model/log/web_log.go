@@ -1,6 +1,6 @@
 /*WEB 日志
  */
-package logModel
+package log
 
 // WebLog WEB 日志
 type WebLog struct {

@@ -1,6 +1,6 @@
 /*系统日志
  */
-package logModel
+package log
 
 // SystemLog 系统日志
 type SystemLog struct {

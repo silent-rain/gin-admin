@@ -1,6 +1,6 @@
 /*ICON 图标
  */
-package systemModel
+package system
 
 // Icon ICON 图标
 type Icon struct {

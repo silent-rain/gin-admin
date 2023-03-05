@@ -1,6 +1,6 @@
 /* 菜单
  */
-package systemDTO
+package system
 
 import (
 	"gin-admin/internal/dto"

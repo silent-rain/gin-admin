@@ -1,5 +1,5 @@
 /*告警信息结构*/
-package systemModel
+package system
 
 import (
 	"encoding/json"

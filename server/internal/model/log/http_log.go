@@ -1,6 +1,6 @@
 /*网络请求日志模型
  */
-package logModel
+package log
 
 // HttpLog 网络请求日志
 type HttpLog struct {

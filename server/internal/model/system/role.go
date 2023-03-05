@@ -1,6 +1,6 @@
 /*角色
  */
-package systemModel
+package system
 
 // Role 角色表
 type Role struct {

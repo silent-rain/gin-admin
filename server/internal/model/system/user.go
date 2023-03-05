@@ -1,6 +1,6 @@
 /*用户模型
  */
-package systemModel
+package system
 
 // User 用户表
 type User struct {

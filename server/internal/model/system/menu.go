@@ -1,6 +1,6 @@
 /*菜单, 路由/按钮/操作权限
  */
-package systemModel
+package system
 
 // Menu 菜单
 type Menu struct {

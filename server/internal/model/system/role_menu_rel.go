@@ -1,6 +1,6 @@
 /* 角色菜单
  */
-package systemModel
+package system
 
 // RoleMenuRel 角色菜单关联表
 type RoleMenuRel struct {

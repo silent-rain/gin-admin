@@ -1,5 +1,5 @@
 /*应用配置表*/
-package systemModel
+package system
 
 // Config 应用配置
 type Config struct {
