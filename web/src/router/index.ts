@@ -59,27 +59,6 @@ export const constantRoutes: RouterTypes = [
       },
     ],
   },
-  // {
-  //   path: '/system',
-  //   component: Layout,
-  //   meta: { title: '系统管理', elSvgIcon: 'Setting' },
-  //   alwaysShow: true,
-  //   children: [
-  //     {
-  //       path: '/system/user',
-  //       component: () => import('@/views/system/user/index.vue'),
-  //       // name: '用户管理',
-  //       meta: { title: '用户管理', elSvgIcon: 'User' },
-  //     },
-
-  //     {
-  //       path: '/system/menu',
-  //       component: () => import('@/views/system/menu/index.vue'),
-  //       name: '菜单管理',
-  //       meta: { title: '菜单管理', elSvgIcon: 'Operation' },
-  //     },
-  //   ],
-  // },
 ];
 
 export const catchRoutes: RouterTypes = [
@@ -150,24 +129,6 @@ export const catchRoutes: RouterTypes = [
 //     meta: { title: '系统管理', elSvgIcon: 'Setting' },
 //     alwaysShow: true,
 //     children: [
-//       {
-//         path: '/system/user',
-//         component: () => import('@/views/system/user/index.vue'),
-//         name: '用户管理',
-//         meta: { title: '用户管理', elSvgIcon: 'User' },
-//       },
-//       {
-//         path: '/system/role',
-//         component: () => import('@/views/system/role/index.vue'),
-//         name: '角色管理',
-//         meta: { title: '角色管理', elSvgIcon: 'Postcard' },
-//       },
-//       {
-//         path: '/system/menu',
-//         component: () => import('@/views/system/menu/index.vue'),
-//         name: '菜单管理',
-//         meta: { title: '菜单管理', elSvgIcon: 'Operation' },
-//       },
 //       {
 //         path: '/system/level',
 //         component: () => import('@/views/other/signboard/index.vue'),

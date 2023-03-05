@@ -70,20 +70,12 @@
         <el-divider />
 
         <el-col :span="12">
-          <el-form-item label="El菜单图标" prop="el_svg_icon">
-            <el-input
-              v-model="props.data.el_svg_icon"
-              :disabled="props.data.menu_type === MenuType.Button"
-              placeholder="请选择Element菜单图标"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="菜单图标" prop="icon">
-            <el-input
-              v-model="props.data.icon"
+            <IconMenu
+              v-model:icon="props.data.icon"
+              v-model:el_svg_icon="props.data.el_svg_icon"
               :disabled="props.data.menu_type === MenuType.Button"
-              placeholder="请选择菜单图标"
+              style="width: 100%"
             />
           </el-form-item>
         </el-col>
@@ -294,6 +286,7 @@ import { QuestionFilled } from '@element-plus/icons-vue';
 import { updateMenu, addMenu, getAllMenuTree } from '@/api/permission/menu';
 import { Menu, MenuListRsp } from '~/api/permission/menu';
 import { MenuType, OpenType } from '@/constant/permission/menu';
+import IconMenu from '@/components/IconMenu/index.vue';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
