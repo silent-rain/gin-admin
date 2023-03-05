@@ -1,6 +1,10 @@
 import router from '@/router';
 import { usePermissionStore } from '@/store/permission';
-import { progressClose, progressStart } from '@/hooks/use-basic';
+import {
+  progressClose,
+  progressStart,
+  fecthWebSiteConfigList,
+} from '@/hooks/use-basic';
 import { langTitle } from '@/hooks/use-common';
 import { buttonPermissions, filterAsyncRouter } from './hooks/use-permission';
 import { useUserStore } from '@/store/user';
@@ -22,6 +26,10 @@ router.beforeEach(async (to, from) => {
 
   // 设置 Device
   basicStore.setDevice();
+  // 获取动态配置
+  if (Object.keys(basicStore.webSiteConfigMap).length === 0) {
+    fecthWebSiteConfigList();
+  }
 
   // 判断 Token, 不存在则跳转至登录
   if (!userStore.token) {

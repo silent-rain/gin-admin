@@ -4,7 +4,6 @@ import defaultSettings from '@/settings';
 export const useBasicStore = defineStore('basic', {
   state: () => {
     return {
-      buttonCodes: [],
       // keep-alive
       cachedViews: [] as Array<string>,
       cachedViewsDeep: [] as Array<string>,
@@ -12,11 +11,14 @@ export const useBasicStore = defineStore('basic', {
       sidebar: { opened: true },
       // axios req collection
       axiosPromiseArr: [] as Array<ObjKeys>,
+      // 全局设置
       settings: defaultSettings,
       // 终端类型: 0:未知,1:安卓,2:ios,3:web
       osType: 0,
       // desktop/mobile
       device: 'desktop',
+      // 网站配置
+      webSiteConfigMap: {},
     };
   },
   persist: {
@@ -62,6 +64,13 @@ export const useBasicStore = defineStore('basic', {
         state.sidebar.opened = !isMobile;
       });
       this.setOsType();
+    },
+
+    // 设置网站配置
+    setWebSiteConfig(data: any) {
+      this.$patch((state) => {
+        state.webSiteConfigMap = data;
+      });
     },
 
     /* keepAlive 缓存 */

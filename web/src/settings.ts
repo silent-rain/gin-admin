@@ -1,8 +1,7 @@
-import packageJson from '../package.json';
 import type { SettingsConfig } from '~/settings';
 
 export const settings: SettingsConfig = {
-  title: packageJson.name,
+  title: '后台管理系统',
   /**
    * @type {boolean} true | false
    * @description Whether fix the header

@@ -93,3 +93,13 @@ export const updateConfigStatus = async (params: any) => {
     data: params,
   });
 };
+
+// 查询网站配置列表
+export const getWebSiteConfigList = async () => {
+  return axiosReq({
+    url: '/config/webSiteConfigList',
+    method: 'get',
+    isParams: true,
+    data: {},
+  });
+};

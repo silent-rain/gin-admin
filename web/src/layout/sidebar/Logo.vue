@@ -24,7 +24,7 @@ import { reactive, toRefs } from 'vue';
 import { useBasicStore } from '@/store/basic';
 import SvgIcon from '@/icons/SvgIcon.vue';
 
-const { settings } = useBasicStore();
+const { settings, webSiteConfigMap } = useBasicStore();
 defineProps({
   // 是否折叠
   collapse: {
@@ -32,11 +32,22 @@ defineProps({
     required: true,
   },
 });
+
+// 获取动态标题
+const getTitle = computed(() => {
+  let title = webSiteConfigMap['website_title']?.value;
+  if (title) {
+    return title;
+  }
+  return settings.title;
+});
+
 const state = reactive({
-  title: settings.title,
+  title: getTitle.value,
   // src/icons/common/sidebar-logo.svg
   logo: 'sidebar-logo',
 });
+
 // export to page for use
 const { title, logo } = toRefs(state);
 </script>
