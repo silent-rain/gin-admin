@@ -5,6 +5,7 @@ package router
 import (
 	"gin-admin/internal/controller"
 	"gin-admin/internal/router/api/v1/log"
+	"gin-admin/internal/router/api/v1/permission"
 	"gin-admin/internal/router/api/v1/system"
 
 	"github.com/gin-gonic/gin"
@@ -32,19 +33,19 @@ func Init(engine *gin.Engine) {
 	// 公开根路由组
 	PublicGroup := beGroup.Group("/api/v1")
 	{
-		system.InitLoginRegisterRouter(PublicGroup) // 初始化注册/登录/登出/验证码路由
+		system.InitCaptchaRouter(PublicGroup)       // 初始化验证码路由
+		system.InitLoginRegisterRouter(PublicGroup) // 初始化注册/登录/登出路由
 	}
 
 	// 私有路由组
 	privateGroup := beGroup.Group("/api/v1")
-	// 路由
 	{
-		system.InitUploadRouter(privateGroup)      // 初始化上传管理路由
-		system.InitUserRouter(privateGroup)        // 初始化用户管理路由
-		system.InitRoleRouter(privateGroup)        // 初始化角色管理路由
-		system.InitMenuRouter(privateGroup)        // 初始化菜单管理路由
-		system.InitRoleMenuRelRouter(privateGroup) // 初始化角色菜单关系管理路由
-		system.InitConfigRouter(privateGroup)      // 初始化配置管理路由
-		log.InitLogRouter(privateGroup)            // 初始化日志管理路由
+		permission.InitUserRouter(privateGroup)        // 初始化用户管理路由
+		permission.InitRoleRouter(privateGroup)        // 初始化角色管理路由
+		permission.InitMenuRouter(privateGroup)        // 初始化菜单管理路由
+		permission.InitRoleMenuRelRouter(privateGroup) // 初始化角色菜单关系管理路由
+		system.InitUploadRouter(privateGroup)          // 初始化上传管理路由
+		system.InitConfigRouter(privateGroup)          // 初始化配置管理路由
+		log.InitLogRouter(privateGroup)                // 初始化日志管理路由
 	}
 }

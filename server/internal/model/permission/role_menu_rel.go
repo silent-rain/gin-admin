@@ -1,6 +1,6 @@
 /* 角色菜单
  */
-package system
+package permission
 
 // RoleMenuRel 角色菜单关联表
 type RoleMenuRel struct {

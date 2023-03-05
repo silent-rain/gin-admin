@@ -1,13 +1,13 @@
 /*用户 DAO
  */
-package systemDAO
+package permissionDAO
 
 import (
 	"errors"
 
 	DAO "gin-admin/internal/dao"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/pkg/utils"
 
@@ -17,22 +17,23 @@ import (
 
 // User 用户接口
 type User interface {
-	All() ([]systemModel.User, int64, error)
-	List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, error)
-	Info(id uint) (systemModel.User, bool, error)
-	Add(user systemModel.User, roleIds []uint) error
-	Update(user systemModel.User, roles []uint) error
+	All() ([]permissionModel.User, int64, error)
+	List(req permissionDTO.QueryUserReq) ([]permissionModel.User, int64, error)
+	Info(id uint) (permissionModel.User, bool, error)
+	Add(user permissionModel.User, roleIds []uint) error
+	Update(user permissionModel.User, roles []uint) error
 	Delete(id uint) (int64, error)
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
+
 	UpdatePassword(id uint, password string) (int64, error)
 	ResetPassword(id uint, password string) (int64, error)
 	UpdatePhone(id uint, phone string) (int64, error)
 	UpdateEmail(id uint, email string) (int64, error)
-	GetUserByPhone(phone string) (systemModel.User, bool, error)
-	GetUserByEmail(email string) (systemModel.User, bool, error)
+
+	GetUserByPhone(phone string) (permissionModel.User, bool, error)
+	GetUserByEmail(email string) (permissionModel.User, bool, error)
 	ExistUserPassword(userId uint, password string) (bool, error)
-	GetUsername(username, password string) (systemModel.User, bool, error)
 }
 
 // 用户
@@ -50,25 +51,25 @@ func NewUserDao() *user {
 }
 
 // All 获取所有用户列表
-func (d *user) All() ([]systemModel.User, int64, error) {
+func (d *user) All() ([]permissionModel.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db.GetDbR()
 		return stats
 	}
 
-	bean := make([]systemModel.User, 0)
-	result := stats().Model(&systemModel.User{}).Order("updated_at DESC").
+	bean := make([]permissionModel.User, 0)
+	result := stats().Model(&permissionModel.User{}).Order("updated_at DESC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	stats().Model(&systemModel.User{}).Count(&total)
+	stats().Model(&permissionModel.User{}).Count(&total)
 	return bean, total, nil
 }
 
 // List 获取用户列表
-func (d *user) List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, error) {
+func (d *user) List(req permissionDTO.QueryUserReq) ([]permissionModel.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db.GetDbR()
 		if req.Nickname != "" {
@@ -83,8 +84,8 @@ func (d *user) List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, erro
 		return stats
 	}
 
-	bean := make([]systemModel.User, 0)
-	result := stats().Model(&systemModel.User{}).Preload("Roles").
+	bean := make([]permissionModel.User, 0)
+	result := stats().Model(&permissionModel.User{}).Preload("Roles").
 		Offset(req.Offset()).Limit(req.PageSize).
 		Order("sort DESC").Order("updated_at DESC").
 		Find(&bean)
@@ -92,25 +93,25 @@ func (d *user) List(req systemDTO.QueryUserReq) ([]systemModel.User, int64, erro
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	stats().Model(&systemModel.User{}).Count(&total)
+	stats().Model(&permissionModel.User{}).Count(&total)
 	return bean, total, nil
 }
 
 // Info 获取用户信息
-func (d *user) Info(id uint) (systemModel.User, bool, error) {
-	bean := systemModel.User{ID: id}
-	result := d.db.GetDbR().Model(&systemModel.User{}).Preload("Roles", "status=1").First(&bean)
+func (d *user) Info(id uint) (permissionModel.User, bool, error) {
+	bean := permissionModel.User{ID: id}
+	result := d.db.GetDbR().Model(&permissionModel.User{}).Preload("Roles", "status=1").First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return systemModel.User{}, false, nil
+		return permissionModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return systemModel.User{}, false, result.Error
+		return permissionModel.User{}, false, result.Error
 	}
 	return bean, true, nil
 }
 
 // Add 添加用户
-func (d *user) Add(user systemModel.User, roleIds []uint) error {
+func (d *user) Add(user permissionModel.User, roleIds []uint) error {
 	d.Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -134,7 +135,7 @@ func (d *user) Add(user systemModel.User, roleIds []uint) error {
 }
 
 // 添加用户
-func (d *user) addUser(bean systemModel.User) (uint, error) {
+func (d *user) addUser(bean permissionModel.User) (uint, error) {
 	result := d.Tx().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -147,9 +148,9 @@ func (d *user) addUserRole(userId uint, roleIds []uint) error {
 	if len(roleIds) == 0 {
 		return nil
 	}
-	roles := make([]systemModel.UserRoleRel, 0)
+	roles := make([]permissionModel.UserRoleRel, 0)
 	for _, roleId := range roleIds {
-		roles = append(roles, systemModel.UserRoleRel{
+		roles = append(roles, permissionModel.UserRoleRel{
 			UserId: userId,
 			RoleId: roleId,
 		})
@@ -159,7 +160,7 @@ func (d *user) addUserRole(userId uint, roleIds []uint) error {
 }
 
 // Update 更新用户详情信息
-func (d *user) Update(user systemModel.User, roles []uint) error {
+func (d *user) Update(user permissionModel.User, roles []uint) error {
 	d.Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -183,7 +184,7 @@ func (d *user) Update(user systemModel.User, roles []uint) error {
 }
 
 // 更新用户信息
-func (d *user) updateUser(user systemModel.User) error {
+func (d *user) updateUser(user permissionModel.User) error {
 	result := d.Tx().
 		Select("*").Omit("password", "created_at").Updates(&user)
 	return result.Error
@@ -201,10 +202,10 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 		return err
 	}
 	// 新增用户角色关联信息列表
-	addUserRoles := make([]systemModel.UserRoleRel, 0)
+	addUserRoles := make([]permissionModel.UserRoleRel, 0)
 	for _, roleId := range roleIds {
 		if utils.IndexOfArray(userRoleIds, roleId) == -1 {
-			addUserRoles = append(addUserRoles, systemModel.UserRoleRel{
+			addUserRoles = append(addUserRoles, permissionModel.UserRoleRel{
 				UserId: userId,
 				RoleId: roleId,
 			})
@@ -226,7 +227,7 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 	}
 	if len(deleteUserRoleIds) != 0 {
 		if result := d.Tx().Where("user_id = ? AND role_id in ?", userId, deleteUserRoleIds).
-			Delete(&systemModel.UserRoleRel{}); result.Error != nil {
+			Delete(&permissionModel.UserRoleRel{}); result.Error != nil {
 			return result.Error
 		}
 	}
@@ -235,7 +236,7 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 
 // 获取用户关联的角色 roleId 列表
 func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
-	userRoles := make([]systemModel.UserRoleRel, 0)
+	userRoles := make([]permissionModel.UserRoleRel, 0)
 	results := d.Tx().Where("status=1").Where("user_id = ?", userId).Find(&userRoles)
 	if results.Error != nil {
 		return nil, results.Error
@@ -249,7 +250,7 @@ func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
 
 // Delete 删除用户
 func (d *user) Delete(id uint) (int64, error) {
-	result := d.db.GetDbW().Delete(&systemModel.User{
+	result := d.db.GetDbW().Delete(&permissionModel.User{
 		ID: id,
 	})
 	return result.RowsAffected, result.Error
@@ -257,9 +258,9 @@ func (d *user) Delete(id uint) (int64, error) {
 
 // BatchDelete 批量删除用户
 func (d *user) BatchDelete(ids []uint) (int64, error) {
-	beans := make([]systemModel.User, len(ids))
+	beans := make([]permissionModel.User, len(ids))
 	for _, id := range ids {
-		beans = append(beans, systemModel.User{
+		beans = append(beans, permissionModel.User{
 			ID: id,
 		})
 	}
@@ -269,7 +270,7 @@ func (d *user) BatchDelete(ids []uint) (int64, error) {
 
 // Status 更新状态
 func (d *user) Status(id uint, status uint) (int64, error) {
-	result := d.db.GetDbW().Select("status").Updates(&systemModel.User{
+	result := d.db.GetDbW().Select("status").Updates(&permissionModel.User{
 		ID:     id,
 		Status: status,
 	})
@@ -278,20 +279,20 @@ func (d *user) Status(id uint, status uint) (int64, error) {
 
 // UpdatePassword 更新密码
 func (d *user) UpdatePassword(id uint, password string) (int64, error) {
-	result := d.db.GetDbW().Model(&systemModel.User{}).Where("id = ?", id).
+	result := d.db.GetDbW().Model(&permissionModel.User{}).Where("id = ?", id).
 		Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // ResetPassword 重置密码
 func (d *user) ResetPassword(id uint, password string) (int64, error) {
-	result := d.db.GetDbW().Model(&systemModel.User{}).Where("id = ?", id).Update("password", password)
+	result := d.db.GetDbW().Model(&permissionModel.User{}).Where("id = ?", id).Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // UpdatePhone 更新手机号码
 func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
-	result := d.db.GetDbW().Updates(&systemModel.User{
+	result := d.db.GetDbW().Updates(&permissionModel.User{
 		ID:    id,
 		Phone: phone,
 	})
@@ -300,7 +301,7 @@ func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
 
 // UpdateEmail 更新邮箱
 func (d *user) UpdateEmail(id uint, email string) (int64, error) {
-	result := d.db.GetDbW().Updates(&systemModel.User{
+	result := d.db.GetDbW().Updates(&permissionModel.User{
 		ID:    id,
 		Email: email,
 	})
@@ -308,34 +309,34 @@ func (d *user) UpdateEmail(id uint, email string) (int64, error) {
 }
 
 // GetUserByPhone 获取用户信息
-func (d *user) GetUserByPhone(phone string) (systemModel.User, bool, error) {
-	bean := systemModel.User{}
+func (d *user) GetUserByPhone(phone string) (permissionModel.User, bool, error) {
+	bean := permissionModel.User{}
 	result := d.db.GetDbW().Where("phone=?", phone).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return systemModel.User{}, false, nil
+		return permissionModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return systemModel.User{}, false, result.Error
+		return permissionModel.User{}, false, result.Error
 	}
 	return bean, true, nil
 }
 
 // GetUserByEmail 获取用户信息
-func (d *user) GetUserByEmail(email string) (systemModel.User, bool, error) {
-	bean := systemModel.User{}
+func (d *user) GetUserByEmail(email string) (permissionModel.User, bool, error) {
+	bean := permissionModel.User{}
 	result := d.db.GetDbR().Where("email=?", email).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return systemModel.User{}, false, nil
+		return permissionModel.User{}, false, nil
 	}
 	if result.Error != nil {
-		return systemModel.User{}, false, result.Error
+		return permissionModel.User{}, false, result.Error
 	}
 	return bean, true, nil
 }
 
 // ExistUserPassword 判断用户密码是否正确
 func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
-	result := d.db.GetDbR().Where("id = ? AND password = ?", userId, password).First(&systemModel.User{})
+	result := d.db.GetDbR().Where("id = ? AND password = ?", userId, password).First(&permissionModel.User{})
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, nil
 	}
@@ -345,16 +346,3 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 	return true, nil
 }
 
-// GetUsername 获取用户信息 邮件/手机号
-func (d *user) GetUsername(username, password string) (systemModel.User, bool, error) {
-	bean := systemModel.User{}
-	result := d.db.GetDbR().
-		Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(&bean)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return systemModel.User{}, false, nil
-	}
-	if result.Error != nil {
-		return systemModel.User{}, false, result.Error
-	}
-	return bean, true, nil
-}

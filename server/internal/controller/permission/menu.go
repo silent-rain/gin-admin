@@ -1,27 +1,27 @@
 /*菜单*/
-package system
+package permission
 
 import (
 	"gin-admin/internal/dto"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	permissionService "gin-admin/internal/service/permission"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 菜单
 type menuController struct {
-	service systemService.MenuService
+	service permissionService.MenuService
 }
 
 // NewMenuController 创建菜单对象
 func NewMenuController() *menuController {
 	return &menuController{
-		service: systemService.NewMenuService(),
+		service: permissionService.NewMenuService(),
 	}
 }
 
@@ -37,7 +37,7 @@ func (c *menuController) AllTree(ctx *gin.Context) {
 
 // Tree 获取菜单树
 func (c *menuController) Tree(ctx *gin.Context) {
-	req := systemDTO.QueryMenuReq{}
+	req := permissionDTO.QueryMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -53,12 +53,12 @@ func (c *menuController) Tree(ctx *gin.Context) {
 
 // Add 添加菜单
 func (c *menuController) Add(ctx *gin.Context) {
-	req := systemDTO.AddMenuReq{}
+	req := permissionDTO.AddMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	menu := systemModel.Menu{}
+	menu := permissionModel.Menu{}
 	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -86,8 +86,8 @@ func (c *menuController) Add(ctx *gin.Context) {
 }
 
 // 设置菜单类型为按钮的参数
-func (c *menuController) setMenuTypeByButtonParams(menu systemModel.Menu) systemModel.Menu {
-	if menu.MenuType != uint(systemModel.MenuTypeByButton) {
+func (c *menuController) setMenuTypeByButtonParams(menu permissionModel.Menu) permissionModel.Menu {
+	if menu.MenuType != uint(permissionModel.MenuTypeByButton) {
 		return menu
 	}
 	menu.ElSvgIcon = ""
@@ -101,9 +101,9 @@ func (c *menuController) setMenuTypeByButtonParams(menu systemModel.Menu) system
 }
 
 // 设置菜单打开类型为组件的参数
-func (c *menuController) setMenuOpenTypeByComponentParams(menu systemModel.Menu) systemModel.Menu {
-	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
-		menu.OpenType == uint(systemModel.MenuOpenTypeByComponent)) {
+func (c *menuController) setMenuOpenTypeByComponentParams(menu permissionModel.Menu) permissionModel.Menu {
+	if !(menu.MenuType == uint(permissionModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(permissionModel.MenuOpenTypeByComponent)) {
 		return menu
 	}
 	menu.Permission = ""
@@ -111,9 +111,9 @@ func (c *menuController) setMenuOpenTypeByComponentParams(menu systemModel.Menu)
 }
 
 // 设置菜单打开类型为外链接的参数
-func (c *menuController) setMenuOpenTypeByOutLinkParams(menu systemModel.Menu) systemModel.Menu {
-	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
-		menu.OpenType == uint(systemModel.MenuOpenTypeByOutLink)) {
+func (c *menuController) setMenuOpenTypeByOutLinkParams(menu permissionModel.Menu) permissionModel.Menu {
+	if !(menu.MenuType == uint(permissionModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(permissionModel.MenuOpenTypeByOutLink)) {
 		return menu
 	}
 	menu.Name = ""
@@ -124,9 +124,9 @@ func (c *menuController) setMenuOpenTypeByOutLinkParams(menu systemModel.Menu) s
 }
 
 // 设置菜单打开类型为内链接的参数
-func (c *menuController) setMenuOpenTypeByInnerLinkParams(menu systemModel.Menu) systemModel.Menu {
-	if !(menu.MenuType == uint(systemModel.MenuTypeByMenu) &&
-		menu.OpenType == uint(systemModel.MenuOpenTypeByInnerLink)) {
+func (c *menuController) setMenuOpenTypeByInnerLinkParams(menu permissionModel.Menu) permissionModel.Menu {
+	if !(menu.MenuType == uint(permissionModel.MenuTypeByMenu) &&
+		menu.OpenType == uint(permissionModel.MenuOpenTypeByInnerLink)) {
 		return menu
 	}
 	menu.Permission = ""
@@ -136,12 +136,12 @@ func (c *menuController) setMenuOpenTypeByInnerLinkParams(menu systemModel.Menu)
 
 // Update 更新菜单
 func (c *menuController) Update(ctx *gin.Context) {
-	req := systemDTO.UpdateMenuReq{}
+	req := permissionDTO.UpdateMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	menu := systemModel.Menu{}
+	menu := permissionModel.Menu{}
 	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

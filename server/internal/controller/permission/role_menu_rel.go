@@ -1,13 +1,13 @@
 /* 角色菜单
  */
-package system
+package permission
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
+	permissionDTO "gin-admin/internal/dto/permission"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	permissionService "gin-admin/internal/service/permission"
 	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
@@ -15,19 +15,19 @@ import (
 
 // 角色菜单关系
 type roleMenuRelController struct {
-	service systemService.RoleMenuRelService
+	service permissionService.RoleMenuRelService
 }
 
 // NewRoleMenuRelController 创建角色菜单关系对象
 func NewRoleMenuRelController() *roleMenuRelController {
 	return &roleMenuRelController{
-		service: systemService.NewRoleMenuRelService(),
+		service: permissionService.NewRoleMenuRelService(),
 	}
 }
 
 // List 获取角色关联的菜单列表
 func (c *roleMenuRelController) List(ctx *gin.Context) {
-	req := systemDTO.QueryRoleMenuRelReq{}
+	req := permissionDTO.QueryRoleMenuRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -48,7 +48,7 @@ func (c *roleMenuRelController) List(ctx *gin.Context) {
 
 // Update 更新角色菜单关联关系
 func (c *roleMenuRelController) Update(ctx *gin.Context) {
-	req := systemDTO.UpdateRoleMenuRelReq{}
+	req := permissionDTO.UpdateRoleMenuRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

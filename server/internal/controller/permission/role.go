@@ -1,28 +1,28 @@
 /*角色
  */
-package system
+package permission
 
 import (
 	"gin-admin/internal/dto"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/internal/pkg/tracer"
-	systemService "gin-admin/internal/service/system"
+	permissionService "gin-admin/internal/service/permission"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 角色
 type roleController struct {
-	service systemService.RoleService
+	service permissionService.RoleService
 }
 
 // NewRoleController 创建角色对象
 func NewRoleController() *roleController {
 	return &roleController{
-		service: systemService.NewRoleService(),
+		service: permissionService.NewRoleService(),
 	}
 }
 
@@ -41,7 +41,7 @@ func (c *roleController) List(ctx *gin.Context) {
 	span := tracer.SpanStart(ctx)
 	defer span.Finish()
 
-	req := systemDTO.QueryRoleReq{}
+	req := permissionDTO.QueryRoleReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -57,12 +57,12 @@ func (c *roleController) List(ctx *gin.Context) {
 
 // Add 添加角色
 func (c *roleController) Add(ctx *gin.Context) {
-	req := systemDTO.AddRoleReq{}
+	req := permissionDTO.AddRoleReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	role := systemModel.Role{}
+	role := permissionModel.Role{}
 	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -78,12 +78,12 @@ func (c *roleController) Add(ctx *gin.Context) {
 
 // Update 更新角色
 func (c *roleController) Update(ctx *gin.Context) {
-	req := systemDTO.UpdateRoleReq{}
+	req := permissionDTO.UpdateRoleReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	role := systemModel.Role{}
+	role := permissionModel.Role{}
 	if err := http.ApiJsonConvertJson(ctx, req, &role); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

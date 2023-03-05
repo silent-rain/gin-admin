@@ -1,8 +1,8 @@
 /*角色菜单关系管理*/
-package system
+package permission
 
 import (
-	"gin-admin/internal/controller/system"
+	"gin-admin/internal/controller/permission"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +13,8 @@ func InitRoleMenuRelRouter(group *gin.RouterGroup) {
 	roleMenuRel := group.Group("/roleMenuRel")
 	{
 		// 获取角色关联的菜单列表
-		roleMenuRel.GET("/list", system.NewRoleMenuRelController().List)
+		roleMenuRel.GET("/list", permission.NewRoleMenuRelController().List)
 		// 更新角色菜单关联关系
-		roleMenuRel.PUT("/update", system.NewRoleMenuRelController().Update)
+		roleMenuRel.PUT("/update", permission.NewRoleMenuRelController().Update)
 	}
 }

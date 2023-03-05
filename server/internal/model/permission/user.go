@@ -1,6 +1,6 @@
 /*用户模型
  */
-package system
+package permission
 
 // User 用户表
 type User struct {

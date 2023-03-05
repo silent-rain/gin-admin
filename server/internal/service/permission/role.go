@@ -1,11 +1,11 @@
 /*角色
  */
-package system
+package permission
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDAO "gin-admin/internal/dao/permission"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/pkg/errcode"
 
@@ -14,10 +14,10 @@ import (
 
 // RoleService 角色接口
 type RoleService interface {
-	All(ctx *gin.Context) ([]systemModel.Role, int64, error)
-	List(ctx *gin.Context, req systemDTO.QueryRoleReq) ([]systemModel.Role, int64, error)
-	Add(ctx *gin.Context, role systemModel.Role) (uint, error)
-	Update(ctx *gin.Context, role systemModel.Role) (int64, error)
+	All(ctx *gin.Context) ([]permissionModel.Role, int64, error)
+	List(ctx *gin.Context, req permissionDTO.QueryRoleReq) ([]permissionModel.Role, int64, error)
+	Add(ctx *gin.Context, role permissionModel.Role) (uint, error)
+	Update(ctx *gin.Context, role permissionModel.Role) (int64, error)
 	Delete(ctx *gin.Context, id uint) (int64, error)
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
@@ -25,18 +25,18 @@ type RoleService interface {
 
 // 角色
 type roleService struct {
-	dao systemDAO.Role
+	dao permissionDAO.Role
 }
 
 // NewRoleService 创建角色对象
 func NewRoleService() *roleService {
 	return &roleService{
-		dao: systemDAO.NewRoleDao(),
+		dao: permissionDAO.NewRoleDao(),
 	}
 }
 
 // All 获取所有角色列表
-func (s *roleService) All(ctx *gin.Context) ([]systemModel.Role, int64, error) {
+func (s *roleService) All(ctx *gin.Context) ([]permissionModel.Role, int64, error) {
 	roles, total, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -47,7 +47,7 @@ func (s *roleService) All(ctx *gin.Context) ([]systemModel.Role, int64, error) {
 }
 
 // List 获取所有角色列表
-func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) ([]systemModel.Role, int64, error) {
+func (s *roleService) List(ctx *gin.Context, req permissionDTO.QueryRoleReq) ([]permissionModel.Role, int64, error) {
 	roles, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -58,7 +58,7 @@ func (s *roleService) List(ctx *gin.Context, req systemDTO.QueryRoleReq) ([]syst
 }
 
 // Add 添加角色
-func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) (uint, error) {
+func (h *roleService) Add(ctx *gin.Context, role permissionModel.Role) (uint, error) {
 	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -78,7 +78,7 @@ func (h *roleService) Add(ctx *gin.Context, role systemModel.Role) (uint, error)
 }
 
 // Update 更新角色
-func (h *roleService) Update(ctx *gin.Context, role systemModel.Role) (int64, error) {
+func (h *roleService) Update(ctx *gin.Context, role permissionModel.Role) (int64, error) {
 	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)

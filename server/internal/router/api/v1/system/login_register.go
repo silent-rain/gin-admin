@@ -13,14 +13,10 @@ func InitLoginRegisterRouter(group *gin.RouterGroup) {
 	userLogin := group.Group("/")
 	{
 		// 注册
-		userLogin.POST("/register", system.NewUserController().Add)
-		// 验证码
-		userLogin.GET("/captcha", system.NewUserLoginController().Captcha)
-		// 验证码验证
-		userLogin.GET("/captcha/verify", system.NewUserLoginController().CaptchaVerify)
+		userLogin.POST("/register", system.NewUserLoginRegisterController().Register)
 		// 登录
-		userLogin.POST("/login", system.NewUserLoginController().Login)
+		userLogin.POST("/login", system.NewUserLoginRegisterController().Login)
 		// 登出
-		userLogin.POST("/logout", system.NewUserLoginController().Logout)
+		userLogin.POST("/logout", system.NewUserLoginRegisterController().Logout)
 	}
 }

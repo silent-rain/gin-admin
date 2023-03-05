@@ -1,10 +1,10 @@
 /*菜单*/
-package system
+package permission
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDAO "gin-admin/internal/dao/permission"
+	permissionDTO "gin-admin/internal/dto/permission"
+	systemModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/pkg/errcode"
 
@@ -14,7 +14,7 @@ import (
 // MenuService 菜单接口
 type MenuService interface {
 	AllTree(ctx *gin.Context) ([]systemModel.Menu, int64, error)
-	Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) ([]systemModel.Menu, int64, error)
+	Tree(ctx *gin.Context, req permissionDTO.QueryMenuReq) ([]systemModel.Menu, int64, error)
 	Add(ctx *gin.Context, menu systemModel.Menu) (uint, error)
 	Update(ctx *gin.Context, menu systemModel.Menu) (int64, error)
 	Delete(ctx *gin.Context, id uint) (int64, error)
@@ -24,13 +24,13 @@ type MenuService interface {
 
 // 菜单
 type menuService struct {
-	dao systemDAO.Menu
+	dao permissionDAO.Menu
 }
 
 // NewMenuService 创建菜单对象
 func NewMenuService() *menuService {
 	return &menuService{
-		dao: systemDAO.NewMenuDao(),
+		dao: permissionDAO.NewMenuDao(),
 	}
 }
 
@@ -48,7 +48,7 @@ func (s *menuService) AllTree(ctx *gin.Context) ([]systemModel.Menu, int64, erro
 }
 
 // Tree 获取菜单树
-func (s *menuService) Tree(ctx *gin.Context, req systemDTO.QueryMenuReq) ([]systemModel.Menu, int64, error) {
+func (s *menuService) Tree(ctx *gin.Context, req permissionDTO.QueryMenuReq) ([]systemModel.Menu, int64, error) {
 	menuList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)

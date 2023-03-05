@@ -1,6 +1,6 @@
 /*角色
  */
-package system
+package permission
 
 import "gin-admin/internal/dto"
 

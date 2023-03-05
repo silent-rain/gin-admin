@@ -1,11 +1,11 @@
 /*用户管理
  */
-package system
+package permission
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDAO "gin-admin/internal/dao/permission"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/pkg/errcode"
@@ -16,36 +16,36 @@ import (
 
 // UserService 用户管理
 type UserService interface {
-	All(ctx *gin.Context) ([]systemModel.User, int64, error)
-	List(ctx *gin.Context, req systemDTO.QueryUserReq) ([]systemModel.User, int64, error)
-	Add(ctx *gin.Context, req systemDTO.AddUserReq) error
-	Update(ctx *gin.Context, user systemModel.User, roleIds []uint) error
+	All(ctx *gin.Context) ([]permissionModel.User, int64, error)
+	List(ctx *gin.Context, req permissionDTO.QueryUserReq) ([]permissionModel.User, int64, error)
+	Add(ctx *gin.Context, req permissionDTO.AddUserReq) error
+	Update(ctx *gin.Context, user permissionModel.User, roleIds []uint) error
 	Delete(ctx *gin.Context, id uint) (int64, error)
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-	UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq) (int64, error)
+	UpdatePassword(ctx *gin.Context, req permissionDTO.UpdateUserPasswordReq) (int64, error)
 	ResetPassword(ctx *gin.Context, id uint, password string) (int64, error)
-	UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) (int64, error)
-	UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) (int64, error)
-	Info(ctx *gin.Context, userId uint) (systemDTO.UserInfoRsp, error)
+	UpdatePhone(ctx *gin.Context, req permissionDTO.UpdateUserPhoneReq) (int64, error)
+	UpdateEmail(ctx *gin.Context, req permissionDTO.UpdateUserEmailReq) (int64, error)
+	Info(ctx *gin.Context, userId uint) (permissionDTO.UserInfoRsp, error)
 }
 
 // 用户管理
 type userService struct {
-	dao     systemDAO.User
-	menuDao systemDAO.Menu
+	dao     permissionDAO.User
+	menuDao permissionDAO.Menu
 }
 
 // 创建角色对象
 func NewUserService() *userService {
 	return &userService{
-		dao:     systemDAO.NewUserDao(),
-		menuDao: systemDAO.NewMenuDao(),
+		dao:     permissionDAO.NewUserDao(),
+		menuDao: permissionDAO.NewMenuDao(),
 	}
 }
 
 // All 获取所有用户列表
-func (h *userService) All(ctx *gin.Context) ([]systemModel.User, int64, error) {
+func (h *userService) All(ctx *gin.Context) ([]permissionModel.User, int64, error) {
 	results, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -55,7 +55,7 @@ func (h *userService) All(ctx *gin.Context) ([]systemModel.User, int64, error) {
 }
 
 // List 获取用户列表
-func (h *userService) List(ctx *gin.Context, req systemDTO.QueryUserReq) ([]systemModel.User, int64, error) {
+func (h *userService) List(ctx *gin.Context, req permissionDTO.QueryUserReq) ([]permissionModel.User, int64, error) {
 	results, total, err := h.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -65,13 +65,8 @@ func (h *userService) List(ctx *gin.Context, req systemDTO.QueryUserReq) ([]syst
 }
 
 // Add 添加用户
-func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) error {
-	// 注册入口检查验证码
-	if ctx.Request.URL.Path == "/api/v1/register" {
-		if err := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); err != nil {
-			return err
-		}
-	}
+func (h *userService) Add(ctx *gin.Context, req permissionDTO.AddUserReq) error {
+
 
 	// 判断用户是否存在 邮件/手机号
 	if h.chechkPhone(ctx, req.Phone) {
@@ -85,7 +80,7 @@ func (h *userService) Add(ctx *gin.Context, req systemDTO.AddUserReq) error {
 	req.Password = utils.EncryptMd5(req.Password)
 
 	// 数据转换
-	user := new(systemModel.User)
+	user := new(permissionModel.User)
 	if err := http.ApiJsonConvertJson(ctx, req, user); err != nil {
 		return err
 	}
@@ -131,7 +126,7 @@ func (h *userService) chechkEmail(ctx *gin.Context, email string) bool {
 }
 
 // Update 更新用户详情信息
-func (h *userService) Update(ctx *gin.Context, user systemModel.User, roleIds []uint) error {
+func (h *userService) Update(ctx *gin.Context, user permissionModel.User, roleIds []uint) error {
 	if err := h.dao.Update(user, roleIds); err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
 		return errcode.New(errcode.DBUpdateError)
@@ -170,7 +165,7 @@ func (h *userService) Status(ctx *gin.Context, id uint, status uint) (int64, err
 }
 
 // UpdatePassword 更新密码
-func (h *userService) UpdatePassword(ctx *gin.Context, req systemDTO.UpdateUserPasswordReq) (int64, error) {
+func (h *userService) UpdatePassword(ctx *gin.Context, req permissionDTO.UpdateUserPasswordReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.OldPassword)
 	if err != nil {
@@ -201,7 +196,7 @@ func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) 
 }
 
 // UpdatePhone 更新手机号码
-func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhoneReq) (int64, error) {
+func (h *userService) UpdatePhone(ctx *gin.Context, req permissionDTO.UpdateUserPhoneReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
@@ -236,7 +231,7 @@ func (h *userService) UpdatePhone(ctx *gin.Context, req systemDTO.UpdateUserPhon
 }
 
 // UpdateEmail 更新邮箱
-func (h *userService) UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmailReq) (int64, error) {
+func (h *userService) UpdateEmail(ctx *gin.Context, req permissionDTO.UpdateUserEmailReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
@@ -271,27 +266,27 @@ func (h *userService) UpdateEmail(ctx *gin.Context, req systemDTO.UpdateUserEmai
 }
 
 // Info 获取用户信息
-func (h *userService) Info(ctx *gin.Context, userId uint) (systemDTO.UserInfoRsp, error) {
+func (h *userService) Info(ctx *gin.Context, userId uint) (permissionDTO.UserInfoRsp, error) {
 	user, ok, err := h.dao.Info(userId)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return systemDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
+		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
-		return systemDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryEmptyError)
+		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryEmptyError)
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(errcode.UserDisableError).Error("")
-		return systemDTO.UserInfoRsp{}, errcode.New(errcode.UserDisableError)
+		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.UserDisableError)
 	}
 
 	// 根据角色获取菜单列表
 	roleMenus, err := h.getRoleMenuList(user.Roles)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return systemDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
+		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
 	}
 	// 菜单路由列表：菜单类型为菜单的数据解析
 	menus := h.getMenuList(roleMenus)
@@ -301,7 +296,7 @@ func (h *userService) Info(ctx *gin.Context, userId uint) (systemDTO.UserInfoRsp
 	permissions := h.getPermissionList(roleMenus)
 
 	// 返回值收集
-	result := systemDTO.UserInfoRsp{
+	result := permissionDTO.UserInfoRsp{
 		User:        user,
 		Roles:       user.Roles,
 		Menus:       menus,
@@ -313,7 +308,7 @@ func (h *userService) Info(ctx *gin.Context, userId uint) (systemDTO.UserInfoRsp
 }
 
 // 根据角色获取菜单列表
-func (h *userService) getRoleMenuList(roles []systemModel.Role) ([]systemModel.Menu, error) {
+func (h *userService) getRoleMenuList(roles []permissionModel.Role) ([]permissionModel.Menu, error) {
 	// 获取角色ID
 	roleIds := make([]uint, 0)
 	for _, item := range roles {
@@ -328,13 +323,13 @@ func (h *userService) getRoleMenuList(roles []systemModel.Role) ([]systemModel.M
 }
 
 // 菜单路由列表：菜单类型为菜单的数据解析
-func (h *userService) getMenuList(menus []systemModel.Menu) []systemModel.Menu {
-	results := make([]systemModel.Menu, 0)
+func (h *userService) getMenuList(menus []permissionModel.Menu) []permissionModel.Menu {
+	results := make([]permissionModel.Menu, 0)
 	if len(menus) == 0 {
 		return results
 	}
 	for _, item := range menus {
-		if item.MenuType == uint(systemModel.MenuTypeByMenu) {
+		if item.MenuType == uint(permissionModel.MenuTypeByMenu) {
 			results = append(results, item)
 		}
 	}
@@ -342,16 +337,16 @@ func (h *userService) getMenuList(menus []systemModel.Menu) []systemModel.Menu {
 }
 
 // 按钮权限列表：菜单类型为按钮的数据解析
-func (h *userService) getPermissionList(menus []systemModel.Menu) []systemDTO.ButtonPermission {
-	results := make([]systemDTO.ButtonPermission, 0)
+func (h *userService) getPermissionList(menus []permissionModel.Menu) []permissionDTO.ButtonPermission {
+	results := make([]permissionDTO.ButtonPermission, 0)
 	if len(menus) == 0 {
 		return results
 	}
 	for _, item := range menus {
 		// 过滤禁用按钮, 过滤菜单路由，过滤空权限
-		if item.Status == 1 && item.MenuType == uint(systemModel.MenuTypeByButton) &&
+		if item.Status == 1 && item.MenuType == uint(permissionModel.MenuTypeByButton) &&
 			item.Permission != "" {
-			results = append(results, systemDTO.ButtonPermission{
+			results = append(results, permissionDTO.ButtonPermission{
 				Permission: item.Permission,
 				Disabled:   item.Hidden,
 			})

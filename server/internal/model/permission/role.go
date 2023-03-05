@@ -1,6 +1,6 @@
 /*角色
  */
-package system
+package permission
 
 // Role 角色表
 type Role struct {

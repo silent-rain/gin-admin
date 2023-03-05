@@ -1,6 +1,6 @@
 /* 菜单
  */
-package system
+package permission
 
 import (
 	"gin-admin/internal/dto"

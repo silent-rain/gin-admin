@@ -1,16 +1,16 @@
 /*用户管理
  */
-package system
+package permission
 
 import (
 	"gin-admin/internal/dto"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	permissionMService "gin-admin/internal/service/permission"
 	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
@@ -18,13 +18,13 @@ import (
 
 // 用户管理
 type userController struct {
-	service systemService.UserService
+	service permissionMService.UserService
 }
 
 // 创建用户对象
 func NewUserController() *userController {
 	return &userController{
-		service: systemService.NewUserService(),
+		service: permissionMService.NewUserService(),
 	}
 }
 
@@ -40,7 +40,7 @@ func (c *userController) All(ctx *gin.Context) {
 
 // List 获取用户列表
 func (c *userController) List(ctx *gin.Context) {
-	req := systemDTO.QueryUserReq{}
+	req := permissionDTO.QueryUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -56,7 +56,7 @@ func (c *userController) List(ctx *gin.Context) {
 
 // Add 添加用户
 func (c *userController) Add(ctx *gin.Context) {
-	req := systemDTO.AddUserReq{}
+	req := permissionDTO.AddUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -71,14 +71,14 @@ func (c *userController) Add(ctx *gin.Context) {
 
 // Update 更新用户详情信息
 func (c *userController) Update(ctx *gin.Context) {
-	req := systemDTO.UpdateUserReq{}
+	req := permissionDTO.UpdateUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
 	// 数据转换
-	user := systemModel.User{}
+	user := permissionModel.User{}
 	if err := http.ApiJsonConvertJson(ctx, req, &user); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -139,7 +139,7 @@ func (c *userController) Status(ctx *gin.Context) {
 
 // UpdatePassword 更新密码
 func (c *userController) UpdatePassword(ctx *gin.Context) {
-	req := systemDTO.UpdateUserPasswordReq{}
+	req := permissionDTO.UpdateUserPasswordReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -158,7 +158,7 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 
 // ResetPassword 重置密码
 func (c *userController) ResetPassword(ctx *gin.Context) {
-	req := systemDTO.ResetUserPasswordReq{}
+	req := permissionDTO.ResetUserPasswordReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -176,7 +176,7 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 
 // UpdatePhone 更新手机号码
 func (c *userController) UpdatePhone(ctx *gin.Context) {
-	req := systemDTO.UpdateUserPhoneReq{}
+	req := permissionDTO.UpdateUserPhoneReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -191,7 +191,7 @@ func (c *userController) UpdatePhone(ctx *gin.Context) {
 
 // UpdateEmail 更新邮箱
 func (c *userController) UpdateEmail(ctx *gin.Context) {
-	req := systemDTO.UpdateUserEmailReq{}
+	req := permissionDTO.UpdateUserEmailReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

@@ -1,11 +1,11 @@
 /* 角色菜单 DAO
  */
-package systemDAO
+package permissionDAO
 
 import (
 	DAO "gin-admin/internal/dao"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
+	permissionDTO "gin-admin/internal/dto/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/pkg/utils"
 
@@ -15,7 +15,7 @@ import (
 
 // RoleMenuRel 角色菜单关系接口
 type RoleMenuRel interface {
-	List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error)
+	List(req permissionDTO.QueryRoleMenuRelReq) ([]permissionModel.RoleMenuRel, int64, error)
 	Update(roleId uint, menuIds []uint) error
 }
 
@@ -34,7 +34,7 @@ func NewRoleMenuRelDao() *roleMenuRel {
 }
 
 // List 角色关联的菜单列表
-func (d *roleMenuRel) List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
+func (d *roleMenuRel) List(req permissionDTO.QueryRoleMenuRelReq) ([]permissionModel.RoleMenuRel, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.db.GetDbR()
 		if req.MenuId != 0 {
@@ -46,7 +46,7 @@ func (d *roleMenuRel) List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.Rol
 		return stats
 	}
 
-	bean := make([]systemModel.RoleMenuRel, 0)
+	bean := make([]permissionModel.RoleMenuRel, 0)
 	result := stats().
 		Order("updated_at DESC").
 		Find(&bean)
@@ -54,7 +54,7 @@ func (d *roleMenuRel) List(req systemDTO.QueryRoleMenuRelReq) ([]systemModel.Rol
 		return nil, 0, result.Error
 	}
 	var total int64 = 0
-	stats().Model(&systemModel.RoleMenuRel{}).Count(&total)
+	stats().Model(&permissionModel.RoleMenuRel{}).Count(&total)
 	return bean, total, nil
 }
 
@@ -78,10 +78,10 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 		return err
 	}
 	// 新增的 menuId 列表
-	addRoleMenuRels := make([]systemModel.RoleMenuRel, 0)
+	addRoleMenuRels := make([]permissionModel.RoleMenuRel, 0)
 	for _, menuId := range menuIds {
 		if utils.IndexOfArray(roleMenuIds, menuId) == -1 {
-			addRoleMenuRels = append(addRoleMenuRels, systemModel.RoleMenuRel{
+			addRoleMenuRels = append(addRoleMenuRels, permissionModel.RoleMenuRel{
 				RoleId: roleId,
 				MenuId: menuId,
 			})
@@ -103,7 +103,7 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 	}
 	if len(deleteRoleMenuIds) != 0 {
 		if result := d.Tx().Where("role_id = ? AND menu_id in ?", roleId, deleteRoleMenuIds).
-			Delete(&systemModel.RoleMenuRel{}); result.Error != nil {
+			Delete(&permissionModel.RoleMenuRel{}); result.Error != nil {
 			return result.Error
 		}
 	}
@@ -113,7 +113,7 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 
 // 获取角色关联的菜单 menuId 列表
 func (d *roleMenuRel) getRoleMenuRelByMenuIds(roleId uint) ([]uint, error) {
-	beans := make([]systemModel.RoleMenuRel, 0)
+	beans := make([]permissionModel.RoleMenuRel, 0)
 	results := d.Tx().Where("role_id = ?", roleId).Find(&beans)
 	if results.Error != nil {
 		return nil, results.Error
