@@ -20,12 +20,12 @@ type User struct {
 	Status    uint   `json:"status" gorm:"column:status"`                        // 是否启用,0:禁用,1:启用
 	CreatedAt string `json:"created_at" gorm:"column:created_at"`                // 创建时间
 	UpdatedAt string `json:"updated_at" gorm:"column:updated_at"`                // 更新时间
-	Roles     []Role `json:"roles" gorm:"many2many:sys_user_role_rel;"`          // 角色列表, Many To Many, 关联 sys_user_role_rel 表
+	Roles     []Role `json:"roles" gorm:"many2many:perm_user_role_rel;"`          // 角色列表, Many To Many, 关联 perm_user_role_rel 表
 }
 
 // TableName 表名重写
 func (User) TableName() string {
-	return "sys_user"
+	return "perm_user"
 }
 
 // UserRoleRel 用户角色表
@@ -39,5 +39,5 @@ type UserRoleRel struct {
 
 // TableName 表名重写
 func (UserRoleRel) TableName() string {
-	return "sys_user_role_rel"
+	return "perm_user_role_rel"
 }

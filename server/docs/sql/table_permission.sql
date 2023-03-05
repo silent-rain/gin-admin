@@ -5,7 +5,7 @@ CREATE DATABASE `gin_admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_genera
  权限相关的表
  */
 -- 用户表
-CREATE TABLE sys_user (
+CREATE TABLE perm_user (
     `id` INT AUTO_INCREMENT COMMENT '用户ID',
     `realname` VARCHAR(32) NULL COMMENT '真实姓名',
     `nickname` VARCHAR(32) NOT NULL COMMENT '昵称',
@@ -26,7 +26,7 @@ CREATE TABLE sys_user (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户';
 
 -- 角色表
-CREATE TABLE sys_role (
+CREATE TABLE perm_role (
     `id` INT AUTO_INCREMENT COMMENT '角色ID',
     `name` VARCHAR(20) UNIQUE NOT NULL COMMENT '角色名称',
     `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
@@ -38,19 +38,19 @@ CREATE TABLE sys_role (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '角色表';
 
 -- 用户角色关联表
-CREATE TABLE sys_user_role_rel (
+CREATE TABLE perm_user_role_rel (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT(10) NOT NULL COMMENT '用户ID',
     `role_id` INT(10) NOT NULL COMMENT '角色ID',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    CONSTRAINT `user_role_rel_user_id` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `perm_user_role_rel_user_id` FOREIGN KEY (`user_id`) REFERENCES `perm_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `perm_user_role_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `perm_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户角色关联表';
 
 -- 菜单表
-CREATE TABLE sys_menu (
+CREATE TABLE perm_menu (
     `id` INT AUTO_INCREMENT COMMENT '菜单ID',
     `parent_id` INT(20) NULL COMMENT '父菜单ID',
     `title` VARCHAR(20) NOT NULL COMMENT '菜单名称',
@@ -78,15 +78,15 @@ CREATE TABLE sys_menu (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '菜单表';
 
 -- 角色菜单关联表
-CREATE TABLE sys_role_menu_rel (
+CREATE TABLE perm_role_menu_rel (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `role_id` INT(10) NOT NULL COMMENT '角色ID',
     `menu_id` INT(10) NOT NULL COMMENT '菜单ID',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    CONSTRAINT `sys_role_menu_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `sys_role_menu_rel_menu_id` FOREIGN KEY (`menu_id`) REFERENCES `sys_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `perm_role_menu_rel_role_id` FOREIGN KEY (`role_id`) REFERENCES `perm_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `perm_role_menu_rel_menu_id` FOREIGN KEY (`menu_id`) REFERENCES `perm_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '角色菜单关联表';
 
 -- user表触发器，更新其他表冗余字段
@@ -108,7 +108,7 @@ CREATE TABLE sys_role_menu_rel (
  END;
  */
 -- 用户地理位置 - 待定
-CREATE TABLE _sys_user_location (
+CREATE TABLE _perm_user_location (
     `id` INT AUTO_INCREMENT COMMENT '位置ID',
     `user_id` VARCHAR(10) NOT NULL COMMENT '用户ID',
     `province_code` VARCHAR(10) NULL COMMENT '省',
@@ -125,7 +125,7 @@ CREATE TABLE _sys_user_location (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户地理位置';
 
 -- 用户头像表 - 待定, 可上传至服务器中
-CREATE TABLE _sys_user_avatar (
+CREATE TABLE _perm_user_avatar (
     `id` INT AUTO_INCREMENT COMMENT '头像ID',
     `user_id` VARCHAR(10) NOT NULL COMMENT '用户ID',
     `data` LONGBLOB NULL COMMENT '头像数据',

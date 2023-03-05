@@ -13,5 +13,5 @@ type RoleMenuRel struct {
 
 // TableName 表名重写
 func (RoleMenuRel) TableName() string {
-	return "sys_role_menu_rel"
+	return "perm_role_menu_rel"
 }

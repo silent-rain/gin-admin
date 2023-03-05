@@ -17,5 +17,5 @@ type Role struct {
 
 // TableName 表名重写
 func (Role) TableName() string {
-	return "sys_role"
+	return "perm_role"
 }

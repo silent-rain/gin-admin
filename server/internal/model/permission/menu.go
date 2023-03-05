@@ -32,7 +32,7 @@ type Menu struct {
 
 // TableName 表名重写
 func (Menu) TableName() string {
-	return "sys_menu"
+	return "perm_menu"
 }
 
 // MenuSortById 通过对 ID 排序实现了 sort.Interface 接口
