@@ -53,6 +53,8 @@ func main() {
 		engine.Use(middleware.CheckLogin())
 		// 指标记录
 		engine.Use(middleware.Metrics())
+		// LoadTls 添加对 HTTPS 的支持
+		engine.Use(middleware.LoadTls())
 
 		// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 		engine.Use(gin.Logger())
@@ -78,6 +80,7 @@ func main() {
 
 	// 启动服务
 	go func() {
+		// srv.ListenAndServeTLS("ssl.pem", "ssl.key")  // 开启 SSL 服务
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			panic(fmt.Sprintf("server run failed, err: %v", err))
 		}
