@@ -25,16 +25,16 @@
   - [x] 本地滚动日志 - 文本日志
   - [x] 数据库日志 
     - [x] 结构化日志
-    - [x] 单独封装入库
-  - [x] trace 日志
-  - [x] Gin 框架集成 zap日志库
+    - [x] 日志入库
+  - [x] 全链路跟踪日志 Trace
+  - [x] Gin 框架集成 zap 日志库
 - [ ] 中间件
   - [x] 跨域
   - [x] API 网络请求/响应日志
   - [x] JWT 令牌
   - [x] API 鉴权
   - [ ] API Token 鉴权
-  - [x] [rate](https://golang.org/x/time/rate) 接口限流 
+  - [x] [Rate](https://golang.org/x/time/rate) 接口限流 
 - [x] API 文档
   - [x] ApiPost 接口工具
   - [x] 内置接口文档
@@ -51,17 +51,18 @@
   - [x] [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
   - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档, apipost 工具代替
   - [x] 服务启动后打开浏览器
-## 系统功能列表
+- [ ] 动态 SEO 优化
+
+## 前端系统功能列表
 - [x] 权限管理
   - [x] 注册/登录/退出/验证码
+  - [x] 用户中心
   - [x] 用户管理
-    - [x] 用户中心
-    - [x] 头像上传
   - [x] 角色管理
   - [x] 菜单管理
 - [x] 前端权限
   - [x] 动态路由
-  - [x] 按钮权限权限
+  - [x] 按钮权限
 - [ ] 系统管理
   - [x] 网站配置管理
   - [x] 请求日志管理
@@ -76,7 +77,7 @@
 
 ## 待处理
 - 用户页面
-  - 导入
+  - excel 导入
 
 
 1. 支持 panic 异常时邮件通知
