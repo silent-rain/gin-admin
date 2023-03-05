@@ -121,11 +121,11 @@ func (d *menu) Status(id uint, status uint) (int64, error) {
 func (d *menu) ListByRoleIds(roleIds []uint) ([]permissionModel.Menu, error) {
 	beans := make([]permissionModel.Menu, 0)
 	result := d.db.GetDbR().Model(&permissionModel.Menu{}).
-		Joins("left join sys_role_menu_rel on sys_role_menu_rel.menu_id = sys_menu.id").
-		Where("sys_role_menu_rel.role_id in ?", roleIds).
-		Where("sys_menu.status = 1").
+		Joins("left join perm_role_menu_rel on perm_role_menu_rel.menu_id = perm_menu.id").
+		Where("perm_role_menu_rel.role_id in ?", roleIds).
+		Where("perm_menu.status = 1").
 		Order("sort ASC").Order("id ASC").
-		Distinct("sys_menu.*").
+		Distinct("perm_menu.*").
 		Find(&beans)
 	if result.Error != nil {
 		return nil, result.Error

@@ -60,7 +60,7 @@ func (d *config) All() ([]systemModel.Config, int64, error) {
 // List 查询配置列表
 func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error) {
 	var stats = func() *gorm.DB {
-		stats := d.db.GetDbR().Debug()
+		stats := d.db.GetDbR()
 		if req.Name != "" {
 			stats = stats.Where("name like ?", "%"+req.Name+"%")
 		}
@@ -82,7 +82,7 @@ func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64
 	return beans, total, nil
 }
 
-// Info 获取配置信息
+// InfoByKey 获取配置信息
 func (d *config) InfoByKey(key string) (systemModel.Config, bool, error) {
 	bean := systemModel.Config{}
 	result := d.db.GetDbR().Where("status=1").Where("`key` = ?", key).First(&bean)
