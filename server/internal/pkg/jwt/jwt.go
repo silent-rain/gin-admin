@@ -1,6 +1,6 @@
 /*鉴权令牌
  */
-package jwt_token
+package jwt
 
 import (
 	"time"
@@ -15,20 +15,14 @@ import (
 type Token struct {
 	UserId   uint
 	Nickname string
-	phone    string
-	email    string
-	password string
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成 Token
-func GenerateToken(userId uint, nickname, phone, email, password string) (string, error) {
+func GenerateToken(userId uint, nickname string) (string, error) {
 	cla := Token{
 		UserId:   userId,
 		Nickname: nickname,
-		phone:    phone,
-		email:    email,
-		password: password,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(constant.TokenExpireDuration).Unix(), // 过期时间
 			Issuer:    constant.TokenIssuer,                                // 签发人
@@ -46,9 +40,12 @@ func GenerateToken(userId uint, nickname, phone, email, password string) (string
 
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
-	token, _ := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(constant.Secret), nil
 	})
+	if err != nil {
+		return nil, errcode.New(errcode.TokenParsingError)
+	}
 	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, errcode.New(errcode.TokenInvalidError)

@@ -7,7 +7,7 @@ import (
 
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/jwt_token"
+	"gin-admin/internal/pkg/jwt"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	"gin-admin/pkg/errcode"
@@ -40,7 +40,7 @@ func CheckLogin() gin.HandlerFunc {
 		// 字符串替换
 		token = strings.Replace(token, "Bearer ", "", 1)
 		// Token 解析
-		claim, err := jwt_token.ParseToken(token)
+		claim, err := jwt.ParseToken(token)
 		if err != nil {
 			log.New(ctx).WithCodeError(err).Errorf("")
 			response.New(ctx).WithCodeError(err).Json()

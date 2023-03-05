@@ -6,7 +6,7 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	permissionDTO "gin-admin/internal/dto/permission"
 	systemDTO "gin-admin/internal/dto/system"
-	jwtToken "gin-admin/internal/pkg/jwt_token"
+	jwt "gin-admin/internal/pkg/jwt"
 	"gin-admin/internal/pkg/log"
 	permissionService "gin-admin/internal/service/permission"
 	systemVO "gin-admin/internal/vo/system"
@@ -39,6 +39,7 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 	// 返回 Token
 	result := systemVO.UserLogin{}
 
+	// 检查验证码
 	if err := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); err != nil {
 		return result, err
 	}
@@ -61,7 +62,7 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 	}
 
 	// 生成 Token
-	token, err := jwtToken.GenerateToken(user.ID, user.Nickname, user.Phone, user.Email, user.Password)
+	token, err := jwt.GenerateToken(user.ID, user.Nickname)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
 		return result, errcode.New(errcode.TokenGenerateError)
