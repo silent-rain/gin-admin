@@ -26,6 +26,7 @@ type ConfigService interface {
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
 	ChildrenByKey(ctx *gin.Context, key string) ([]systemModel.Config, error)
+	WebSiteConfigList(ctx *gin.Context, key string) ([]systemModel.Config, error)
 }
 
 // 配置
@@ -202,4 +203,14 @@ func configListToTree(src []systemModel.Config, parentId *uint) []systemModel.Co
 		}
 	}
 	return tree
+}
+
+// WebSiteConfigList 查询网站配置列表
+func (s *configService) WebSiteConfigList(ctx *gin.Context, key string) ([]systemModel.Config, error) {
+	results, err := s.dao.ChildrenByKey(key)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, errcode.New(errcode.DBQueryError)
+	}
+	return results, nil
 }

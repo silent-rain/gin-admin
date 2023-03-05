@@ -191,3 +191,13 @@ func (c *configController) Status(ctx *gin.Context) {
 	}
 	response.New(ctx).Json()
 }
+
+// WebSiteConfigList 查询网站配置列表
+func (c *configController) WebSiteConfigList(ctx *gin.Context) {
+	results, err := c.service.WebSiteConfigList(ctx, "website")
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, int64(len(results))).Json()
+}

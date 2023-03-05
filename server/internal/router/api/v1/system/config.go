@@ -32,5 +32,7 @@ func InitConfigRouter(group *gin.RouterGroup) {
 		config.PUT("/status", system.NewConfigController().Status)
 		// 通过上级 key 获取子配置列表
 		config.GET("/childrenByKey", system.NewConfigController().ChildrenByKey)
+		// 查询网站配置列表
+		config.GET("/webSiteConfigList", system.NewConfigController().WebSiteConfigList)
 	}
 }

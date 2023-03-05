@@ -17,6 +17,7 @@ var (
 		"^/api/v1/captcha",
 		"^/api/v1/captcha/verify",
 		"^/api/v1/login",
+		"^/api/v1/config/webSiteConfigList",
 
 		// WEB
 		"^/favicon.ico$",
