@@ -2,7 +2,7 @@
 CREATE DATABASE `gin_admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 /*
- 用户相关的表
+ 权限相关的表
  */
 -- 用户表
 CREATE TABLE sys_user (
@@ -108,7 +108,7 @@ CREATE TABLE sys_role_menu_rel (
  END;
  */
 -- 用户地理位置 - 待定
-CREATE TABLE sys_user_location (
+CREATE TABLE _sys_user_location (
     `id` INT AUTO_INCREMENT COMMENT '位置ID',
     `user_id` VARCHAR(10) NOT NULL COMMENT '用户ID',
     `province_code` VARCHAR(10) NULL COMMENT '省',
@@ -125,7 +125,7 @@ CREATE TABLE sys_user_location (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户地理位置';
 
 -- 用户头像表 - 待定, 可上传至服务器中
-CREATE TABLE sys_user_avatar (
+CREATE TABLE _sys_user_avatar (
     `id` INT AUTO_INCREMENT COMMENT '头像ID',
     `user_id` VARCHAR(10) NOT NULL COMMENT '用户ID',
     `data` LONGBLOB NULL COMMENT '头像数据',
@@ -138,7 +138,7 @@ CREATE TABLE sys_user_avatar (
  - 部门 岗位 职级
  */
 -- 用户登录表 - 待定
-CREATE TABLE sys_user_login (
+CREATE TABLE _sys_user_login (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` VARCHAR(10) NOT NULL COMMENT '用户ID',
     `trace_id` VARCHAR(32) NULL COMMENT '请求traceId',

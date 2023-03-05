@@ -23,5 +23,5 @@ type HttpLog struct {
 
 // TableName 表名重写
 func (HttpLog) TableName() string {
-	return "sys_http_log"
+	return "log_http"
 }

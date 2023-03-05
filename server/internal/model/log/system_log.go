@@ -22,5 +22,5 @@ type SystemLog struct {
 
 // TableName 表名重写
 func (SystemLog) TableName() string {
-	return "sys_system_log"
+	return "log_system"
 }

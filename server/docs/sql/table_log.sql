@@ -2,7 +2,7 @@
  日志相关表
  */
 -- 网络请求日志表
-CREATE TABLE sys_http_log (
+CREATE TABLE log_http (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT NULL COMMENT '请求用户ID',
     `nickname` VARCHAR(32) NULL COMMENT '昵称',
@@ -22,7 +22,7 @@ CREATE TABLE sys_http_log (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '网络请求日志';
 
 -- 系统日志表
-CREATE TABLE sys_system_log (
+CREATE TABLE log_system (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT NULL COMMENT '请求用户ID',
     `nickname` VARCHAR(32) NULL COMMENT '昵称',
@@ -40,7 +40,7 @@ CREATE TABLE sys_system_log (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '系统日志';
 
 -- WEB日志表
-CREATE TABLE sys_web_log (
+CREATE TABLE log_web (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT NULL COMMENT '请求用户ID',
     `nickname` VARCHAR(32) NULL COMMENT '昵称',
@@ -56,32 +56,3 @@ CREATE TABLE sys_web_log (
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT 'WEB日志表';
-
--- 应用配置表
-CREATE TABLE sys_config (
-    `id` INT AUTO_INCREMENT COMMENT '配置ID',
-    `parent_id` INT(11) DEFAULT NULL COMMENT '父节点ID',
-    `name` VARCHAR(32) NOT NULL COMMENT '配置名称',
-    `key` VARCHAR(32) NOT NULL UNIQUE COMMENT '配置项(英文)',
-    `value` TEXT COMMENT '配置参数值',
-    `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
-    `note` VARCHAR(32) DEFAULT NULL COMMENT '配置描述',
-    `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用,0: 禁用,1: 启用',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '应用配置表';
-
--- ICON图标表
-CREATE TABLE sys_icon (
-    `id` INT AUTO_INCREMENT COMMENT '配置ID',
-    `parent_id` INT(11) DEFAULT NULL COMMENT '父节点ID',
-    `lebal` VARCHAR(32) NOT NULL COMMENT '名称',
-    `value` VARCHAR(32) NOT NULL COMMENT '参数值',
-    `category` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '图标类型,1:element,2:custom',
-    `sort` INT(11) NOT NULL DEFAULT 0 COMMENT '排序',
-    `note` VARCHAR(32) DEFAULT NULL COMMENT '配置描述',
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT 'ICON图标表';

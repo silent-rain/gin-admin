@@ -21,5 +21,5 @@ type WebLog struct {
 
 // TableName 表名重写
 func (WebLog) TableName() string {
-	return "sys_web_log"
+	return "log_web"
 }
