@@ -6,6 +6,7 @@ import (
 	systemDAO "gin-admin/internal/dao/system"
 	permissionDTO "gin-admin/internal/dto/permission"
 	systemDTO "gin-admin/internal/dto/system"
+	systemModel "gin-admin/internal/model/system"
 	jwt "gin-admin/internal/pkg/jwt"
 	"gin-admin/internal/pkg/log"
 	permissionService "gin-admin/internal/service/permission"
@@ -59,6 +60,19 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 	if user.Status != 1 {
 		log.New(ctx).WithCode(errcode.UserDisableError).Error("")
 		return result, errcode.New(errcode.UserDisableError)
+	}
+
+	// 存储登录日志
+	_, err = NewUserLoginService().Add(ctx, systemModel.UserLogin{
+		UserId:     user.ID,
+		Nickname:   user.Nickname,
+		RemoteAddr: ctx.ClientIP(),
+		UserAgent:  ctx.Request.UserAgent(),
+		Status:     1,
+	})
+	if err != nil {
+		log.New(ctx).WithCodeError(err).Errorf("%v", err)
+		return result, err
 	}
 
 	// 生成 Token

@@ -54,7 +54,7 @@ func main() {
 		// 指标记录
 		engine.Use(middleware.Metrics())
 		// LoadTls 添加对 HTTPS 的支持
-		engine.Use(middleware.LoadTls())
+		// engine.Use(middleware.LoadTls())
 
 		// 在请求的时候会在控制台打印一行请求地址的url和耗时等信息
 		engine.Use(gin.Logger())

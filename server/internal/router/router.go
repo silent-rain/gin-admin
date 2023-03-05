@@ -46,6 +46,7 @@ func Init(engine *gin.Engine) {
 		permission.InitRoleMenuRelRouter(privateGroup) // 初始化角色菜单关系管理路由
 		system.InitUploadRouter(privateGroup)          // 初始化上传管理路由
 		system.InitConfigRouter(privateGroup)          // 初始化配置管理路由
+		system.InitUserLoginRouter(privateGroup)       // 初始化配置管理路由
 		log.InitLogRouter(privateGroup)                // 初始化日志管理路由
 	}
 }

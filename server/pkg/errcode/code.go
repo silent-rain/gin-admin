@@ -12,6 +12,7 @@ const (
 	HttpServerCloseError                          // Http 服务关闭错误
 	RouteNotFoundError                            // 404 接口不存在
 	InternalServerError                           // 500 服务器内部错误
+	LoadSSLError                                  // 加载 SSL 错误
 )
 
 // 定时任务
