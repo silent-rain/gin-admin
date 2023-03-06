@@ -7,7 +7,7 @@ import (
 	permissionDTO "gin-admin/internal/dto/permission"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
-	jwt "gin-admin/internal/pkg/jwt"
+	"gin-admin/internal/pkg/jwt"
 	"gin-admin/internal/pkg/log"
 	permissionService "gin-admin/internal/service/permission"
 	systemVO "gin-admin/internal/vo/system"

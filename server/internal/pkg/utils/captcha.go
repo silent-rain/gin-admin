@@ -2,9 +2,10 @@
 package utils
 
 import (
-	"gin-admin/pkg/errcode"
 	"image/color"
 	"time"
+
+	"gin-admin/pkg/errcode"
 
 	"github.com/mojocn/base64Captcha"
 )
