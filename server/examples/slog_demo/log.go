@@ -12,6 +12,7 @@ package log
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os"
 
@@ -35,13 +36,13 @@ type DbHandler struct {
 }
 
 // Enabled 设置日志级别
-func (h *DbHandler) Enabled(level slog.Level) bool {
-	return h.Handler.Enabled(level)
+func (h *DbHandler) Enabled(ctx context.Context, level slog.Level) bool {
+	return h.Handler.Enabled(ctx, level)
 }
 
 // Handle 句柄处理记录
-func (h *DbHandler) Handle(r slog.Record) error {
-	err := h.Handler.Handle(r)
+func (h *DbHandler) Handle(ctx context.Context, r slog.Record) error {
+	err := h.Handler.Handle(ctx, r)
 	if err != nil {
 		return err
 	}

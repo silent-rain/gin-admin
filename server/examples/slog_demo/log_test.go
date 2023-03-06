@@ -11,6 +11,7 @@
 package log
 
 import (
+	"context"
 	"net"
 	"testing"
 
@@ -23,6 +24,8 @@ func TestInit(t *testing.T) {
 	slog.Info("this is info")
 	slog.Warn("this is warn")
 	slog.Error("this is error", net.ErrClosed, "status", 500)
-	slog.LogAttrs(slog.LevelInfo, "oops",
+
+	ctx := context.Background()
+	slog.LogAttrs(ctx, slog.LevelInfo, "oops",
 		slog.Int("status", 500), slog.Any("err", net.ErrClosed))
 }
