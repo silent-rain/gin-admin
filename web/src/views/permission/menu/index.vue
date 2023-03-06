@@ -262,7 +262,7 @@
         fixed="right"
         label="操作"
         align="center"
-        width="186"
+        width="210"
       >
         <template #default="scope">
           <ButtonPermission
@@ -274,6 +274,16 @@
             @click="handleAddById(scope.row)"
           >
             添加
+          </ButtonPermission>
+          <ButtonPermission
+            permission="sys:menu:update"
+            link
+            type="primary"
+            size="small"
+            :icon="DocumentCopy"
+            @click="handleCopy(scope.row)"
+          >
+            拷贝
           </ButtonPermission>
           <ButtonPermission
             permission="sys:menu:update"
@@ -326,6 +336,7 @@ import {
   Search,
   Delete,
   Plus,
+  DocumentCopy,
   InfoFilled,
 } from '@element-plus/icons-vue';
 import { ElMessage, TableInstance } from 'element-plus';
@@ -459,6 +470,13 @@ const handleAddById = async (row: Menu) => {
   state.menuForm.data.status = 1;
   state.menuForm.data.sort = 1;
   state.menuForm.type = 'add';
+  state.menuForm.visible = true;
+};
+// 拷贝当前菜单
+const handleCopy = async (row: Menu) => {
+  state.menuForm.data = { ...row };
+
+  state.menuForm.type = 'edit';
   state.menuForm.visible = true;
 };
 // 多选事件
