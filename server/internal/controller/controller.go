@@ -9,7 +9,7 @@ import (
 	"gin-admin/internal/pkg/response"
 	systemVO "gin-admin/internal/vo/system"
 	"gin-admin/pkg/errcode"
-	"gin-admin/pkg/timeutil"
+	timeutil "gin-admin/pkg/utils/time"
 
 	"github.com/gin-gonic/gin"
 )
