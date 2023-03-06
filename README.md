@@ -52,6 +52,10 @@
   - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档, apipost 工具代替
   - [x] 服务启动后打开浏览器
 - [ ] 动态 SEO 优化
+- [ ] 订阅模式
+- [ ] 内存缓存
+- [ ] [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
+- [ ] [websocket](https://github.com/gorilla/websocket) 实时通讯
 
 ## 前端系统功能列表
 - [x] 权限管理
@@ -81,16 +85,6 @@
 ## 待处理
 - 用户页面
   - excel 导入
-
-
-1. 支持 panic 异常时邮件通知
-内存缓存
-redis
-订阅模式
-2. 支持 [go-redis](https://github.com/go-redis/redis/v7) 组件
-3. 支持 [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
-4. 支持 [websocket](https://github.com/gorilla/websocket) 实时通讯，在后台有界面演示
-5. /app/Kit/ ※ 自定义系统服务，包含第三方服务和系统功能服务
 
 
 ## 项目编译&运行
