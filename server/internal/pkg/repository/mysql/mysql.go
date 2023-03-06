@@ -26,13 +26,13 @@ type DBRepo interface {
 
 // New 新建数据库对象
 func New() (DBRepo, error) {
-	cfg := conf.Instance().MySQL
+	cfg := conf.Instance()
 
-	dbr, err := dbConnect(cfg.Read.Host, cfg.Read.Port, cfg.Read.Username, cfg.Read.Password, cfg.Read.DbName)
+	dbr, err := dbConnect(cfg, cfg.MySQL.Read)
 	if err != nil {
 		return nil, err
 	}
-	dbw, err := dbConnect(cfg.Write.Host, cfg.Write.Port, cfg.Write.Username, cfg.Write.Password, cfg.Write.DbName)
+	dbw, err := dbConnect(cfg, cfg.MySQL.Write)
 	if err != nil {
 		return nil, err
 	}
@@ -78,9 +78,9 @@ func (d *dbRepo) DbWClose() error {
 }
 
 // 连接数据库
-func dbConnect(host string, port int, username, password, dbName string) (*gorm.DB, error) {
+func dbConnect(cfg conf.Config, dbCfg conf.MySQLAuthConfig) (*gorm.DB, error) {
 	// 数据库地址
-	dsn := SourceDsn(host, port, username, password, dbName)
+	dsn := SourceDsn(dbCfg)
 	// 连接数据库
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// 命名策略表，列命名策略
@@ -95,12 +95,10 @@ func dbConnect(host string, port int, username, password, dbName string) (*gorm.
 		// Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
-		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbName, err)
+		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)
 	}
 	// 设置表字符类型
 	db.Set("gorm:table_options", "CHARSET=utf8mb4")
-
-	cfg := conf.Instance().MySQL.Base
 
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -109,17 +107,17 @@ func dbConnect(host string, port int, username, password, dbName string) (*gorm.
 
 	// 验证与数据库的连接是否仍然有效，必要时建立连接。
 	if err := sqlDB.Ping(); err != nil {
-		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbName, err)
+		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)
 	}
 
 	// 设置连接池 用于设置最大打开的连接数，默认值为0表示不限制.设置最大的连接数，可以避免并发太高导致连接mysql出现too many connections的错误。
-	sqlDB.SetMaxOpenConns(cfg.MaxOpenConn)
+	sqlDB.SetMaxOpenConns(cfg.MySQL.Base.MaxOpenConn)
 
 	// 设置最大连接数 用于设置闲置的连接数.设置闲置的连接数则当开启的一个连接使用完成后可以放在池里等候下一次使用。
-	sqlDB.SetMaxIdleConns(cfg.MaxIdleConn)
+	sqlDB.SetMaxIdleConns(cfg.MySQL.Base.MaxIdleConn)
 
 	// 设置最大连接超时
-	sqlDB.SetConnMaxLifetime(time.Minute * cfg.ConnMaxLifeTime)
+	sqlDB.SetConnMaxLifetime(time.Minute * cfg.MySQL.Base.ConnMaxLifeTime)
 
 	// 使用插件
 	db.Use(&LocalTimePlugin{})
@@ -128,13 +126,13 @@ func dbConnect(host string, port int, username, password, dbName string) (*gorm.
 }
 
 // Dsn 拼接 mysql 数据库地址
-func SourceDsn(host string, port int, username, password, dbName string) string {
+func SourceDsn(cfg conf.MySQLAuthConfig) string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=%t&loc=%s",
-		username,
-		password,
-		host,
-		port,
-		dbName,
+		cfg.Username,
+		cfg.Password,
+		cfg.Host,
+		cfg.Port,
+		cfg.DbName,
 		false,
 		"Asia%2FShanghai", // or Local
 	)

@@ -12,6 +12,7 @@ import (
 
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/repository/mysql"
+	"gin-admin/internal/pkg/repository/redis"
 	"gin-admin/pkg/color"
 	"gin-admin/pkg/cron/ticker"
 	"gin-admin/pkg/cron/timer"
@@ -66,7 +67,7 @@ func WithCloseHttpServer(server *http.Server) func() {
 		if err := server.Shutdown(ctx); err != nil {
 			log.New(nil).WithCode(errcode.HttpServerCloseError).Error("")
 		}
-		fmt.Println(color.Blue("server closed ..."))
+		fmt.Println(color.Blue("Server Closed ..."))
 	}
 }
 
@@ -75,7 +76,7 @@ func WithCloseCron() func() {
 	return func() {
 		ticker.Stop()
 		timer.Stop()
-		fmt.Println(color.Blue("cron closed ..."))
+		fmt.Println(color.Blue("Cron Closed ..."))
 	}
 }
 
@@ -93,13 +94,27 @@ func WithCloseMysql() func() {
 		if err := db.DbRClose(); err != nil {
 			log.New(nil).WithCode(errcode.DBReadCloseError).Error("")
 		}
-		fmt.Println(color.Blue("mysql closed ..."))
+		fmt.Println(color.Blue("Mysql Closed ..."))
+	}
+}
+
+// WithCloseRedis 关闭 Redis 服务
+func WithCloseRedis() func() {
+	return func() {
+		db := redis.Instance()
+		if db == nil {
+			return
+		}
+		if err := db.Close(); err != nil {
+			log.New(nil).WithCode(errcode.DBReadCloseError).Error("")
+		}
+		fmt.Println(color.Blue("Redis closed ..."))
 	}
 }
 
 // WithCloseInfo 服务关闭后的消息提示
 func WithCloseInfo() func() {
 	return func() {
-		fmt.Println(color.Blue("see you again~"))
+		fmt.Println(color.Blue("See you again~"))
 	}
 }

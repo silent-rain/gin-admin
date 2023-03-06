@@ -19,8 +19,6 @@ var (
 	ConfigFile = "./conf.toml"
 )
 
-
-
 // Config 定义配置信息
 type Config struct {
 	Environment *EnvironmentConfig `toml:"environment"` // 系统环境
@@ -64,38 +62,33 @@ func (s ServerConfig) ServerAddress() string {
 
 // MySQLConfig 数据库配置
 type MySQLConfig struct {
-	Read struct {
-		Key      string `toml:"key"`      // db信息唯一标识
-		Host     string `toml:"host"`     // db连接实例IP或域名
-		Port     int    `toml:"port"`     // db连接实例端口
-		DbName   string `toml:"db_name"`  // db库名
-		Username string `toml:"username"` // db连接账号
-		Password string `toml:"password"` // db连接密码
-	} `toml:"read"`
-	Write struct {
-		Key      string `toml:"key"`      // db信息唯一标识
-		Host     string `toml:"host"`     // db连接实例IP或域名
-		Port     int    `toml:"port"`     // db连接实例端口
-		DbName   string `toml:"db_name"`  // db库名
-		Username string `toml:"username"` // db连接账号
-		Password string `toml:"password"` // db连接密码
-	} `toml:"write"`
-	Base struct {
+	Read  MySQLAuthConfig `toml:"read"`
+	Write MySQLAuthConfig `toml:"write"`
+	Base  struct {
 		MaxOpenConn     int           `toml:"max_open_conn"`     // 最大打开的连接数
 		MaxIdleConn     int           `toml:"max_idle_conn"`     // 闲置的连接数
 		ConnMaxLifeTime time.Duration `toml:"conn_max_lifetime"` // 设置最大连接超时(min)
 	} `toml:"base"`
 }
 
+// MySQLAuthConfig Mysql 配置信息
+type MySQLAuthConfig struct {
+	Key      string `toml:"key"`      // db信息唯一标识
+	Host     string `toml:"host"`     // db连接实例IP或域名
+	Port     int    `toml:"port"`     // db连接实例端口
+	DbName   string `toml:"db_name"`  // db库名
+	Username string `toml:"username"` // db连接账号
+	Password string `toml:"password"` // db连接密码
+}
+
 // RedisConfig 数据库配置
 type RedisConfig struct {
-	Host         string `toml:"host"`           // IP或域名
-	Port         int    `toml:"port"`           // 端口
-	Password     string `toml:"password"`       // 连接密码
-	DbName       string `toml:"db_name"`        // db库名
-	MaxRetries   int    `toml:"max_retries"`    // 最大重试次数
-	PoolSize     int    `toml:"pool_size"`      // 连接池大小
-	MinIdleConns int    `toml:"min_idle_conns"` // 闲置的连接数
+	Host       string `toml:"host"`        // IP或域名
+	Port       int    `toml:"port"`        // 端口
+	Password   string `toml:"password"`    // 连接密码
+	Db         int    `toml:"db"`          // db库名
+	MaxRetries int    `toml:"max_retries"` // 最大重试次数
+	PoolSize   int    `toml:"pool_size"`   // 连接池大小
 }
 
 // SqliteConfig sqlite3 数据库配置

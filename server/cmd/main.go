@@ -12,6 +12,7 @@ import (
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
 	"gin-admin/internal/pkg/repository/mysql"
+	"gin-admin/internal/pkg/repository/redis"
 	"gin-admin/internal/router"
 	"gin-admin/pkg/plugin"
 	"gin-admin/pkg/shutdown"
@@ -25,8 +26,10 @@ func main() {
 	conf.Init(conf.ConfigFile)
 	// 初始化日志
 	log.Init()
-	// 初始化数据库
+	// 初始化 Mysql 数据库
 	mysql.Init()
+	// 初始化 Redis 数据库
+	redis.Init()
 	// 初始化定时任务
 	tasks.Init()
 
@@ -94,6 +97,8 @@ func main() {
 		shutdown.WithCloseCron(),
 		// 关闭 Mysql 服务
 		shutdown.WithCloseMysql(),
+		// 关闭 Redis 服务
+		shutdown.WithCloseRedis(),
 		// 服务关闭后的消息提示
 		shutdown.WithCloseInfo(),
 	)

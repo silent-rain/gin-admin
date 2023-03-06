@@ -36,7 +36,7 @@ const (
 	JsonDataDecodeError                          // json 数据解码错误
 )
 
-// 数据库
+// Mysql 数据库
 const (
 	DBQueryError             ErrorCode = iota + 10300 // 数据库查询错误
 	DBQueryEmptyError                                 // 数据不存在
@@ -50,6 +50,15 @@ const (
 	DBDataExistChildrenError                          // 存在子项
 	DBWriteCloseError                                 // 读写数据库实例关闭失败
 	DBReadCloseError                                  // 只读数据库实例关闭失败
+)
+
+// Redis 数据库
+const (
+	RedisPingError         ErrorCode = iota + 10350 // redis 连接失败
+	RedisSetKeyError                                // redis 设置 KEY 失败
+	RedisGetKeyError                                // redis 获取 KEY 失败
+	RedisTTLGetKeyError                             // redis 查看 Key 剩余的过期时间失败
+	RedisSetKeyExpireError                          // redis 设置 key 的过期时间失败
 )
 
 // 鉴权

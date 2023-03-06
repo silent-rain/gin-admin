@@ -188,14 +188,12 @@ air
 - [vue SEO的解决方案](https://blog.csdn.net/weixin_45731256/article/details/122822144)
 
 ### go-api 设计参考
-- https://github.com/flipped-aurora/gin-vue-admin/tree/main/server
+- https://github.com/flipped-aurora/gin-vue-admin
 - https://github.com/go-admin-team/go-admin
 - https://github.com/GoAdminGroup/go-admin
-- https://github.com/eddycjy/go-gin-example
 - https://github.com/xinliangnote/go-gin-api
-- https://github.com/bg-vc/vc-gin-api
 - https://github.com/fyonecon/ginlaravel
-- https://github.com/mritd/ginmvc
+
 ### 日志
 - https://zhuanlan.zhihu.com/p/430224518
 - https://zhuanlan.zhihu.com/p/553995164

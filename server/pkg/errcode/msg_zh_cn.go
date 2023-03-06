@@ -37,6 +37,12 @@ var MsgZHCN = map[ErrorCode]error{
 	DBDataExistChildrenError: errors.New("存在子项"),
 	DBWriteCloseError:        errors.New("读写数据库实例关闭失败"),
 	DBReadCloseError:         errors.New("只读数据库实例关闭失败"),
+	// Redis 数据库
+	RedisPingError:         errors.New("redis 连接失败"),
+	RedisSetKeyError:       errors.New("redis 设置 KEY 失败"),
+	RedisGetKeyError:       errors.New("redis 获取 KEY 失"),
+	RedisTTLGetKeyError:    errors.New("redis 查看 Key 剩余的过期时间失败"),
+	RedisSetKeyExpireError: errors.New("redis 设置 key 的过期时间失败"),
 	// 鉴权
 	TokenGenerateError: errors.New("生成 Token 失败"),
 	TokenNotFound:      errors.New("鉴权信息不存在"),
