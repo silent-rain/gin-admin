@@ -10,6 +10,106 @@
 - yarn 版本: v1.22.18
 - 数据库版本: MariaDB v10.3.36
 
+## 项目结构
+### 后端
+```
+server
+├── assets
+├── cmd
+│   ├── conf.toml
+│   ├── main.go
+│   └── upload
+├── docs
+├── examples
+├── go.mod
+├── go.sum
+├── internal
+│   ├── controller
+│   ├── dao
+│   ├── dto
+│   ├── model
+│   ├── pkg
+│   │   ├── conf
+│   │   ├── constant
+│   │   ├── core
+│   │   ├── http
+│   │   ├── jwt
+│   │   ├── log
+│   │   ├── metrics
+│   │   ├── middleware
+│   │   ├── repository
+│   │   │   ├── mysql
+│   │   │   └── redis
+│   │   ├── response
+│   │   ├── tracer
+│   │   └── utils
+│   ├── router
+│   ├── service
+│   └── vo
+├── pkg
+│   ├── color
+│   ├── cron
+│   ├── errcode
+│   ├── excel
+│   ├── email
+│   ├── plugin
+│   ├── shutdown
+│   └── utils
+└── tasks
+```
+### 前端
+```
+web
+├── .husky
+├── mock
+├── node_modules
+├── public
+├── src
+│   ├── api
+│   ├── assets
+│   ├── components
+│   ├── constant
+│   ├── directives
+│   ├── hooks
+│   ├── icons
+│   ├── lang
+│   ├── layout
+│   ├── lib
+│   ├── plugins
+│   ├── router
+│   ├── store
+│   ├── styles
+│   ├── theme
+│   ├── typings
+│   ├── utils
+│   ├── views
+│   ├── App.vue
+│   ├── main.ts
+│   ├── permission.ts
+│   └── settings.ts
+├── .env.build-test
+├── .env.serve-dev
+├── .env.serve-prod
+├── .env.serve-test
+├── .eslintrc-auto-import.json
+├── .eslintrc.js
+├── .gitignore
+├── .prettierrc.cjs
+├── index.html
+├── mock-prod-server.ts
+├── optimize-include.ts
+├── package.json
+├── package-lock.json
+├── tsconfig.base.json
+├── tsconfig.json
+├── vite.config.ts
+├── vitest.config.ts
+├── vitest.setup.ts
+├── yarn-error.log
+├── yarn.lock
+└── README.md
+```
+
 ## 后端框架功能列表
 - [x] 热重启
 - [x] 内嵌文件
