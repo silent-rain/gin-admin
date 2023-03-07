@@ -96,7 +96,6 @@ type RedisConfig struct {
 	Host       string `toml:"host"`        // IP或域名
 	Port       int    `toml:"port"`        // 端口
 	Password   string `toml:"password"`    // 连接密码
-	Db         int    `toml:"db"`          // db库名
 	MaxRetries int    `toml:"max_retries"` // 最大重试次数
 	PoolSize   int    `toml:"pool_size"`   // 连接池大小
 }

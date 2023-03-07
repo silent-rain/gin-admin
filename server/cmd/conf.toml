@@ -57,7 +57,6 @@ env = "dev" # prod/test/dev
   host = "127.0.0.1" # IP或域名
   port = 6379 # 端口
   password = "foobared" # 密码
-  db = 0 # 数据库名称
   max_retries = 3 # 最大重试次数
   pool_size = 10 # 连接池大小
 

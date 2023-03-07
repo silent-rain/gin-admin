@@ -54,11 +54,12 @@ const (
 
 // Redis 数据库
 const (
-	RedisPingError         ErrorCode = iota + 10350 // redis 连接失败
-	RedisSetKeyError                                // redis 设置 KEY 失败
-	RedisGetKeyError                                // redis 获取 KEY 失败
-	RedisTTLGetKeyError                             // redis 查看 Key 剩余的过期时间失败
-	RedisSetKeyExpireError                          // redis 设置 key 的过期时间失败
+	RedisPingError          ErrorCode = iota + 10350 // redis 连接失败
+	RedisUnknownClientError                          // redis 未知客户端
+	RedisSetKeyError                                 // redis 设置 KEY 失败
+	RedisGetKeyError                                 // redis 获取 KEY 失败
+	RedisTTLGetKeyError                              // redis 查看 Key 剩余的过期时间失败
+	RedisSetKeyExpireError                           // redis 设置 key 的过期时间失败
 )
 
 // 鉴权

@@ -7,12 +7,12 @@ import "github.com/gin-gonic/gin"
 func Init(engine *gin.Engine) {
 	// 服务启动后在浏览器中打开 URI
 	RegisterOpenBrowser()
-	// 服务启动后显示 logo
-	RegisterLogo()
 	// pprof 性能剖析工具
 	RegisterPprof(engine)
 	// Prometheus 监控指标
 	RegisterPrometheus(engine)
 	// swagger API 文档
 	RegisterSwagger(engine)
+	// 服务启动后显示 logo
+	RegisterLogo()
 }

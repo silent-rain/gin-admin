@@ -23,21 +23,57 @@ type DBRepo interface {
 	Del(ctx context.Context, key string) bool
 	Incr(ctx context.Context, key string) int64
 	Decr(ctx context.Context, key string) int64
-	Close() error
 }
 
 var (
-	dbInstance DBRepo
+	dbInstance *dbPool
+)
+
+// DBType Rides 数据库类型
+type DBType = int
+
+const (
+	// Default 默认表
+	Default DBType = iota
+	// UserLogin 用户登录表
+	UserLogin DBType = iota
 )
 
 // New 创建 Redis 客户端
-func New() (DBRepo, error) {
+func New() (*dbPool, error) {
 	cfg := conf.Instance().Redis
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+	defer cancel()
 
+	// 默认表
+	defaultDB, err := dbConnect(*cfg, UserLogin)
+	if err != nil {
+		return nil, err
+	}
+	if err := defaultDB.Ping(ctx).Err(); err != nil {
+		return nil, errcode.New(errcode.RedisPingError)
+	}
+
+	// 用户表
+	userDB, err := dbConnect(*cfg, UserLogin)
+	if err != nil {
+		return nil, err
+	}
+	if err := userDB.Ping(ctx).Err(); err != nil {
+		return nil, errcode.New(errcode.RedisPingError)
+	}
+	return &dbPool{
+		defaultDB: defaultDB,
+		userDB:    userDB,
+	}, nil
+}
+
+// 连接数据库
+func dbConnect(cfg conf.RedisConfig, db DBType) (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:       fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 		Password:   cfg.Password,
-		DB:         cfg.Db,
+		DB:         db,
 		MaxRetries: cfg.MaxRetries,
 		PoolSize:   cfg.PoolSize,
 	})
@@ -48,7 +84,42 @@ func New() (DBRepo, error) {
 	if err := client.Ping(ctx).Err(); err != nil {
 		return nil, errcode.New(errcode.RedisPingError)
 	}
-	return &dbRepo{client: client}, nil
+	return client, nil
+}
+
+// 数据库连接池
+type dbPool struct {
+	defaultDB *redis.Client
+	userDB    *redis.Client
+}
+
+// DB 切换数据库
+func (d *dbPool) DB(db ...DBType) DBRepo {
+	dbClient := &dbRepo{}
+	if len(db) == 0 {
+		dbClient.client = d.defaultDB
+		return dbClient
+	}
+	switch db[0] {
+	case Default:
+		dbClient.client = d.defaultDB
+	case UserLogin:
+		dbClient.client = d.userDB
+	default:
+		panic(errcode.RedisUnknownClientError.Error())
+	}
+	return dbClient
+}
+
+// Close 关闭客户端
+func (d *dbPool) Close() error {
+	if err := d.defaultDB.Close(); err != nil {
+		return err
+	}
+	if err := d.userDB.Close(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // 数据库
@@ -127,11 +198,6 @@ func (d *dbRepo) Decr(ctx context.Context, key string) int64 {
 	return value
 }
 
-// Close 关闭客户端
-func (d *dbRepo) Close() error {
-	return d.client.Close()
-}
-
 // Init 初始化数据库
 func Init() error {
 	db, err := New()
@@ -143,6 +209,6 @@ func Init() error {
 }
 
 // Instance 获取数据库实例
-func Instance() DBRepo {
+func Instance() *dbPool {
 	return dbInstance
 }
