@@ -9,3 +9,10 @@ type QueryUserLoginReq struct {
 	Nickname       string `json:"nickname" form:"nickname"`       // 昵称
 	RemoteAddr     string `json:"remote_addr" form:"remote_addr"` // 请求IP
 }
+
+// UpdateUserLoginStatusReq 更新数据状态
+type UpdateUserLoginStatusReq struct {
+	ID     uint `json:"id" form:"id" binding:"required"`           // 数据 ID
+	UserId uint `json:"user_id" form:"user_id" binding:"required"` // 用户 ID
+	Status uint `json:"status" form:"status"`                      // 状态
+}

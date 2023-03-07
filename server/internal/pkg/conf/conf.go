@@ -41,6 +41,7 @@ type ServerConfig struct {
 	// 插件配置
 	Plugin struct {
 		EnableLogo           bool   `toml:"enable_logo"`             // 是否启用启动后显示 logo
+		EnableSingleLogin    bool   `toml:"enable_single_login"`     // 是否启用单点登录
 		EnableRateLimiter    bool   `toml:"enable_rate_limiter"`     // 是否启用限速
 		MaxRequestsPerSecond int    `toml:"max_requests_per_second"` // 每秒最大请求量
 		EnablePprof          bool   `toml:"enable_pprof"`            // 是否启用 pprof 性能剖析工具
@@ -68,6 +69,11 @@ type JWTConfig struct {
 	Issuer string        `toml:"issuer"` // 签发人
 	Prefix string        `toml:"prefix"` // 前缀
 	Header string        `toml:"header"` // 请求标识
+}
+
+// GetExpire 获取过期时间(h)
+func (r *JWTConfig) GetExpire() time.Duration {
+	return r.Expire * time.Hour
 }
 
 // MySQLConfig 数据库配置

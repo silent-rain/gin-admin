@@ -129,19 +129,17 @@ type dbRepo struct {
 
 // Set set some <key,value,ttl> into redis
 func (d *dbRepo) Set(ctx context.Context, key, value string, ttl time.Duration) error {
-
 	if err := d.client.Set(ctx, key, value, ttl).Err(); err != nil {
-		return errcode.New(errcode.RedisSetKeyError).WithMsg(err.Error())
+		return errcode.New(errcode.RedisSetKeyError)
 	}
 	return nil
 }
 
 // Get 获取 KEY 的值
 func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
-
 	value, err := d.client.Get(ctx, key).Result()
 	if err != nil {
-		return "", errcode.New(errcode.RedisGetKeyError).WithMsg(err.Error())
+		return "", errcode.New(errcode.RedisGetKeyError).WithMsg("获取鉴权信息失败")
 	}
 	return value, nil
 }
@@ -150,7 +148,7 @@ func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
 func (d *dbRepo) TTL(ctx context.Context, key string) (time.Duration, error) {
 	ttl, err := d.client.TTL(ctx, key).Result()
 	if err != nil {
-		return -1, errcode.New(errcode.RedisTTLGetKeyError).WithMsg(err.Error())
+		return -1, errcode.New(errcode.RedisTTLGetKeyError)
 	}
 	return ttl, nil
 }
@@ -202,7 +200,7 @@ func (d *dbRepo) Decr(ctx context.Context, key string) int64 {
 func Init() error {
 	db, err := New()
 	if err != nil {
-		panic(fmt.Sprintf("初始化数据库失败! err: %v", err))
+		panic(fmt.Sprintf("初始化 Redis 数据库失败! err: %v", err))
 	}
 	dbInstance = db
 	return err

@@ -25,13 +25,15 @@ type UserLoginRegisterService interface {
 
 // 用户登录/登出/注册
 type userLoginRegisterService struct {
-	dao systemDAO.Login
+	dao   systemDAO.Login
+	cache systemDAO.UserLoginCache
 }
 
 // NewUserLoginRegisterService 创建用户登录/登出/注册 对象
 func NewUserLoginRegisterService() *userLoginRegisterService {
 	return &userLoginRegisterService{
-		dao: systemDAO.NewLoginDao(),
+		dao:   systemDAO.NewLoginDao(),
+		cache: systemDAO.NewUserLoginCacheDao(),
 	}
 }
 
@@ -62,6 +64,13 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 		return result, errcode.New(errcode.UserDisableError)
 	}
 
+	// 生成 Token
+	token, err := jwt.GenerateToken(user.ID, user.Nickname)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
+		return result, errcode.New(errcode.TokenGenerateError)
+	}
+
 	// 存储登录日志
 	_, err = NewUserLoginService().Add(ctx, systemModel.UserLogin{
 		UserId:     user.ID,
@@ -75,12 +84,11 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 		return result, err
 	}
 
-	// 生成 Token
-	token, err := jwt.GenerateToken(user.ID, user.Nickname)
-	if err != nil {
-		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
-		return result, errcode.New(errcode.TokenGenerateError)
+	// 存储缓存
+	if err := h.cache.Set(user.ID, token); err != nil {
+		return result, err
 	}
+
 	result.Token = token
 	return result, nil
 }

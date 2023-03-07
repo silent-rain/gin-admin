@@ -2,7 +2,6 @@
 package system
 
 import (
-	"gin-admin/internal/dto"
 	systemDTO "gin-admin/internal/dto/system"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
@@ -41,13 +40,13 @@ func (c *userLoginController) List(ctx *gin.Context) {
 
 // Status 更新用户登录信息状态
 func (c *userLoginController) Status(ctx *gin.Context) {
-	req := dto.UpdateStatusReq{}
+	req := systemDTO.UpdateUserLoginStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	row, err := c.service.Status(ctx, req.ID, req.Status)
+	row, err := c.service.Status(ctx, req.ID, req.UserId, req.Status)
 	if err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

@@ -10,6 +10,7 @@ env = "dev" # prod/test/dev
     port = 8080 # 服务端口
   # 插件配置
   [server.plugin]
+    enable_single_login = true # 是否启单点登录
     enable_logo = true # 是否启用启动后显示 logo
     enable_rate_limiter = true # 是否限速
     max_requests_per_second = 10000 # 是否启用限速

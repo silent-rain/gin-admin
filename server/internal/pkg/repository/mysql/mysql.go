@@ -142,7 +142,7 @@ func SourceDsn(cfg conf.MySQLAuthConfig) string {
 func Init() error {
 	db, err := New()
 	if err != nil {
-		panic(fmt.Sprintf("初始化数据库失败! err: %v", err))
+		panic(fmt.Sprintf("初始化 Mysql 数据库失败! err: %v", err))
 	}
 	dbInstance = db
 	return err

@@ -86,9 +86,10 @@ service.interceptors.response.use(
       return res.data;
     }
 
-    const noAuthCode = '401,403,10401,10402,10403,10404,10405,10406';
+    const noAuthCode =
+      '401,403,10400,10401,10402,10403,10404,10405,10406,10407';
     if (noAuthCode.includes(code) && !location.href.includes('/login')) {
-      ElMessageBox.confirm('请重新登录', {
+      ElMessageBox.confirm(res.data.msg ? res.data.msg : '请重新登录', {
         confirmButtonText: '重新登录',
         closeOnClickModal: false,
         showCancelButton: false,

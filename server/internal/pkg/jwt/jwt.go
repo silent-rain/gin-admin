@@ -25,8 +25,8 @@ func GenerateToken(userId uint, nickname string) (string, error) {
 		UserId:   userId,
 		Nickname: nickname,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(cfgJWT.Expire * time.Hour).Unix(), // 过期时间
-			Issuer:    cfgJWT.Issuer,                                    // 签发人
+			ExpiresAt: time.Now().Add(cfgJWT.GetExpire()).Unix(), // 过期时间
+			Issuer:    cfgJWT.Issuer,                             // 签发人
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cla)
@@ -35,7 +35,6 @@ func GenerateToken(userId uint, nickname string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	tokenString = cfgJWT.Prefix + tokenString
 	return tokenString, nil
 }
 

@@ -9,9 +9,9 @@
  * @Descripttion: MD5 加密
  */
 import md5 from 'js-md5';
-import { secret } from '@/utils/constant';
+import { SECRET } from '@/constant/permission/auth';
 
 // MD5 加密
 export const md5Encode = (v: string) => {
-  return md5(secret + v);
+  return md5(SECRET + v);
 };

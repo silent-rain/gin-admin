@@ -18,18 +18,20 @@ import (
 type UserLoginService interface {
 	List(ctx *gin.Context, req systemDTO.QueryUserLoginReq) ([]systemModel.UserLogin, int64, error)
 	Add(ctx *gin.Context, bean systemModel.UserLogin) (uint, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
+	Status(ctx *gin.Context, id, userId uint, status uint) (int64, error)
 }
 
 // 用户登录信息
 type userLoginService struct {
-	dao systemDAO.UserLogin
+	dao   systemDAO.UserLogin
+	cache systemDAO.UserLoginCache
 }
 
 // NewUserLoginService 创建用户登录信息对象
 func NewUserLoginService() *userLoginService {
 	return &userLoginService{
-		dao: systemDAO.NewUserLoginDao(),
+		dao:   systemDAO.NewUserLoginDao(),
+		cache: systemDAO.NewUserLoginCacheDao(),
 	}
 }
 
@@ -57,11 +59,16 @@ func (s *userLoginService) Add(ctx *gin.Context, bean systemModel.UserLogin) (ui
 }
 
 // Status 更新用户登录信息状态
-func (s *userLoginService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
+func (s *userLoginService) Status(ctx *gin.Context, id, userId uint, status uint) (int64, error) {
 	row, err := s.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBUpdateStatusError)
+	}
+
+	// 禁用登录
+	if status == 0 {
+		s.cache.Set(userId, "")
 	}
 	return row, nil
 }

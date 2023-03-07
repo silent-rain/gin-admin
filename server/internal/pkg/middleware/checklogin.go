@@ -5,6 +5,7 @@ package middleware
 import (
 	"strings"
 
+	systemDAO "gin-admin/internal/dao/system"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/jwt"
@@ -28,9 +29,9 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-		header := conf.Instance().JWT.Header
+		cfgJWT := conf.Instance().JWT
 		// 从请求头中获取Token
-		token := ctx.GetHeader(header)
+		token := ctx.GetHeader(cfgJWT.Header)
 		if token == "" {
 			log.New(ctx).WithCode(errcode.TokenNotFound).Errorf("")
 			response.New(ctx).WithCode(errcode.TokenNotFound).Json()
@@ -38,7 +39,7 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 		// 字符串替换
-		token = strings.Replace(token, "Bearer ", "", 1)
+		token = strings.Replace(token, cfgJWT.Prefix, "", 1)
 		// Token 解析
 		claim, err := jwt.ParseToken(token)
 		if err != nil {
@@ -47,8 +48,35 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+
+		// 检查单点登录
+		if err := checkSingleLogin(claim.UserId, token); err != nil {
+			log.New(ctx).WithCodeError(err).Errorf("")
+			response.New(ctx).WithCodeError(err).Json()
+			ctx.Abort()
+			return
+		}
+
 		core.GetContext(ctx).UserId = claim.UserId
 		core.GetContext(ctx).Nickname = claim.Nickname
 		ctx.Next()
 	}
+}
+
+// 检查单点登录
+func checkSingleLogin(userId uint, token string) error {
+	if !conf.Instance().Server.Plugin.EnableSingleLogin {
+		return nil
+	}
+	tk, err := systemDAO.NewUserLoginCacheDao().Get(userId)
+	if err != nil {
+		return err
+	}
+	if tk == "" {
+		return errcode.New(errcode.TokenDisableCurrentLoginError)
+	}
+	if tk != token {
+		return errcode.New(errcode.TokenUnconformityError)
+	}
+	return nil
 }

@@ -132,6 +132,7 @@ web
   - [x] 跨域
   - [x] API 网络请求/响应日志
   - [x] JWT 令牌
+    - [x] 单点登录
   - [x] API 鉴权
   - [ ] API Token 鉴权
   - [x] [Rate](https://golang.org/x/time/rate) 接口限流 
@@ -154,6 +155,7 @@ web
 - [ ] 动态 SEO 优化
 - [ ] 订阅模式
 - [ ] 内存缓存
+  - [ ] 站点配置缓存
 - [ ] [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 - [ ] [websocket](https://github.com/gorilla/websocket) 实时通讯
 
@@ -172,8 +174,8 @@ web
   - [x] 请求日志管理
   - [x] 系统日志管理
   - [x] WEB日志管理
-  - [ ] 登录管理
-    - [ ] 用户登录禁用, 结合 Redis 实现
+  - [x] 登录管理
+    - [x] 用户登录禁用
 - [ ] 数据中心
   - [x] 全局配置管理
   - [ ] 字典管理

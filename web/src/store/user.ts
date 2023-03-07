@@ -2,7 +2,8 @@ import { nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import router from '@/router';
 import { getUserInfo } from '@/api/permission/user';
-import { User } from '@/typings/api/permission/user';
+import { TOKEN_PREFIX } from '@/constant/permission/auth';
+import { User } from '~/api/permission/user';
 import { Role } from '~/api/permission/role';
 import { UserTry } from '~/store/user';
 
@@ -42,7 +43,7 @@ export const useUserStore = defineStore('user', {
     // 设置 token
     setToken(data: string) {
       this.$patch((state) => {
-        state.token = data;
+        state.token = TOKEN_PREFIX + data;
       });
     },
     // 设置用户信息

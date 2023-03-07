@@ -176,7 +176,8 @@ onBeforeMount(() => {
 // 获取用户登录信息列表
 const fetchUserLoginList = async () => {
   try {
-    const resp = (await getUserLoginList(listQuery)).data as UserLoginListRsp;
+    const resp = (await getUserLoginList(listQuery.value))
+      .data as UserLoginListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
@@ -188,6 +189,7 @@ const fetchUserLoginList = async () => {
 const handleStatusChange = async (row: UserLogin) => {
   const data = {
     id: row.id,
+    user_id: row.user_id,
     status: row.status,
   };
   try {
