@@ -23,6 +23,14 @@ env = "dev" # prod/test/dev
   [server.upload]
     filepath = "./upload" # 上传文件路径
 
+# jwt 鉴权
+[jwt]
+	secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=" # 加密密匙
+	expire = 24 # 过期时间(h)
+	issuer = "silent-rain" # 签发人
+	prefix = "Bearer " # 前缀
+	header = "Authorization" # 请求标识
+
 # mysql 配置
 [mysql]
   [mysql.base]

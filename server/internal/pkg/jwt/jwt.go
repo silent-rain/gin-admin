@@ -5,7 +5,7 @@ package jwt
 import (
 	"time"
 
-	"gin-admin/internal/pkg/constant"
+	"gin-admin/internal/pkg/conf"
 	"gin-admin/pkg/errcode"
 
 	"github.com/dgrijalva/jwt-go"
@@ -20,28 +20,30 @@ type Token struct {
 
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, nickname string) (string, error) {
+	cfgJWT := conf.Instance().JWT
 	cla := Token{
 		UserId:   userId,
 		Nickname: nickname,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(constant.TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    constant.TokenIssuer,                                // 签发人
+			ExpiresAt: time.Now().Add(cfgJWT.Expire * time.Hour).Unix(), // 过期时间
+			Issuer:    cfgJWT.Issuer,                                    // 签发人
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cla)
 	// 进行签名生成对应的token
-	tokenString, err := token.SignedString([]byte(constant.Secret))
+	tokenString, err := token.SignedString([]byte(cfgJWT.Secret))
 	if err != nil {
 		return "", err
 	}
-	tokenString = constant.TokenPrefix + tokenString
+	tokenString = cfgJWT.Prefix + tokenString
 	return tokenString, nil
 }
 
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
+	cfgJWT := conf.Instance().JWT
 	token, err := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(constant.Secret), nil
+		return []byte(cfgJWT.Secret), nil
 	})
 	if err != nil {
 		return nil, errcode.New(errcode.TokenParsingError)
@@ -49,7 +51,7 @@ func ParseToken(tokenString string) (*Token, error) {
 	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, errcode.New(errcode.TokenInvalidError)
-	} else if !claims.VerifyIssuer(constant.TokenIssuer, true) {
+	} else if !claims.VerifyIssuer(cfgJWT.Issuer, true) {
 		return nil, errcode.New(errcode.TokenInvalidError)
 	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
 		return nil, errcode.New(errcode.TokenExpiredError)

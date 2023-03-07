@@ -5,7 +5,7 @@ package middleware
 import (
 	"strings"
 
-	"gin-admin/internal/pkg/constant"
+	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/core"
 	"gin-admin/internal/pkg/jwt"
 	"gin-admin/internal/pkg/log"
@@ -28,9 +28,9 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-
+		header := conf.Instance().JWT.Header
 		// 从请求头中获取Token
-		token := ctx.GetHeader(constant.TokenHeader)
+		token := ctx.GetHeader(header)
 		if token == "" {
 			log.New(ctx).WithCode(errcode.TokenNotFound).Errorf("")
 			response.New(ctx).WithCode(errcode.TokenNotFound).Json()

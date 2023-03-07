@@ -23,6 +23,7 @@ var (
 type Config struct {
 	Environment *EnvironmentConfig `toml:"environment"` // 系统环境
 	Server      *ServerConfig      `toml:"server"`      // 系统服务配置
+	JWT         *JWTConfig         `toml:"jwt"`         // jwt 鉴权
 	MySQL       *MySQLConfig       `toml:"mysql"`       // mysql 数据库配置
 	Redis       *RedisConfig       `toml:"redis"`       // redis 数据库配置
 	Sqlite      *SqliteConfig      `toml:"sqlite"`      // sqlite 数据库配置
@@ -58,6 +59,15 @@ type ServerConfig struct {
 // ServerAddress 获取服务地址
 func (s ServerConfig) ServerAddress() string {
 	return fmt.Sprintf("%s:%d", s.Base.Address, s.Base.Port)
+}
+
+// JWTConfig jwt 鉴权
+type JWTConfig struct {
+	Secret string        `toml:"secret"` // 加密密匙
+	Expire time.Duration `toml:"expire"` // 过期时间(h)
+	Issuer string        `toml:"issuer"` // 签发人
+	Prefix string        `toml:"prefix"` // 前缀
+	Header string        `toml:"header"` // 请求标识
 }
 
 // MySQLConfig 数据库配置
