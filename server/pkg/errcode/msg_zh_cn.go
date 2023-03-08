@@ -22,8 +22,9 @@ var MsgZHCN = map[ErrorCode]error{
 	ReqContentTypeNotFoundError: errors.New("请求 Content-Type 参数不存在"),
 	ReqContentTypeParamsError:   errors.New("请求 Content-Type 参数错误"),
 	// 数据解析
-	JsonDataEncodeError: errors.New("数据编码错误"),
-	JsonDataDecodeError: errors.New("数据解码错误"),
+	JsonDataEncodeError:     errors.New("数据编码错误"),
+	JsonDataDecodeError:     errors.New("数据解码错误"),
+	DataTypeConversionError: errors.New("数据类型转换失败"),
 	// 数据库
 	DBQueryError:             errors.New("数据查询错误"),
 	DBQueryEmptyError:        errors.New("数据不存在"),
@@ -44,6 +45,8 @@ var MsgZHCN = map[ErrorCode]error{
 	RedisGetKeyError:        errors.New("redis 获取 KEY 失败"),
 	RedisTTLGetKeyError:     errors.New("redis 查看 Key 剩余的过期时间失败"),
 	RedisSetKeyExpireError:  errors.New("redis 设置 key 的过期时间失败"),
+	// Cache 内部缓存
+	CacheGetError: errors.New("获取缓存失败"),
 	// 鉴权
 	TokenGenerateError:            errors.New("生成 Token 失败"),
 	TokenNotFound:                 errors.New("鉴权信息不存在"),

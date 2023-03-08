@@ -8,9 +8,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"gin-admin/internal/initialize"
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/middleware"
+	_ "gin-admin/internal/pkg/repository/cache"
 	"gin-admin/internal/pkg/repository/mysql"
 	"gin-admin/internal/pkg/repository/redis"
 	"gin-admin/internal/router"
@@ -32,6 +34,8 @@ func main() {
 	redis.Init()
 	// 初始化定时任务
 	tasks.Init()
+	// 初始化数据
+	initialize.Init()
 
 	// 调试模式
 	gin.SetMode(conf.Instance().Environment.Active())

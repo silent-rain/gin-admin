@@ -132,7 +132,6 @@ declare global {
   const routerPush: typeof import('../hooks/use-self-router')['routerPush']
   const routerReplace: typeof import('../hooks/use-self-router')['routerReplace']
   const searchUser: typeof import('../api/remote-search')['searchUser']
-  const secret: typeof import('../utils/constant')['secret']
   const setToken: typeof import('../utils/auth')['setToken']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']

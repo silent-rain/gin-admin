@@ -5,6 +5,7 @@ import (
 	"gin-admin/internal/dto"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
@@ -194,7 +195,7 @@ func (c *configController) Status(ctx *gin.Context) {
 
 // WebSiteConfigList 查询网站配置列表
 func (c *configController) WebSiteConfigList(ctx *gin.Context) {
-	results, err := c.service.WebSiteConfigList(ctx, "website")
+	results, err := c.service.WebSiteConfigList(ctx, constant.WebsiteConfigKey)
 	if err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return

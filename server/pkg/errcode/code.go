@@ -32,8 +32,9 @@ const (
 
 // 数据解析
 const (
-	JsonDataEncodeError ErrorCode = iota + 10200 // json 数据编码错误
-	JsonDataDecodeError                          // json 数据解码错误
+	JsonDataEncodeError     ErrorCode = iota + 10200 // json 数据编码错误
+	JsonDataDecodeError                              // json 数据解码错误
+	DataTypeConversionError                          // 数据类型转换失败
 )
 
 // Mysql 数据库
@@ -60,6 +61,11 @@ const (
 	RedisGetKeyError                                 // redis 获取 KEY 失败
 	RedisTTLGetKeyError                              // redis 查看 Key 剩余的过期时间失败
 	RedisSetKeyExpireError                           // redis 设置 key 的过期时间失败
+)
+
+// Cache 内部缓存
+const (
+	CacheGetError ErrorCode = iota + 10380 // 获取缓存失败
 )
 
 // 鉴权

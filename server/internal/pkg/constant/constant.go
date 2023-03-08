@@ -23,4 +23,10 @@ const (
 
 	// 验证码类型
 	CaptchaType = "digit"
+
+	// 站点配置 KEY
+	WebsiteConfigKey = "website"
+
+	// CacheWebSiteConfig 缓存 Key
+	CacheWebSiteConfig = "webSiteConfig"
 )

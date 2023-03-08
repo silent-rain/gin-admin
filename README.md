@@ -8,7 +8,8 @@
 - go 版本: v1.19.4
 - node 版本: v16.19.0
 - yarn 版本: v1.22.18
-- 数据库版本: MariaDB v10.3.36
+- Mysql 数据库版本: MariaDB v10.3.36
+- Redis 数据库版本: v5.0.3
 
 ## 项目结构
 ### 后端
@@ -154,8 +155,8 @@ web
   - [x] 服务启动后打开浏览器
 - [ ] 动态 SEO 优化
 - [ ] 订阅模式
-- [ ] 内存缓存
-  - [ ] 站点配置缓存
+- [x] [内存缓存](github.com/patrickmn/go-cache)
+  - [x] 站点配置缓存
 - [ ] [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 - [ ] [websocket](https://github.com/gorilla/websocket) 实时通讯
 
@@ -169,7 +170,7 @@ web
 - [x] 前端权限
   - [x] 动态路由
   - [x] 按钮权限
-- [ ] 系统管理
+- [x] 系统管理
   - [x] 网站配置管理
   - [x] 请求日志管理
   - [x] 系统日志管理
@@ -181,7 +182,6 @@ web
   - [ ] 字典管理
 - [ ] 系统监控
 - [ ] 动态 SEO 优化
-    - [ ] 添加内存缓存，注意更新，删除等操作
 
 ## 待处理
 - 用户页面
@@ -287,6 +287,9 @@ air
 - https://github.com/go-admin-team/go-admin
 - https://github.com/GoAdminGroup/go-admin
 - https://github.com/xinliangnote/go-gin-api
+  - 定时任务，在后台可界面配置
+  - websocket
+  - web 编码
 - https://github.com/fyonecon/ginlaravel
 
 ### 日志

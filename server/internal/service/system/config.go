@@ -31,13 +31,15 @@ type ConfigService interface {
 
 // 配置
 type configService struct {
-	dao systemDAO.Config
+	dao        systemDAO.Config
+	innerCache systemDAO.WebSiteConfigCache
 }
 
 // NewConfigService 创建配置对象
 func NewConfigService() *configService {
 	return &configService{
-		dao: systemDAO.NewConfigDao(),
+		dao:        systemDAO.NewConfigDao(),
+		innerCache: systemDAO.NewWebSiteConfigCache(),
 	}
 }
 
@@ -121,6 +123,9 @@ func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, 
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBAddError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return id, nil
 }
 
@@ -131,6 +136,9 @@ func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBUpdateError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return row, nil
 }
 
@@ -141,6 +149,9 @@ func (s *configService) BatchUpdate(ctx *gin.Context, configs []systemModel.Conf
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
 		return errcode.New(errcode.DBUpdateError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return nil
 }
 
@@ -161,6 +172,9 @@ func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBDeleteError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return row, nil
 }
 
@@ -171,6 +185,9 @@ func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBBatchDeleteError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return row, nil
 }
 
@@ -181,6 +198,9 @@ func (s *configService) Status(ctx *gin.Context, id uint, status uint) (int64, e
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBUpdateStatusError)
 	}
+
+	// 设置站点配置缓存
+	s.innerCache.Set()
 	return row, nil
 }
 
@@ -207,10 +227,9 @@ func configListToTree(src []systemModel.Config, parentId *uint) []systemModel.Co
 
 // WebSiteConfigList 查询网站配置列表
 func (s *configService) WebSiteConfigList(ctx *gin.Context, key string) ([]systemModel.Config, error) {
-	results, err := s.dao.ChildrenByKey(key)
+	results, err := s.innerCache.Get()
 	if err != nil {
-		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, errcode.New(errcode.DBQueryError)
+		return nil, err
 	}
 	return results, nil
 }

@@ -3,10 +3,14 @@ package systemDAO
 
 import (
 	"errors"
+
 	DAO "gin-admin/internal/dao"
 	systemDTO "gin-admin/internal/dto/system"
 	systemModel "gin-admin/internal/model/system"
+	"gin-admin/internal/pkg/constant"
+	"gin-admin/internal/pkg/repository/cache"
 	"gin-admin/internal/pkg/repository/mysql"
+	"gin-admin/pkg/errcode"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -184,4 +188,49 @@ func (d *config) ChildrenByKey(key string) ([]systemModel.Config, error) {
 		return nil, result.Error
 	}
 	return beans, nil
+}
+
+// Config 站点配置缓存接口
+type WebSiteConfigCache interface {
+	Set() error
+	Get() ([]systemModel.Config, error)
+}
+
+// 站点配置缓存
+type webSiteConfigCache struct {
+	cache cache.CacheRepo
+}
+
+// NewWebSiteConfigCache 创建站点配置缓存对象
+func NewWebSiteConfigCache() *webSiteConfigCache {
+	return &webSiteConfigCache{
+		cache: cache.Instance(),
+	}
+}
+
+// Set 设置站点配置缓存
+func (c *webSiteConfigCache) Set() error {
+	results, err := NewConfigDao().ChildrenByKey(constant.WebsiteConfigKey)
+	if err != nil {
+		return err
+	}
+	if len(results) == 0 {
+		return nil
+	}
+	c.cache.Set(constant.CacheWebSiteConfig, results)
+	return nil
+}
+
+// Get 获取站点配置缓存
+func (c *webSiteConfigCache) Get() ([]systemModel.Config, error) {
+	value, ok := c.cache.Get(constant.CacheWebSiteConfig)
+	if !ok {
+		return nil, errcode.New(errcode.CacheGetError)
+	}
+
+	vs, ok := value.([]systemModel.Config)
+	if !ok {
+		return nil, errcode.New(errcode.DataTypeConversionError)
+	}
+	return vs, nil
 }
