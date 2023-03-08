@@ -89,17 +89,18 @@ CREATE TABLE perm_role_menu_rel (
     CONSTRAINT `perm_role_menu_rel_menu_id` FOREIGN KEY (`menu_id`) REFERENCES `perm_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '角色菜单关联表';
 
--- user表触发器，更新其他表冗余字段
 /*
+ -- user表触发器，更新其他表冗余字段
+ 
  CREATE TRIGGER trigger_update_user
  AFTER
  UPDATE
  ON `user` FOR EACH ROW BEGIN
  
  IF NEW.nickname != OLD.nickname THEN 
- -- 更新 api_token.nickname 字段
+ -- 更新 perm_user_api_token.nickname 字段
  UPDATE
- api_token
+ perm_user_api_token
  SET
  nickname = NEW.nickname
  WHERE
@@ -107,6 +108,19 @@ CREATE TABLE perm_role_menu_rel (
  END IF;
  END;
  */
+-- 用户API接口Token令牌表
+CREATE TABLE perm_user_api_token (
+    `id` INT AUTO_INCREMENT COMMENT '自增ID',
+    `user_id` INT(20) NOT NULL COMMENT '用户ID',
+    `token` VARCHAR(50) NOT NULL COMMENT 'Token信息',
+    `permission` VARCHAR(20) NOT NULL COMMENT '权限:GET,POST,PUT,DELETE',
+    `note` VARCHAR(200) NULL COMMENT '备注',
+    `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用,0:禁用,1:启用',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT '用户API接口Token令牌表';
+
 -- 用户地理位置 - 待定
 CREATE TABLE _perm_user_location (
     `id` INT AUTO_INCREMENT COMMENT '位置ID',
