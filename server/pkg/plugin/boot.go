@@ -25,3 +25,12 @@ func RegisterLogo() {
 	}
 	fmt.Println(color.Blue(logo))
 }
+
+// RegisterAddr 服务启动后显示 IP 地址
+func RegisterAddr() {
+	if !conf.Instance().Server.Plugin.EnableLogo {
+		return
+	}
+	addr := conf.Instance().Server.ServerAddress()
+	fmt.Println(color.Blue(fmt.Sprintf("➜  Local:   http://%s", addr)))
+}

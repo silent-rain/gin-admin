@@ -15,4 +15,6 @@ func Init(engine *gin.Engine) {
 	RegisterSwagger(engine)
 	// 服务启动后显示 logo
 	RegisterLogo()
+	//  服务启动后显示 IP 地址
+	RegisterAddr()
 }

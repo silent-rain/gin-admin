@@ -12,6 +12,7 @@ var MsgZHCN = map[ErrorCode]error{
 	RouteNotFoundError:   errors.New("404 接口不存在"),
 	InternalServerError:  errors.New("服务器内部错误"),
 	LoadSSLError:         errors.New("加载 SSL 错误"),
+	LoadIndexHtmlError:   errors.New("加载首页文件失败"),
 	// 定时任务
 	TickerRunnerError: errors.New("即时器执行错误"),
 	TickerPanicError:  errors.New("即时器严重错误"),

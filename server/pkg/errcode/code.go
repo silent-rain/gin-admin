@@ -13,6 +13,7 @@ const (
 	RouteNotFoundError                            // 404 接口不存在
 	InternalServerError                           // 500 服务器内部错误
 	LoadSSLError                                  // 加载 SSL 错误
+	LoadIndexHtmlError                            // 加载首页文件失败
 )
 
 // 定时任务

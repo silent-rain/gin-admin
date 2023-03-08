@@ -153,7 +153,7 @@ web
   - [x] [Prometheus](https://github.com/prometheus/client_golang) 指标记录 
   - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档, apipost 工具代替
   - [x] 服务启动后打开浏览器
-- [ ] 动态 SEO 优化
+- [x] 动态 SEO 优化
 - [ ] 订阅模式
 - [x] [内存缓存](github.com/patrickmn/go-cache)
   - [x] 站点配置缓存
@@ -181,7 +181,6 @@ web
   - [x] 全局配置管理
   - [ ] 字典管理
 - [ ] 系统监控
-- [ ] 动态 SEO 优化
 
 ## 待处理
 - 用户页面
