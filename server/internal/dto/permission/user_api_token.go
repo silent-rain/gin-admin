@@ -6,6 +6,7 @@ import "gin-admin/internal/dto"
 // QueryUserApiTokenReq 查询条件
 type QueryUserApiTokenReq struct {
 	dto.Pagination        // 分页
+	UserId         *uint  `json:"user_id" form:"user_id"`   // 用户ID
 	Nickname       string `json:"nickname" form:"nickname"` // 用户昵称
 	Status         *uint  `json:"status" form:"status"`     // 状态,0:停用,1:启用
 }

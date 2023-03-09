@@ -61,6 +61,9 @@
               @refresh="fetchUserInfo"
             ></AccountTab>
           </el-tab-pane>
+          <el-tab-pane label="Token令牌" name="token">
+            <ApiTokenTab></ApiTokenTab>
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </el-col>
@@ -69,16 +72,13 @@
 
 <script setup lang="ts">
 import { UserFilled, Iphone, Connection } from '@element-plus/icons-vue';
-import { TabsPaneContext } from 'element-plus';
-import { useUserStore } from '@/store/user';
 import { getUserInfo } from '@/api/permission/user';
 import { User } from '~/api/permission/user';
 import { Role } from '~/api/permission/role';
 import UserInfoTab from './components/UserInfoTab.vue';
 import PasswordTab from './components/PasswordTab.vue';
 import AccountTab from './components/AccountTab.vue';
-
-const userStore = useUserStore();
+import ApiTokenTab from './components/ApiTokenTab/index.vue';
 
 const activeName = ref('user');
 const state = reactive({

@@ -350,6 +350,7 @@ const handleAdd = async () => {
   state.form.type = 'add';
   state.form.visible = true;
   state.form.data.status = 1;
+  state.form.data.permission = '';
 };
 // 多选事件
 const handleSelectionChange = (val: UserApiToken[]) => {

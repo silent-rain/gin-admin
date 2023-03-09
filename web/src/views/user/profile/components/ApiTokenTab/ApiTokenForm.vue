@@ -12,28 +12,6 @@
       label-width="100px"
       style="width: 100%"
     >
-      <el-form-item label="用户昵称" prop="user_id">
-        <el-select
-          v-model="userInfo"
-          filterable
-          clearable
-          remote
-          reserve-keyword
-          placeholder="请选择用户(支持远程检索)"
-          remote-show-suffix
-          value-key="id"
-          :remote-method="remoteMethod"
-          :loading="loading"
-          @change="handleChangeUser"
-        >
-          <el-option
-            v-for="item in userOptions"
-            :key="item.id"
-            :label="item.nickname"
-            :value="item"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item label="访问权限" prop="permission">
         <el-select
           v-model="permission"
@@ -82,8 +60,10 @@ import {
   updateUserApiToken,
   addUserApiToken,
 } from '@/api/permission/user-api-token';
+import { getUserList } from '@/api/permission/user';
 import { UserApiToken } from '~/api/permission/user-api-token';
 import { User, UserListRsp } from '~/api/permission/user';
+import { onBeforeMount, reactive, ref } from 'vue';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
@@ -159,10 +139,6 @@ const remoteMethod = async (query: string) => {
   }
 };
 
-// 切换用户
-const handleChangeUser = (value: User) => {
-  emit('update:data', { ...props.data, user_id: value.id });
-};
 // 切换访问权限
 const handleChangePermission = (value: string[]) => {
   emit('update:data', { ...props.data, permission: value.join(';') });

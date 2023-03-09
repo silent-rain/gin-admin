@@ -37,6 +37,9 @@ func (d *userApiToken) List(req permissionDTO.QueryUserApiTokenReq) ([]permissio
 	tx := d.db.GetDbR().Model(&permissionModel.UserApiToken{}).
 		Select("perm_user_api_token.*, perm_user.nickname").
 		Joins("left join perm_user on perm_user.id = perm_user_api_token.user_id")
+	if req.UserId != nil {
+		tx = tx.Where("perm_user_api_token.user_id = ?", *req.UserId)
+	}
 	if req.Nickname != "" {
 		tx = tx.Where("perm_user.nickname like ?", req.Nickname+"%")
 	}
