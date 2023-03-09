@@ -20,7 +20,7 @@ import (
 type Config interface {
 	All() ([]systemModel.Config, int64, error)
 	List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
-	InfoByKey(key string) (systemModel.Config, bool, error)
+	Info(key string) (systemModel.Config, bool, error)
 	Add(bean systemModel.Config) (uint, error)
 	Update(bean systemModel.Config) (int64, error)
 	BatchUpdate(beans []systemModel.Config) error
@@ -86,8 +86,8 @@ func (d *config) List(req systemDTO.QueryConfigReq) ([]systemModel.Config, int64
 	return beans, total, nil
 }
 
-// InfoByKey 获取配置信息
-func (d *config) InfoByKey(key string) (systemModel.Config, bool, error) {
+// Info 获取配置信息
+func (d *config) Info(key string) (systemModel.Config, bool, error) {
 	bean := systemModel.Config{}
 	result := d.db.GetDbR().Where("status=1").Where("`key` = ?", key).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {

@@ -1,9 +1,20 @@
 <template>
   <el-card>
+    <!-- 提示 -->
+    <div class="tips">
+      <p><label>提示:</label></p>
+      <p>Token 令牌可用于 API 接口访问</p>
+      <p>最多可申请 {{ state.api_auth_max_token_num }} 个令牌</p>
+    </div>
     <!-- 表格全局按钮 -->
     <div class="operation-button">
       <div class="left-button">
-        <el-button type="primary" :icon="Plus" @click="handleAdd">
+        <el-button
+          type="primary"
+          :icon="Plus"
+          :disabled="tableDataTotal >= state.api_auth_max_token_num"
+          @click="handleAdd"
+        >
           添加
         </el-button>
       </div>
@@ -87,6 +98,8 @@ import {
   UserApiTokenListRsp,
   UserApiToken,
 } from '~/api/permission/user-api-token';
+import { getConfigInfo } from '@/api/data-center/config';
+import { ConfigRsp } from '~/api/data-center/config';
 import ApiTokenForm from './ApiTokenForm.vue';
 
 const userStore = useUserStore();
@@ -97,12 +110,15 @@ const state = reactive({
     visible: false,
     type: '',
   },
+  api_auth_max_token_num: 5,
 });
 
 const tableData = ref<UserApiToken[]>();
+const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
   fetchUserApiTokenList();
+  fetchConfigInfo();
 });
 
 // 获取令牌列表
@@ -120,6 +136,19 @@ const fetchUserApiTokenList = async () => {
   try {
     const resp = (await getUserApiTokenList(data)).data as UserApiTokenListRsp;
     tableData.value = resp.data_list;
+    tableDataTotal.value = resp.data_list.length;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 通过 key 获取可申请最大令牌数
+const fetchConfigInfo = async () => {
+  try {
+    const resp = (await getConfigInfo({
+      key: 'api_auth_max_token_num',
+    })) as ConfigRsp;
+    state.api_auth_max_token_num = resp.data.value;
   } catch (error) {
     console.log(error);
   }
@@ -176,10 +205,14 @@ const handleStatusChange = async (row: UserApiToken) => {
 </script>
 
 <style scoped lang="scss">
-.filter {
-  .filter-name {
-    width: 200px;
-    margin-left: 8px;
+.tips {
+  border: 1px #dcdfe6 dashed;
+
+  label {
+    color: orange;
+  }
+  p {
+    color: #9ea0a6;
   }
 }
 

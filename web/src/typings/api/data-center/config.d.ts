@@ -15,8 +15,16 @@ export interface Config {
   children: Config[];
 }
 export interface ConfigListRsp {
+  code: number;
+  msg: string;
   data_list: Config[];
   tatol: number;
+}
+
+export interface ConfigRsp {
+  code: number;
+  msg: string;
+  data: Config;
 }
 
 // 网站配置

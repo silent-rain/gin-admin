@@ -7,8 +7,10 @@ import (
 	systemModel "gin-admin/internal/model/system"
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/http"
+	"gin-admin/internal/pkg/log"
 	"gin-admin/internal/pkg/response"
 	systemService "gin-admin/internal/service/system"
+	"gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -65,6 +67,25 @@ func (c *configController) List(ctx *gin.Context) {
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
+}
+
+// Info 获取配置信息
+func (c *configController) Info(ctx *gin.Context) {
+	key, ok := ctx.GetQuery("key")
+	if !ok {
+		log.New(ctx).WithCode(errcode.ReqParameterParsingError).Errorf("")
+		response.New(ctx).
+			WithCodeError(errcode.New(errcode.ReqParameterParsingError).WithMsg("key 字段不能为空")).
+			Json()
+		return
+	}
+
+	result, err := c.service.Info(ctx, key)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithData(result).Json()
 }
 
 // ChildrenByKey 通过父 key 获取子配置列表

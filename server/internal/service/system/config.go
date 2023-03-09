@@ -19,6 +19,7 @@ type ConfigService interface {
 	AllTree(ctx *gin.Context) ([]systemModel.Config, int64, error)
 	Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
 	List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]systemModel.Config, int64, error)
+	Info(ctx *gin.Context, key string) (systemModel.Config, error)
 	Add(ctx *gin.Context, config systemModel.Config) (uint, error)
 	Update(ctx *gin.Context, config systemModel.Config) (int64, error)
 	BatchUpdate(ctx *gin.Context, configs []systemModel.Config) error
@@ -93,6 +94,20 @@ func (s *configService) List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 	return configList, total, nil
 }
 
+// Info 获取配置信息
+func (s *configService) Info(ctx *gin.Context, key string) (systemModel.Config, error) {
+	result, ok, err := s.dao.Info(key)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return result, errcode.New(errcode.DBQueryError)
+	}
+	if !ok {
+		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
+		return result, errcode.New(errcode.DBQueryEmptyError)
+	}
+	return result, nil
+}
+
 // ChildrenByKey 通过父 key 获取子配置列表
 func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]systemModel.Config, error) {
 	configList, err := s.dao.ChildrenByKey(key)
@@ -105,7 +120,7 @@ func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]systemMod
 
 // Add 添加配置
 func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, error) {
-	_, ok, err := s.dao.InfoByKey(config.Key)
+	_, ok, err := s.dao.Info(config.Key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBQueryError)

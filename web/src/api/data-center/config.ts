@@ -41,6 +41,15 @@ export const getConfigTree = async (params: any) => {
     data: params,
   });
 };
+// 获取配置信息
+export const getConfigInfo = async (params: any) => {
+  return axiosReq({
+    url: '/config/info',
+    method: 'get',
+    isParams: true,
+    data: params,
+  });
+};
 
 // 添加配置
 export const addConfig = async (params: any) => {

@@ -18,6 +18,8 @@ func InitConfigRouter(group *gin.RouterGroup) {
 		config.GET("/tree", system.NewConfigController().Tree)
 		// 获取配置列表
 		config.GET("/list", system.NewConfigController().List)
+		// 获取配置信息
+		config.GET("/info", system.NewConfigController().Info)
 		// 添加配置
 		config.POST("/add", system.NewConfigController().Add)
 		// 更新配置
