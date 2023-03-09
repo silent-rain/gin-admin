@@ -5,6 +5,7 @@ package utils
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"time"
 
 	"gin-admin/internal/pkg/constant"
 )
@@ -21,5 +22,13 @@ func EncryptMd5(v string) string {
 func Md5(v string) string {
 	m := md5.New()
 	m.Write([]byte(v))
+	return hex.EncodeToString(m.Sum(nil))
+}
+
+// GenerateTUserApiToken 生成用户API接口Token
+func GenerateTUserApiToken() string {
+	t := time.Now().UTC().Local().String()
+	m := md5.New()
+	m.Write([]byte(t))
 	return hex.EncodeToString(m.Sum(nil))
 }

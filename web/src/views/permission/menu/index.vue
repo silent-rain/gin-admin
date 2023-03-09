@@ -476,7 +476,7 @@ const handleAddById = async (row: Menu) => {
 const handleCopy = async (row: Menu) => {
   state.menuForm.data = { ...row };
 
-  state.menuForm.type = 'edit';
+  state.menuForm.type = 'add';
   state.menuForm.visible = true;
 };
 // 多选事件

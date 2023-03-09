@@ -40,13 +40,14 @@ func Init(engine *gin.Engine) {
 	// 私有路由组
 	privateGroup := beGroup.Group("/api/v1")
 	{
-		permission.InitUserRouter(privateGroup)        // 初始化用户管理路由
-		permission.InitRoleRouter(privateGroup)        // 初始化角色管理路由
-		permission.InitMenuRouter(privateGroup)        // 初始化菜单管理路由
-		permission.InitRoleMenuRelRouter(privateGroup) // 初始化角色菜单关系管理路由
-		system.InitUploadRouter(privateGroup)          // 初始化上传管理路由
-		system.InitConfigRouter(privateGroup)          // 初始化配置管理路由
-		system.InitUserLoginRouter(privateGroup)       // 初始化配置管理路由
-		log.InitLogRouter(privateGroup)                // 初始化日志管理路由
+		permission.InitUserRouter(privateGroup)         // 初始化用户管理路由
+		permission.InitRoleRouter(privateGroup)         // 初始化角色管理路由
+		permission.InitMenuRouter(privateGroup)         // 初始化菜单管理路由
+		permission.InitRoleMenuRelRouter(privateGroup)  // 初始化角色菜单关系管理路由
+		permission.InitUserApiTokenRouter(privateGroup) // 初始化用户API接口Token令牌管理路由
+		system.InitUploadRouter(privateGroup)           // 初始化上传管理路由
+		system.InitConfigRouter(privateGroup)           // 初始化配置管理路由
+		system.InitUserLoginRouter(privateGroup)        // 初始化配置管理路由
+		log.InitLogRouter(privateGroup)                 // 初始化日志管理路由
 	}
 }

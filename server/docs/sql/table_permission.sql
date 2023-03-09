@@ -112,7 +112,8 @@ CREATE TABLE perm_role_menu_rel (
 CREATE TABLE perm_user_api_token (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
     `user_id` INT(20) NOT NULL COMMENT '用户ID',
-    `token` VARCHAR(50) NOT NULL COMMENT 'Token信息',
+    `token` VARCHAR(50) NOT NULL COMMENT '令牌',
+    `passphrase` VARCHAR(50) NOT NULL COMMENT '口令',
     `permission` VARCHAR(20) NOT NULL COMMENT '权限:GET,POST,PUT,DELETE',
     `note` VARCHAR(200) NULL COMMENT '备注',
     `status` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '是否启用,0:禁用,1:启用',
