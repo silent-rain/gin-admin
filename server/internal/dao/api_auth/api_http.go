@@ -91,7 +91,7 @@ func (d *apiAuth) Add(bean apiAuthModel.ApiHttp) (uint, error) {
 
 // Update 更新Http协议接口
 func (d *apiAuth) Update(bean apiAuthModel.ApiHttp) (int64, error) {
-	result := d.db.GetDbW().Omit("created_at").Updates(&bean)
+	result := d.db.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 

@@ -28,4 +28,5 @@ type UpdateApiHttpReq struct {
 	Method string `json:"method" form:"method"`            // 请求类型:GET,POST,PUT,DELETE
 	Uri    string `json:"uri" form:"uri"`                  // URI资源
 	Note   string `json:"note" form:"note"`                // 备注
+	Status uint   `json:"status" form:"status"`            // 状态,0:停用,1:启用
 }

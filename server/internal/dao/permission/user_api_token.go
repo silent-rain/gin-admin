@@ -75,7 +75,7 @@ func (d *userApiToken) Add(bean permissionModel.UserApiToken) (uint, error) {
 
 // Update 更新 Token 令牌
 func (d *userApiToken) Update(bean permissionModel.UserApiToken) (int64, error) {
-	result := d.db.GetDbW().Omit("created_at").Updates(&bean)
+	result := d.db.GetDbW().Select("permission", "passphrase", "note", "status").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
