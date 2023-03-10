@@ -4,6 +4,7 @@ package router
 
 import (
 	"gin-admin/internal/controller"
+	apiauth "gin-admin/internal/router/api/v1/api_auth"
 	"gin-admin/internal/router/api/v1/log"
 	"gin-admin/internal/router/api/v1/permission"
 	"gin-admin/internal/router/api/v1/system"
@@ -48,6 +49,8 @@ func Init(engine *gin.Engine) {
 		system.InitUploadRouter(privateGroup)           // 初始化上传管理路由
 		system.InitConfigRouter(privateGroup)           // 初始化配置管理路由
 		system.InitUserLoginRouter(privateGroup)        // 初始化配置管理路由
+		apiauth.InitApiHttpRouter(privateGroup)         // 初始化Http协议接口管理路由
+		apiauth.InitApiRoleHttpRelRouter(privateGroup)  // 初始化角色与Http协议接口关系管理路由
 		log.InitLogRouter(privateGroup)                 // 初始化日志管理路由
 	}
 }

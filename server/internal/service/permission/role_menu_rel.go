@@ -5,7 +5,7 @@ package permission
 import (
 	permissionDAO "gin-admin/internal/dao/permission"
 	permissionDTO "gin-admin/internal/dto/permission"
-	systemModel "gin-admin/internal/model/permission"
+	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/log"
 	"gin-admin/pkg/errcode"
 
@@ -14,7 +14,7 @@ import (
 
 // RoleMenuRelService 角色菜单接口
 type RoleMenuRelService interface {
-	List(ctx *gin.Context, req permissionDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error)
+	List(ctx *gin.Context, req permissionDTO.QueryRoleMenuRelReq) ([]permissionModel.RoleMenuRel, int64, error)
 	Update(ctx *gin.Context, roleId uint, menuIds []uint) error
 }
 
@@ -31,7 +31,7 @@ func NewRoleMenuRelService() *roleMenuRelService {
 }
 
 // List 获取角色关联的菜单列表
-func (s *roleMenuRelService) List(ctx *gin.Context, req permissionDTO.QueryRoleMenuRelReq) ([]systemModel.RoleMenuRel, int64, error) {
+func (s *roleMenuRelService) List(ctx *gin.Context, req permissionDTO.QueryRoleMenuRelReq) ([]permissionModel.RoleMenuRel, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
