@@ -93,7 +93,7 @@
             v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
-            :disabled="isDisabledButton('sys:role:status')"
+            :disabled="isDisabledButton('sys:userlogin:status')"
             @change="handleStatusChange(scope.row)"
           />
         </template>
