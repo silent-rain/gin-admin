@@ -51,7 +51,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="API口令" prop="passphrase">
-        <el-input v-model="props.data.passphrase" placeholder="请输入API口令" />
+        <el-input
+          v-model="props.data.passphrase"
+          show-password
+          placeholder="请输入API口令"
+        />
       </el-form-item>
       <el-form-item label="启用状态" prop="status">
         <el-switch
