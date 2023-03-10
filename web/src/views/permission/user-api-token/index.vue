@@ -1,12 +1,12 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div v-if="hasButtonPermission('sys:role:list')" class="filter">
+    <div v-if="hasButtonPermission('sys:userToken:list')" class="filter">
       <el-input
         v-model="listQuery.nickname"
         class="filter-name"
         clearable
-        :disabled="isDisabledButton('sys:role:list')"
+        :disabled="isDisabledButton('sys:userToken:list')"
         placeholder="筛选用户昵称"
         @keyup.enter.native="handleFilter"
       />
@@ -28,7 +28,7 @@
         <el-button
           type="primary"
           :icon="Search"
-          :disabled="isDisabledButton('sys:role:list')"
+          :disabled="isDisabledButton('sys:userToken:list')"
           @click="handleFilter"
         >
           查询

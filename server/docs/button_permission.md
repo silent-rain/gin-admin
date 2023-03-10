@@ -33,6 +33,9 @@
 - [x] 全部展开 sys:menu:expand
 - [x] 全部折叠 sys:menu:collapse
 
+## 用户令牌管理
+- [x] 查询配置 sys:userToken:list
+
 ## 配置管理
 - [x] 查询配置 sys:config:list
 - [x] 添加配置 sys:config:add
