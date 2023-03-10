@@ -242,11 +242,11 @@ import { storeToRefs } from 'pinia/dist/pinia';
 import { Search, Delete } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
 import { getWebList } from '@/api/system/log';
-import { SystemLog, SystemLogListRsp } from '~/api/permission/log';
+import { WebLog, WebLogListRsp } from '@/typings/api/system/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import LogDrawer from './LogDrawer.vue';
+import LogDrawer from './components/LogDrawer.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 const route = useRoute();
@@ -372,7 +372,7 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<SystemLog[]>([]);
+const tableData = ref<WebLog[]>([]);
 const tableDataTotal = ref<number>(0);
 
 onBeforeMount(() => {
@@ -388,7 +388,7 @@ const defaultQuery = () => {
 // 获取 WEB 日志列表
 const fetchWebLogList = async () => {
   try {
-    const resp = (await getWebList(listQuery.value)).data as SystemLogListRsp;
+    const resp = (await getWebList(listQuery.value)).data as WebLogListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {

@@ -240,11 +240,11 @@ import { storeToRefs } from 'pinia/dist/pinia';
 import { Search, Delete } from '@element-plus/icons-vue';
 import { useBasicStore } from '@/store/basic';
 import { getSystemLogList } from '@/api/system/log';
-import { SystemLog, SystemLogListRsp } from '~/api/permission/log';
+import { SystemLog, SystemLogListRsp } from '@/typings/api/system/log';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import LogDrawer from './LogDrawer.vue';
+import LogDrawer from './components/LogDrawer.vue';
 
 const { settings } = storeToRefs(useBasicStore());
 const route = useRoute();

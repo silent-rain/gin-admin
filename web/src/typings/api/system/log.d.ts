@@ -19,6 +19,8 @@ export interface HttpLog {
 }
 
 export interface HttpLogListRsp {
+  code: number;
+  msg: string;
   data_list: HttpLog[];
   tatol: number;
 }
@@ -38,6 +40,31 @@ export interface SystemLog {
 }
 
 export interface SystemLogListRsp {
+  code: number;
+  msg: string;
   data_list: SystemLog[];
+  tatol: number;
+}
+
+export interface WebLog {
+  id: number;
+  user_id: number;
+  nickname: string;
+  trace_id: string;
+  os_type: number;
+  error_type: number;
+  level: string;
+  caller_line: string;
+  url: string;
+  msg: string;
+  stack: string;
+  note: string;
+  created_at: string;
+}
+
+export interface WebLogListRsp {
+  code: number;
+  msg: string;
+  data_list: WebLog[];
   tatol: number;
 }
