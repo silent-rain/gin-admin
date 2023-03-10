@@ -1,6 +1,8 @@
 # 按钮权限
 
-## 用户管理
+## 权限管理
+
+### 用户管理
 - [x] 查询用户 sys:user:list
 - [x] 添加用户 sys:user:add
 - [x] 修改用户 sys:user:update
@@ -12,17 +14,17 @@
 - [x] 导出用户 sys:user:export
 - [ ] 导入用户 sys:user:import
 
-## 角色管理
+### 角色管理
 - [ ] 角色页面 sys:role:view
 - [x] 查询角色 sys:role:list
 - [x] 添加角色 sys:role:add
 - [x] 修改角色 sys:role:update
 - [x] 删除角色 sys:role:delete
 - [x] 批量删除 sys:role:delall
-- [ ] 设置状态 sys:role:status
+- [x] 设置状态 sys:role:status
 - [x] 分配权限 sys:role:permission
 
-## 菜单管理
+### 菜单管理
 - [x] 查询菜单 sys:menu:list
 - [x] 添加菜单 sys:menu:add
 - [x] 修改菜单 sys:menu:update
@@ -33,10 +35,13 @@
 - [x] 全部展开 sys:menu:expand
 - [x] 全部折叠 sys:menu:collapse
 
-## 用户令牌管理
+### 用户令牌管理
 - [x] 查询配置 sys:userToken:list
 
-## 配置管理
+
+## 系统管理
+
+### 配置管理
 - [x] 查询配置 sys:config:list
 - [x] 添加配置 sys:config:add
 - [x] 修改配置 sys:config:update
@@ -47,15 +52,26 @@
 - [x] 全部展开 sys:config:expand
 - [x] 全部折叠 sys:config:collapse
 
-## 请求日志管理
+### 请求日志管理
 - [x] 查询列表 sys:httplog:list
-## 系统日志管理
+### 系统日志管理
 - [x] 查询列表 sys:systemlog:list
-## WEB日志管理
+### WEB日志管理
 - [x] 查询列表 sys:weblog:list
 
-## 登录管理
+### 登录管理
 - [x] 查询列表 sys:userlogin:list
+- [x] 设置状态 sys:userlogin:status
+
+## 接口管理
+### HTTP接口管理
+- [x] 查询列表 apiAuth:apiHttp:list
+- [x] 添加接口 apiAuth:apiHttp:add
+- [x] 修改接口 apiAuth:apiHttp:update
+- [x] 删除接口 apiAuth:apiHttp:delete
+- [x] 批量删除 apiAuth:apiHttp:delall
+- [x] 设置状态 apiAuth:apiHttp:status
+
 
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate
