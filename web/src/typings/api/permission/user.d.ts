@@ -26,6 +26,8 @@ export interface User {
 }
 
 export interface UserListRsp {
+  code: number;
+  msg: string;
   data_list: User[];
   tatol: number;
 }

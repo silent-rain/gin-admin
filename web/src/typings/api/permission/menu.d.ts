@@ -26,6 +26,8 @@ export interface Menu {
   children: Menu[];
 }
 export interface MenuListRsp {
+  code: number;
+  msg: string;
   data_list: Menu[];
   tatol: number;
 }

@@ -11,6 +11,8 @@ export interface Role {
 }
 
 export interface RoleListRsp {
+  code: number;
+  msg: string;
   data_list: Role[];
   tatol: number;
 }

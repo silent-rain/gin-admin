@@ -15,6 +15,8 @@ export interface UserApiToken {
 }
 
 export interface UserApiTokenListRsp {
+  code: number;
+  msg: string;
   data_list: UserApiToken[];
   tatol: number;
 }

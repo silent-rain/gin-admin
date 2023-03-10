@@ -8,6 +8,8 @@ export interface RoleMenuRel {
 }
 
 export interface RoleMenuRelListRsp {
+  code: number;
+  msg: string;
   data_list: RoleMenuRel[];
   tatol: number;
 }
