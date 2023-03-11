@@ -14,18 +14,28 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
     const parentNode: RouteRawConfig = {} as RouteRawConfig;
     parentNode.path = menu.path;
     parentNode.name = menu.name;
-    parentNode.redirect = menu.redirect;
+    // 重定向处理, 父级路由如果没有设置则默认重定向第一个子路由
+    if (menu.redirect === '' && menu.children.length > 0) {
+      console.log(menu);
+      parentNode.redirect = menu.children[0].path;
+    } else {
+      parentNode.redirect = menu.redirect;
+    }
+
+    // 组件处理
     if (menu.component === 'Layout') {
       parentNode.component = shallowRef(Layout);
     } else {
       const url = menu.component.replace('@', '..');
+      parentNode.component = modules[url];
       // parentNode.component = importModule(url);
       // parentNode.component = () => import(/* @vite-ignore */ url);
-      parentNode.component = modules[url];
       // parentNode.component = defineAsyncComponent(
       //   () => import(/* @vite-ignore */ url),
       // );
     }
+
+    // 元数据处理
     parentNode.meta = {
       title: menu.title,
       elSvgIcon: menu.el_svg_icon,
@@ -34,6 +44,7 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
     parentNode.alwaysShow = menu.always_show === 1;
     parentNode.hidden = menu.hidden === 1;
 
+    // 子路由处理
     if (menu.children) {
       parentNode.children = asyncRoutesByMenus(menu.children);
     }
