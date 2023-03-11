@@ -170,7 +170,6 @@ func (d *user) Update(user permissionModel.User, roles []uint) error {
 	}()
 
 	// 更新用户信息
-	zap.S().Errorf("================%#v", user)
 	if err := d.updateUser(user); err != nil {
 		d.Rollback()
 		return err
