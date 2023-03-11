@@ -6,7 +6,7 @@ import "gin-admin/internal/dto"
 // QueryDictDataReq 查询条件
 type QueryDictDataReq struct {
 	dto.Pagination        // 分页
-	Name           string `json:"name" form:"name"`   // 字典名称
+	Name           string `json:"name" form:"name"`   // 字典项名称
 	Value          string `json:"value" form:"value"` // 字典项值
 }
 
@@ -21,7 +21,7 @@ type AddDictDataReq struct {
 
 // UpdateDictDataReq 更新字典数据
 type UpdateDictDataReq struct {
-	ID     uint   `json:"id" form:"id" binding:"required"` // 自增ID
+	ID     uint   `json:"id" form:"id" binding:"required"` // 字典项ID
 	DictId uint   `json:"dict_id" form:"dict_id"`          // 字典维度ID
 	Name   string `json:"name" form:"name"`                // 字典项名称
 	Value  string `json:"value" form:"value"`              // 字典项值

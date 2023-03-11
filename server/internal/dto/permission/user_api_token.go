@@ -22,7 +22,7 @@ type AddUserApiTokenReq struct {
 
 // UpdateUserApiTokenReq 更新 Token 令牌
 type UpdateUserApiTokenReq struct {
-	ID         uint   `json:"id" form:"id" binding:"required"` // 自增ID
+	ID         uint   `json:"id" form:"id" binding:"required"` // 令牌ID
 	Permission string `json:"permission" form:"permission"`    // 权限:GET,POST,PUT,DELETE
 	Passphrase string `json:"passphrase" form:"passphrase"`    // 口令
 	Note       string `json:"note" form:"note"`                // 备注

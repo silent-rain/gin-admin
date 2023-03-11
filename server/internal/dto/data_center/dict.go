@@ -22,7 +22,7 @@ type AddDictReq struct {
 
 // UpdateDictReq 更新字典维度信息
 type UpdateDictReq struct {
-	ID     uint   `json:"id" form:"id" binding:"required"`     // 自增ID
+	ID     uint   `json:"id" form:"id" binding:"required"`     // 字典ID
 	Name   string `json:"name" form:"name" binding:"required"` // 字典名称
 	Code   string `json:"code" form:"code" binding:"required"` // 字典编码
 	Note   string `json:"note" form:"note"`                    // 备注

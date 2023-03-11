@@ -3,7 +3,7 @@ package apiauth
 
 // ApiHttp Http协议接口管理表
 type ApiHttp struct {
-	ID        uint      `json:"id" gorm:"column:id;primaryKey"`      // 自增ID
+	ID        uint      `json:"id" gorm:"column:id;primaryKey"`      // 接口ID
 	ParentId  *uint     `json:"parent_id" gorm:"column:parent_id"`   // 父接口ID
 	Name      string    `json:"name" gorm:"column:name"`             // 接口名称
 	Method    string    `json:"method" gorm:"column:method"`         // 请求类型:GET,POST,PUT,DELETE

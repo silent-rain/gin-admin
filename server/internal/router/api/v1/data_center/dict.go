@@ -12,7 +12,7 @@ func InitDictRouter(group *gin.RouterGroup) {
 	router := group.Group("/dict")
 	controller := datacenter.NewDictController()
 	{
-		// 获取字典维度信息树
+		// 获取字典维度信息列表
 		router.GET("/list", controller.List)
 		// 添加字典维度信息
 		router.POST("/add", controller.Add)

@@ -3,7 +3,7 @@ package permission
 
 // UserApiToken 用户API接口Token令牌表
 type UserApiToken struct {
-	ID         uint   `json:"id" gorm:"column:id;primaryKey"`      // 自增ID
+	ID         uint   `json:"id" gorm:"column:id;primaryKey"`      // 令牌ID
 	UserId     uint   `json:"user_id" gorm:"column:user_id"`       // 用户ID
 	Permission string `json:"permission" gorm:"column:permission"` // 权限标识:GET,POST,PUT,DELETE
 	Token      string `json:"token" gorm:"column:token"`           // 令牌
