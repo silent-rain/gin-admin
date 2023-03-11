@@ -1,5 +1,5 @@
 /*用户API接口Token令牌表*/
-package permissionDAO
+package permission
 
 import (
 	permissionDTO "gin-admin/internal/dto/permission"

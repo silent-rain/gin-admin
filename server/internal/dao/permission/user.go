@@ -1,6 +1,6 @@
 /*用户 DAO
  */
-package permissionDAO
+package permission
 
 import (
 	"errors"
@@ -345,4 +345,3 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 	}
 	return true, nil
 }
-

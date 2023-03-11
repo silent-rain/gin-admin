@@ -1,6 +1,6 @@
 /* 菜单 DAO
  */
-package permissionDAO
+package permission
 
 import (
 	permissionDTO "gin-admin/internal/dto/permission"

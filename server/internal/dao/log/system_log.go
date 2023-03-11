@@ -1,6 +1,6 @@
 /*系统日志 DAO
  */
-package systemDAO
+package system
 
 import (
 	logDTO "gin-admin/internal/dto/log"

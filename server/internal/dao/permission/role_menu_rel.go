@@ -1,6 +1,6 @@
 /* 角色菜单 DAO
  */
-package permissionDAO
+package permission
 
 import (
 	DAO "gin-admin/internal/dao"

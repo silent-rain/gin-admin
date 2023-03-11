@@ -1,5 +1,5 @@
 /*用户登录信息表*/
-package systemDAO
+package system
 
 import (
 	"context"

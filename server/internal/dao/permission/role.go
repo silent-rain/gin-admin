@@ -1,6 +1,6 @@
 /*角色 DAO
  */
-package permissionDAO
+package permission
 
 import (
 	"errors"

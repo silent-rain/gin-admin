@@ -1,5 +1,5 @@
 /*应用配置表*/
-package systemDAO
+package system
 
 import (
 	"errors"

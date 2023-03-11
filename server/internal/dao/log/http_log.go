@@ -1,6 +1,6 @@
 /*网络请求日志 DAO
  */
-package systemDAO
+package system
 
 import (
 	"errors"
