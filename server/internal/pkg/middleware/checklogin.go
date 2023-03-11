@@ -48,6 +48,8 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		core.GetContext(ctx).UserId = claim.UserId
+		core.GetContext(ctx).Nickname = claim.Nickname
 
 		// 检查单点登录
 		if err := checkSingleLogin(claim.UserId, token); err != nil {
@@ -57,8 +59,6 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 
-		core.GetContext(ctx).UserId = claim.UserId
-		core.GetContext(ctx).Nickname = claim.Nickname
 		ctx.Next()
 	}
 }
