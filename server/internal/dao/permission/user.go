@@ -170,6 +170,7 @@ func (d *user) Update(user permissionModel.User, roles []uint) error {
 	}()
 
 	// 更新用户信息
+	zap.S().Errorf("================%#v", user)
 	if err := d.updateUser(user); err != nil {
 		d.Rollback()
 		return err
@@ -237,7 +238,7 @@ func (d *user) updateUserRoles(userId uint, roleIds []uint) error {
 // 获取用户关联的角色 roleId 列表
 func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
 	userRoles := make([]permissionModel.UserRoleRel, 0)
-	results := d.Tx().Where("status=1").Where("user_id = ?", userId).Find(&userRoles)
+	results := d.Tx().Where("user_id = ?", userId).Find(&userRoles)
 	if results.Error != nil {
 		return nil, results.Error
 	}
