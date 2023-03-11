@@ -16,7 +16,6 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
     parentNode.name = menu.name;
     // 重定向处理, 父级路由如果没有设置则默认重定向第一个子路由
     if (menu.redirect === '' && menu.children.length > 0) {
-      console.log(menu);
       parentNode.redirect = menu.children[0].path;
     } else {
       parentNode.redirect = menu.redirect;
