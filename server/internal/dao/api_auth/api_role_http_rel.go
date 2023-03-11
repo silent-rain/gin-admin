@@ -49,7 +49,7 @@ func (d *apiRoleHttpRel) List(req apiAuthDTO.QueryApiRoleHttpRelReq) ([]apiAuthM
 	}
 
 	bean := make([]apiAuthModel.ApiRoleHttpRel, 0)
-	result := tx.Order("updated_at DESC").Find(&bean)
+	result := tx.Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
 	}
@@ -65,6 +65,7 @@ func (d *apiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
 			zap.S().Panic("更新角色接口关联关系异常, err: %v", err)
 		}
 	}()
+
 	// 未传入 apiIds, 不做处理
 	if apiIds == nil {
 		return nil
@@ -88,19 +89,19 @@ func (d *apiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
 
 	// 需要删除的关系列表
 	delRels := make([]uint, 0)
-	for _, roleId := range apiIds {
-		if utils.IndexOfArray(apiIds, roleId) == -1 {
-			delRels = append(delRels, roleId)
+	for _, id := range relIds {
+		if utils.IndexOfArray(apiIds, id) == -1 {
+			delRels = append(delRels, id)
 		}
 	}
 
 	if len(addRels) != 0 {
-		if result := d.Tx().Create(&addRels); result.Error != nil {
+		if result := d.Tx().Debug().Create(&addRels); result.Error != nil {
 			return result.Error
 		}
 	}
 	if len(delRels) != 0 {
-		if result := d.Tx().Where("role_id = ? AND api_id in ?", roleId, delRels).
+		if result := d.Tx().Debug().Where("role_id = ? AND api_id in ?", roleId, delRels).
 			Delete(&apiAuthModel.ApiRoleHttpRel{}); result.Error != nil {
 			return result.Error
 		}

@@ -151,7 +151,22 @@
         prop="method"
         label="请求类型"
         show-overflow-tooltip
-      />
+        width="100"
+        align="center"
+      >
+        <template #default="scope">
+          <el-tag
+            v-for="(item, _) in methodOptions.filter(
+              (v) => v.value === scope.row.method,
+            )"
+            size="small"
+            :key="item.value"
+            :type="item.type"
+          >
+            {{ scope.row.method }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column
         v-if="checkedDict.uri"
         prop="uri"
@@ -334,6 +349,26 @@ const state = reactive({
     type: '',
   },
 });
+
+// 请求类型列表
+const methodOptions = [
+  {
+    value: 'GET',
+    type: 'info',
+  },
+  {
+    value: 'POST',
+    type: '',
+  },
+  {
+    value: 'PUT',
+    type: 'warning',
+  },
+  {
+    value: 'DELTE',
+    type: 'danger',
+  },
+];
 
 const checkAllList = [
   { label: '自增ID', value: 'id', disabled: false, enabled: false },

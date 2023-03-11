@@ -1,33 +1,19 @@
 <template>
-  <el-dialog
-    :model-value="props.visible"
-    title="分配权限"
-    width="400px"
-    :before-close="handleClose"
-  >
-    <el-scrollbar height="400px">
-      <el-tree
-        ref="treeRef"
-        :data="treeData"
-        show-checkbox
-        default-expand-all
-        node-key="id"
-        highlight-current
-        :props="{
-          children: 'children',
-          label: 'title',
-        }"
-        style="height: 400px"
-      />
-    </el-scrollbar>
-
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">提交</el-button>
-      </span>
-    </template>
-  </el-dialog>
+  <div class="permission">
+    <el-button type="primary" @click="handleSubmit">提交</el-button>
+  </div>
+  <el-tree
+    ref="treeRef"
+    :data="treeData"
+    show-checkbox
+    default-expand-all
+    node-key="id"
+    highlight-current
+    :props="{
+      children: 'children',
+      label: 'title',
+    }"
+  />
 </template>
 
 <script setup lang="ts">
@@ -37,16 +23,12 @@ import {
   getRoleMenuRelList,
   updateRoleMenuRel,
 } from '@/api/permission/role-menu-rel';
-import { Role } from '~/api/permission/role';
 import { MenuListRsp, Menu } from '~/api/permission/menu';
 import { RoleMenuRelListRsp } from '~/api/permission/role-menu-rel';
 
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
 const props = withDefaults(
   defineProps<{
-    data: Role;
-    visible: boolean;
+    roleId: number;
   }>(),
   {},
 );
@@ -84,29 +66,14 @@ const fetchRoleMenuList = async (roleId: number) => {
   }
 };
 
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
 // 提交
 const handleSubmit = async () => {
   try {
     const data = {
-      role_id: props.data.id,
+      role_id: props.roleId,
       menu_ids: treeRef.value!.getCheckedKeys(false),
     };
     await updateRoleMenuRel(data);
-    emit('update:visible', false);
-    emit('update:data', {});
-    emit('refresh');
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -114,15 +81,20 @@ const handleSubmit = async () => {
 };
 
 watch(
-  () => props.data.id,
+  () => props.roleId,
   () => {
-    if (!props.data.id) {
+    if (!props.roleId) {
       return;
     }
-    fetchRoleMenuList(props.data.id);
+    fetchRoleMenuList(props.roleId);
   },
   { immediate: true },
 );
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.permission {
+  display: flex;
+  justify-content: flex-end;
+}
+</style>

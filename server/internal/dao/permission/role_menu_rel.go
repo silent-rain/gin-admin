@@ -47,9 +47,7 @@ func (d *roleMenuRel) List(req permissionDTO.QueryRoleMenuRelReq) ([]permissionM
 	}
 
 	bean := make([]permissionModel.RoleMenuRel, 0)
-	result := stats().
-		Order("updated_at DESC").
-		Find(&bean)
+	result := stats().Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
 	}

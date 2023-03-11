@@ -76,9 +76,10 @@
     />
 
     <!-- 分配权限 -->
-    <MenuPermission
-      v-model:data="state.menuPermission.data"
-      v-model:visible="state.menuPermission.visible"
+    <DrawerPermission
+      v-if="state.permission.visible"
+      v-model="state.permission.visible"
+      :roleId="state.permission.roleId"
     />
 
     <el-table
@@ -229,7 +230,7 @@ import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';
 import RoleForm from './components/RoleForm.vue';
-import MenuPermission from './components/MenuPermission.vue';
+import DrawerPermission from './components/DrawerPermission.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
 const { settings } = storeToRefs(useBasicStore());
@@ -256,8 +257,8 @@ const state = reactive({
     type: '',
     width: '500px',
   },
-  menuPermission: {
-    data: {} as Role,
+  permission: {
+    roleId: 0,
     visible: false,
   },
 });
@@ -370,8 +371,8 @@ const handleStatusChange = async (row: Role) => {
 
 // 分配权限
 const handleMenuPermission = async (row: Role) => {
-  state.menuPermission.data = { ...row };
-  state.menuPermission.visible = true;
+  state.permission.roleId = row.id;
+  state.permission.visible = true;
 };
 </script>
 
