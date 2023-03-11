@@ -65,7 +65,7 @@ func (h *roleService) Add(ctx *gin.Context, role permissionModel.Role) (uint, er
 		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if ok {
-		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("角色已存在")
 		return 0, errcode.New(errcode.DBDataExistError).WithMsg("角色已存在")
 	}
 

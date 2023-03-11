@@ -5,6 +5,7 @@ package router
 import (
 	"gin-admin/internal/controller"
 	apiauth "gin-admin/internal/router/api/v1/api_auth"
+	datacenter "gin-admin/internal/router/api/v1/data_center"
 	"gin-admin/internal/router/api/v1/log"
 	"gin-admin/internal/router/api/v1/permission"
 	"gin-admin/internal/router/api/v1/system"
@@ -41,16 +42,23 @@ func Init(engine *gin.Engine) {
 	// 私有路由组
 	privateGroup := beGroup.Group("/api/v1")
 	{
+		// 权限管理
 		permission.InitUserRouter(privateGroup)         // 初始化用户管理路由
 		permission.InitRoleRouter(privateGroup)         // 初始化角色管理路由
 		permission.InitMenuRouter(privateGroup)         // 初始化菜单管理路由
 		permission.InitRoleMenuRelRouter(privateGroup)  // 初始化角色菜单关系管理路由
 		permission.InitUserApiTokenRouter(privateGroup) // 初始化用户API接口Token令牌管理路由
-		system.InitUploadRouter(privateGroup)           // 初始化上传管理路由
-		system.InitConfigRouter(privateGroup)           // 初始化配置管理路由
-		system.InitUserLoginRouter(privateGroup)        // 初始化配置管理路由
-		apiauth.InitApiHttpRouter(privateGroup)         // 初始化Http协议接口管理路由
-		apiauth.InitApiRoleHttpRelRouter(privateGroup)  // 初始化角色与Http协议接口关系管理路由
-		log.InitLogRouter(privateGroup)                 // 初始化日志管理路由
+		// 系统管理
+		system.InitUploadRouter(privateGroup)    // 初始化上传管理路由
+		system.InitConfigRouter(privateGroup)    // 初始化配置管理路由
+		system.InitUserLoginRouter(privateGroup) // 初始化配置管理路由
+		// API 管理
+		apiauth.InitApiHttpRouter(privateGroup)        // 初始化Http协议接口管理路由
+		apiauth.InitApiRoleHttpRelRouter(privateGroup) // 初始化角色与Http协议接口关系管理路由
+		// 数据中心
+		datacenter.InitDictRouter(privateGroup)     // 初始化字典维度管理路由
+		datacenter.InitDictDataRouter(privateGroup) // 初始化字典数据管理路由
+
+		log.InitLogRouter(privateGroup) // 初始化日志管理路由
 	}
 }

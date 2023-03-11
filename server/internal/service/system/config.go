@@ -126,7 +126,7 @@ func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, 
 		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if ok {
-		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("配置项已存在")
 		return 0, errcode.New(errcode.DBDataExistError).WithMsg("配置项已存在")
 	}
 

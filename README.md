@@ -148,6 +148,7 @@ web
   - [x] HTTP 服务
   - [x] Mysql 数据库
   - [x] Cron 定时任务
+  - [x] 内存缓存
 - [x] 插件
   - [x] 服务启动logo
   - [x] [pprof](https://github.com/gin-contrib/pprof) 性能剖析工具
@@ -279,6 +280,8 @@ air
 - [Gorm](https://gorm.io/zh_CN/)
 - [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
 - [参考项目](http://manage.pro.layui.javaweb.vip/index)
+- [参考项目](https://vue3.go-admin.dev/schedule/manage)
+  - 定时任务
 - [为 Go 应用添加 Prometheus 监控指标](https://blog.csdn.net/weixin_40046357/article/details/120620433)
 
 ### SEO 优化

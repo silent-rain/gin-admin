@@ -104,7 +104,7 @@ func (h *apiHttpService) Add(ctx *gin.Context, bean apiAuthModel.ApiHttp) (uint,
 		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if ok {
-		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("接口已存在")
 		return 0, errcode.New(errcode.DBDataExistError).WithMsg("接口已存在")
 	}
 

@@ -66,8 +66,6 @@ func (h *userService) List(ctx *gin.Context, req permissionDTO.QueryUserReq) ([]
 
 // Add 添加用户
 func (h *userService) Add(ctx *gin.Context, req permissionDTO.AddUserReq) error {
-
-
 	// 判断用户是否存在 邮件/手机号
 	if h.chechkPhone(ctx, req.Phone) {
 		return errcode.New(errcode.ExistPhoneError).WithMsg("手机号已存在")
