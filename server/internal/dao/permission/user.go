@@ -34,6 +34,8 @@ type User interface {
 	GetUserByPhone(phone string) (permissionModel.User, bool, error)
 	GetUserByEmail(email string) (permissionModel.User, bool, error)
 	ExistUserPassword(userId uint, password string) (bool, error)
+
+	InfoByApiToken(token string) (permissionModel.User, bool, error)
 }
 
 // 用户
@@ -344,4 +346,21 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 		return false, result.Error
 	}
 	return true, nil
+}
+
+// InfoByApiToken 通过 api token 获取用户信息
+func (d *user) InfoByApiToken(token string) (permissionModel.User, bool, error) {
+	bean := permissionModel.User{}
+	result := d.db.GetDbR().Model(&permissionModel.User{}).
+		Select("perm_user.*").
+		Joins("LEFT JOIN perm_user_api_token ON perm_user_api_token.user_id = perm_user.id").
+		Where("perm_user_api_token.token = ?", token).
+		First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }

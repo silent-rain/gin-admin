@@ -40,7 +40,8 @@ server
 │   │   ├── middleware
 │   │   ├── repository
 │   │   │   ├── mysql
-│   │   │   └── redis
+│   │   │   ├── redis
+│   │   │   └── cache
 │   │   ├── response
 │   │   ├── tracer
 │   │   └── utils
@@ -129,13 +130,13 @@ web
     - [x] 日志入库
   - [x] 全链路跟踪日志 Trace
   - [x] Gin 框架集成 zap 日志库
-- [ ] 中间件
+- [x] 中间件
   - [x] 跨域
   - [x] API 网络请求/响应日志
   - [x] JWT 令牌
     - [x] 单点登录
   - [x] API 鉴权
-  - [ ] API Token 鉴权
+  - [x] API Token 鉴权
   - [x] [Rate](https://golang.org/x/time/rate) 接口限流 
 - [x] API 文档
   - [x] ApiPost 接口工具
@@ -188,6 +189,7 @@ web
 ## 待处理
 - 用户页面
   - excel 导入
+- API Token 鉴权 加缓存
 
 
 ## 项目编译&运行

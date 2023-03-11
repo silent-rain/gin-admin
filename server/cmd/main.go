@@ -56,6 +56,8 @@ func main() {
 		engine.Use(middleware.Session())
 		// 接口限流
 		engine.Use(middleware.RateLimiter())
+		// 检查 API 令牌鉴权中间件
+		engine.Use(middleware.CheckApiLogin())
 		// 登录验证
 		engine.Use(middleware.CheckLogin())
 		// 指标记录

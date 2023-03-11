@@ -74,7 +74,7 @@ func (d *role) List(req permissionDTO.QueryRoleReq) ([]permissionModel.Role, int
 	return bean, total, nil
 }
 
-// Info 获取角色信息
+// InfoByName 获取角色信息
 func (d *role) InfoByName(name string) (permissionModel.Role, bool, error) {
 	bean := permissionModel.Role{}
 	result := d.db.GetDbR().Where("name=?", name).First(&bean)

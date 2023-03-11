@@ -2,6 +2,8 @@
 package permission
 
 import (
+	"errors"
+
 	permissionDTO "gin-admin/internal/dto/permission"
 	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/repository/mysql"
@@ -13,6 +15,7 @@ import (
 // UserApiToken Token令牌接口
 type UserApiToken interface {
 	List(req permissionDTO.QueryUserApiTokenReq) ([]permissionVO.UserApiToken, int64, error)
+	Info(token string) (permissionModel.UserApiToken, bool, error)
 	Add(bean permissionModel.UserApiToken) (uint, error)
 	Update(bean permissionModel.UserApiToken) (int64, error)
 	Delete(id uint) (int64, error)
@@ -62,6 +65,19 @@ func (d *userApiToken) List(req permissionDTO.QueryUserApiTokenReq) ([]permissio
 		return nil, 0, result.Error
 	}
 	return bean, total, nil
+}
+
+// Info 获取 Token 令牌信息
+func (d *userApiToken) Info(token string) (permissionModel.UserApiToken, bool, error) {
+	bean := permissionModel.UserApiToken{}
+	result := d.db.GetDbR().Where("token = ?", token).First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }
 
 // Add 添加 Token 令牌

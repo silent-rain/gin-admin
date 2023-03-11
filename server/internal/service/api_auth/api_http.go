@@ -98,6 +98,16 @@ func apiHttpListToTree(src []apiAuthModel.ApiHttp, parentId *uint) []apiAuthMode
 
 // Add 添加
 func (h *apiHttpService) Add(ctx *gin.Context, bean apiAuthModel.ApiHttp) (uint, error) {
+	_, ok, err := h.dao.InfoByUri(bean.Uri)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
+	}
+	if ok {
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBDataExistError).WithMsg("接口已存在")
+	}
+
 	id, err := h.dao.Add(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
@@ -118,6 +128,16 @@ func (h *apiHttpService) Update(ctx *gin.Context, bean apiAuthModel.ApiHttp) (in
 
 // Delete 删除
 func (h *apiHttpService) Delete(ctx *gin.Context, id uint) (int64, error) {
+	childrenConfig, err := h.dao.Children(id)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return 0, errcode.New(errcode.DBQueryError)
+	}
+	if len(childrenConfig) > 0 {
+		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子接口, %v", err)
+		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子接口")
+	}
+
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)

@@ -365,7 +365,7 @@ const methodOptions = [
     type: 'warning',
   },
   {
-    value: 'DELTE',
+    value: 'DELETE',
     type: 'danger',
   },
 ];

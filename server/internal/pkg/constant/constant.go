@@ -29,4 +29,10 @@ const (
 
 	// CacheWebSiteConfig 缓存 Key
 	CacheWebSiteConfig = "webSiteConfig"
+
+	// API 访问鉴权
+	// ApiHttpToken API 请求密匙
+	ApiHttpToken = "X-API-Token"
+	// ApiHttpTokenPassphrase API 请求密匙口令
+	ApiHttpTokenPassphrase = "X-Passphrase"
 )

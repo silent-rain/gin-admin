@@ -36,6 +36,7 @@ var (
 )
 
 // AuthTable 鉴权表
+// 需要登录验证中间件之前注册，防止过白名单失败
 func AuthTable() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		path := ctx.Request.URL.Path
@@ -45,6 +46,7 @@ func AuthTable() gin.HandlerFunc {
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
 				core.GetContext(ctx).DisableCheckLogin = true
+				break
 			}
 		}
 
@@ -54,6 +56,7 @@ func AuthTable() gin.HandlerFunc {
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
 				core.GetContext(ctx).DisableCheckLogin = true
+				break
 			}
 		}
 		ctx.Next()

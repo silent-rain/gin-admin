@@ -71,14 +71,18 @@ const (
 
 // 鉴权
 const (
-	TokenGenerateError            ErrorCode = iota + 10400 // 生成 Token 失败
-	TokenNotFound                                          // 鉴权信息不存在
-	TokenParsingError                                      // 解析 Token 失败
-	TokeConvertError                                       // 转换 Token 失败
-	TokenInvalidError                                      // 无效鉴权
-	TokenExpiredError                                      // 鉴权过期
-	TokenUnconformityError                                 // Token 不一致, 已在别处登录，请重新登录
-	TokenDisableCurrentLoginError                          // 当前登录已被禁用
+	TokenGenerateError                ErrorCode = iota + 10400 // 生成 Token 失败
+	TokenNotFound                                              // 鉴权信息不存在
+	TokenParsingError                                          // 解析 Token 失败
+	TokeConvertError                                           // 转换 Token 失败
+	TokenInvalidError                                          // 无效鉴权
+	TokenExpiredError                                          // 鉴权过期
+	TokenUnconformityError                                     // Token 不一致, 已在别处登录，请重新登录
+	TokenDisableCurrentLoginError                              // 当前登录已被禁用
+	ApiHttpTokenPassphraseEmptyError                           // 令牌口令不能为空
+	ApiHttpTokenPassphraseError                                // 令牌口令错误
+	ApiHttpTokenInvalidError                                   // 无效API令牌
+	ApiHttpTokenMethodPermissionError                          // 没有该资源的操作权限
 )
 
 // 上游服务

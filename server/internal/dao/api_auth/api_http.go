@@ -2,6 +2,7 @@
 package apiauth
 
 import (
+	"errors"
 	apiAuthDTO "gin-admin/internal/dto/api_auth"
 	apiAuthModel "gin-admin/internal/model/api_auth"
 	"gin-admin/internal/pkg/repository/mysql"
@@ -13,11 +14,14 @@ import (
 type ApiHttp interface {
 	All() ([]apiAuthModel.ApiHttp, int64, error)
 	List(req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, int64, error)
+	InfoByUri(uri string) (apiAuthModel.ApiHttp, bool, error)
 	Add(bean apiAuthModel.ApiHttp) (uint, error)
 	Update(bean apiAuthModel.ApiHttp) (int64, error)
 	Delete(id uint) (int64, error)
 	BatchDelete(ids []uint) (int64, error)
 	Status(id uint, status uint) (int64, error)
+	Children(parentId uint) ([]apiAuthModel.ApiHttp, error)
+	GetUriListByToken(token, uri string) (apiAuthModel.ApiHttp, bool, error)
 }
 
 // Http协议接口信息
@@ -72,12 +76,25 @@ func (d *apiAuth) List(req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, 
 	}
 
 	bean := make([]apiAuthModel.ApiHttp, 0)
-	result := tx.Offset(req.Offset()).Limit(req.PageSize).Order("updated_at ASC").
+	result := tx.Offset(req.Offset()).Limit(req.PageSize).Order("id ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
 	}
 	return bean, total, nil
+}
+
+// InfoByUri 获取Http协议接口信息
+func (d *apiAuth) InfoByUri(uri string) (apiAuthModel.ApiHttp, bool, error) {
+	bean := apiAuthModel.ApiHttp{}
+	result := d.db.GetDbR().Where("uri = ?", uri).First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }
 
 // Add 添加Http协议接口
@@ -122,4 +139,36 @@ func (d *apiAuth) Status(id uint, status uint) (int64, error) {
 		Status: status,
 	})
 	return result.RowsAffected, result.Error
+}
+
+// Children 通过父 ID 获取子配置列表
+func (d *apiAuth) Children(parentId uint) ([]apiAuthModel.ApiHttp, error) {
+	beans := make([]apiAuthModel.ApiHttp, 0)
+	result := d.db.GetDbR().Where("parent_id = ?", parentId).
+		Order("sort ASC").Order("id ASC").
+		Find(&beans)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return beans, nil
+}
+
+// GetUriListByToken 获取 Token 令牌对应的 URI 资源列表
+func (d *apiAuth) GetUriListByToken(token, uri string) (apiAuthModel.ApiHttp, bool, error) {
+	bean := apiAuthModel.ApiHttp{}
+	result := d.db.GetDbR().Model(&apiAuthModel.ApiHttp{}).
+		Joins("left join api_role_http_rel arhr on arhr.api_id = api_http.id").
+		Joins("left join perm_user_role_rel purr on purr.role_id = arhr.role_id").
+		Joins("left join perm_user_api_token puat on puat.user_id = purr.user_id").
+		Where("puat.token = ?", token).
+		Where("api_http.uri = ?", uri).
+		Group("api_http.id").
+		First(&bean)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return bean, false, nil
+	}
+	if result.Error != nil {
+		return bean, false, result.Error
+	}
+	return bean, true, nil
 }
