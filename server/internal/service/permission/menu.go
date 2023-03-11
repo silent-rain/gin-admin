@@ -20,6 +20,7 @@ type MenuService interface {
 	Delete(ctx *gin.Context, id uint) (int64, error)
 	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	Status(ctx *gin.Context, id uint, status uint) (int64, error)
+	ChildrenMenu(ctx *gin.Context, parentId uint) ([]systemModel.Menu, error)
 }
 
 // 菜单
@@ -154,4 +155,14 @@ func menuListToTree(src []systemModel.Menu, parentId *uint) []systemModel.Menu {
 		}
 	}
 	return tree
+}
+
+// ChildrenMenu 通过父 ID 获取子配置列表
+func (s *menuService) ChildrenMenu(ctx *gin.Context, parentId uint) ([]systemModel.Menu, error) {
+	results, err := s.dao.ChildrenMenu(parentId)
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, errcode.New(errcode.DBQueryError)
+	}
+	return results, nil
 }

@@ -26,5 +26,7 @@ func InitMenuRouter(group *gin.RouterGroup) {
 		menu.DELETE("/batchDelete", permission.NewMenuController().BatchDelete)
 		// 更新菜单状态
 		menu.PUT("/status", permission.NewMenuController().Status)
+		// 通过父 ID 获取子配置列表
+		menu.GET("/childrenMenu", permission.NewMenuController().ChildrenMenu)
 	}
 }

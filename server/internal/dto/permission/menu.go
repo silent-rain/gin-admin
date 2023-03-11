@@ -12,6 +12,11 @@ type QueryMenuReq struct {
 	Title          string `json:"title" form:"title"` // 菜单名称
 }
 
+// QueryChildrenMenuReq 查询条件
+type QueryChildrenMenuReq struct {
+	ParentId uint `json:"parent_id" form:"parent_id"` // 父菜单ID
+}
+
 // AddMenuReq 添加菜单
 type AddMenuReq struct {
 	ParentId   *uint  `json:"parent_id" form:"parent_id"`            // 父菜单ID

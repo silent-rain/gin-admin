@@ -214,3 +214,19 @@ func (c *menuController) Status(ctx *gin.Context) {
 	}
 	response.New(ctx).Json()
 }
+
+// ChildrenMenu 通过父 ID 获取子配置列表
+func (c *menuController) ChildrenMenu(ctx *gin.Context) {
+	req := permissionDTO.QueryChildrenMenuReq{}
+	if err := http.ParsingReqParams(ctx, &req); err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+
+	results, err := c.service.ChildrenMenu(ctx, req.ParentId)
+	if err != nil {
+		response.New(ctx).WithCodeError(err).Json()
+		return
+	}
+	response.New(ctx).WithDataList(results, int64(len(results))).Json()
+}
