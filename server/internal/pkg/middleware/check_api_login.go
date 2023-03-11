@@ -46,7 +46,16 @@ func CheckApiLogin() gin.HandlerFunc {
 		}
 
 		// 获取缓存信息
-		// token; uri
+		tokenUri := token + ctx.Request.URL.Path
+		user, err := apiAuthDAO.NewApiTokenLoginCacheDao().Get(tokenUri)
+		if err == nil {
+			core.GetContext(ctx).UserId = user.UserId
+			core.GetContext(ctx).Nickname = user.Nickname
+			// 存在 API 令牌的情况下，不再验证用户密码
+			core.GetContext(ctx).DisableCheckLogin = true
+			ctx.Next()
+			return
+		}
 
 		ct := chechkApiToken{}
 		// 令牌口令信息验证
@@ -67,6 +76,12 @@ func CheckApiLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+		// 设置 API Token 访问权限缓存
+		if err := ct.SetCache(ctx, token); err != nil {
+			response.New(ctx).WithCodeError(err).Json()
+			ctx.Abort()
+			return
+		}
 
 		// 存在 API 令牌的情况下，不再验证用户密码
 		core.GetContext(ctx).DisableCheckLogin = true
@@ -75,6 +90,7 @@ func CheckApiLogin() gin.HandlerFunc {
 	}
 }
 
+// API 令牌校验
 type chechkApiToken struct{}
 
 // 密匙口令验证
@@ -129,6 +145,18 @@ func (c chechkApiToken) checkApiUri(ctx *gin.Context, token string) error {
 	if apiInfo.Method != ctx.Request.Method {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenMethodPermissionError).Errorf("")
 		return errcode.New(errcode.ApiHttpTokenMethodPermissionError)
+	}
+	return nil
+}
+
+// 设置 API Token 访问权限缓存
+func (c chechkApiToken) SetCache(ctx *gin.Context, token string) error {
+	tokenUri := token + ctx.Request.URL.Path
+	userId := core.GetContext(ctx).UserId
+	Nickname := core.GetContext(ctx).Nickname
+	if err := apiAuthDAO.NewApiTokenLoginCacheDao().Set(tokenUri, userId, Nickname); err == nil {
+		log.New(ctx).WithCode(errcode.RedisSetKeyError).Errorf("%#v", err)
+		return nil
 	}
 	return nil
 }

@@ -2,10 +2,15 @@
 package apiauth
 
 import (
+	"context"
 	"errors"
+	"time"
+
 	apiAuthDTO "gin-admin/internal/dto/api_auth"
 	apiAuthModel "gin-admin/internal/model/api_auth"
+	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/repository/mysql"
+	"gin-admin/internal/pkg/repository/redis"
 
 	"gorm.io/gorm"
 )
@@ -171,4 +176,53 @@ func (d *apiAuth) GetUriListByToken(token, uri string) (apiAuthModel.ApiHttp, bo
 		return bean, false, result.Error
 	}
 	return bean, true, nil
+}
+
+// ApiTokenLoginCache API Token 登录信息缓存接口
+type ApiTokenLoginCache interface {
+	Set(userId uint, token string) error
+	Get(userId uint) (string, error)
+}
+
+// API Token 登录信息缓存
+type redisApiTokenLogin struct {
+	db redis.DBRepo
+}
+
+// NewApiTokenLoginCacheDao 创建 API Token 登录信息缓存对象
+func NewApiTokenLoginCacheDao() *redisApiTokenLogin {
+	return &redisApiTokenLogin{
+		db: redis.Instance().DB(redis.ApiTokenLogin),
+	}
+}
+
+// Set 设置缓存
+func (d *redisApiTokenLogin) Set(tokenUri string, userId uint, Nickname string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+	defer cancel()
+
+	user := apiAuthDTO.ApiHttpUserCache{
+		UserId:   userId,
+		Nickname: Nickname,
+	}
+	value, err := user.String()
+	if err != nil {
+		return err
+	}
+	return d.db.Set(ctx, tokenUri, value, constant.ApiHttpTokenExpire)
+}
+
+// Get 获取缓存
+func (d *redisApiTokenLogin) Get(tokenUri string) (apiAuthDTO.ApiHttpUserCache, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+	defer cancel()
+	user := apiAuthDTO.ApiHttpUserCache{}
+	value, err := d.db.Get(ctx, tokenUri)
+	if err != nil {
+		return apiAuthDTO.ApiHttpUserCache{}, err
+	}
+	if err = user.Unmarshal(value); err != nil {
+		return user, err
+	}
+	return user, nil
 }

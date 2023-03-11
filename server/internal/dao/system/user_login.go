@@ -87,7 +87,7 @@ type redisUserLogin struct {
 	db redis.DBRepo
 }
 
-// NewUserLoginDao 创建用户登录信息对象
+// NewUserLoginCacheDao 创建用户登录信息对象
 func NewUserLoginCacheDao() *redisUserLogin {
 	return &redisUserLogin{
 		db: redis.Instance().DB(redis.UserLogin),

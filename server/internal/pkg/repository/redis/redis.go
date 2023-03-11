@@ -36,7 +36,9 @@ const (
 	// Default 默认表
 	Default DBType = iota
 	// UserLogin 用户登录表
-	UserLogin DBType = iota
+	UserLogin
+	// ApiTokenLogin API Token 登录信息表
+	ApiTokenLogin
 )
 
 // New 创建 Redis 客户端
@@ -45,7 +47,7 @@ func New() (*dbPool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 
-	// 默认表
+	// 默认缓存库
 	defaultDB, err := dbConnect(*cfg, UserLogin)
 	if err != nil {
 		return nil, err
@@ -54,17 +56,27 @@ func New() (*dbPool, error) {
 		return nil, errcode.New(errcode.RedisPingError)
 	}
 
-	// 用户表
-	userDB, err := dbConnect(*cfg, UserLogin)
+	// 用户登录缓存库
+	userLoginDB, err := dbConnect(*cfg, UserLogin)
 	if err != nil {
 		return nil, err
 	}
-	if err := userDB.Ping(ctx).Err(); err != nil {
+	if err := userLoginDB.Ping(ctx).Err(); err != nil {
+		return nil, errcode.New(errcode.RedisPingError)
+	}
+
+	// API Token 请求的存储用户缓存库
+	apiTokenLoginDB, err := dbConnect(*cfg, ApiTokenLogin)
+	if err != nil {
+		return nil, err
+	}
+	if err := apiTokenLoginDB.Ping(ctx).Err(); err != nil {
 		return nil, errcode.New(errcode.RedisPingError)
 	}
 	return &dbPool{
-		defaultDB: defaultDB,
-		userDB:    userDB,
+		defaultDB:       defaultDB,
+		userLoginDB:     userLoginDB,
+		apiTokenLoginDB: apiTokenLoginDB,
 	}, nil
 }
 
@@ -89,8 +101,9 @@ func dbConnect(cfg conf.RedisConfig, db DBType) (*redis.Client, error) {
 
 // 数据库连接池
 type dbPool struct {
-	defaultDB *redis.Client
-	userDB    *redis.Client
+	defaultDB       *redis.Client
+	userLoginDB     *redis.Client
+	apiTokenLoginDB *redis.Client
 }
 
 // DB 切换数据库
@@ -104,7 +117,9 @@ func (d *dbPool) DB(db ...DBType) DBRepo {
 	case Default:
 		dbClient.client = d.defaultDB
 	case UserLogin:
-		dbClient.client = d.userDB
+		dbClient.client = d.userLoginDB
+	case ApiTokenLogin:
+		dbClient.client = d.apiTokenLoginDB
 	default:
 		panic(errcode.RedisUnknownClientError.Error())
 	}
@@ -116,7 +131,10 @@ func (d *dbPool) Close() error {
 	if err := d.defaultDB.Close(); err != nil {
 		return err
 	}
-	if err := d.userDB.Close(); err != nil {
+	if err := d.userLoginDB.Close(); err != nil {
+		return err
+	}
+	if err := d.apiTokenLoginDB.Close(); err != nil {
 		return err
 	}
 	return nil

@@ -35,4 +35,6 @@ const (
 	ApiHttpToken = "X-API-Token"
 	// ApiHttpTokenPassphrase API 请求密匙口令
 	ApiHttpTokenPassphrase = "X-Passphrase"
+	// API Http 请求令牌缓存过期时间
+	ApiHttpTokenExpire = 12 * time.Hour
 )
