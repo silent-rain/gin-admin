@@ -12,11 +12,33 @@
       label-width="100px"
       style="width: 100%"
     >
+      <el-form-item label="上级接口" prop="parent_id">
+        <el-tree-select
+          v-model="props.data.parent_id"
+          :data="apiOptions"
+          node-key="id"
+          :props="{
+            children: 'children',
+            label: 'name',
+          }"
+          :render-after-expand="false"
+          filterable
+          accordion
+          :check-strictly="true"
+          placeholder="请选择上级接口"
+        >
+          <template #default="{ node, _data }">
+            <span class="custom-tree-node">
+              <span>{{ node.label }}</span>
+            </span>
+          </template>
+        </el-tree-select>
+      </el-form-item>
       <el-form-item label="接口名称" prop="name">
         <el-input v-model="props.data.name" placeholder="请输入接口名称" />
       </el-form-item>
       <el-form-item label="URI资源" prop="uri">
-        <el-input v-model="props.data.uri" placeholder="请输入URI资源" />
+        <el-input v-model="props.data.uri" placeholder="请输入URI资源地址" />
       </el-form-item>
       <el-form-item label="请求类型" prop="method">
         <el-select
@@ -61,8 +83,12 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateApiHttp, addApiHttp } from '@/api/api-auth/api-http';
-import { ApiHttp } from '~/api/api-auth/api-http';
+import {
+  updateApiHttp,
+  addApiHttp,
+  getAllApiHttpTree,
+} from '@/api/api-auth/api-http';
+import { ApiHttp, ApiHttpTreeRsp } from '~/api/api-auth/api-http';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
@@ -80,14 +106,34 @@ const props = withDefaults(
 
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({
-  user_id: [{ required: true, message: '请选择用户', trigger: 'change' }],
-  passphrase: [{ required: true, message: '请输入口令', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入接口名称', trigger: 'change' }],
+  uri: [{ required: true, message: '请输入URI资源地址', trigger: 'blur' }],
+  method: [{ required: true, message: '请选择请求类型', trigger: 'blur' }],
   status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
 });
 
 const methodOptions = ['GET', 'POST', 'PUT', 'DELETE'];
+// Http协议接口列表
+const apiOptions = ref<ApiHttp[]>([]);
 
-onBeforeMount(() => {});
+onBeforeMount(() => {
+  fetchAllApiHttpTree();
+});
+
+// 获取所有Http协议接口信息树
+const fetchAllApiHttpTree = async () => {
+  try {
+    const resp = (await getAllApiHttpTree()).data as ApiHttpTreeRsp;
+    apiOptions.value = resp.data_list.filter((v: ApiHttp) => {
+      // 过滤自身选择, 防止自依赖
+      if (v.id !== props.data.id) {
+        return true;
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // 关闭
 const handleClose = () => {

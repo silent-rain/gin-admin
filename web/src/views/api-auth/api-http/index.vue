@@ -87,6 +87,20 @@
             </ButtonPermission>
           </template>
         </el-popconfirm>
+        <ButtonPermission
+          permission="apiAuth:apiHttp:expand"
+          type=""
+          @click="handleExpandAllEvent(true)"
+        >
+          全部展开
+        </ButtonPermission>
+        <ButtonPermission
+          permission="apiAuth:apiHttp:collapse"
+          type=""
+          @click="handleExpandAllEvent(false)"
+        >
+          全部折叠
+        </ButtonPermission>
       </div>
       <div class="right-button">
         <ConvenienTools
@@ -94,7 +108,7 @@
           v-model:checkedDict="checkedDict"
           :screen-full-element="'el-table-full'"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchApiHttpList"
+          @refreshEvent="fetchApiHttpTree"
         />
       </div>
     </div>
@@ -105,14 +119,17 @@
       v-model:data="state.form.data"
       v-model:visible="state.form.visible"
       :type="state.form.type"
-      @refresh="fetchApiHttpList"
+      @refresh="fetchApiHttpTree"
     />
 
     <el-table
+      ref="tableRef"
       class="el-table-full"
       :data="tableData"
-      style="width: 100%; margin-top: 10px"
       :size="tableSize"
+      row-key="id"
+      style="width: 100%; margin-top: 10px"
+      :default-expand-all="tableExpandAll"
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55" />
@@ -181,9 +198,29 @@
         fixed="right"
         label="操作"
         align="center"
-        width="120"
+        width="210"
       >
         <template #default="scope">
+          <ButtonPermission
+            permission="apiAuth:apiHttp:addchild"
+            link
+            type="primary"
+            size="small"
+            :icon="Plus"
+            @click="handleAddById(scope.row)"
+          >
+            添加
+          </ButtonPermission>
+          <ButtonPermission
+            permission="apiAuth:apiHttp:update"
+            link
+            type="primary"
+            size="small"
+            :icon="DocumentCopy"
+            @click="handleCopy(scope.row)"
+          >
+            拷贝
+          </ButtonPermission>
           <ButtonPermission
             permission="apiAuth:apiHttp:update"
             link
@@ -222,7 +259,7 @@
       v-model:currentPage="listQuery.page"
       v-model:pageSize="listQuery.page_size"
       :total="tableDataTotal"
-      @pagination="fetchApiHttpList"
+      @pagination="fetchApiHttpTree"
     />
   </el-card>
 </template>
@@ -234,18 +271,19 @@ import {
   EditPen,
   Search,
   Delete,
+  DocumentCopy,
   InfoFilled,
   Plus,
 } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, TableInstance } from 'element-plus';
 import { useBasicStore } from '@/store/basic';
 import {
-  getApiHttpList,
+  getApiHttpTree,
   updateApiHttpStatus,
   deleteApiHttp,
   batchDeleteApiHttp,
 } from '@/api/api-auth/api-http';
-import { ApiHttpListRsp, ApiHttp } from '~/api/api-auth/api-http';
+import { ApiHttpTreeRsp, ApiHttp } from '~/api/api-auth/api-http';
 import Pagination from '@/components/Pagination.vue';
 import ConvenienTools from '@/components/ConvenienTools/index.vue';
 import ButtonPermission from '@/components/ButtonPermission.vue';
@@ -275,7 +313,7 @@ const statusOptions = [
 ];
 // 过滤事件
 const handleFilter = () => {
-  fetchApiHttpList();
+  fetchApiHttpTree();
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
@@ -314,15 +352,17 @@ const tableSize = ref<string>(settings.value.defaultSize);
 const tableData = ref<ApiHttp[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<ApiHttp[]>([]);
+const tableRef = ref<TableInstance>();
+const tableExpandAll = ref<boolean>(false);
 
 onBeforeMount(() => {
-  fetchApiHttpList();
+  fetchApiHttpTree();
 });
 
-// 获取Http协议接口信息列表
-const fetchApiHttpList = async () => {
+// 获取Http协议接口信息树
+const fetchApiHttpTree = async () => {
   try {
-    const resp = (await getApiHttpList(listQuery.value)).data as ApiHttpListRsp;
+    const resp = (await getApiHttpTree(listQuery.value)).data as ApiHttpTreeRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
@@ -337,7 +377,7 @@ const handleDelete = async (row: ApiHttp) => {
   };
   try {
     await deleteApiHttp(data);
-    fetchApiHttpList();
+    fetchApiHttpTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -355,11 +395,28 @@ const handleAdd = async () => {
   state.form.visible = true;
   state.form.data.status = 1;
 };
+
+// 指定上级菜单添加
+const handleAddById = async (row: ApiHttp) => {
+  state.form.type = 'add';
+  state.form.visible = true;
+
+  state.form.data.parent_id = row.id;
+  state.form.data.status = 1;
+  state.form.type = 'add';
+};
+// 拷贝当前菜单
+const handleCopy = async (row: ApiHttp) => {
+  state.form.type = 'add';
+  state.form.visible = true;
+
+  state.form.data = { ...row };
+};
+
 // 多选事件
 const handleSelectionChange = (val: ApiHttp[]) => {
   multipleSelection.value = val;
 };
-
 // 批量删除
 const handleBatchDelete = async () => {
   if (multipleSelection.value.length === 0) {
@@ -373,7 +430,7 @@ const handleBatchDelete = async () => {
   };
   try {
     await batchDeleteApiHttp(data);
-    fetchApiHttpList();
+    fetchApiHttpTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
@@ -397,11 +454,31 @@ const handleStatusChange = async (row: ApiHttp) => {
   };
   try {
     await updateApiHttpStatus(data);
-    fetchApiHttpList();
+    fetchApiHttpTree();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);
   }
+};
+// 全部展开/全部折叠 事件
+const handleExpandAllEvent = (value: boolean) => {
+  toggleRowExpansionAll(tableData.value, value);
+};
+
+// 全部展开/全部折叠
+const toggleRowExpansionAll = (
+  dataList: ApiHttp[] | undefined,
+  value: boolean,
+) => {
+  if (!dataList) {
+    return;
+  }
+  dataList.forEach((v) => {
+    tableRef.value?.toggleRowExpansion(v, value);
+    if (v.children !== undefined && v.children !== null) {
+      toggleRowExpansionAll(v.children, value);
+    }
+  });
 };
 </script>
 

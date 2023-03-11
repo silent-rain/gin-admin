@@ -41,12 +41,9 @@ func GenerateToken(userId uint, nickname string) (string, error) {
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
 	cfgJWT := conf.Instance().JWT
-	token, err := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
+	token, _ := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(cfgJWT.Secret), nil
 	})
-	if err != nil {
-		return nil, errcode.New(errcode.TokenParsingError)
-	}
 	claims, ok := token.Claims.(*Token)
 	if !ok {
 		return nil, errcode.New(errcode.TokenInvalidError)

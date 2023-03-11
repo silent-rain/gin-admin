@@ -42,7 +42,7 @@ func (d *apiAuth) All() ([]apiAuthModel.ApiHttp, int64, error) {
 	}
 
 	bean := make([]apiAuthModel.ApiHttp, 0)
-	if result := tx.Order("updated_at DESC").Find(&bean); result.Error != nil {
+	if result := tx.Order("updated_at ASC").Find(&bean); result.Error != nil {
 		return nil, 0, result.Error
 	}
 
@@ -72,7 +72,7 @@ func (d *apiAuth) List(req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, 
 	}
 
 	bean := make([]apiAuthModel.ApiHttp, 0)
-	result := tx.Offset(req.Offset()).Limit(req.PageSize).Order("updated_at DESC").
+	result := tx.Offset(req.Offset()).Limit(req.PageSize).Order("updated_at ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error

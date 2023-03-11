@@ -2,6 +2,7 @@
 -- Http协议接口管理表
 CREATE TABLE api_http (
     `id` INT AUTO_INCREMENT COMMENT '自增ID',
+    `parent_id` INT(20) NULL COMMENT '父接口ID',
     `name` VARCHAR(50) NOT NULL COMMENT '接口名称',
     `method` VARCHAR(50) NOT NULL COMMENT '请求类型',
     `uri` VARCHAR(50) NOT NULL COMMENT 'URI资源',

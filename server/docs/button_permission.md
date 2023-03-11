@@ -71,7 +71,9 @@
 - [x] 删除接口 apiAuth:apiHttp:delete
 - [x] 批量删除 apiAuth:apiHttp:delall
 - [x] 设置状态 apiAuth:apiHttp:status
-
+- [x] 添加子级 apiAuth:apiHttp:addchild
+- [x] 全部展开 apiAuth:apiHttp:expand
+- [x] 全部折叠 apiAuth:apiHttp:collapse
 
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate

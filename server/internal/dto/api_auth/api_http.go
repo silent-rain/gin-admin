@@ -14,19 +14,21 @@ type QueryApiHttpReq struct {
 
 // AddApiHttpReq 添加角色
 type AddApiHttpReq struct {
-	Name   string `json:"name" form:"name"`     // 接口名称
-	Method string `json:"method" form:"method"` // 请求类型:GET,POST,PUT,DELETE
-	Uri    string `json:"uri" form:"uri"`       // URI资源
-	Note   string `json:"note" form:"note"`     // 备注
-	Status uint   `json:"status" form:"status"` // 状态,0:停用,1:启用
+	ParentId *uint  `json:"parent_id" form:"parent_id"` // 父菜单ID
+	Name     string `json:"name" form:"name"`           // 接口名称
+	Method   string `json:"method" form:"method"`       // 请求类型:GET,POST,PUT,DELETE
+	Uri      string `json:"uri" form:"uri"`             // URI资源
+	Note     string `json:"note" form:"note"`           // 备注
+	Status   uint   `json:"status" form:"status"`       // 状态,0:停用,1:启用
 }
 
 // UpdateApiHttpReq 更新角色
 type UpdateApiHttpReq struct {
-	ID     uint   `json:"id" form:"id" binding:"required"` // 自增ID
-	Name   string `json:"name" form:"name"`                // 接口名称
-	Method string `json:"method" form:"method"`            // 请求类型:GET,POST,PUT,DELETE
-	Uri    string `json:"uri" form:"uri"`                  // URI资源
-	Note   string `json:"note" form:"note"`                // 备注
-	Status uint   `json:"status" form:"status"`            // 状态,0:停用,1:启用
+	ParentId *uint  `json:"parent_id" form:"parent_id"`      // 父菜单ID
+	ID       uint   `json:"id" form:"id" binding:"required"` // 自增ID
+	Name     string `json:"name" form:"name"`                // 接口名称
+	Method   string `json:"method" form:"method"`            // 请求类型:GET,POST,PUT,DELETE
+	Uri      string `json:"uri" form:"uri"`                  // URI资源
+	Note     string `json:"note" form:"note"`                // 备注
+	Status   uint   `json:"status" form:"status"`            // 状态,0:停用,1:启用
 }

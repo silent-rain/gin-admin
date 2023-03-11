@@ -13,8 +13,8 @@ import (
 
 // ApiHttpService 角色与Http协议接口关系接口
 type ApiHttpService interface {
-	All(ctx *gin.Context) ([]apiAuthModel.ApiHttp, int64, error)
-	List(ctx *gin.Context, req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, int64, error)
+	AllTree(ctx *gin.Context) ([]apiAuthModel.ApiHttp, int64, error)
+	Tree(ctx *gin.Context, req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, int64, error)
 	Add(ctx *gin.Context, bean apiAuthModel.ApiHttp) (uint, error)
 	Update(ctx *gin.Context, bean apiAuthModel.ApiHttp) (int64, error)
 	Delete(ctx *gin.Context, id uint) (int64, error)
@@ -34,26 +34,66 @@ func NewApiHttpService() *apiHttpService {
 	}
 }
 
-// All 获取所有列表
-func (s *apiHttpService) All(ctx *gin.Context) ([]apiAuthModel.ApiHttp, int64, error) {
-	results, total, err := s.dao.All()
+// AllTree 获取所有接口树
+func (s *apiHttpService) AllTree(ctx *gin.Context) ([]apiAuthModel.ApiHttp, int64, error) {
+	results, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return nil, 0, errcode.New(errcode.DBQueryError)
 
 	}
-	return results, total, nil
+	// 菜单列表数据转为树结构
+	tree := apiHttpListToTree(results, nil)
+	return tree, int64(len(tree)), nil
 }
 
-// List 获取列表
-func (s *apiHttpService) List(ctx *gin.Context, req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, int64, error) {
-	results, total, err := s.dao.List(req)
+// Tree 获取接口树
+func (s *apiHttpService) Tree(ctx *gin.Context, req apiAuthDTO.QueryApiHttpReq) ([]apiAuthModel.ApiHttp, int64, error) {
+	resultList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return nil, 0, errcode.New(errcode.DBQueryError)
-
 	}
-	return results, total, nil
+	resultAll, _, err := s.dao.All()
+	if err != nil {
+		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
+		return nil, 0, errcode.New(errcode.DBQueryError)
+	}
+
+	// 列表数据转为树结构
+	tree := apiHttpListToTree(resultAll, nil)
+
+	// 过滤
+	treeFilter := make([]apiAuthModel.ApiHttp, 0)
+	for _, itemA := range tree {
+		for _, item := range resultList {
+			if itemA.Name == item.Name {
+				treeFilter = append(treeFilter, itemA)
+			}
+		}
+	}
+	return treeFilter, int64(len(tree)), nil
+}
+
+// 列表数据转为树结构
+func apiHttpListToTree(src []apiAuthModel.ApiHttp, parentId *uint) []apiAuthModel.ApiHttp {
+	tree := make([]apiAuthModel.ApiHttp, 0)
+	for _, item := range src {
+		if (item.ParentId == nil && parentId == nil) ||
+			(item.ParentId != nil && parentId != nil && *item.ParentId == *parentId) {
+			tree = append(tree, item)
+		}
+	}
+
+	for i := range tree {
+		children := apiHttpListToTree(src, &tree[i].ID)
+		if tree[i].Children == nil {
+			tree[i].Children = children
+		} else {
+			tree[i].Children = append(tree[i].Children, children...)
+		}
+	}
+	return tree
 }
 
 // Add 添加

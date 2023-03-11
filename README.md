@@ -154,8 +154,8 @@ web
   - [ ] [Swagger](https://github.com/swaggo/gin-swagger) 接口文档, apipost 工具代替
   - [x] 服务启动后打开浏览器
 - [x] 动态 SEO 优化
-- [ ] 订阅模式
 - [x] [内存缓存](github.com/patrickmn/go-cache)
+- [ ] 订阅
   - [x] 站点配置缓存
 - [ ] [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 - [ ] [websocket](https://github.com/gorilla/websocket) 实时通讯
@@ -168,9 +168,8 @@ web
   - [x] 角色管理
   - [x] 菜单管理
   - [x] API令牌管理
-- [ ] API 鉴权管理
+- [x] API 鉴权管理
     - [x] HTTP接口管理
-    - [ ] 角色配置
 - [x] 前端权限
   - [x] 动态路由
   - [x] 按钮权限

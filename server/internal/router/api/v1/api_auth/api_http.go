@@ -11,10 +11,10 @@ import (
 func InitApiHttpRouter(group *gin.RouterGroup) {
 	role := group.Group("/apiHttp")
 	{
-		// 获取所有Http协议接口信息列表
-		role.GET("/all", apiauth.NewApiHttpController().All)
-		// 获取Http协议接口信息列表
-		role.GET("/list", apiauth.NewApiHttpController().List)
+		// 获取所有Http协议接口信息树
+		role.GET("/allTree", apiauth.NewApiHttpController().AllTree)
+		// 获取Http协议接口信息树
+		role.GET("/tree", apiauth.NewApiHttpController().Tree)
 		// 添加Http协议接口信息
 		role.POST("/add", apiauth.NewApiHttpController().Add)
 		// 更新Http协议接口信息

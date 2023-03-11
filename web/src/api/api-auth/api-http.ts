@@ -4,9 +4,9 @@
 import axiosReq from '@/utils/axios-req';
 
 // 获取所有Http协议接口信息列表
-export const getAllApiHttp = async () => {
+export const getAllApiHttpTree = async () => {
   return axiosReq({
-    url: '/apiHttp/all',
+    url: '/apiHttp/allTree',
     method: 'get',
     isParams: true,
     data: {},
@@ -14,9 +14,9 @@ export const getAllApiHttp = async () => {
 };
 
 // 获取Http协议接口信息列表
-export const getApiHttpList = async (params: any) => {
+export const getApiHttpTree = async (params: any) => {
   return axiosReq({
-    url: '/apiHttp/list',
+    url: '/apiHttp/tree',
     method: 'get',
     isParams: true,
     data: params,

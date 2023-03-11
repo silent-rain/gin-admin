@@ -24,9 +24,9 @@ func NewApiHttpController() *apiAuthController {
 	}
 }
 
-// All 获取所有Http协议接口信息列表
-func (c *apiAuthController) All(ctx *gin.Context) {
-	results, total, err := c.service.All(ctx)
+// AllTree 获取所有Http协议接口信息树
+func (c *apiAuthController) AllTree(ctx *gin.Context) {
+	results, total, err := c.service.AllTree(ctx)
 	if err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -34,15 +34,15 @@ func (c *apiAuthController) All(ctx *gin.Context) {
 	response.New(ctx).WithDataList(results, total).Json()
 }
 
-// List 获取用Http协议接口信息列表
-func (c *apiAuthController) List(ctx *gin.Context) {
+// Tree 获取Http协议接口信息树
+func (c *apiAuthController) Tree(ctx *gin.Context) {
 	req := apiAuthDTO.QueryApiHttpReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
 
-	results, total, err := c.service.List(ctx, req)
+	results, total, err := c.service.Tree(ctx, req)
 	if err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
