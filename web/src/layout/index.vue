@@ -107,8 +107,8 @@ const handleClickOutside = () => {
 
 .el-footer {
   height: var(--footer-height);
+  background: #fafafa;
   // position: absolute;
-  padding-top: 20px;
   bottom: 0;
 }
 
