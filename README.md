@@ -186,7 +186,6 @@ web
   - [x] 全局配置管理
   - [x] 字典管理
 - [ ] 系统监控
-        :fixed="basicStore.isMobile() ? 'none' : 'right'"
 
 ## 待处理
 - 用户页面

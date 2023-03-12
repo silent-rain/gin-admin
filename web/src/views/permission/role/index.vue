@@ -147,7 +147,7 @@
       />
       <el-table-column
         v-if="checkedDict.operation"
-        fixed="right"
+        :fixed="basicStore.isMobile() ? false : 'right'"
         label="操作"
         align="center"
         width="186"
@@ -208,7 +208,6 @@
 
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
 import {
   EditPen,
   Search,
@@ -233,7 +232,7 @@ import RoleForm from './components/RoleForm.vue';
 import DrawerPermission from './components/DrawerPermission.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
-const { settings } = storeToRefs(useBasicStore());
+const basicStore = useBasicStore();
 
 // 筛选过滤条件
 const listQuery = ref({
@@ -276,7 +275,7 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 
-const tableSize = ref<string>(settings.value.defaultSize);
+const tableSize = ref<string>(basicStore.settings.defaultSize);
 const tableData = ref<Role[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<Role[]>([]);
@@ -390,6 +389,7 @@ const handleMenuPermission = async (row: Role) => {
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .left-button {
     .el-button + .el-button {

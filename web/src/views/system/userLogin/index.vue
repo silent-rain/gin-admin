@@ -215,6 +215,7 @@ const handleStatusChange = async (row: UserLogin) => {
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .left-button {
     .el-button + .el-button {

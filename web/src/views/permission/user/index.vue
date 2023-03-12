@@ -239,7 +239,7 @@
       />
       <el-table-column
         v-if="checkedDict.operation"
-        fixed="right"
+        :fixed="basicStore.isMobile() ? false : 'right'"
         label="操作"
         align="center"
         width="186"
@@ -313,7 +313,6 @@
 
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
 import {
   EditPen,
   Search,
@@ -339,7 +338,7 @@ import UserForm from './components/UserForm.vue';
 import { aoaToSheetXlsx } from '@/utils/excel';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
-const { settings } = storeToRefs(useBasicStore());
+const basicStore = useBasicStore();
 
 // 筛选过滤条件
 const listQuery = reactive({
@@ -390,7 +389,7 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 
-const tableSize = ref<string>(settings.value.defaultSize);
+const tableSize = ref<string>(basicStore.settings.defaultSize);
 const tableData = ref<User[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<User[]>([]);
@@ -435,7 +434,7 @@ const handleAdd = async () => {
   state.userForm.data.sort = 1;
   state.userForm.data.gender = 0;
   state.userForm.data.avatar = '';
-  state.userForm.data.password = settings.value.defaultPassword;
+  state.userForm.data.password = basicStore.settings.defaultPassword;
   state.userForm.data.role_ids = [];
   state.userForm.type = 'add';
   state.userForm.visible = true;
@@ -596,6 +595,7 @@ const handleExportEvent = async () => {
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .left-button {
     .el-button + .el-button {

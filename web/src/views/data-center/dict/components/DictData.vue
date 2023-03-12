@@ -2,7 +2,7 @@
   <el-card>
     <!-- 过滤条件 -->
     <div v-if="hasButtonPermission('sys:role:list')" class="filter">
-      <p><label>字典筛选:</label></p>
+      <label>字典筛选:</label>
       <el-input
         v-model="listQuery.name"
         class="filter-name"

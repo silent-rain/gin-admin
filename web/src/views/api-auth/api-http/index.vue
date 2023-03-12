@@ -210,7 +210,7 @@
       />
       <el-table-column
         v-if="checkedDict.operation"
-        fixed="right"
+        :fixed="basicStore.isMobile() ? false : 'right'"
         label="操作"
         align="center"
         width="210"
@@ -281,7 +281,6 @@
 
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
 import {
   EditPen,
   Search,
@@ -305,7 +304,7 @@ import ButtonPermission from '@/components/ButtonPermission.vue';
 import ApiHttpForm from './components/ApiHttpForm.vue';
 import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 
-const { settings } = storeToRefs(useBasicStore());
+const basicStore = useBasicStore();
 
 // 筛选过滤条件
 const listQuery = ref<any>({
@@ -383,7 +382,7 @@ const checkAllList = [
 ];
 const checkedDict = ref<any>({});
 
-const tableSize = ref<string>(settings.value.defaultSize);
+const tableSize = ref<string>(basicStore.settings.defaultSize);
 const tableData = ref<ApiHttp[]>();
 const tableDataTotal = ref<number>(0);
 const multipleSelection = ref<ApiHttp[]>([]);
@@ -530,6 +529,7 @@ const toggleRowExpansionAll = (
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .left-button {
     .el-button + .el-button {

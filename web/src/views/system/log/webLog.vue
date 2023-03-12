@@ -416,6 +416,7 @@ const handleShowStack = (v: string) => {
 
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .left-button {
     .el-button + .el-button {
