@@ -100,6 +100,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <Pagination
+      v-model:currentPage="listQuery.page"
+      v-model:pageSize="listQuery.page_size"
+      :total="tableDataTotal"
+      layout="sizes, prev, pager, next"
+      @pagination="fetchDictList"
+    />
   </el-card>
 </template>
 
@@ -112,6 +119,8 @@ import ButtonPermission from '@/components/ButtonPermission.vue';
 import DictForm from './DictForm.vue';
 import { getDictList, deleteDict } from '@/api/data-center/dict';
 import { Dict, DictListRsp } from '~/api/data-center/dict';
+
+const emits = defineEmits(['update:dictId']);
 
 // 筛选过滤条件
 const listQuery = ref({
@@ -138,19 +147,17 @@ onBeforeMount(() => {
   fetchDictList();
 });
 
-onMounted(() => {
-  // 默认设置选中第一行
-  if (tableData.value.length > 0) {
-    setCurrent(tableData[0]);
-  }
-});
-
 // 获取角色列表
 const fetchDictList = async () => {
   try {
     const resp = (await getDictList(listQuery.value)).data as DictListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
+
+    // 默认设置选中第一行
+    if (tableData.value.length > 0) {
+      setCurrent(tableData.value[0]);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -162,8 +169,9 @@ const handleFilter = () => {
 };
 
 // 设置选中行
-const setCurrent = (row?: any) => {
+const setCurrent = (row?: Dict) => {
   singleTableRef.value!.setCurrentRow(row);
+  emits('update:dictId', row?.id);
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
@@ -172,8 +180,9 @@ const handleCleanFilter = () => {
 };
 
 // 选择所在的行
-const handleCurrentChange = (val: any | undefined) => {
+const handleCurrentChange = (val: Dict | undefined) => {
   currentRow.value = val;
+  emits('update:dictId', val?.id);
 };
 
 // 添加

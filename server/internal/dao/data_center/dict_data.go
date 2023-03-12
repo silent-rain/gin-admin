@@ -37,11 +37,14 @@ func NewDictDataDao() *dictDataCenter {
 // List 查询字典数据信息列表
 func (d *dictDataCenter) List(req dictDataCenterDTO.QueryDictDataReq) ([]dictDataCenterModel.DictData, int64, error) {
 	tx := d.db.GetDbR()
+	if req.DictId != 0 {
+		tx = tx.Where("dict_id = ?", req.DictId)
+	}
 	if req.Name != "" {
-		tx = tx.Where("name = ?", req.Name)
+		tx = tx.Where("name like ?", req.Name+"%")
 	}
 	if req.Value != "" {
-		tx = tx.Where("value = ?", req.Value)
+		tx = tx.Where("value like ?", req.Value+"%")
 	}
 	tx = tx.Session(&gorm.Session{})
 

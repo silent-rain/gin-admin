@@ -65,6 +65,10 @@ export const useBasicStore = defineStore('basic', {
       });
       this.setOsType();
     },
+    // 是否为移动端
+    isMobile() {
+      return this.device === 'mobile' ? true : false;
+    },
 
     // 设置网站配置
     setWebSiteConfig(data: any) {
