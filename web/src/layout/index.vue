@@ -10,9 +10,14 @@
         <TagsView v-if="settings.showTagsView" />
       </el-header>
       <el-main>
+        <div
+          v-if="basicStore.isMobile() && sidebar.opened"
+          class="drawer-bg"
+          @click="handleClickOutside"
+        />
         <AppMain />
       </el-main>
-      <el-footer>
+      <el-footer v-if="!basicStore.isMobile()">
         <Footer v-if="settings.showFooter" />
       </el-footer>
     </el-container>
@@ -51,6 +56,11 @@ const headerClassObj = computed(() => {
 onBeforeMount(() => {
   resizeHandler();
 });
+
+// 移动端点击隐藏侧边栏
+const handleClickOutside = () => {
+  basicStore.setSidebarOpen(false);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -82,8 +92,6 @@ onBeforeMount(() => {
   }
 }
 
-// footer
-
 // header
 .container .el-header {
   height: auto;
@@ -102,5 +110,35 @@ onBeforeMount(() => {
   // position: absolute;
   padding-top: 20px;
   bottom: 0;
+}
+
+// 移动端布局
+.container.mobile {
+  .el-aside {
+    z-index: 300;
+  }
+  .el-container {
+    margin-left: var(--side-bar-min-width);
+    z-index: 100;
+  }
+  :not(.close-sidebar) .el-container {
+    margin-left: 0;
+  }
+}
+
+// 移动端主内容区域
+.container.mobile.fixed-header .el-main {
+  height: calc(100vh - #{var(--nav-bar-height)});
+}
+
+// 移动端点击隐藏侧边栏
+.drawer-bg {
+  background: #000;
+  opacity: 0.3;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
 }
 </style>

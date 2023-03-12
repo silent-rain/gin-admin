@@ -9,7 +9,10 @@
         @toggleClick="toggleSideBar"
       />
       <!-- 面包屑导航  -->
-      <breadcrumb class="breadcrumb-container" />
+      <breadcrumb
+        v-if="basicStore.device === 'desktop'"
+        class="breadcrumb-container"
+      />
     </div>
 
     <!-- 导航标题 -->
