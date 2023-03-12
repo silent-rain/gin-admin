@@ -14,7 +14,7 @@ import (
 // DictData 字典数据信息接口
 type DictData interface {
 	List(req dictDataCenterDTO.QueryDictDataReq) ([]dictDataCenterModel.DictData, int64, error)
-	InfoByValue(uri string) (dictDataCenterModel.DictData, bool, error)
+	InfoByValue(dictId uint, value string) (dictDataCenterModel.DictData, bool, error)
 	Add(bean dictDataCenterModel.DictData) (uint, error)
 	Update(bean dictDataCenterModel.DictData) (int64, error)
 	Delete(id uint) (int64, error)
@@ -58,10 +58,10 @@ func (d *dictDataCenter) List(req dictDataCenterDTO.QueryDictDataReq) ([]dictDat
 	return bean, total, nil
 }
 
-// InfoByValue 获取字典数据信息
-func (d *dictDataCenter) InfoByValue(value string) (dictDataCenterModel.DictData, bool, error) {
+// InfoByValue 获取指定字典的字典项数据信息
+func (d *dictDataCenter) InfoByValue(dictId uint, value string) (dictDataCenterModel.DictData, bool, error) {
 	bean := dictDataCenterModel.DictData{}
-	result := d.db.GetDbR().Where("value = ?", value).First(&bean)
+	result := d.db.GetDbR().Where("dict_id = ? and value = ?", dictId, value).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return bean, false, nil
 	}

@@ -46,7 +46,7 @@ func (s *dictDataService) List(ctx *gin.Context, req dictCenterDTO.QueryDictData
 
 // Add 添加字典数据信息
 func (h *dictDataService) Add(ctx *gin.Context, bean dictCenterModel.DictData) (uint, error) {
-	_, ok, err := h.dao.InfoByValue(bean.Value)
+	_, ok, err := h.dao.InfoByValue(bean.DictId, bean.Value)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return 0, errcode.New(errcode.DBQueryError)

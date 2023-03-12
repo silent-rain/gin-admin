@@ -52,8 +52,8 @@ func (h *dictService) Add(ctx *gin.Context, bean dictCenterModel.Dict) (uint, er
 		return 0, errcode.New(errcode.DBQueryError)
 	}
 	if ok {
-		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("字典维度已存在")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("字典维度已存在")
+		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("字典已存在")
+		return 0, errcode.New(errcode.DBDataExistError).WithMsg("字典已存在")
 	}
 
 	id, err := h.dao.Add(bean)

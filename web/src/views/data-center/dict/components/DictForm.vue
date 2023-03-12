@@ -1,8 +1,8 @@
 <template>
   <el-dialog
     :model-value="props.visible"
-    :title="props.type === 'add' ? '添加角色' : '编辑角色'"
-    :width="props.width"
+    :title="props.type === 'add' ? '添加字典' : '编辑字典'"
+    width="500px"
     :before-close="handleClose"
   >
     <el-form
@@ -12,18 +12,18 @@
       label-width="100px"
       style="width: 100%"
     >
-      <el-form-item label="角色名称" prop="name">
-        <el-input v-model="props.data.name" placeholder="请输入角色名称" />
+      <el-form-item label="字典名称" prop="name">
+        <el-input v-model="props.data.name" placeholder="请输入字典名称" />
       </el-form-item>
-      <el-form-item label="角色状态" prop="status">
+      <el-form-item label="字典编码" prop="code">
+        <el-input v-model="props.data.code" placeholder="请输入字典编码" />
+      </el-form-item>
+      <el-form-item label="状态" prop="status">
         <el-switch
           v-model="props.data.status"
           :active-value="1"
           :inactive-value="0"
         />
-      </el-form-item>
-      <el-form-item label="排序" prop="sort">
-        <el-input-number v-model="props.data.sort" :min="1" />
       </el-form-item>
       <el-form-item label="备注" prop="note">
         <el-input
@@ -47,30 +47,31 @@
 
 <script setup lang="ts">
 import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateRole, addRole } from '@/api/permission/role';
-import { Role } from '~/api/permission/role';
+import { updateDict, addDict } from '@/api/data-center/dict';
+import { Dict } from '~/api/data-center/dict';
 
 const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
 
 const props = withDefaults(
   defineProps<{
-    data: Role;
+    data: Dict;
     visible: boolean;
     type: string; // add/edit
-    width?: string;
   }>(),
-  {
-    width: '100%',
-  },
+  {},
 );
 
 const ruleFormRef = ref<FormInstance>();
 const rules = reactive<FormRules>({
   name: [
-    { required: true, message: '请输入角色名称', trigger: 'blur' },
-    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
+    { required: true, message: '请输入字典名称', trigger: 'blur' },
+    { min: 2, message: '至少输入2个字符', trigger: 'blur' },
   ],
-  sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
+  code: [
+    { required: true, message: '请输入字典编码', trigger: 'blur' },
+    { min: 6, message: '至少输入6个字符', trigger: 'blur' },
+  ],
+  status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
 });
 
 // 关闭
@@ -95,9 +96,9 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
     try {
       if (props.type === 'add') {
-        await addRole(props.data);
+        await addDict(props.data);
       } else {
-        await updateRole(props.data);
+        await updateDict(props.data);
       }
       emit('update:visible', false);
       emit('update:data', {});

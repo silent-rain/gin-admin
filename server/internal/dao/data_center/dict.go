@@ -38,10 +38,10 @@ func NewDictDao() *dictCenter {
 func (d *dictCenter) List(req dictCenterDTO.QueryDictReq) ([]dictCenterModel.Dict, int64, error) {
 	tx := d.db.GetDbR()
 	if req.Name != "" {
-		tx = tx.Where("name = ?", req.Name)
+		tx = tx.Where("name like ?", "%"+req.Name+"%")
 	}
 	if req.Code != "" {
-		tx = tx.Where("code = ?", req.Code)
+		tx = tx.Where("code like ?", "%"+req.Code+"%")
 	}
 	tx = tx.Session(&gorm.Session{})
 

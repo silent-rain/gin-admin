@@ -236,10 +236,10 @@ import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
 const { settings } = storeToRefs(useBasicStore());
 
 // 筛选过滤条件
-const listQuery = reactive({
-  name: '',
+const listQuery = ref({
   page: 1,
   page_size: 10,
+  name: null,
 });
 // 过滤事件
 const handleFilter = () => {
@@ -247,7 +247,8 @@ const handleFilter = () => {
 };
 // 清空过滤条件
 const handleCleanFilter = () => {
-  listQuery.name = '';
+  listQuery.value = {} as any;
+  fetchRoleList();
 };
 
 const state = reactive({
@@ -284,10 +285,10 @@ onBeforeMount(() => {
   fetchRoleList();
 });
 
-// 获取角色列表
+// 获取字典维度信息列表
 const fetchRoleList = async () => {
   try {
-    const resp = (await getRoleList(listQuery)).data as RoleListRsp;
+    const resp = (await getRoleList(listQuery.value)).data as RoleListRsp;
     tableData.value = resp.data_list;
     tableDataTotal.value = resp.tatol;
   } catch (error) {
