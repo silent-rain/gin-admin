@@ -3,12 +3,13 @@ package apiauth
 
 import (
 	"encoding/json"
-	"gin-admin/internal/dto"
+
+	DTO "gin-admin/internal/dto"
 )
 
 // QueryApiHttpReq 查询条件
 type QueryApiHttpReq struct {
-	dto.Pagination        // 分页
+	DTO.Pagination        // 分页
 	Name           string `json:"name" form:"name"`     // 接口名称
 	Method         string `json:"method" form:"method"` // 请求类型:GET,POST,PUT,DELETE
 	Uri            string `json:"uri" form:"uri"`       // URI资源

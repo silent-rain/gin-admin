@@ -3,30 +3,30 @@ package datacenter
 
 import (
 	"gin-admin/internal/dto"
-	dictCenterDTO "gin-admin/internal/dto/data_center"
-	dictCenterModel "gin-admin/internal/model/data_center"
+	dataCenterDTO "gin-admin/internal/dto/data_center"
+	dataCenterModel "gin-admin/internal/model/data_center"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	dictCenterService "gin-admin/internal/service/data_center"
+	dataCenterService "gin-admin/internal/service/data_center"
 
 	"github.com/gin-gonic/gin"
 )
 
 // 字典维度信息
 type dictCenterController struct {
-	service dictCenterService.DictService
+	service dataCenterService.DictService
 }
 
 // NewDictController 创建字典维度信息控制器对象
 func NewDictController() *dictCenterController {
 	return &dictCenterController{
-		service: dictCenterService.NewDictService(),
+		service: dataCenterService.NewDictService(),
 	}
 }
 
 // List 获取所有字典维度信息列表
 func (c *dictCenterController) List(ctx *gin.Context) {
-	req := dictCenterDTO.QueryDictReq{}
+	req := dataCenterDTO.QueryDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -42,12 +42,12 @@ func (c *dictCenterController) List(ctx *gin.Context) {
 
 // Add 添加字典维度信息
 func (c *dictCenterController) Add(ctx *gin.Context) {
-	req := dictCenterDTO.AddDictReq{}
+	req := dataCenterDTO.AddDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	bean := dictCenterModel.Dict{}
+	bean := dataCenterModel.Dict{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
@@ -63,12 +63,12 @@ func (c *dictCenterController) Add(ctx *gin.Context) {
 
 // Update 更新字典维度信息
 func (c *dictCenterController) Update(ctx *gin.Context) {
-	req := dictCenterDTO.UpdateDictReq{}
+	req := dataCenterDTO.UpdateDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
 	}
-	bean := dictCenterModel.Dict{}
+	bean := dataCenterModel.Dict{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
 		response.New(ctx).WithCodeError(err).Json()
 		return
