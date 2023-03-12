@@ -1,6 +1,6 @@
-/*时间
+/*gorm 时间本地化
  */
-package utils
+package time
 
 import (
 	"fmt"

@@ -1,5 +1,5 @@
 /*时间工具*/
-package timeutil
+package time
 
 import (
 	"math"
@@ -13,6 +13,7 @@ var (
 
 // CSTLayout China Standard Time Layout
 const CSTLayout = "2006-01-02 15:04:05"
+
 // CSTMilliLayout China Standard Milli Time Layout
 const CSTMilliLayout = "2006-01-02 15:04:05.000"
 

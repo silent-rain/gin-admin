@@ -17,7 +17,7 @@ import (
 	"gin-admin/assets"
 	"gin-admin/internal/controller"
 	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/utils"
+	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )

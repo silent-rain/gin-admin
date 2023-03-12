@@ -1,6 +1,9 @@
+/*指标记录*/
 package metrics
 
 import (
+	systemModel "gin-admin/internal/model/system"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 )
@@ -38,18 +41,18 @@ var metricsRequestsCost = prometheus.NewHistogramVec(
 )
 
 // RecordMetrics 记录指标
-func RecordMetrics(method, path string, httpStatus int, errorCode uint, costSeconds float64, traceId string) {
+func RecordMetrics(msg systemModel.MetricsMessage) {
 	metricsRequestsTotal.With(prometheus.Labels{
-		"method": method,
-		"path":   path,
+		"method": msg.Method,
+		"path":   msg.Path,
 	}).Inc()
 
 	metricsRequestsCost.With(prometheus.Labels{
-		"method":            method,
-		"path":              path,
-		"http_status":       cast.ToString(httpStatus),
-		"error_code":        cast.ToString(errorCode),
-		"cost_milliseconds": cast.ToString(costSeconds * 1000),
-		"trace_id":          traceId,
-	}).Observe(costSeconds)
+		"method":            msg.Method,
+		"path":              msg.Path,
+		"http_status":       cast.ToString(msg.HttpStatus),
+		"error_code":        cast.ToString(msg.ErrorCode),
+		"cost_milliseconds": cast.ToString(msg.CostSeconds * 1000),
+		"trace_id":          msg.TraceID,
+	}).Observe(msg.CostSeconds)
 }

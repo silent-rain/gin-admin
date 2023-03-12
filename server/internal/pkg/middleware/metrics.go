@@ -10,8 +10,8 @@ import (
 	"gin-admin/internal/pkg/conf"
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/metrics"
 	"gin-admin/internal/pkg/response"
+	"gin-admin/pkg/metrics"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,7 +37,8 @@ func Metrics() gin.HandlerFunc {
 			return
 		}
 
-		metrics.RecordHandler(systemModel.MetricsMessage{
+		// 记录指标
+		metrics.RecordMetrics(systemModel.MetricsMessage{
 			ProjectName: constant.ProjectName,
 			Env:         conf.Instance().Environment.Env,
 			TraceID:     core.GetContext(ctx).TraceId,

@@ -112,7 +112,7 @@ web
 └── README.md
 ```
 
-## 后端框架功能列表
+## 后端框架功能列表a
 - [x] 热重启
 - [x] 内嵌文件
 - [x] 内嵌 web 服务
@@ -157,8 +157,11 @@ web
   - [x] 服务启动后打开浏览器
 - [x] 动态 SEO 优化
 - [x] [内存缓存](github.com/patrickmn/go-cache)
-- [ ] 订阅
   - [x] 站点配置缓存
+- [x] [Redis](github.com/go-redis/redis/v8)
+  - [x] 用户登录缓存
+  - [x] API 鉴权缓存
+- [ ] 订阅
 - [ ] [cron](https://github.com/jakecoffman/cron) 定时任务，在后台可界面配置
 - [ ] [websocket](https://github.com/gorilla/websocket) 实时通讯
 

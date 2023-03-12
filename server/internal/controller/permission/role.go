@@ -8,8 +8,8 @@ import (
 	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/http"
 	"gin-admin/internal/pkg/response"
-	"gin-admin/internal/pkg/tracer"
 	permissionService "gin-admin/internal/service/permission"
+	"gin-admin/pkg/tracer"
 
 	"github.com/gin-gonic/gin"
 )

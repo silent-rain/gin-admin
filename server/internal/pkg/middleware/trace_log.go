@@ -5,7 +5,7 @@ package middleware
 import (
 	"gin-admin/internal/pkg/constant"
 	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/tracer"
+	"gin-admin/pkg/tracer"
 
 	"github.com/gin-gonic/gin"
 )

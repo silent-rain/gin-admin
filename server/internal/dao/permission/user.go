@@ -9,7 +9,7 @@ import (
 	permissionDTO "gin-admin/internal/dto/permission"
 	permissionModel "gin-admin/internal/model/permission"
 	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/internal/pkg/utils"
+	"gin-admin/pkg/utils"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
