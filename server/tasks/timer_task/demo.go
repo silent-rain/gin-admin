@@ -1,5 +1,5 @@
 /*测试定时器任务*/
-package timerTask
+package timertask
 
 import (
 	"fmt"

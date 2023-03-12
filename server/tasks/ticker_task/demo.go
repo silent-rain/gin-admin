@@ -1,5 +1,5 @@
 /*测试即时器*/
-package tickerTask
+package tickertask
 
 import (
 	"fmt"

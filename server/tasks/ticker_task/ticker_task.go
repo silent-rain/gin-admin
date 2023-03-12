@@ -1,5 +1,5 @@
 /*即时器任务*/
-package tickerTask
+package tickertask
 
 import (
 	"gin-admin/internal/pkg/conf"

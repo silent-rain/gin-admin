@@ -1,5 +1,5 @@
 /*定时器任务*/
-package timerTask
+package timertask
 
 import (
 	"gin-admin/internal/pkg/conf"
