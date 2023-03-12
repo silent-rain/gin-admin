@@ -41,16 +41,6 @@
 
 ## 系统管理
 
-### 配置管理
-- [x] 查询配置 sys:config:list
-- [x] 添加配置 sys:config:add
-- [x] 修改配置 sys:config:update
-- [x] 删除配置 sys:config:delete
-- [ ] 批量删除 sys:config:delall
-- [x] 设置状态 sys:config:status
-- [x] 添加子级 sys:config:addchild
-- [x] 全部展开 sys:config:expand
-- [x] 全部折叠 sys:config:collapse
 
 ### 请求日志管理
 - [x] 查询列表 sys:httplog:list
@@ -74,6 +64,31 @@
 - [x] 添加子级 apiAuth:apiHttp:addchild
 - [x] 全部展开 apiAuth:apiHttp:expand
 - [x] 全部折叠 apiAuth:apiHttp:collapse
+
+## 数据中心
+### 配置管理
+- [x] 查询配置 sys:config:list
+- [x] 添加配置 sys:config:add
+- [x] 修改配置 sys:config:update
+- [x] 删除配置 sys:config:delete
+- [ ] 批量删除 sys:config:delall
+- [x] 设置状态 sys:config:status
+- [x] 添加子级 sys:config:addchild
+- [x] 全部展开 sys:config:expand
+- [x] 全部折叠 sys:config:collapse
+
+### 字典维度管理
+- [x] 查询字典维度配置 dataCenter:dict:list
+- [x] 添加字典维度配置 dataCenter:dict:add
+- [x] 修改字典维度配置 dataCenter:dict:update
+- [x] 删除字典维度配置 dataCenter:dict:delete
+### 字典数据管理
+- [x] 查询字典数据配置 dataCenter:dictData:list
+- [x] 添加字典数据配置 dataCenter:dictData:add
+- [x] 修改字典数据配置 dataCenter:dictData:update
+- [x] 删除字典数据配置 dataCenter:dictData:delete
+- [x] 批量字典数据删除 dataCenter:dictData:delall
+- [x] 设置字典数据状态 dataCenter:dictData:status
 
 个人资料 sys:profile:list
 添加代码生成 sys:generate:generate

@@ -1,13 +1,13 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div v-if="hasButtonPermission('sys:role:list')" class="filter">
+    <div v-if="hasButtonPermission('dataCenter:dict:list')" class="filter">
       <label>字典筛选:</label>
       <el-input
         v-model="listQuery.name"
         class="filter-name"
         clearable
-        :disabled="isDisabledButton('sys:role:list')"
+        :disabled="isDisabledButton('dataCenter:dict:list')"
         placeholder="筛选字典名称"
         @keyup.enter.native="handleFilter"
         @clear="handleCleanFilter"
@@ -16,7 +16,7 @@
         v-model="listQuery.code"
         class="filter-name"
         clearable
-        :disabled="isDisabledButton('sys:role:list')"
+        :disabled="isDisabledButton('dataCenter:dict:list')"
         placeholder="筛选字典编码"
         @keyup.enter.native="handleFilter"
         @clear="handleCleanFilter"
@@ -26,7 +26,7 @@
           <el-button
             type="primary"
             :icon="Search"
-            :disabled="isDisabledButton('sys:role:list')"
+            :disabled="isDisabledButton('dataCenter:dict:list')"
             @click="handleFilter"
           >
             查询
@@ -41,14 +41,14 @@
     <!-- 操作按钮 -->
     <div class="operation-button">
       <ButtonPermission
-        permission="sys:config:expand"
+        permission="dataCenter:dict:add"
         type="primary"
         @click="handleAdd"
       >
         添加
       </ButtonPermission>
       <ButtonPermission
-        permission="sys:config:expand"
+        permission="dataCenter:dict:update"
         type="warning"
         @click="handleEdit"
       >
@@ -64,7 +64,11 @@
         @cancel="handleDelCancel"
       >
         <template #reference>
-          <ButtonPermission permission="sys:role:delall" type="danger" icon="">
+          <ButtonPermission
+            permission="dataCenter:dict:delall"
+            type="danger"
+            icon=""
+          >
             删除
           </ButtonPermission>
         </template>

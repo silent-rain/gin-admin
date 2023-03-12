@@ -1,19 +1,19 @@
 <template>
   <el-card>
     <!-- 过滤条件 -->
-    <div v-if="hasButtonPermission('sys:role:list')" class="filter">
+    <div v-if="hasButtonPermission('dataCenter:dictData:list')" class="filter">
       <label>字典筛选:</label>
       <el-input
         v-model="listQuery.name"
         class="filter-name"
-        :disabled="isDisabledButton('sys:role:list')"
+        :disabled="isDisabledButton('dataCenter:dictData:list')"
         placeholder="筛选字典项名称"
         @keyup.enter.native="handleFilter"
       />
       <el-input
         v-model="listQuery.value"
         class="filter-name"
-        :disabled="isDisabledButton('sys:role:list')"
+        :disabled="isDisabledButton('dataCenter:dictData:list')"
         placeholder="筛选字典项值"
         @keyup.enter.native="handleFilter"
       />
@@ -21,7 +21,7 @@
         <el-button
           type="primary"
           :icon="Search"
-          :disabled="isDisabledButton('sys:role:list')"
+          :disabled="isDisabledButton('dataCenter:dictData:list')"
           @click="handleFilter"
         >
           查询
@@ -34,7 +34,7 @@
     <div class="operation-button">
       <div class="left-button">
         <ButtonPermission
-          permission="sys:role:add"
+          permission="dataCenter:dictData:add"
           type="primary"
           :icon="Plus"
           @click="handleAdd"
@@ -52,7 +52,7 @@
         >
           <template #reference>
             <ButtonPermission
-              permission="sys:role:delall"
+              permission="dataCenter:dictData:delall"
               type="danger"
               :icon="Delete"
             >
@@ -126,7 +126,7 @@
             v-model="scope.row.status"
             :active-value="1"
             :inactive-value="0"
-            :disabled="isDisabledButton('sys:role:status')"
+            :disabled="isDisabledButton('dataCenter:dictData:status')"
             @change="handleStatusChange(scope.row)"
           />
         </template>
@@ -158,7 +158,7 @@
       >
         <template #default="scope">
           <ButtonPermission
-            permission="sys:role:update"
+            permission="dataCenter:dictData:update"
             link
             type="primary"
             size="small"
@@ -178,7 +178,7 @@
           >
             <template #reference>
               <ButtonPermission
-                permission="sys:role:delete"
+                permission="dataCenter:dictData:delete"
                 link
                 type="danger"
                 size="small"
