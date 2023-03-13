@@ -1,13 +1,3 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:53
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 02:07:02
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/hooks/use-error-log.ts
- * @Descripttion:
- */
 /* js 错误日志收集 */
 import { jsErrorCollection } from 'js-error-collection';
 import axiosReq from 'axios';

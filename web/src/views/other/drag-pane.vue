@@ -1,13 +1,3 @@
-<!--
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:54
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 16:48:46
- * @company: 
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/views/other/drag-pane.vue
- * @Descripttion: 
--->
 <template>
   <splitpanes class="default-theme" horizontal :push-other-panes="false">
     <pane>

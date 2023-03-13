@@ -1,13 +1,3 @@
-<!--
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:54
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-08 16:15:48
- * @company: 
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/views/dashboard/index.vue
- * @Descripttion: 
--->
 <template>
   <div class="scroll-y">
     <div v-lang class="mt-10px mb-10px font-bold">switch theme</div>

@@ -1,13 +1,3 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-06 23:20:53
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-15 02:06:57
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/web/src/hooks/use-common.ts
- * @Descripttion:
- */
 // 复制文本
 import useClipboard from 'vue-clipboard3';
 import { ElMessage } from 'element-plus';
