@@ -61,7 +61,6 @@ import { WebsiteConfig } from '@/typings/api/data-center/config';
 const basicStore = useBasicStore();
 
 const configHash = computed(() => {
-  console.log(basicStore.webSiteConfigMap);
   return basicStore.webSiteConfigMap as WebsiteConfig;
 });
 </script>
