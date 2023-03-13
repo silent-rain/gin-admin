@@ -1,4 +1,5 @@
-/*添加对 HTTPS 的支持
+/*
+添加对 HTTPS 的支持
 
 利用工具可以生成私钥key.pem和证书cert.pem
 
@@ -13,8 +14,8 @@ go run $GOROOT/src/crypto/tls/generate_cert.go --host="localhost"
 package middleware
 
 import (
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 	"github.com/unrolled/secure"

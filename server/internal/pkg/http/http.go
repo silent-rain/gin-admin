@@ -4,8 +4,8 @@ package http
 import (
 	"encoding/json"
 
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

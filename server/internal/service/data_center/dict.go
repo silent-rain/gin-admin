@@ -2,11 +2,11 @@
 package datacenter
 
 import (
-	dictCenterDAO "gin-admin/internal/dao/data_center"
-	dictCenterDTO "gin-admin/internal/dto/data_center"
-	dictCenterModel "gin-admin/internal/model/data_center"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	dictCenterDAO "github.com/silent-rain/gin-admin/internal/dao/data_center"
+	dictCenterDTO "github.com/silent-rain/gin-admin/internal/dto/data_center"
+	dictCenterModel "github.com/silent-rain/gin-admin/internal/model/data_center"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

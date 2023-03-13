@@ -4,11 +4,11 @@ package system
 import (
 	"errors"
 
-	systemDAO "gin-admin/internal/dao/system"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

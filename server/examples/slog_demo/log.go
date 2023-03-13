@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 22:02:42
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-07 23:13:58
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/pkg/log/log.go
- * @Descripttion: 日志
+/*日志
  */
 package log
 

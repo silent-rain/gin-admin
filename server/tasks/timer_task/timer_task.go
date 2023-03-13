@@ -2,8 +2,8 @@
 package timertask
 
 import (
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/pkg/cron/timer"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/cron/timer"
 )
 
 // Init 定时器任务

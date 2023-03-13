@@ -4,7 +4,7 @@ package middleware
 import (
 	"regexp"
 
-	"gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
 )

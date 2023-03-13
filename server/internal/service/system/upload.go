@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"time"
 
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/log"
-	systemVO "gin-admin/internal/vo/system"
-	"gin-admin/pkg/errcode"
-	"gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	systemVO "github.com/silent-rain/gin-admin/internal/vo/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )

@@ -5,7 +5,7 @@ package response
 import (
 	"net/http"
 
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

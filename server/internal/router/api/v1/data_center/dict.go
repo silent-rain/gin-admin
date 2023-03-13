@@ -2,7 +2,7 @@
 package datacenter
 
 import (
-	datacenter "gin-admin/internal/controller/data_center"
+	datacenter "github.com/silent-rain/gin-admin/internal/controller/data_center"
 
 	"github.com/gin-gonic/gin"
 )

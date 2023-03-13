@@ -2,8 +2,8 @@
 package tasks
 
 import (
-	tickerTask "gin-admin/tasks/ticker_task"
-	timerTask "gin-admin/tasks/timer_task"
+	tickerTask "github.com/silent-rain/gin-admin/tasks/ticker_task"
+	timerTask "github.com/silent-rain/gin-admin/tasks/timer_task"
 )
 
 // Init 初始化定时任务

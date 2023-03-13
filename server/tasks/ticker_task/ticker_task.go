@@ -2,8 +2,8 @@
 package tickertask
 
 import (
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/pkg/cron/ticker"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/cron/ticker"
 )
 
 // Init 即时器任务

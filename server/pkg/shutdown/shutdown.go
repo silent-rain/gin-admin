@@ -10,13 +10,13 @@ import (
 	"syscall"
 	"time"
 
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/internal/pkg/repository/redis"
-	"gin-admin/pkg/color"
-	"gin-admin/pkg/cron/ticker"
-	"gin-admin/pkg/cron/timer"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
+	"github.com/silent-rain/gin-admin/pkg/color"
+	"github.com/silent-rain/gin-admin/pkg/cron/ticker"
+	"github.com/silent-rain/gin-admin/pkg/cron/timer"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 )
 
 // Hook a graceful shutdown hook, default with signals of SIGINT and SIGTERM

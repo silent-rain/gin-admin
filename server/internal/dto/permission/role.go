@@ -2,7 +2,7 @@
  */
 package permission
 
-import "gin-admin/internal/dto"
+import "github.com/silent-rain/gin-admin/internal/dto"
 
 // QueryRoleReq 查询条件
 type QueryRoleReq struct {

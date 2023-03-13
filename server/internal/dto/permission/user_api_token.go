@@ -1,7 +1,7 @@
 /*用户API接口Token令牌表*/
 package permission
 
-import "gin-admin/internal/dto"
+import "github.com/silent-rain/gin-admin/internal/dto"
 
 // QueryUserApiTokenReq 查询条件
 type QueryUserApiTokenReq struct {

@@ -2,7 +2,7 @@
 package datacenter
 
 import (
-	"gin-admin/internal/dto"
+	"github.com/silent-rain/gin-admin/internal/dto"
 )
 
 // QueryDictReq 查询条件

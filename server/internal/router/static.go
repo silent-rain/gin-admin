@@ -1,12 +1,4 @@
-/*
- * @Author: silent-rain
- * @Date: 2023-01-07 16:24:58
- * @LastEditors: silent-rain
- * @LastEditTime: 2023-01-14 18:49:41
- * @company:
- * @Mailbox: silent_rains@163.com
- * @FilePath: /gin-admin/internal/router/static.go
- * @Descripttion:静态资源路由
+/*静态资源路由
  */
 package router
 
@@ -14,10 +6,10 @@ import (
 	"html/template"
 	"net/http"
 
-	"gin-admin/assets"
-	"gin-admin/internal/controller"
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/assets"
+	"github.com/silent-rain/gin-admin/internal/controller"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )

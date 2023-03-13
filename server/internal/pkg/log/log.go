@@ -8,11 +8,11 @@ import (
 	"os"
 	"runtime/debug"
 
-	logDAO "gin-admin/internal/dao/log"
-	logModel "gin-admin/internal/model/log"
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/pkg/errcode"
+	logDAO "github.com/silent-rain/gin-admin/internal/dao/log"
+	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

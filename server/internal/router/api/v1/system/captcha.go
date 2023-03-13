@@ -2,7 +2,7 @@
 package system
 
 import (
-	"gin-admin/internal/controller/system"
+	"github.com/silent-rain/gin-admin/internal/controller/system"
 
 	"github.com/gin-gonic/gin"
 )

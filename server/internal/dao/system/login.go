@@ -4,8 +4,8 @@ package system
 import (
 	"errors"
 
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/repository/mysql"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )

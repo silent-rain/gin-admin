@@ -5,8 +5,8 @@ package jwt
 import (
 	"time"
 
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/dgrijalva/jwt-go"
 )

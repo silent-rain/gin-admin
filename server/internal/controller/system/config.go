@@ -2,15 +2,15 @@
 package system
 
 import (
-	"gin-admin/internal/dto"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/dto"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	systemService "github.com/silent-rain/gin-admin/internal/service/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

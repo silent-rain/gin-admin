@@ -4,10 +4,10 @@ package permission
 import (
 	"errors"
 
-	permissionDTO "gin-admin/internal/dto/permission"
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/repository/mysql"
-	permissionVO "gin-admin/internal/vo/permission"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	permissionVO "github.com/silent-rain/gin-admin/internal/vo/permission"
 
 	"gorm.io/gorm"
 )

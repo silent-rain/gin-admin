@@ -4,8 +4,8 @@ package plugin
 import (
 	"fmt"
 
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/pkg/color"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/color"
 )
 
 // see https://patorjk.com/software/taag/#p=testall&f=Graffiti&t=go-gin-api

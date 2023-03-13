@@ -2,7 +2,7 @@
 package metrics
 
 import (
-	systemModel "gin-admin/internal/model/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"

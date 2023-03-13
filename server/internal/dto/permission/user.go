@@ -3,8 +3,8 @@
 package permission
 
 import (
-	"gin-admin/internal/dto"
-	permissionModel "gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/dto"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
 )
 
 // AddUserReq 添加用户

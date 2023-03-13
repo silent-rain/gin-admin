@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/internal/pkg/repository/redis"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 
 	"gorm.io/gorm"
 )

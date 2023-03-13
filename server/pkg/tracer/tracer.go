@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

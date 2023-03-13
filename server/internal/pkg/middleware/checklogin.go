@@ -5,13 +5,13 @@ package middleware
 import (
 	"strings"
 
-	systemDAO "gin-admin/internal/dao/system"
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/jwt"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	"gin-admin/pkg/errcode"
+	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/jwt"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

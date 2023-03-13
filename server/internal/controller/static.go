@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"regexp"
 
-	"gin-admin/assets"
-	systemDAO "gin-admin/internal/dao/system"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/assets"
+	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

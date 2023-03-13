@@ -4,9 +4,10 @@ package log
 
 import (
 	"errors"
-	logDTO "gin-admin/internal/dto/log"
-	logModel "gin-admin/internal/model/log"
-	"gin-admin/internal/pkg/repository/mysql"
+
+	logDTO "github.com/silent-rain/gin-admin/internal/dto/log"
+	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )

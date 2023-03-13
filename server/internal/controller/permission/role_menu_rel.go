@@ -3,12 +3,12 @@
 package permission
 
 import (
-	permissionDTO "gin-admin/internal/dto/permission"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	permissionService "gin-admin/internal/service/permission"
-	"gin-admin/pkg/errcode"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	permissionService "github.com/silent-rain/gin-admin/internal/service/permission"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

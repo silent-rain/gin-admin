@@ -1,4 +1,4 @@
-module gin-admin
+module github.com/silent-rain/gin-admin
 
 go 1.19
 

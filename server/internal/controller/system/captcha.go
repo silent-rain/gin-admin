@@ -2,10 +2,10 @@
 package system
 
 import (
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	systemService "github.com/silent-rain/gin-admin/internal/service/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

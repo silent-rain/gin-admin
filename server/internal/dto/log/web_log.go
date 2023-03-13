@@ -2,7 +2,7 @@
  */
 package log
 
-import "gin-admin/internal/dto"
+import "github.com/silent-rain/gin-admin/internal/dto"
 
 // QueryWebLogReq 查询条件
 type QueryWebLogReq struct {

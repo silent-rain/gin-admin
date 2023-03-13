@@ -2,10 +2,10 @@
 package system
 
 import (
-	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	systemService "github.com/silent-rain/gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )

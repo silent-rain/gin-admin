@@ -4,7 +4,7 @@ package apiauth
 import (
 	"encoding/json"
 
-	DTO "gin-admin/internal/dto"
+	DTO "github.com/silent-rain/gin-admin/internal/dto"
 )
 
 // QueryApiHttpReq 查询条件

@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/response"
-	systemVO "gin-admin/internal/vo/system"
-	"gin-admin/pkg/errcode"
-	timeutil "gin-admin/pkg/utils/time"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	systemVO "github.com/silent-rain/gin-admin/internal/vo/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
+	timeutil "github.com/silent-rain/gin-admin/pkg/utils/time"
 
 	"github.com/gin-gonic/gin"
 )

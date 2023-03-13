@@ -3,12 +3,12 @@
 package log
 
 import (
-	logDTO "gin-admin/internal/dto/log"
-	logModel "gin-admin/internal/model/log"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/response"
-	logService "gin-admin/internal/service/log"
+	logDTO "github.com/silent-rain/gin-admin/internal/dto/log"
+	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	logService "github.com/silent-rain/gin-admin/internal/service/log"
 
 	"github.com/gin-gonic/gin"
 )

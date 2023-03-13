@@ -2,7 +2,7 @@
 package plugin
 
 import (
-	"gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"

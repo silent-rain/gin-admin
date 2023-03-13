@@ -1,7 +1,7 @@
 /*应用配置表*/
 package system
 
-import "gin-admin/internal/dto"
+import "github.com/silent-rain/gin-admin/internal/dto"
 
 // QueryConfigReq 查询条件
 type QueryConfigReq struct {

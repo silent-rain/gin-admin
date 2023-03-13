@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	"gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 )
 
 // EncryptMd5 MD5 密匙加密

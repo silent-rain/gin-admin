@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"time"
 
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/mojocn/base64Captcha"
 )

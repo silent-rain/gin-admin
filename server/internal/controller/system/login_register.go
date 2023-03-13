@@ -3,11 +3,11 @@
 package system
 
 import (
-	permissionDTO "gin-admin/internal/dto/permission"
-	systemDTO "gin-admin/internal/dto/system"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/response"
-	systemService "gin-admin/internal/service/system"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	systemService "github.com/silent-rain/gin-admin/internal/service/system"
 
 	"github.com/gin-gonic/gin"
 )

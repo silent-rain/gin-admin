@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 
 	"go.uber.org/zap"
 )

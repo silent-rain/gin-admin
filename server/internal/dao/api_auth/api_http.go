@@ -6,11 +6,11 @@ import (
 	"errors"
 	"time"
 
-	apiAuthDTO "gin-admin/internal/dto/api_auth"
-	apiAuthModel "gin-admin/internal/model/api_auth"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/internal/pkg/repository/redis"
+	apiAuthDTO "github.com/silent-rain/gin-admin/internal/dto/api_auth"
+	apiAuthModel "github.com/silent-rain/gin-admin/internal/model/api_auth"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 
 	"gorm.io/gorm"
 )

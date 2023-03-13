@@ -3,7 +3,7 @@
 package permission
 
 import (
-	"gin-admin/internal/dto"
+	"github.com/silent-rain/gin-admin/internal/dto"
 )
 
 // QueryMenuReq 查询条件

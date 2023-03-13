@@ -3,15 +3,15 @@
 package permission
 
 import (
-	"gin-admin/internal/dto"
-	permissionDTO "gin-admin/internal/dto/permission"
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/response"
-	permissionMService "gin-admin/internal/service/permission"
-	"gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/internal/dto"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	permissionMService "github.com/silent-rain/gin-admin/internal/service/permission"
+	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )

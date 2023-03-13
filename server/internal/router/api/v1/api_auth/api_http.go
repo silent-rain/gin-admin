@@ -2,7 +2,7 @@
 package apiauth
 
 import (
-	apiauth "gin-admin/internal/controller/api_auth"
+	apiauth "github.com/silent-rain/gin-admin/internal/controller/api_auth"
 
 	"github.com/gin-gonic/gin"
 )

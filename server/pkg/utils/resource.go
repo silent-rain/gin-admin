@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gin-admin/assets"
+	"github.com/silent-rain/gin-admin/assets"
 )
 
 // Resource 静态内嵌资源

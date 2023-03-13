@@ -3,12 +3,12 @@
 package router
 
 import (
-	"gin-admin/internal/controller"
-	apiauth "gin-admin/internal/router/api/v1/api_auth"
-	datacenter "gin-admin/internal/router/api/v1/data_center"
-	"gin-admin/internal/router/api/v1/log"
-	"gin-admin/internal/router/api/v1/permission"
-	"gin-admin/internal/router/api/v1/system"
+	"github.com/silent-rain/gin-admin/internal/controller"
+	apiauth "github.com/silent-rain/gin-admin/internal/router/api/v1/api_auth"
+	datacenter "github.com/silent-rain/gin-admin/internal/router/api/v1/data_center"
+	"github.com/silent-rain/gin-admin/internal/router/api/v1/log"
+	"github.com/silent-rain/gin-admin/internal/router/api/v1/permission"
+	"github.com/silent-rain/gin-admin/internal/router/api/v1/system"
 
 	"github.com/gin-gonic/gin"
 )

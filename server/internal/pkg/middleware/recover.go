@@ -4,9 +4,9 @@ package middleware
 import (
 	"net/http"
 
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

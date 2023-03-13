@@ -2,12 +2,12 @@
 package permission
 
 import (
-	permissionDAO "gin-admin/internal/dao/permission"
-	permissionDTO "gin-admin/internal/dto/permission"
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/log"
-	permissionVO "gin-admin/internal/vo/permission"
-	"gin-admin/pkg/errcode"
+	permissionDAO "github.com/silent-rain/gin-admin/internal/dao/permission"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	permissionVO "github.com/silent-rain/gin-admin/internal/vo/permission"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

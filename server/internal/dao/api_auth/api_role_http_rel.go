@@ -2,11 +2,11 @@
 package apiauth
 
 import (
-	DAO "gin-admin/internal/dao"
-	apiAuthDTO "gin-admin/internal/dto/api_auth"
-	apiAuthModel "gin-admin/internal/model/api_auth"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/pkg/utils"
+	DAO "github.com/silent-rain/gin-admin/internal/dao"
+	apiAuthDTO "github.com/silent-rain/gin-admin/internal/dto/api_auth"
+	apiAuthModel "github.com/silent-rain/gin-admin/internal/model/api_auth"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"

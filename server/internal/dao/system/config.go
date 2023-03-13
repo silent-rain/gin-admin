@@ -4,13 +4,13 @@ package system
 import (
 	"errors"
 
-	DAO "gin-admin/internal/dao"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/repository/cache"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/pkg/errcode"
+	DAO "github.com/silent-rain/gin-admin/internal/dao"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/cache"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"

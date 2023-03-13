@@ -3,15 +3,15 @@
 package system
 
 import (
-	systemDAO "gin-admin/internal/dao/system"
-	permissionDTO "gin-admin/internal/dto/permission"
-	systemDTO "gin-admin/internal/dto/system"
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/jwt"
-	"gin-admin/internal/pkg/log"
-	permissionService "gin-admin/internal/service/permission"
-	systemVO "gin-admin/internal/vo/system"
-	"gin-admin/pkg/errcode"
+	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	systemDTO "github.com/silent-rain/gin-admin/internal/dto/system"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/jwt"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	permissionService "github.com/silent-rain/gin-admin/internal/service/permission"
+	systemVO "github.com/silent-rain/gin-admin/internal/vo/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

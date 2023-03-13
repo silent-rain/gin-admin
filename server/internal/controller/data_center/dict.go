@@ -2,12 +2,12 @@
 package datacenter
 
 import (
-	"gin-admin/internal/dto"
-	dataCenterDTO "gin-admin/internal/dto/data_center"
-	dataCenterModel "gin-admin/internal/model/data_center"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/response"
-	dataCenterService "gin-admin/internal/service/data_center"
+	"github.com/silent-rain/gin-admin/internal/dto"
+	dataCenterDTO "github.com/silent-rain/gin-admin/internal/dto/data_center"
+	dataCenterModel "github.com/silent-rain/gin-admin/internal/model/data_center"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	dataCenterService "github.com/silent-rain/gin-admin/internal/service/data_center"
 
 	"github.com/gin-gonic/gin"
 )

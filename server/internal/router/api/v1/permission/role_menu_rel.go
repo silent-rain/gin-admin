@@ -2,7 +2,7 @@
 package permission
 
 import (
-	"gin-admin/internal/controller/permission"
+	"github.com/silent-rain/gin-admin/internal/controller/permission"
 
 	"github.com/gin-gonic/gin"
 )

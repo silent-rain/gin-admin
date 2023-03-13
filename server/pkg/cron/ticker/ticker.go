@@ -4,8 +4,8 @@ package ticker
 import (
 	"time"
 
-	"gin-admin/internal/pkg/log"
-	"gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 )
 
 var tickerTasks []*tickerTask

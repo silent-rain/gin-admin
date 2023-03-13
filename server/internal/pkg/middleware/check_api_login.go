@@ -4,13 +4,13 @@ package middleware
 import (
 	"strings"
 
-	apiAuthDAO "gin-admin/internal/dao/api_auth"
-	permissionDAO "gin-admin/internal/dao/permission"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	"gin-admin/pkg/errcode"
+	apiAuthDAO "github.com/silent-rain/gin-admin/internal/dao/api_auth"
+	permissionDAO "github.com/silent-rain/gin-admin/internal/dao/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

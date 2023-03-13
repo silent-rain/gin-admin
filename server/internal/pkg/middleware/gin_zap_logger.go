@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

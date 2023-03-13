@@ -2,12 +2,12 @@
 package apiauth
 
 import (
-	apiAuthDTO "gin-admin/internal/dto/api_auth"
-	"gin-admin/internal/pkg/http"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
-	apiAuthService "gin-admin/internal/service/api_auth"
-	"gin-admin/pkg/errcode"
+	apiAuthDTO "github.com/silent-rain/gin-admin/internal/dto/api_auth"
+	"github.com/silent-rain/gin-admin/internal/pkg/http"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	apiAuthService "github.com/silent-rain/gin-admin/internal/service/api_auth"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

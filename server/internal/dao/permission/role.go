@@ -5,9 +5,9 @@ package permission
 import (
 	"errors"
 
-	permissionDTO "gin-admin/internal/dto/permission"
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/repository/mysql"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )

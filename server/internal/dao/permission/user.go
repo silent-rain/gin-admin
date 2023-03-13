@@ -5,11 +5,11 @@ package permission
 import (
 	"errors"
 
-	DAO "gin-admin/internal/dao"
-	permissionDTO "gin-admin/internal/dto/permission"
-	permissionModel "gin-admin/internal/model/permission"
-	"gin-admin/internal/pkg/repository/mysql"
-	"gin-admin/pkg/utils"
+	DAO "github.com/silent-rain/gin-admin/internal/dao"
+	permissionDTO "github.com/silent-rain/gin-admin/internal/dto/permission"
+	permissionModel "github.com/silent-rain/gin-admin/internal/model/permission"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"

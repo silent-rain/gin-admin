@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	logDAO "gin-admin/internal/dao/log"
-	logModel "gin-admin/internal/model/log"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/log"
-	"gin-admin/internal/pkg/response"
+	logDAO "github.com/silent-rain/gin-admin/internal/dao/log"
+	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

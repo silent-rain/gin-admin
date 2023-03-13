@@ -3,12 +3,12 @@
 package log
 
 import (
-	logDAO "gin-admin/internal/dao/log"
-	logDTO "gin-admin/internal/dto/log"
-	logModel "gin-admin/internal/model/log"
-	"gin-admin/internal/pkg/log"
-	systemVO "gin-admin/internal/vo/system"
-	"gin-admin/pkg/errcode"
+	logDAO "github.com/silent-rain/gin-admin/internal/dao/log"
+	logDTO "github.com/silent-rain/gin-admin/internal/dto/log"
+	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	systemVO "github.com/silent-rain/gin-admin/internal/vo/system"
+	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/gin-gonic/gin"
 )

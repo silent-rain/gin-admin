@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"time"
 
-	systemModel "gin-admin/internal/model/system"
-	"gin-admin/internal/pkg/conf"
-	"gin-admin/internal/pkg/constant"
-	"gin-admin/internal/pkg/core"
-	"gin-admin/internal/pkg/response"
-	"gin-admin/pkg/metrics"
+	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/pkg/constant"
+	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/metrics"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,9 +4,9 @@ package datacenter
 import (
 	"errors"
 
-	dictDataCenterDTO "gin-admin/internal/dto/data_center"
-	dictDataCenterModel "gin-admin/internal/model/data_center"
-	"gin-admin/internal/pkg/repository/mysql"
+	dictDataCenterDTO "github.com/silent-rain/gin-admin/internal/dto/data_center"
+	dictDataCenterModel "github.com/silent-rain/gin-admin/internal/model/data_center"
+	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )

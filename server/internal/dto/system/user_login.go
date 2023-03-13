@@ -1,7 +1,7 @@
 /*用户登录信息表*/
 package system
 
-import "gin-admin/internal/dto"
+import "github.com/silent-rain/gin-admin/internal/dto"
 
 // QueryUserLoginReq 查询条件
 type QueryUserLoginReq struct {

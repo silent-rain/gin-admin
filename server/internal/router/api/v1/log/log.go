@@ -2,7 +2,7 @@
 package log
 
 import (
-	"gin-admin/internal/controller/log"
+	"github.com/silent-rain/gin-admin/internal/controller/log"
 
 	"github.com/gin-gonic/gin"
 )
