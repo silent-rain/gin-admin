@@ -43,8 +43,7 @@ server
 │   │   │   ├── redis
 │   │   │   └── cache
 │   │   ├── response
-│   │   ├── tracer
-│   │   └── utils
+│   │   └── tracer
 │   ├── router
 │   ├── service
 │   └── vo
@@ -194,6 +193,38 @@ web
 - 用户页面
   - excel 导入
 
+## 项目初始化
+### 数据库初始化
+```shell
+# 进入数据库文件目录
+cd server/docs/sql
+
+# 登录数据库
+mysql -u root -p
+
+# 创建数据库
+CREATE DATABASE IF NOT EXISTS `gin_admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+# 初始化数据库表，同时进行数据初始化
+mysql - u root - proot密码 gin_admin < gin_admin.sql
+```
+### Redis 安装
+- [redis安装](./server/docs/redis%E5%AE%89%E8%A3%85%E6%96%87%E6%A1%A3.md)
+### Air 热重启工具安装
+- install air
+```
+go install github.com/cosmtrek/air@latest
+```
+- init air
+```
+cd cmd
+air init
+```
+- run
+```
+air
+```
+
 
 
 ## 项目编译&运行
@@ -235,55 +266,47 @@ chmod 755 main
 - [内嵌前端](http://127.0.0.1:8080/)
 - [pprof 性能剖析工具](http://127.0.0.1:8080/debug/pprof/)
 - [Prometheus 监控指标](http://127.0.0.1:8080/metrics)
+- [本地 API 接口文档](http://127.0.0.1:8080/docs/api/v1/index.html)
+  - 需要联网加载资源
 
 ### 前端编译&运行
 - 安装依赖
 
 ```shell
+# 进入前端项目
 cd web
+# 安装依赖
 yarn install
 ```
 - 调试运行
 
 ```shell
+# 进入前端项目
 cd web
+# 进入调试运行
 yarn run dev
 # 访问前端
 http://localhost:5005/
 ```
 - 编译
-
+  - 编译文件目录将放置 server/assets/dist 目录中, 用于内嵌 WEB 服务, 前后端一体化, 快速部署;
+  - 内嵌的 WEB 服务可支持 SEO 动态优化；
+  - 也可忽略 server/assets/dist 目录中的文件，前后端单独部署；
 ```shell
+# 进入前端项目
 cd web
+# 编译
 yarn build
 ```
 
-## API 接口文档
-本地API文档，需要联网加载资源
-[本地API文档](http://127.0.0.1:8080/docs/api/v1/index.html)
-
-## 热重启
-- install air
-```
-go install github.com/cosmtrek/air@latest
-```
-- init air
-```
-cd cmd
-air init
-```
-- run
-```
-air
-```
 
 ## 参考文档
 - [前端框架模板](https://github.com/jzfai/vue3-admin-plus)
 - [Gin框架基础](https://blog.csdn.net/qq_40229166/article/details/118807361)
 - [Gorm](https://gorm.io/zh_CN/)
-- [参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
-- [参考项目](http://manage.pro.layui.javaweb.vip/index)
-- [参考项目](https://vue3.go-admin.dev/schedule/manage)
+- [前端参考项目](http://manage.gin.elevue.easygoadmin.vip/system/user)
+- [前端参考项目](http://manage.pro.layui.javaweb.vip/index)
+- [前端参考项目](https://vue3.go-admin.dev/schedule/manage)
   - 定时任务
 - [为 Go 应用添加 Prometheus 监控指标](https://blog.csdn.net/weixin_40046357/article/details/120620433)
 
