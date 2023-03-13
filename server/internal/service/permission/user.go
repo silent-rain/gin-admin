@@ -49,7 +49,7 @@ func (h *userService) All(ctx *gin.Context) ([]permissionModel.User, int64, erro
 	results, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	return results, total, nil
 }
@@ -59,7 +59,7 @@ func (h *userService) List(ctx *gin.Context, req permissionDTO.QueryUserReq) ([]
 	results, total, err := h.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	return results, total, nil
 }
@@ -68,10 +68,10 @@ func (h *userService) List(ctx *gin.Context, req permissionDTO.QueryUserReq) ([]
 func (h *userService) Add(ctx *gin.Context, req permissionDTO.AddUserReq) error {
 	// 判断用户是否存在 邮件/手机号
 	if h.chechkPhone(ctx, req.Phone) {
-		return errcode.New(errcode.ExistPhoneError).WithMsg("手机号已存在")
+		return errcode.ExistPhoneError.WithMsg("手机号已存在")
 	}
 	if h.chechkEmail(ctx, req.Email) {
-		return errcode.New(errcode.ExistEmailError).WithMsg("邮箱已存在")
+		return errcode.ExistEmailError.WithMsg("邮箱已存在")
 	}
 
 	// 密码加密
@@ -87,7 +87,7 @@ func (h *userService) Add(ctx *gin.Context, req permissionDTO.AddUserReq) error 
 	// 数据入库
 	if err := h.dao.Add(*user, req.RoleIds); err != nil {
 		log.New(ctx).WithCode(errcode.UserRegisterError).Errorf("%v", err)
-		return errcode.New(errcode.UserRegisterError)
+		return errcode.UserRegisterError
 	}
 	return nil
 }
@@ -127,7 +127,7 @@ func (h *userService) chechkEmail(ctx *gin.Context, email string) bool {
 func (h *userService) Update(ctx *gin.Context, user permissionModel.User, roleIds []uint) error {
 	if err := h.dao.Update(user, roleIds); err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return errcode.New(errcode.DBUpdateError)
+		return errcode.DBUpdateError
 	}
 	return nil
 }
@@ -137,7 +137,7 @@ func (h *userService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -147,7 +147,7 @@ func (h *userService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -157,7 +157,7 @@ func (h *userService) Status(ctx *gin.Context, id uint, status uint) (int64, err
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }
@@ -168,17 +168,17 @@ func (h *userService) UpdatePassword(ctx *gin.Context, req permissionDTO.UpdateU
 	ok, err := h.dao.ExistUserPassword(req.ID, req.OldPassword)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.UserOldPasswordError).Errorf("%v", err)
-		return 0, errcode.New(errcode.UserOldPasswordError)
+		return 0, errcode.UserOldPasswordError
 	}
 
 	row, err := h.dao.UpdatePassword(req.ID, req.NewPassword)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -188,7 +188,7 @@ func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) 
 	row, err := h.dao.ResetPassword(id, password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBResetError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBResetError)
+		return 0, errcode.DBResetError
 	}
 	return row, nil
 }
@@ -199,31 +199,31 @@ func (h *userService) UpdatePhone(ctx *gin.Context, req permissionDTO.UpdateUser
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.UserPasswordError).Errorf("%v", err)
-		return 0, errcode.New(errcode.UserPasswordError)
+		return 0, errcode.UserPasswordError
 	}
 
 	// 查看手机号码是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByPhone(req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok && user.ID == req.ID {
 		log.New(ctx).WithCode(errcode.UserPhoneConsistentError).Error("")
-		return 0, errcode.New(errcode.UserPhoneConsistentError)
+		return 0, errcode.UserPhoneConsistentError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Error("手机号码已被使用")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("手机号码已被使用")
+		return 0, errcode.DBDataExistError.WithMsg("手机号码已被使用")
 	}
 	row, err := h.dao.UpdatePhone(req.ID, req.Phone)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -234,31 +234,31 @@ func (h *userService) UpdateEmail(ctx *gin.Context, req permissionDTO.UpdateUser
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.UserPasswordError).Errorf("%v", err)
-		return 0, errcode.New(errcode.UserPasswordError)
+		return 0, errcode.UserPasswordError
 	}
 
 	// 查看邮箱是否已经被非本人使用
 	user, ok, err := h.dao.GetUserByEmail(req.Email)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok && user.ID == req.ID {
 		log.New(ctx).WithCode(errcode.UserEmailConsistentError).Error("")
-		return 0, errcode.New(errcode.UserEmailConsistentError)
+		return 0, errcode.UserEmailConsistentError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Error("邮箱已被使用")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("邮箱已被使用")
+		return 0, errcode.DBDataExistError.WithMsg("邮箱已被使用")
 	}
 	row, err := h.dao.UpdateEmail(req.ID, req.Email)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -268,23 +268,23 @@ func (h *userService) Info(ctx *gin.Context, userId uint) (permissionDTO.UserInf
 	user, ok, err := h.dao.Info(userId)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
+		return permissionDTO.UserInfoRsp{}, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
-		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryEmptyError)
+		return permissionDTO.UserInfoRsp{}, errcode.DBQueryEmptyError
 	}
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(errcode.UserDisableError).Error("")
-		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.UserDisableError)
+		return permissionDTO.UserInfoRsp{}, errcode.UserDisableError
 	}
 
 	// 根据角色获取菜单列表
 	roleMenus, err := h.getRoleMenuList(user.Roles)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return permissionDTO.UserInfoRsp{}, errcode.New(errcode.DBQueryError)
+		return permissionDTO.UserInfoRsp{}, errcode.DBQueryError
 	}
 	// 菜单路由列表：菜单类型为菜单的数据解析
 	menus := h.getMenuList(roleMenus)

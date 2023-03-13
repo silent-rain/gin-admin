@@ -28,13 +28,13 @@ func NewUserLoginRegisterController() *userLoginRegisterController {
 func (c *userLoginRegisterController) Login(ctx *gin.Context) {
 	req := systemDTO.UserLoginReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	result, err := c.service.Login(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()
@@ -43,7 +43,7 @@ func (c *userLoginRegisterController) Login(ctx *gin.Context) {
 // Logout 注销系统
 func (c *userLoginRegisterController) Logout(ctx *gin.Context) {
 	if _, err := c.service.Logout(ctx); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -53,12 +53,12 @@ func (c *userLoginRegisterController) Logout(ctx *gin.Context) {
 func (c *userLoginRegisterController) Register(ctx *gin.Context) {
 	req := permissionDTO.AddUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if err := c.service.Register(ctx, req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

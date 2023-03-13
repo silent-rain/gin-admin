@@ -2,6 +2,8 @@
  */
 package errcode
 
+import "fmt"
+
 // 业务状态码
 type ErrorCode uint
 
@@ -121,23 +123,46 @@ const (
 	DirCreateError                             // 文件夹创建失败
 )
 
-// Error 返回状态码错误信息
-func (r ErrorCode) Error() error {
-	msg, ok := MsgZHCN[r]
+// CodeError 返回状态码错误信息
+func (e ErrorCode) CodeError() error {
+	msg, ok := MsgZHCN[e]
 	if !ok {
 		return MsgZHCN[UnknownError]
 	}
 	return msg
 }
 
-// Msg 返回状态码信息
-func (r ErrorCode) Msg() string {
-	if r == Ok {
-		return "Ok"
+// Error 实现 error 接口
+func (e ErrorCode) Error() string {
+	if e == Ok {
+		return ""
 	}
-	errObj, ok := MsgZHCN[r]
-	if !ok {
-		return MsgZHCN[UnknownError].Error()
+	return e.CodeError().Error()
+}
+
+// WithMsg 添加额外错误信息
+func (e ErrorCode) WithMsg(msg string) *ErrorMsg {
+	return &ErrorMsg{
+		Code: e,
+		Err:  fmt.Errorf("%w, %s", e.CodeError(), msg),
 	}
-	return errObj.Error()
+}
+
+// WithMsg 添加额外错误信息
+func (e ErrorCode) WithError(err error) *ErrorMsg {
+	return &ErrorMsg{
+		Code: e,
+		Err:  fmt.Errorf("%w, %s", e.CodeError(), err),
+	}
+}
+
+// Error 自定义错误类型
+type ErrorMsg struct {
+	Code ErrorCode `json:"code"` // 状态码
+	Err  error     `json:"msg"`  // 状态码信息
+}
+
+// Error 实现 error 接口
+func (e *ErrorMsg) Error() string {
+	return e.Err.Error()
 }

@@ -26,7 +26,7 @@ func NewCaptchaController() *captchaController {
 func (c *captchaController) Captcha(ctx *gin.Context) {
 	result, err := c.service.Captcha(ctx)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()
@@ -48,7 +48,7 @@ func (c *captchaController) CaptchaVerify(ctx *gin.Context) {
 	}
 
 	if err := c.service.CaptchaVerify(ctx, captchaId, verifyValue); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

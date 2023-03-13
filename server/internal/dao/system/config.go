@@ -225,12 +225,12 @@ func (c *webSiteConfigCache) Set() error {
 func (c *webSiteConfigCache) Get() ([]systemModel.Config, error) {
 	value, ok := c.cache.Get(constant.CacheWebSiteConfig)
 	if !ok {
-		return nil, errcode.New(errcode.CacheGetError)
+		return nil, errcode.CacheGetError
 	}
 
 	vs, ok := value.([]systemModel.Config)
 	if !ok {
-		return nil, errcode.New(errcode.DataTypeConversionError)
+		return nil, errcode.DataTypeConversionError
 	}
 	return vs, nil
 }

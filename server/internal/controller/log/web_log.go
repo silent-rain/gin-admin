@@ -29,13 +29,13 @@ func NewWebLogController() *webLogController {
 func (c *webLogController) List(ctx *gin.Context) {
 	req := logDTO.QueryWebLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -45,12 +45,12 @@ func (c *webLogController) List(ctx *gin.Context) {
 func (c *webLogController) Add(ctx *gin.Context) {
 	req := logDTO.AddWebLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := logModel.WebLog{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean.UserId = core.GetContext(ctx).UserId
@@ -59,7 +59,7 @@ func (c *webLogController) Add(ctx *gin.Context) {
 
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

@@ -200,19 +200,31 @@ func New(ctx *gin.Context) *logger {
 
 // WithCode 添加错误码
 func (l *logger) WithCode(code errcode.ErrorCode) *logger {
-	l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Msg()))
+	l.fields = append(
+		l.fields,
+		zap.Uint("error_code", uint(code)),
+		zap.String("error_msg", code.Error()),
+	)
 	return l
 }
 
 // WithCodeError 添加响应状态码及状态码对应的信息
-func (l *logger) WithCodeError(err error) *logger {
-	code, ok := err.(*errcode.Error)
-	if !ok {
-		l.fields = append(l.fields, zap.Uint("error_code", uint(errcode.UnknownError)),
-			zap.String("error_msg", errcode.UnknownError.Msg()))
+func (l *logger) WithError(err error) *logger {
+	// 业务错误码 error code
+	if code, ok := err.(errcode.ErrorCode); ok {
+		l.fields = append(l.fields, zap.Uint("error_code", uint(code)), zap.String("error_msg", code.Error()))
 		return l
 	}
-	l.fields = append(l.fields, zap.Uint("error_code", uint(code.Code)), zap.String("error_msg", code.Msg))
+
+	// 业务错误码附加信息 erro code
+	if msg, ok := err.(*errcode.ErrorMsg); ok {
+		l.fields = append(l.fields, zap.Uint("error_code", uint(msg.Code)), zap.String("error_msg", msg.Error()))
+		return l
+	}
+
+	// 原始错误
+	l.fields = append(l.fields, zap.Uint("error_code", uint(errcode.UnknownError)),
+		zap.String("error_msg", err.Error()))
 	return l
 }
 

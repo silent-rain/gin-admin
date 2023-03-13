@@ -31,7 +31,7 @@ func NewConfigController() *configController {
 func (c *configController) AllTree(ctx *gin.Context) {
 	results, total, err := c.service.AllTree(ctx)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -41,13 +41,13 @@ func (c *configController) AllTree(ctx *gin.Context) {
 func (c *configController) Tree(ctx *gin.Context) {
 	req := systemDTO.QueryConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.Tree(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -57,13 +57,13 @@ func (c *configController) Tree(ctx *gin.Context) {
 func (c *configController) List(ctx *gin.Context) {
 	req := systemDTO.QueryConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -75,14 +75,13 @@ func (c *configController) Info(ctx *gin.Context) {
 	if !ok {
 		log.New(ctx).WithCode(errcode.ReqParameterParsingError).Errorf("")
 		response.New(ctx).
-			WithCodeError(errcode.New(errcode.ReqParameterParsingError).WithMsg("key 字段不能为空")).
-			Json()
+			WithError(errcode.ReqParameterParsingError.WithMsg("key 字段不能为空")).Json()
 		return
 	}
 
 	result, err := c.service.Info(ctx, key)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()
@@ -92,13 +91,13 @@ func (c *configController) Info(ctx *gin.Context) {
 func (c *configController) ChildrenByKey(ctx *gin.Context) {
 	req := systemDTO.QueryConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, err := c.service.ChildrenByKey(ctx, req.Key)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, int64(len(results))).Json()
@@ -108,18 +107,18 @@ func (c *configController) ChildrenByKey(ctx *gin.Context) {
 func (c *configController) Add(ctx *gin.Context) {
 	req := systemDTO.AddConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	config := systemModel.Config{}
 	if err := http.ApiJsonConvertJson(ctx, req, &config); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Add(ctx, config)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -129,18 +128,18 @@ func (c *configController) Add(ctx *gin.Context) {
 func (c *configController) Update(ctx *gin.Context) {
 	req := systemDTO.UpdateConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	config := systemModel.Config{}
 	if err := http.ApiJsonConvertJson(ctx, req, &config); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Update(ctx, config)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -150,18 +149,18 @@ func (c *configController) Update(ctx *gin.Context) {
 func (c *configController) BatchUpdate(ctx *gin.Context) {
 	req := make([]systemDTO.UpdateConfigReq, 0)
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	var configs []systemModel.Config
 	if err := http.ApiJsonConvertJson(ctx, req, &configs); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	err := c.service.BatchUpdate(ctx, configs)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -171,13 +170,13 @@ func (c *configController) BatchUpdate(ctx *gin.Context) {
 func (c *configController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Delete(ctx, req.ID)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -187,13 +186,13 @@ func (c *configController) Delete(ctx *gin.Context) {
 func (c *configController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.BatchDelete(ctx, req.Ids)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -203,12 +202,12 @@ func (c *configController) BatchDelete(ctx *gin.Context) {
 func (c *configController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.Status(ctx, req.ID, req.Status); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -218,7 +217,7 @@ func (c *configController) Status(ctx *gin.Context) {
 func (c *configController) WebSiteConfigList(ctx *gin.Context) {
 	results, err := c.service.WebSiteConfigList(ctx, constant.WebsiteConfigKey)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, int64(len(results))).Json()

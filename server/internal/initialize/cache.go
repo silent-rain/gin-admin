@@ -11,7 +11,7 @@ import (
 // 初始化站点配置缓存
 func initWebSiteConfigCache() {
 	if err := systemDAO.NewWebSiteConfigCache().Set(); err != nil {
-		log.New(&gin.Context{}).WithCodeError(err).Error("")
+		log.New(&gin.Context{}).WithError(err).Error("")
 		return
 	}
 }

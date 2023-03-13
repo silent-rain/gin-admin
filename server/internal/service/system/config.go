@@ -49,7 +49,7 @@ func (s *configService) AllTree(ctx *gin.Context) ([]systemModel.Config, int64, 
 	results, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	// 配置列表数据转为树结构
 	tree := configListToTree(results, nil)
@@ -61,12 +61,12 @@ func (s *configService) Tree(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 	configList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	configAll, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 
 	// 配置列表数据转为树结构
@@ -89,7 +89,7 @@ func (s *configService) List(ctx *gin.Context, req systemDTO.QueryConfigReq) ([]
 	configList, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	return configList, total, nil
 }
@@ -99,11 +99,11 @@ func (s *configService) Info(ctx *gin.Context, key string) (systemModel.Config, 
 	result, ok, err := s.dao.Info(key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return result, errcode.New(errcode.DBQueryError)
+		return result, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
-		return result, errcode.New(errcode.DBQueryEmptyError)
+		return result, errcode.DBQueryEmptyError
 	}
 	return result, nil
 }
@@ -113,7 +113,7 @@ func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]systemMod
 	configList, err := s.dao.ChildrenByKey(key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, errcode.New(errcode.DBQueryError)
+		return nil, errcode.DBQueryError
 	}
 	return configList, nil
 }
@@ -123,11 +123,11 @@ func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, 
 	_, ok, err := s.dao.Info(config.Key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("配置项已存在")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("配置项已存在")
+		return 0, errcode.DBDataExistError.WithMsg("配置项已存在")
 	}
 
 	id, err := s.dao.Add(config)
@@ -136,7 +136,7 @@ func (s *configService) Add(ctx *gin.Context, config systemModel.Config) (uint, 
 	}
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 
 	// 设置站点配置缓存
@@ -149,7 +149,7 @@ func (s *configService) Update(ctx *gin.Context, config systemModel.Config) (int
 	row, err := s.dao.Update(config)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 
 	// 设置站点配置缓存
@@ -162,7 +162,7 @@ func (s *configService) BatchUpdate(ctx *gin.Context, configs []systemModel.Conf
 	err := s.dao.BatchUpdate(configs)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return errcode.New(errcode.DBUpdateError)
+		return errcode.DBUpdateError
 	}
 
 	// 设置站点配置缓存
@@ -175,17 +175,17 @@ func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenConfig, err := s.dao.Children(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if len(childrenConfig) > 0 {
 		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子配置, %v", err)
-		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子配置")
+		return 0, errcode.DBDataExistChildrenError.WithMsg("删除失败, 存在子配置")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 
 	// 设置站点配置缓存
@@ -198,7 +198,7 @@ func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 
 	// 设置站点配置缓存
@@ -211,7 +211,7 @@ func (s *configService) Status(ctx *gin.Context, id uint, status uint) (int64, e
 	row, err := s.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 
 	// 设置站点配置缓存

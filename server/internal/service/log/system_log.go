@@ -34,7 +34,7 @@ func (s *systemLogService) List(ctx *gin.Context, req logDTO.QuerySystemLogReq) 
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return results, total, nil

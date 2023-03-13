@@ -116,7 +116,7 @@ func (r captcha) MekeCaptcha(captchaType string) (string, string, error) {
 	case "digit":
 		driver = r.digitConfig()
 	default:
-		return "", "", errcode.CaptchaTypeError.Error()
+		return "", "", errcode.CaptchaTypeError
 	}
 
 	// 创建验证码并传入创建的类型的配置，以及存储的对象

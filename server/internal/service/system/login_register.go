@@ -51,24 +51,24 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 	user, ok, err := h.dao.Login(req.Username, req.Password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return result, errcode.New(errcode.DBQueryError)
+		return result, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Error("用户名或者密码不正确")
-		return result, errcode.New(errcode.DBQueryEmptyError).WithMsg("用户名或者密码不正确")
+		return result, errcode.DBQueryEmptyError.WithMsg("用户名或者密码不正确")
 	}
 
 	// 判断当前用户状态
 	if user.Status != 1 {
 		log.New(ctx).WithCode(errcode.UserDisableError).Error("")
-		return result, errcode.New(errcode.UserDisableError)
+		return result, errcode.UserDisableError
 	}
 
 	// 生成 Token
 	token, err := jwt.GenerateToken(user.ID, user.Nickname)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.TokenGenerateError).Errorf("%v", err)
-		return result, errcode.New(errcode.TokenGenerateError)
+		return result, errcode.TokenGenerateError
 	}
 
 	// 存储登录日志
@@ -80,7 +80,7 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req systemDTO.UserLog
 		Status:     1,
 	})
 	if err != nil {
-		log.New(ctx).WithCodeError(err).Errorf("%v", err)
+		log.New(ctx).WithError(err).Errorf("%v", err)
 		return result, err
 	}
 

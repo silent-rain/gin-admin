@@ -29,13 +29,13 @@ func NewUserApiTokenController() *userApiTokenController {
 func (c *userApiTokenController) List(ctx *gin.Context) {
 	req := permissionDTO.QueryUserApiTokenReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -45,12 +45,12 @@ func (c *userApiTokenController) List(ctx *gin.Context) {
 func (c *userApiTokenController) Add(ctx *gin.Context) {
 	req := permissionDTO.AddUserApiTokenReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := permissionModel.UserApiToken{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
@@ -58,7 +58,7 @@ func (c *userApiTokenController) Add(ctx *gin.Context) {
 	bean.Token = utils.GenerateTUserApiToken()
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -68,18 +68,18 @@ func (c *userApiTokenController) Add(ctx *gin.Context) {
 func (c *userApiTokenController) Update(ctx *gin.Context) {
 	req := permissionDTO.UpdateUserApiTokenReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := permissionModel.UserApiToken{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Update(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -89,13 +89,13 @@ func (c *userApiTokenController) Update(ctx *gin.Context) {
 func (c *userApiTokenController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Delete(ctx, req.ID)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -105,13 +105,13 @@ func (c *userApiTokenController) Delete(ctx *gin.Context) {
 func (c *userApiTokenController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.BatchDelete(ctx, req.Ids)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -121,13 +121,13 @@ func (c *userApiTokenController) BatchDelete(ctx *gin.Context) {
 func (c *userApiTokenController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Status(ctx, req.ID, req.Status)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

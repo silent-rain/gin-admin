@@ -34,7 +34,7 @@ func (c *uploadController) Avatar(ctx *gin.Context) {
 
 	result, err := c.service.Avatar(ctx, file)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()
@@ -52,7 +52,7 @@ func (c *uploadController) Image(ctx *gin.Context) {
 
 	result, err := c.service.Image(ctx, file)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()
@@ -71,7 +71,7 @@ func (c *uploadController) Images(ctx *gin.Context) {
 
 	result, err := c.service.Images(ctx, files)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(result, int64(len(result))).Json()

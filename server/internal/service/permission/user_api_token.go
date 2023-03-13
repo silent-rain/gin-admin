@@ -39,7 +39,7 @@ func (s *userApiTokenService) List(ctx *gin.Context, req permissionDTO.QueryUser
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return results, total, nil
@@ -50,7 +50,7 @@ func (h *userApiTokenService) Add(ctx *gin.Context, role permissionModel.UserApi
 	id, err := h.dao.Add(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -60,7 +60,7 @@ func (h *userApiTokenService) Update(ctx *gin.Context, role permissionModel.User
 	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -70,7 +70,7 @@ func (h *userApiTokenService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -80,7 +80,7 @@ func (h *userApiTokenService) BatchDelete(ctx *gin.Context, ids []uint) (int64, 
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -90,7 +90,7 @@ func (h *userApiTokenService) Status(ctx *gin.Context, id uint, status uint) (in
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }

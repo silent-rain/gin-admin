@@ -26,13 +26,13 @@ func NewUserLoginController() *userLoginController {
 func (c *userLoginController) List(ctx *gin.Context) {
 	req := systemDTO.QueryUserLoginReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -42,13 +42,13 @@ func (c *userLoginController) List(ctx *gin.Context) {
 func (c *userLoginController) Status(ctx *gin.Context) {
 	req := systemDTO.UpdateUserLoginStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	row, err := c.service.Status(ctx, req.ID, req.UserId, req.Status)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(row).Json()

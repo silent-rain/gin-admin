@@ -35,7 +35,7 @@ func (s *roleMenuRelService) List(ctx *gin.Context, req permissionDTO.QueryRoleM
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	return results, total, nil
 }
@@ -44,7 +44,7 @@ func (s *roleMenuRelService) List(ctx *gin.Context, req permissionDTO.QueryRoleM
 func (h *roleMenuRelService) Update(ctx *gin.Context, roleId uint, menuIds []uint) error {
 	if err := h.dao.Update(roleId, menuIds); err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return errcode.New(errcode.DBUpdateError)
+		return errcode.DBUpdateError
 	}
 	return nil
 }

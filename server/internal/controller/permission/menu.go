@@ -29,7 +29,7 @@ func NewMenuController() *menuController {
 func (c *menuController) AllTree(ctx *gin.Context) {
 	results, total, err := c.service.AllTree(ctx)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -39,13 +39,13 @@ func (c *menuController) AllTree(ctx *gin.Context) {
 func (c *menuController) Tree(ctx *gin.Context) {
 	req := permissionDTO.QueryMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.Tree(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -55,12 +55,12 @@ func (c *menuController) Tree(ctx *gin.Context) {
 func (c *menuController) Add(ctx *gin.Context) {
 	req := permissionDTO.AddMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	menu := permissionModel.Menu{}
 	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
@@ -79,7 +79,7 @@ func (c *menuController) Add(ctx *gin.Context) {
 
 	_, err := c.service.Add(ctx, menu)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -138,12 +138,12 @@ func (c *menuController) setMenuOpenTypeByInnerLinkParams(menu permissionModel.M
 func (c *menuController) Update(ctx *gin.Context) {
 	req := permissionDTO.UpdateMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	menu := permissionModel.Menu{}
 	if err := http.ApiJsonConvertJson(ctx, req, &menu); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
@@ -161,7 +161,7 @@ func (c *menuController) Update(ctx *gin.Context) {
 
 	_, err := c.service.Update(ctx, menu)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -171,13 +171,13 @@ func (c *menuController) Update(ctx *gin.Context) {
 func (c *menuController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Delete(ctx, req.ID)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -187,13 +187,13 @@ func (c *menuController) Delete(ctx *gin.Context) {
 func (c *menuController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.BatchDelete(ctx, req.Ids)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -203,13 +203,13 @@ func (c *menuController) BatchDelete(ctx *gin.Context) {
 func (c *menuController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Status(ctx, req.ID, req.Status)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -219,13 +219,13 @@ func (c *menuController) Status(ctx *gin.Context) {
 func (c *menuController) ChildrenMenu(ctx *gin.Context) {
 	req := permissionDTO.QueryChildrenMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, err := c.service.ChildrenMenu(ctx, req.ParentId)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, int64(len(results))).Json()

@@ -40,7 +40,7 @@ func (s *userLoginService) List(ctx *gin.Context, req systemDTO.QueryUserLoginRe
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	return results, total, nil
 }
@@ -53,7 +53,7 @@ func (s *userLoginService) Add(ctx *gin.Context, bean systemModel.UserLogin) (ui
 	}
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -63,7 +63,7 @@ func (s *userLoginService) Status(ctx *gin.Context, id, userId uint, status uint
 	row, err := s.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 
 	// 禁用登录

@@ -28,13 +28,13 @@ func NewDictDataController() *dictDataCenterController {
 func (c *dictDataCenterController) List(ctx *gin.Context) {
 	req := dataCenterDTO.QueryDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -44,18 +44,18 @@ func (c *dictDataCenterController) List(ctx *gin.Context) {
 func (c *dictDataCenterController) Add(ctx *gin.Context) {
 	req := dataCenterDTO.AddDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := dataCenterModel.DictData{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -65,18 +65,18 @@ func (c *dictDataCenterController) Add(ctx *gin.Context) {
 func (c *dictDataCenterController) Update(ctx *gin.Context) {
 	req := dataCenterDTO.UpdateDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := dataCenterModel.DictData{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Update(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -86,13 +86,13 @@ func (c *dictDataCenterController) Update(ctx *gin.Context) {
 func (c *dictDataCenterController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Delete(ctx, req.ID)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -102,13 +102,13 @@ func (c *dictDataCenterController) Delete(ctx *gin.Context) {
 func (c *dictDataCenterController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.BatchDelete(ctx, req.Ids)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -118,13 +118,13 @@ func (c *dictDataCenterController) BatchDelete(ctx *gin.Context) {
 func (c *dictDataCenterController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Status(ctx, req.ID, req.Status)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

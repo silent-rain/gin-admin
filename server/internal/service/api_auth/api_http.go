@@ -39,7 +39,7 @@ func (s *apiHttpService) AllTree(ctx *gin.Context) ([]apiAuthModel.ApiHttp, int6
 	results, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	// 菜单列表数据转为树结构
@@ -52,12 +52,12 @@ func (s *apiHttpService) Tree(ctx *gin.Context, req apiAuthDTO.QueryApiHttpReq) 
 	resultList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	resultAll, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 
 	// 列表数据转为树结构
@@ -101,17 +101,17 @@ func (h *apiHttpService) Add(ctx *gin.Context, bean apiAuthModel.ApiHttp) (uint,
 	_, ok, err := h.dao.InfoByUri(bean.Uri)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("接口已存在")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("接口已存在")
+		return 0, errcode.DBDataExistError.WithMsg("接口已存在")
 	}
 
 	id, err := h.dao.Add(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -121,7 +121,7 @@ func (h *apiHttpService) Update(ctx *gin.Context, bean apiAuthModel.ApiHttp) (in
 	row, err := h.dao.Update(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -131,17 +131,17 @@ func (h *apiHttpService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenConfig, err := h.dao.Children(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if len(childrenConfig) > 0 {
 		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子接口, %v", err)
-		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子接口")
+		return 0, errcode.DBDataExistChildrenError.WithMsg("删除失败, 存在子接口")
 	}
 
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -151,7 +151,7 @@ func (h *apiHttpService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -161,7 +161,7 @@ func (h *apiHttpService) Status(ctx *gin.Context, id uint, status uint) (int64, 
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }

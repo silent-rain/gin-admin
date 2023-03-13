@@ -53,7 +53,7 @@ func New() (*dbPool, error) {
 		return nil, err
 	}
 	if err := defaultDB.Ping(ctx).Err(); err != nil {
-		return nil, errcode.New(errcode.RedisPingError)
+		return nil, errcode.RedisPingError
 	}
 
 	// 用户登录缓存库
@@ -62,7 +62,7 @@ func New() (*dbPool, error) {
 		return nil, err
 	}
 	if err := userLoginDB.Ping(ctx).Err(); err != nil {
-		return nil, errcode.New(errcode.RedisPingError)
+		return nil, errcode.RedisPingError
 	}
 
 	// API Token 请求的存储用户缓存库
@@ -71,7 +71,7 @@ func New() (*dbPool, error) {
 		return nil, err
 	}
 	if err := apiTokenLoginDB.Ping(ctx).Err(); err != nil {
-		return nil, errcode.New(errcode.RedisPingError)
+		return nil, errcode.RedisPingError
 	}
 	return &dbPool{
 		defaultDB:       defaultDB,
@@ -94,7 +94,7 @@ func dbConnect(cfg conf.RedisConfig, db DBType) (*redis.Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 	if err := client.Ping(ctx).Err(); err != nil {
-		return nil, errcode.New(errcode.RedisPingError)
+		return nil, errcode.RedisPingError
 	}
 	return client, nil
 }
@@ -148,7 +148,7 @@ type dbRepo struct {
 // Set set some <key,value,ttl> into redis
 func (d *dbRepo) Set(ctx context.Context, key, value string, ttl time.Duration) error {
 	if err := d.client.Set(ctx, key, value, ttl).Err(); err != nil {
-		return errcode.New(errcode.RedisSetKeyError)
+		return errcode.RedisSetKeyError
 	}
 	return nil
 }
@@ -157,7 +157,7 @@ func (d *dbRepo) Set(ctx context.Context, key, value string, ttl time.Duration) 
 func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
 	value, err := d.client.Get(ctx, key).Result()
 	if err != nil {
-		return "", errcode.New(errcode.RedisGetKeyError).WithMsg("获取鉴权信息失败")
+		return "", errcode.RedisGetKeyError.WithMsg("获取鉴权信息失败")
 	}
 	return value, nil
 }
@@ -166,7 +166,7 @@ func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
 func (d *dbRepo) TTL(ctx context.Context, key string) (time.Duration, error) {
 	ttl, err := d.client.TTL(ctx, key).Result()
 	if err != nil {
-		return -1, errcode.New(errcode.RedisTTLGetKeyError)
+		return -1, errcode.RedisTTLGetKeyError
 	}
 	return ttl, nil
 }

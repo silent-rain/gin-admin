@@ -43,8 +43,8 @@ func CheckLogin() gin.HandlerFunc {
 		// Token 解析
 		claim, err := jwt.ParseToken(token)
 		if err != nil {
-			log.New(ctx).WithCodeError(err).Errorf("")
-			response.New(ctx).WithCodeError(err).Json()
+			log.New(ctx).WithError(err).Errorf("")
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
@@ -53,8 +53,8 @@ func CheckLogin() gin.HandlerFunc {
 
 		// 检查单点登录
 		if err := checkSingleLogin(claim.UserId, token); err != nil {
-			log.New(ctx).WithCodeError(err).Errorf("")
-			response.New(ctx).WithCodeError(err).Json()
+			log.New(ctx).WithError(err).Errorf("")
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
@@ -73,10 +73,10 @@ func checkSingleLogin(userId uint, token string) error {
 		return err
 	}
 	if tk == "" {
-		return errcode.New(errcode.TokenDisableCurrentLoginError)
+		return errcode.TokenDisableCurrentLoginError
 	}
 	if tk != token {
-		return errcode.New(errcode.TokenUnconformityError)
+		return errcode.TokenUnconformityError
 	}
 	return nil
 }

@@ -36,7 +36,7 @@ func (s *httpLogService) List(ctx *gin.Context, req logDTO.QueryHttpLogReq) ([]l
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return results, total, nil
@@ -50,11 +50,11 @@ func (h *httpLogService) GetBody(ctx *gin.Context, id uint) (systemVO.QueryHttpL
 	resp, ok, err := h.dao.GetBody(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return result, errcode.New(errcode.DBQueryError)
+		return result, errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("%v", err)
-		return result, errcode.New(errcode.DBQueryEmptyError)
+		return result, errcode.DBQueryEmptyError
 	}
 
 	result.Body = resp.Body

@@ -29,7 +29,7 @@ func NewRoleMenuRelController() *roleMenuRelController {
 func (c *roleMenuRelController) List(ctx *gin.Context) {
 	req := permissionDTO.QueryRoleMenuRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	if req.RoleId == 0 && req.MenuId == 0 {
@@ -40,7 +40,7 @@ func (c *roleMenuRelController) List(ctx *gin.Context) {
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -50,12 +50,12 @@ func (c *roleMenuRelController) List(ctx *gin.Context) {
 func (c *roleMenuRelController) Update(ctx *gin.Context) {
 	req := permissionDTO.UpdateRoleMenuRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if err := c.service.Update(ctx, req.RoleId, req.MenuIds); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

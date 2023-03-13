@@ -46,13 +46,13 @@ func ParseToken(tokenString string) (*Token, error) {
 	})
 	claims, ok := token.Claims.(*Token)
 	if !ok {
-		return nil, errcode.New(errcode.TokenInvalidError)
+		return nil, errcode.TokenInvalidError
 	} else if !claims.VerifyIssuer(cfgJWT.Issuer, true) {
-		return nil, errcode.New(errcode.TokenInvalidError)
+		return nil, errcode.TokenInvalidError
 	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
-		return nil, errcode.New(errcode.TokenExpiredError)
+		return nil, errcode.TokenExpiredError
 	} else if !token.Valid {
-		return nil, errcode.New(errcode.TokenInvalidError)
+		return nil, errcode.TokenInvalidError
 	}
 	return claims, nil
 }

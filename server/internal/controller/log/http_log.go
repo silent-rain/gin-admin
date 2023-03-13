@@ -27,13 +27,13 @@ func NewHttpLogController() *httpLogController {
 func (c *httpLogController) List(ctx *gin.Context) {
 	req := logDTO.QueryHttpLogReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -44,13 +44,13 @@ func (c *httpLogController) List(ctx *gin.Context) {
 func (c *httpLogController) GetBody(ctx *gin.Context) {
 	req := logDTO.QueryHttpLogBodyReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	result, err := c.service.GetBody(ctx, req.Id)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()

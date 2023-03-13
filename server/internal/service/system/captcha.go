@@ -36,7 +36,7 @@ func (h *captchaService) Captcha(ctx *gin.Context) (systemVO.Captcha, error) {
 	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(constant.CaptchaType)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.CaptchaGenerateError).Errorf("%v", err)
-		return result, errcode.New(errcode.CaptchaGenerateError)
+		return result, errcode.CaptchaGenerateError
 	}
 
 	result.CaptchaId = captchaId
@@ -52,7 +52,7 @@ func (h *captchaService) CaptchaVerify(ctx *gin.Context, captchaId string, verif
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
 	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
 		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
-		return errcode.New(errcode.CaptchaVerifyError)
+		return errcode.CaptchaVerifyError
 	}
 	return nil
 }
@@ -61,17 +61,17 @@ func (h *captchaService) CaptchaVerify(ctx *gin.Context, captchaId string, verif
 func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) error {
 	if captcha == "" {
 		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
-		return errcode.New(errcode.SessionGetCaptchaEmptyError)
+		return errcode.SessionGetCaptchaEmptyError
 	}
 	if captchaId == "" {
 		log.New(ctx).WithCode(errcode.CaptchaNotFoundError).Error("")
-		return errcode.New(errcode.CaptchaNotFoundError)
+		return errcode.CaptchaNotFoundError
 	}
 
 	// 校验验证码
 	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
 		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
-		return errcode.New(errcode.CaptchaVerifyError)
+		return errcode.CaptchaVerifyError
 	}
 	return nil
 }

@@ -38,7 +38,7 @@ func (s *dictDataService) List(ctx *gin.Context, req dictCenterDTO.QueryDictData
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return results, total, nil
@@ -49,17 +49,17 @@ func (h *dictDataService) Add(ctx *gin.Context, bean dictCenterModel.DictData) (
 	_, ok, err := h.dao.InfoByValue(bean.DictId, bean.Value)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("典数据已存在")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("典数据已存在")
+		return 0, errcode.DBDataExistError.WithMsg("典数据已存在")
 	}
 
 	id, err := h.dao.Add(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -69,7 +69,7 @@ func (h *dictDataService) Update(ctx *gin.Context, bean dictCenterModel.DictData
 	row, err := h.dao.Update(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -79,7 +79,7 @@ func (h *dictDataService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -89,7 +89,7 @@ func (h *dictDataService) BatchDelete(ctx *gin.Context, ids []uint) (int64, erro
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -99,7 +99,7 @@ func (h *dictDataService) Status(ctx *gin.Context, id uint, status uint) (int64,
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }

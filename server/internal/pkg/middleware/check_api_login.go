@@ -60,25 +60,25 @@ func CheckApiLogin() gin.HandlerFunc {
 		ct := chechkApiToken{}
 		// 令牌口令信息验证
 		if err := ct.checkApiToken(ctx, token, passphrase); err != nil {
-			response.New(ctx).WithCodeError(err).Json()
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
 		// 设置用户信息到上下文
 		if err := ct.setUserInfo(ctx, token); err != nil {
-			response.New(ctx).WithCodeError(err).Json()
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
 		// 访问权限验证
 		if err := ct.checkApiUri(ctx, token); err != nil {
-			response.New(ctx).WithCodeError(err).Json()
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
 		// 设置 API Token 访问权限缓存
 		if err := ct.SetCache(ctx, token); err != nil {
-			response.New(ctx).WithCodeError(err).Json()
+			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
@@ -98,19 +98,19 @@ func (c chechkApiToken) checkApiToken(ctx *gin.Context, token, passphrase string
 	tokenObj, ok, err := permissionDAO.NewUserApiTokenDao().Info(token)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")
-		return errcode.New(errcode.DBQueryError)
+		return errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("API 令牌不存在")
-		return errcode.New(errcode.DBQueryEmptyError).WithMsg("API 令牌不存在")
+		return errcode.DBQueryEmptyError.WithMsg("API 令牌不存在")
 	}
 	if tokenObj.Passphrase != passphrase {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenPassphraseError).Errorf("")
-		return errcode.New(errcode.ApiHttpTokenPassphraseError)
+		return errcode.ApiHttpTokenPassphraseError
 	}
 	if !strings.Contains(tokenObj.Permission, ctx.Request.Method) {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenMethodPermissionError).Errorf("")
-		return errcode.New(errcode.ApiHttpTokenMethodPermissionError)
+		return errcode.ApiHttpTokenMethodPermissionError
 	}
 	return nil
 }
@@ -120,11 +120,11 @@ func (c chechkApiToken) setUserInfo(ctx *gin.Context, token string) error {
 	user, ok, err := permissionDAO.NewUserDao().InfoByApiToken(token)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")
-		return errcode.New(errcode.DBQueryError)
+		return errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenInvalidError).Errorf("")
-		return errcode.New(errcode.ApiHttpTokenInvalidError)
+		return errcode.ApiHttpTokenInvalidError
 	}
 	core.GetContext(ctx).UserId = user.ID
 	core.GetContext(ctx).Nickname = user.Nickname
@@ -136,15 +136,15 @@ func (c chechkApiToken) checkApiUri(ctx *gin.Context, token string) error {
 	apiInfo, ok, err := apiAuthDAO.NewApiHttpDao().GetUriListByToken(token, ctx.Request.RequestURI)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")
-		return errcode.New(errcode.DBQueryError)
+		return errcode.DBQueryError
 	}
 	if !ok {
 		log.New(ctx).WithCode(errcode.DBQueryEmptyError).Errorf("没有该资源访问权限")
-		return errcode.New(errcode.DBQueryEmptyError).WithMsg("没有该资源访问权限")
+		return errcode.DBQueryEmptyError.WithMsg("没有该资源访问权限")
 	}
 	if apiInfo.Method != ctx.Request.Method {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenMethodPermissionError).Errorf("")
-		return errcode.New(errcode.ApiHttpTokenMethodPermissionError)
+		return errcode.ApiHttpTokenMethodPermissionError
 	}
 	return nil
 }

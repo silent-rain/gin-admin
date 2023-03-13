@@ -14,7 +14,7 @@ import (
 func ParsingReqParams(ctx *gin.Context, req interface{}) error {
 	if err := ctx.ShouldBind(req); err != nil {
 		log.New(ctx).WithCode(errcode.ReqParameterParsingError).Errorf("%v", err)
-		return errcode.New(errcode.ReqParameterParsingError)
+		return errcode.ReqParameterParsingError
 	}
 	return nil
 }
@@ -24,11 +24,11 @@ func ApiJsonConvertJson(ctx *gin.Context, src interface{}, dst interface{}) erro
 	bytes, err := json.Marshal(src)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.JsonDataEncodeError).Errorf("%v", err)
-		return errcode.New(errcode.JsonDataEncodeError)
+		return errcode.JsonDataEncodeError
 	}
 	if err := json.Unmarshal(bytes, dst); err != nil {
 		log.New(ctx).WithCode(errcode.JsonDataDecodeError).Errorf("%v", err)
-		return errcode.New(errcode.JsonDataDecodeError)
+		return errcode.JsonDataDecodeError
 	}
 	return nil
 }

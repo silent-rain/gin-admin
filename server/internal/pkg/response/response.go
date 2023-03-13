@@ -24,10 +24,16 @@ type ResponseAPI struct {
 func New(ctx *gin.Context) *ResponseAPI {
 	return &ResponseAPI{
 		Code:       errcode.Ok,
-		Msg:        errcode.Ok.Msg(),
+		Msg:        errcode.Ok.Error(),
 		ctx:        ctx,
 		httpStatus: http.StatusOK,
 	}
+}
+
+// WithHttpStatus 添加请求状态码
+func (r *ResponseAPI) WithHttpStatus(code int) *ResponseAPI {
+	r.httpStatus = code
+	return r
 }
 
 // WithMsg 添加返回信息
@@ -39,24 +45,29 @@ func (r *ResponseAPI) WithMsg(msg string) *ResponseAPI {
 // WithCode 添加响应状态码及状态码对应的信息
 func (r *ResponseAPI) WithCode(code errcode.ErrorCode) *ResponseAPI {
 	r.Code = code
-	r.Msg = code.Msg()
-	return r
-}
-
-// WithHttpStatus 添加请求状态码
-func (r *ResponseAPI) WithHttpStatus(code int) *ResponseAPI {
-	r.httpStatus = code
+	r.Msg = code.Error()
 	return r
 }
 
 // WithCodeError 添加响应状态码及状态码对应的信息
-func (r *ResponseAPI) WithCodeError(err error) *ResponseAPI {
-	code, ok := err.(*errcode.Error)
-	if !ok {
-		return r.WithCode(errcode.UnknownError)
+func (r *ResponseAPI) WithError(err error) *ResponseAPI {
+	// 业务错误码 error code
+	if code, ok := err.(errcode.ErrorCode); ok {
+		r.Code = code
+		r.Msg = code.Error()
+		return r
 	}
-	r.Code = code.Code
-	r.Msg = code.Msg
+
+	// 业务错误码附加信息 erro code
+	if msg, ok := err.(*errcode.ErrorMsg); ok {
+		r.Code = msg.Code
+		r.Msg = msg.Err.Error()
+		return r
+	}
+
+	// 原始错误
+	r.Code = errcode.UnknownError
+	r.Msg = err.Error()
 	return r
 }
 

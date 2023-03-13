@@ -32,7 +32,7 @@ func NewUserController() *userController {
 func (c *userController) All(ctx *gin.Context) {
 	results, total, err := c.service.All(ctx)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -42,13 +42,13 @@ func (c *userController) All(ctx *gin.Context) {
 func (c *userController) List(ctx *gin.Context) {
 	req := permissionDTO.QueryUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -58,12 +58,12 @@ func (c *userController) List(ctx *gin.Context) {
 func (c *userController) Add(ctx *gin.Context) {
 	req := permissionDTO.AddUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if err := c.service.Add(ctx, req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -73,20 +73,20 @@ func (c *userController) Add(ctx *gin.Context) {
 func (c *userController) Update(ctx *gin.Context) {
 	req := permissionDTO.UpdateUserReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	// 数据转换
 	user := permissionModel.User{}
 	if err := http.ApiJsonConvertJson(ctx, req, &user); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	roleIds := req.RoleIds
 
 	if err := c.service.Update(ctx, user, roleIds); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -96,12 +96,12 @@ func (c *userController) Update(ctx *gin.Context) {
 func (c *userController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.Delete(ctx, req.ID); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -111,12 +111,12 @@ func (c *userController) Delete(ctx *gin.Context) {
 func (c *userController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.BatchDelete(ctx, req.Ids); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -126,12 +126,12 @@ func (c *userController) BatchDelete(ctx *gin.Context) {
 func (c *userController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.Status(ctx, req.ID, req.Status); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -141,7 +141,7 @@ func (c *userController) Status(ctx *gin.Context) {
 func (c *userController) UpdatePassword(ctx *gin.Context) {
 	req := permissionDTO.UpdateUserPasswordReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
@@ -150,7 +150,7 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 	req.NewPassword = utils.EncryptMd5(req.NewPassword)
 
 	if _, err := c.service.UpdatePassword(ctx, req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -160,7 +160,7 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 func (c *userController) ResetPassword(ctx *gin.Context) {
 	req := permissionDTO.ResetUserPasswordReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
@@ -168,7 +168,7 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 	password := utils.EncryptMd5(constant.ServerUserDefaultPwd)
 
 	if _, err := c.service.ResetPassword(ctx, req.ID, password); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -178,12 +178,12 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 func (c *userController) UpdatePhone(ctx *gin.Context) {
 	req := permissionDTO.UpdateUserPhoneReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.UpdatePhone(ctx, req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -193,12 +193,12 @@ func (c *userController) UpdatePhone(ctx *gin.Context) {
 func (c *userController) UpdateEmail(ctx *gin.Context) {
 	req := permissionDTO.UpdateUserEmailReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if _, err := c.service.UpdateEmail(ctx, req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -210,7 +210,7 @@ func (c *userController) Info(ctx *gin.Context) {
 
 	result, err := c.service.Info(ctx, userId)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithData(result).Json()

@@ -28,7 +28,7 @@ func NewApiRoleHttpRelController() *apiRoleHttpRelController {
 func (c *apiRoleHttpRelController) List(ctx *gin.Context) {
 	req := apiAuthDTO.QueryApiRoleHttpRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	if req.RoleId == 0 && req.ApiId == 0 {
@@ -39,7 +39,7 @@ func (c *apiRoleHttpRelController) List(ctx *gin.Context) {
 
 	results, total, err := c.service.List(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -49,12 +49,12 @@ func (c *apiRoleHttpRelController) List(ctx *gin.Context) {
 func (c *apiRoleHttpRelController) Update(ctx *gin.Context) {
 	req := apiAuthDTO.UpdateApiRoleHttpRelReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	if err := c.service.Update(ctx, req.RoleId, req.ApiIds); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

@@ -35,7 +35,7 @@ func (s *webLogService) List(ctx *gin.Context, req logDTO.QueryWebLogReq) ([]log
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return results, total, nil
@@ -46,7 +46,7 @@ func (h *webLogService) Add(ctx *gin.Context, bean logModel.WebLog) (uint, error
 	id, err := h.dao.Add(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }

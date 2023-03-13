@@ -28,7 +28,7 @@ func NewApiHttpController() *apiAuthController {
 func (c *apiAuthController) AllTree(ctx *gin.Context) {
 	results, total, err := c.service.AllTree(ctx)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -38,13 +38,13 @@ func (c *apiAuthController) AllTree(ctx *gin.Context) {
 func (c *apiAuthController) Tree(ctx *gin.Context) {
 	req := apiAuthDTO.QueryApiHttpReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	results, total, err := c.service.Tree(ctx, req)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).WithDataList(results, total).Json()
@@ -54,18 +54,18 @@ func (c *apiAuthController) Tree(ctx *gin.Context) {
 func (c *apiAuthController) Add(ctx *gin.Context) {
 	req := apiAuthDTO.AddApiHttpReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := apiAuthModel.ApiHttp{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -75,18 +75,18 @@ func (c *apiAuthController) Add(ctx *gin.Context) {
 func (c *apiAuthController) Update(ctx *gin.Context) {
 	req := apiAuthDTO.UpdateApiHttpReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	bean := apiAuthModel.ApiHttp{}
 	if err := http.ApiJsonConvertJson(ctx, req, &bean); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Update(ctx, bean)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -96,13 +96,13 @@ func (c *apiAuthController) Update(ctx *gin.Context) {
 func (c *apiAuthController) Delete(ctx *gin.Context) {
 	req := dto.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Delete(ctx, req.ID)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -112,13 +112,13 @@ func (c *apiAuthController) Delete(ctx *gin.Context) {
 func (c *apiAuthController) BatchDelete(ctx *gin.Context) {
 	req := dto.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.BatchDelete(ctx, req.Ids)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()
@@ -128,13 +128,13 @@ func (c *apiAuthController) BatchDelete(ctx *gin.Context) {
 func (c *apiAuthController) Status(ctx *gin.Context) {
 	req := dto.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 
 	_, err := c.service.Status(ctx, req.ID, req.Status)
 	if err != nil {
-		response.New(ctx).WithCodeError(err).Json()
+		response.New(ctx).WithError(err).Json()
 		return
 	}
 	response.New(ctx).Json()

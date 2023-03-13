@@ -40,7 +40,7 @@ func (s *menuService) AllTree(ctx *gin.Context) ([]systemModel.Menu, int64, erro
 	menus, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	// 菜单列表数据转为树结构
@@ -53,12 +53,12 @@ func (s *menuService) Tree(ctx *gin.Context, req permissionDTO.QueryMenuReq) ([]
 	menuList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 	menuAll, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 	}
 
 	// 菜单列表数据转为树结构
@@ -81,7 +81,7 @@ func (s *menuService) Add(ctx *gin.Context, menu systemModel.Menu) (uint, error)
 	id, err := s.dao.Add(menu)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -91,7 +91,7 @@ func (s *menuService) Update(ctx *gin.Context, menu systemModel.Menu) (int64, er
 	row, err := s.dao.Update(menu)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -101,17 +101,17 @@ func (s *menuService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	childrenMenu, err := s.dao.ChildrenMenu(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if len(childrenMenu) > 0 {
 		log.New(ctx).WithCode(errcode.DBDataExistChildrenError).Errorf("删除失败, 存在子菜单, %v", err)
-		return 0, errcode.New(errcode.DBDataExistChildrenError).WithMsg("删除失败, 存在子菜单")
+		return 0, errcode.DBDataExistChildrenError.WithMsg("删除失败, 存在子菜单")
 	}
 
 	row, err := s.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -121,7 +121,7 @@ func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -131,7 +131,7 @@ func (s *menuService) Status(ctx *gin.Context, id uint, status uint) (int64, err
 	row, err := s.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }
@@ -162,7 +162,7 @@ func (s *menuService) ChildrenMenu(ctx *gin.Context, parentId uint) ([]systemMod
 	results, err := s.dao.ChildrenMenu(parentId)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, errcode.New(errcode.DBQueryError)
+		return nil, errcode.DBQueryError
 	}
 	return results, nil
 }

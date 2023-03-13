@@ -16,7 +16,6 @@ import (
 	"gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 var (
@@ -50,7 +49,7 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, avatarDirName)
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
-		return result, errcode.New(errcode.DirCreateError).
+		return result, errcode.DirCreateError.
 			WithMsg(fmt.Sprintf("err: %v", err))
 	}
 
@@ -62,14 +61,14 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (sy
 	// 文件夹不存在则创建
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
-		return result, errcode.New(errcode.DirCreateError).
+		return result, errcode.DirCreateError.
 			WithMsg(fmt.Sprintf("err: %v", err))
 	}
 
 	// 保存文件
 	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
-		return result, errcode.New(errcode.UploadFileSaveError)
+		return result, errcode.UploadFileSaveError
 	}
 
 	result.Name = file.Filename
@@ -86,7 +85,7 @@ func (h *uploadService) Image(ctx *gin.Context, file *multipart.FileHeader) (sys
 	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, imagesDirName, timePath)
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
-		return result, errcode.New(errcode.DirCreateError).
+		return result, errcode.DirCreateError.
 			WithMsg(fmt.Sprintf("err: %v", err))
 	}
 
@@ -98,10 +97,9 @@ func (h *uploadService) Image(ctx *gin.Context, file *multipart.FileHeader) (sys
 	// 保存文件
 	if err := ctx.SaveUploadedFile(file, dst); err != nil {
 		log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
-		return result, errcode.New(errcode.UploadFileSaveError)
+		return result, errcode.UploadFileSaveError
 	}
 
-	zap.S().Errorf("============= %#v", dst)
 	result.Name = file.Filename
 	result.Url = "/" + dst
 	return result, nil
@@ -116,7 +114,7 @@ func (h *uploadService) Images(ctx *gin.Context, files []*multipart.FileHeader) 
 	// 文件夹是否存在, 不存在则创建
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
-		return nil, errcode.New(errcode.DirCreateError).
+		return nil, errcode.DirCreateError.
 			WithMsg(fmt.Sprintf("err: %v", err))
 	}
 
@@ -129,7 +127,7 @@ func (h *uploadService) Images(ctx *gin.Context, files []*multipart.FileHeader) 
 		// 保存文件
 		if err := ctx.SaveUploadedFile(file, dst); err != nil {
 			log.New(ctx).WithCode(errcode.UploadFileSaveError).Errorf("%v", err)
-			return nil, errcode.New(errcode.UploadFileSaveError)
+			return nil, errcode.UploadFileSaveError
 		}
 
 		results = append(results, systemVO.Image{

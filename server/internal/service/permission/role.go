@@ -40,7 +40,7 @@ func (s *roleService) All(ctx *gin.Context) ([]permissionModel.Role, int64, erro
 	roles, total, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return roles, total, nil
@@ -51,7 +51,7 @@ func (s *roleService) List(ctx *gin.Context, req permissionDTO.QueryRoleReq) ([]
 	roles, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return nil, 0, errcode.New(errcode.DBQueryError)
+		return nil, 0, errcode.DBQueryError
 
 	}
 	return roles, total, nil
@@ -62,17 +62,17 @@ func (h *roleService) Add(ctx *gin.Context, role permissionModel.Role) (uint, er
 	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBQueryError)
+		return 0, errcode.DBQueryError
 	}
 	if ok {
 		log.New(ctx).WithCode(errcode.DBDataExistError).Errorf("角色已存在")
-		return 0, errcode.New(errcode.DBDataExistError).WithMsg("角色已存在")
+		return 0, errcode.DBDataExistError.WithMsg("角色已存在")
 	}
 
 	id, err := h.dao.Add(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBAddError)
+		return 0, errcode.DBAddError
 	}
 	return id, nil
 }
@@ -82,7 +82,7 @@ func (h *roleService) Update(ctx *gin.Context, role permissionModel.Role) (int64
 	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateError)
+		return 0, errcode.DBUpdateError
 	}
 	return row, nil
 }
@@ -92,7 +92,7 @@ func (h *roleService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBDeleteError)
+		return 0, errcode.DBDeleteError
 	}
 	return row, nil
 }
@@ -102,7 +102,7 @@ func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBBatchDeleteError)
+		return 0, errcode.DBBatchDeleteError
 	}
 	return row, nil
 }
@@ -112,7 +112,7 @@ func (h *roleService) Status(ctx *gin.Context, id uint, status uint) (int64, err
 	row, err := h.dao.Status(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
-		return 0, errcode.New(errcode.DBUpdateStatusError)
+		return 0, errcode.DBUpdateStatusError
 	}
 	return row, nil
 }
