@@ -15,7 +15,8 @@ var Assets embed.FS
 //go:embed dist
 var WebAssets embed.FS
 
-//go:embed dist/static dist/static/js/_*.js
+// 正则:go:embed dist/static dist/static/js/_*.js
+//go:embed dist/static
 var WebStaticAssets embed.FS
 
 //go:embed docs
