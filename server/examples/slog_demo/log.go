@@ -13,11 +13,11 @@ import (
 
 // 初始化日志输出配置
 func Init() {
-	opts := slog.HandlerOptions{
+	opts := &slog.HandlerOptions{
 		AddSource: true,
 		Level:     slog.LevelDebug,
 	}
-	slog.SetDefault(slog.New(opts.NewTextHandler(os.Stderr)))
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, opts)))
 	slog.SetDefault(slog.New(NewDbHandler()))
 }
 
@@ -63,8 +63,11 @@ func NewDbHandler() *DbHandler {
 	h := &DbHandler{
 		buf: bytes.NewBuffer(b),
 	}
-
-	h.Handler = slog.NewJSONHandler(h.buf)
+	opts := &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}
+	h.Handler = slog.NewJSONHandler(h.buf, opts)
 	return h
 }
 
