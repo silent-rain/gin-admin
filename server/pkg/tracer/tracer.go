@@ -1,4 +1,4 @@
-/*日志链路跟踪*/
+// Package tracer 日志链路跟踪
 package tracer
 
 import (

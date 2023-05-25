@@ -1,4 +1,4 @@
-/*用户API接口Token令牌表*/
+// Package model 用户API接口Token令牌表
 package model
 
 // UserApiToken 用户API接口Token令牌表

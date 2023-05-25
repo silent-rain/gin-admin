@@ -1,4 +1,4 @@
-/*用户登录表*/
+// Package controller 用户登录表
 package controller
 
 import (

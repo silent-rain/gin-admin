@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package controller 字典维度管理
 package controller
 
 import (

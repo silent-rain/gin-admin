@@ -1,3 +1,4 @@
+// Package email 邮件
 package email
 
 import (

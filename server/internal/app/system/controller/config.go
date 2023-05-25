@@ -1,4 +1,4 @@
-/*应用配置表*/
+// Package controller 应用配置表
 package controller
 
 import (

@@ -1,4 +1,4 @@
-/*告警信息结构*/
+// Package model 告警信息结构
 package model
 
 import (

@@ -1,5 +1,4 @@
-/* 菜单 DAO
- */
+// Package dao 菜单
 package dao
 
 import (

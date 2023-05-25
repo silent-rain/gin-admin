@@ -1,5 +1,4 @@
-/*用户
- */
+// Package dto 用户
 package dto
 
 // UserLoginReq 登录请求

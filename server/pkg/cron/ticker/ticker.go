@@ -1,4 +1,4 @@
-/*即时器, 周期性的定时器*/
+// Package ticker 即时器, 周期性的定时器
 package ticker
 
 import (

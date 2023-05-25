@@ -1,4 +1,4 @@
-/*测试即时器*/
+// Package tickertask 测试即时器
 package tickertask
 
 import (

@@ -1,5 +1,4 @@
-/*trace 日志链路跟踪中间件
- */
+// Package middleware trace 日志链路跟踪中间件
 package middleware
 
 import (

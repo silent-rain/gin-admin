@@ -1,6 +1,4 @@
-/*系统入口
- *
- */
+// Package main 系统入口
 package main
 
 import (

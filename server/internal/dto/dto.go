@@ -1,5 +1,4 @@
-/*通用数据传输
- */
+// Package dto 通用数据传输
 package dto
 
 // DeleteReq 根据 ID，删除数据请求

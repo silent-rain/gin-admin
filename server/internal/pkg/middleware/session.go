@@ -1,5 +1,4 @@
-/*session 中间件
- */
+// Package middleware session 中间件
 package middleware
 
 import (

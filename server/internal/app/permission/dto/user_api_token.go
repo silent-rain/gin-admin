@@ -1,4 +1,4 @@
-/*用户API接口Token令牌表*/
+// Package dto 用户API接口Token令牌表
 package dto
 
 import (

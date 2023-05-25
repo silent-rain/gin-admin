@@ -1,4 +1,4 @@
-/*检查 API 访问鉴权中间件*/
+// Package middleware 检查 API 访问鉴权中间件
 package middleware
 
 import (

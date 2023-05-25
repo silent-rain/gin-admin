@@ -1,5 +1,4 @@
-/*静态资源
- */
+// Package controller 静态资源
 package controller
 
 import (

@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package controller 角色与Http协议接口关联管理
 package controller
 
 import (

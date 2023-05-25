@@ -1,5 +1,4 @@
-/*角色
- */
+// Package dto 角色
 package dto
 
 import (

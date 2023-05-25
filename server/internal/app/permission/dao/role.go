@@ -1,5 +1,4 @@
-/*角色 DAO
- */
+// Package dao 角色
 package dao
 
 import (

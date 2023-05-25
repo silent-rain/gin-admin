@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package model 角色与Http协议接口关联表
 package model
 
 // ApiRoleHttpRel 角色与Http协议接口关联表

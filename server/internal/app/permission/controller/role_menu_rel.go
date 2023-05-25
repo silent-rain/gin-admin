@@ -1,5 +1,4 @@
-/* 角色菜单
- */
+// Package controller 角色菜单
 package controller
 
 import (

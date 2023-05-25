@@ -1,4 +1,4 @@
-/*应用配置表*/
+// Package model 应用配置表
 package model
 
 // Config 应用配置

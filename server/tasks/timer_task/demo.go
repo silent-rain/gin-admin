@@ -1,4 +1,4 @@
-/*测试定时器任务*/
+// Package timertask 测试定时器任务
 package timertask
 
 import (

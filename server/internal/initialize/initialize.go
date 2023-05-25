@@ -1,4 +1,4 @@
-/*数据初始化*/
+// Package initialize 数据初始化
 package initialize
 
 // Init 初始化数据

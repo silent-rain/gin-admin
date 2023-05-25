@@ -1,4 +1,4 @@
-/*文件上传*/
+// Package service 文件上传
 package service
 
 import (

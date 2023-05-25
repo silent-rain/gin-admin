@@ -1,5 +1,4 @@
-/*角色
- */
+// Package model 角色
 package model
 
 // Role 角色表

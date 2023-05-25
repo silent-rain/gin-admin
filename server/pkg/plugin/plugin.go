@@ -1,4 +1,4 @@
-/*插件初始化*/
+// Package plugin 插件初始化
 package plugin
 
 import "github.com/gin-gonic/gin"

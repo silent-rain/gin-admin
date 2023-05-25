@@ -1,4 +1,4 @@
-/*菜单管理*/
+// Package permission 菜单管理
 package permission
 
 import (

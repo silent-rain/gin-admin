@@ -1,4 +1,4 @@
-/*HTTP 服务上下文封装*/
+// Package http HTTP 服务上下文封装
 package http
 
 import (

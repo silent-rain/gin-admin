@@ -1,5 +1,4 @@
-/*配置
- */
+// Package conf 配置
 package conf
 
 import (

@@ -1,4 +1,4 @@
-/*登录*/
+// Package dao 登录
 package dao
 
 import (

@@ -1,6 +1,7 @@
 //go:build windows
 // +build windows
 
+// Package color 颜色渲染
 package color
 
 import (

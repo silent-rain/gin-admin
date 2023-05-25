@@ -1,4 +1,4 @@
-/*常量*/
+// Package constant 常量
 package constant
 
 import "time"

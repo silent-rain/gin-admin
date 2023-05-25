@@ -1,4 +1,4 @@
-/*即时器任务*/
+// Package tickertask 即时器任务
 package tickertask
 
 import (

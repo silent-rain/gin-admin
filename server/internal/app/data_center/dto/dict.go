@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package dto 字典维度管理
 package dto
 
 import (

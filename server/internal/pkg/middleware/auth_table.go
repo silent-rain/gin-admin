@@ -1,4 +1,4 @@
-/*鉴权表*/
+// Package middleware 鉴权表
 package middleware
 
 import (

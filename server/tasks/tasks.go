@@ -1,4 +1,4 @@
-/*定时任务*/
+// Package tasks 定时任务
 package tasks
 
 import (

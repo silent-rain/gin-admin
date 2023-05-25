@@ -1,4 +1,4 @@
-/*用户API接口Token令牌表*/
+// Package service 用户API接口Token令牌表
 package service
 
 import (

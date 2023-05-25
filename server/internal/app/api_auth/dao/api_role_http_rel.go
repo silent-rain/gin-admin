@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package dao 角色与Http协议接口关联管理
 package dao
 
 import (

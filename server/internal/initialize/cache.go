@@ -1,4 +1,4 @@
-/*缓存初始化*/
+// Package initialize 缓存初始化
 package initialize
 
 import (

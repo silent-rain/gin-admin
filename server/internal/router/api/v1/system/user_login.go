@@ -1,4 +1,4 @@
-/*用户登录信息表*/
+// Package system 用户登录信息表
 package system
 
 import (

@@ -1,5 +1,4 @@
-/*角色
- */
+// Package controller 角色
 package controller
 
 import (

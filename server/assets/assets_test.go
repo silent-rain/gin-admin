@@ -1,4 +1,4 @@
-/*内嵌外部资源测试
+/*Package assets 内嵌外部资源测试
  * go test -v
  * go test -v assets_test.go assets.go
  */

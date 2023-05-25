@@ -1,4 +1,4 @@
-/*内存缓存*/
+// Package cache 内存缓存
 package cache
 
 import (

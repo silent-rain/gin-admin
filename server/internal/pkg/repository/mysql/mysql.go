@@ -1,4 +1,4 @@
-/*Mysql 数据库*/
+// Package mysql Mysql 数据库
 package mysql
 
 import (

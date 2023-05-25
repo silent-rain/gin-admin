@@ -1,4 +1,4 @@
-/*指标记录*/
+// Package metrics 指标记录
 package metrics
 
 import (

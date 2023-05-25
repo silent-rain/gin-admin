@@ -1,4 +1,4 @@
-/*字典数据管理*/
+// Package service 字典数据管理
 package service
 
 import (

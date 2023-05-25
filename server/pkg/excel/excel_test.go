@@ -1,4 +1,4 @@
-/*excel 读取*/
+// Package excel excel 读写
 package excel
 
 import (

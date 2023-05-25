@@ -1,4 +1,4 @@
-/*用户管理*/
+// Package permission 用户管理
 package permission
 
 import (

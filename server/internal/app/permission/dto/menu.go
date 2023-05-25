@@ -1,5 +1,4 @@
-/* 菜单
- */
+// Package dto 菜单
 package dto
 
 import (

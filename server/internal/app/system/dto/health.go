@@ -1,4 +1,4 @@
-/*服务健康检查*/
+// Package dto 服务健康检查
 package dto
 
 // Health 健康检查

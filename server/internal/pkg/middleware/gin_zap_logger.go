@@ -1,5 +1,4 @@
-/*gin 框架集成 zap 日志库
- */
+// Package middleware gin 框架集成 zap 日志库
 package middleware
 
 import (

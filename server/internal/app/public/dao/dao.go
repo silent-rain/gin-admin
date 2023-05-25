@@ -1,5 +1,4 @@
-/*DAO 数据库操作
- */
+// Package dao 数据库操作
 package dao
 
 import (

@@ -1,5 +1,4 @@
-/* 角色菜单
- */
+// Package service 角色菜单
 package service
 
 import (

@@ -1,4 +1,4 @@
-/*Http协议接口管理表*/
+// Package apiauth Http协议接口管理表
 package apiauth
 
 import (

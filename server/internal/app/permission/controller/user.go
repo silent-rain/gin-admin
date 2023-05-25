@@ -1,5 +1,4 @@
-/*用户管理
- */
+// Package controller 用户管理
 package controller
 
 import (

@@ -1,5 +1,4 @@
-/*跨域
- */
+// Package middleware 跨域
 package middleware
 
 import (

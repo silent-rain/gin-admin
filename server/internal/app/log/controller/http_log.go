@@ -1,5 +1,4 @@
-/*网络请求日志
- */
+ // Package controller 网络请求日志
 package controller
 
 import (

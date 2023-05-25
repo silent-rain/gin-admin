@@ -1,4 +1,4 @@
-/*时间工具*/
+// Package time 时间工具
 package time
 
 import (

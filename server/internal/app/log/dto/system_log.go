@@ -1,5 +1,4 @@
-/*系统日志 DTO
- */
+// Package dto 系统日志
 package dto
 
 import (

@@ -1,4 +1,4 @@
-/*关闭资源*/
+// Package shutdown 关闭资源
 package shutdown
 
 import (

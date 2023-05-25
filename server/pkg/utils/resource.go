@@ -1,7 +1,5 @@
-/*
-静态内嵌资源处理
-主要用于路由访问路径重置
-*/
+// Package utils 静态内嵌资源处理
+// 主要用于路由访问路径重置
 package utils
 
 import (

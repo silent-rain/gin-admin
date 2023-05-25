@@ -1,4 +1,4 @@
-/*字典数据管理*/
+// Package model 字典数据管理
 package model
 
 // DictData 字典数据表

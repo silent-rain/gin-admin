@@ -1,4 +1,4 @@
-/*字典数据管理*/
+// Package datacenter 字典数据管理
 package datacenter
 
 import (

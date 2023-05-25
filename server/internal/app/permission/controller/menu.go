@@ -1,4 +1,4 @@
-/*菜单*/
+ // Package controller 菜单
 package controller
 
 import (

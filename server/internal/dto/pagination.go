@@ -1,5 +1,4 @@
-/*分页, 标页码
- */
+// Package dto 分页, 标页码
 package dto
 
 // Pagination 分页查询条件
@@ -8,18 +7,23 @@ type Pagination struct {
 	PageSize int `json:"page_size" form:"page_size"` // 每页数, 默认100
 }
 
-// 获取页数
-func (p *Pagination) getPage() int {
+// GetPage 获取页数
+func (p *Pagination) GetPage() int {
 	if p.Page == 0 {
 		p.Page = 1
 	}
 	return p.Page - 1
 }
 
-// Offset 偏移行数
-func (p *Pagination) Offset() int {
+// GetPageSize 获取页面数据大小
+func (p *Pagination) GetPageSize() int {
 	if p.PageSize == 0 {
 		p.PageSize = 100
 	}
-	return p.getPage() * p.PageSize
+	return p.PageSize
+}
+
+// Offset 偏移行数
+func (p *Pagination) Offset() int {
+	return p.GetPage() * p.GetPageSize()
 }

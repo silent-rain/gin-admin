@@ -1,5 +1,4 @@
-/*系统日志
- */
+// Package controller 系统日志
 package controller
 
 import (

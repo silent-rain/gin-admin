@@ -1,5 +1,4 @@
-/*WEB 日志
- */
+ // Package controller WEB 日志
 package controller
 
 import (

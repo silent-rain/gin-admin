@@ -1,5 +1,4 @@
-/*用户管理
- */
+// Package service 用户管理
 package service
 
 import (

@@ -1,5 +1,4 @@
-/*系统日志
- */
+// Package service 系统日志
 package service
 
 import (

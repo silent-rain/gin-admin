@@ -1,4 +1,4 @@
-/*扩展 gin context*/
+// Package core 扩展 gin context
 package core
 
 import (

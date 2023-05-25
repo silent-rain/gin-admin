@@ -1,4 +1,4 @@
-/**文件上传*/
+// Package controller 文件上传
 package controller
 
 import (

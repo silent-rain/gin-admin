@@ -1,4 +1,4 @@
-/*验证码*/
+// Package service 验证码
 package service
 
 import (

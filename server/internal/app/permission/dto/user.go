@@ -1,5 +1,4 @@
-/*用户
- */
+// Package dto 用户管理
 package dto
 
 import (

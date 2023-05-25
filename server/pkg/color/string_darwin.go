@@ -1,6 +1,7 @@
 //go:build darwin
 // +build darwin
 
+// Package color 颜色渲染
 package color
 
 import (

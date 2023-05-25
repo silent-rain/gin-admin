@@ -1,4 +1,4 @@
-/*接口测试*/
+// Package controller 接口测试
 package controller
 
 import (

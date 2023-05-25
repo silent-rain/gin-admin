@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package apiauth 角色与Http协议接口关联表
 package apiauth
 
 import (

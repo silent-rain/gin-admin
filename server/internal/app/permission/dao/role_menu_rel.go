@@ -1,5 +1,4 @@
-/* 角色菜单 DAO
- */
+// Package dao 角色菜单
 package dao
 
 import (

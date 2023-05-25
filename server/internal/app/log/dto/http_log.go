@@ -1,5 +1,4 @@
-/*网络请求日志 DTO
- */
+// Package dto 网络请求日志
 package dto
 
 import (

@@ -1,4 +1,4 @@
-/*上传管理*/
+// Package system 上传管理
 package system
 
 import (

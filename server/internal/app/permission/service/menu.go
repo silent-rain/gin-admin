@@ -1,4 +1,4 @@
-/*菜单*/
+// Package service 菜单
 package service
 
 import (

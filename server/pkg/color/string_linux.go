@@ -1,6 +1,7 @@
 //go:build linux
 // +build linux
 
+// Package color 颜色渲染
 package color
 
 import (

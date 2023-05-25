@@ -1,4 +1,4 @@
-/*用户登录表*/
+// Package model 用户登录表
 package model
 
 // UserLogin 用户登录表-用于登录

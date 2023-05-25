@@ -1,4 +1,4 @@
-/*Redis 数据库*/
+// Package redis Redis 数据库
 package redis
 
 import (

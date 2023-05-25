@@ -1,4 +1,4 @@
-/*验证码*/
+// Package controller 验证码
 package controller
 
 import (

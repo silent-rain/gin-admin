@@ -1,5 +1,4 @@
-/*API 返回结构
- */
+// Package response 返回结构
 package response
 
 import (

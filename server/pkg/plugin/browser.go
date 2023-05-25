@@ -1,4 +1,4 @@
-/*浏览器*/
+// Package plugin 浏览器
 package plugin
 
 import (

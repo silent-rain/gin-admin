@@ -1,4 +1,4 @@
-/*服务启动*/
+// Package plugin 服务启动
 package plugin
 
 import (

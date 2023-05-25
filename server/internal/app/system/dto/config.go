@@ -1,4 +1,4 @@
-/*应用配置表*/
+// Package dto 应用配置表
 package dto
 
 import DTO "github.com/silent-rain/gin-admin/internal/dto"

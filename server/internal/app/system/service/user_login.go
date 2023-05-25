@@ -1,4 +1,4 @@
-/*用户登录信息表*/
+// Package service 用户登录信息表
 package service
 
 import (

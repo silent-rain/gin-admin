@@ -1,5 +1,4 @@
-/*登录验证中间件
- */
+// Package middleware 登录验证中间件
 package middleware
 
 import (

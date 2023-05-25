@@ -1,4 +1,4 @@
-/*用户登录信息表*/
+// Package dto 用户登录信息表
 package dto
 
 import DTO "github.com/silent-rain/gin-admin/internal/dto"

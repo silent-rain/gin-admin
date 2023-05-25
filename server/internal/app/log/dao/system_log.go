@@ -1,5 +1,4 @@
-/*系统日志 DAO
- */
+// Package dao 系统日志
 package dao
 
 import (

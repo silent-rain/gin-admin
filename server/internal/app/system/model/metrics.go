@@ -1,4 +1,4 @@
-/*指标信息*/
+// Package model 指标信息
 package model
 
 import "encoding/json"

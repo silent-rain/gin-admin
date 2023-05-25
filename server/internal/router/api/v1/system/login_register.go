@@ -1,4 +1,4 @@
-/*注册/登录/登出/验证码*/
+// Package system 注册/登录/登出/验证码
 package system
 
 import (

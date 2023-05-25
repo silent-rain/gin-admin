@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package datacenter 字典维度管理
 package datacenter
 
 import (

@@ -1,5 +1,4 @@
-/*角色
- */
+// Package service 角色
 package service
 
 import (

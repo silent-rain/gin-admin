@@ -1,5 +1,4 @@
-/*网络请求日志 DAO
- */
+// Package dao 网络请求日志
 package dao
 
 import (

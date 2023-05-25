@@ -1,4 +1,4 @@
-/*Http协议接口管理表*/
+// Package dto Http协议接口管理表
 package dto
 
 import (

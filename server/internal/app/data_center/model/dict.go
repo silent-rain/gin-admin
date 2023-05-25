@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package model 字典维度管理
 package model
 
 // Dict 字典维度表

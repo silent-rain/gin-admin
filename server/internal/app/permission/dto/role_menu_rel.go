@@ -1,5 +1,4 @@
-/*角色菜单
- */
+// Package dto 角色菜单
 package dto
 
 // QueryRoleMenuRelReq 角色菜单关系查询条件

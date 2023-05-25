@@ -1,5 +1,4 @@
-/*接口请求日志中间件，日志输出至数据库
- */
+// Package middleware 接口请求日志中间件，日志输出至数据库
 package middleware
 
 import (

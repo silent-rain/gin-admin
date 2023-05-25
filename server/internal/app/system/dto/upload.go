@@ -1,4 +1,4 @@
-/*文件上传*/
+// Package dto 文件上传
 package dto
 
 // Image 返回的图片信息

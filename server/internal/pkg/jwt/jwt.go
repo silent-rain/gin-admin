@@ -1,5 +1,4 @@
-/*鉴权令牌
- */
+// Package jwt 鉴权令牌
 package jwt
 
 import (

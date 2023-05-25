@@ -1,5 +1,4 @@
-/*系统日志
- */
+// Package model 系统日志
 package model
 
 // SystemLog 系统日志

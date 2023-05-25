@@ -1,5 +1,4 @@
-/*WEB 日志
- */
+// Package service WEB 日志
 package service
 
 import (

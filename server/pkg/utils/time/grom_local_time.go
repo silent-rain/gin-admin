@@ -1,5 +1,4 @@
-/*gorm 时间本地化
- */
+// Package time gorm 时间本地化
 package time
 
 import (

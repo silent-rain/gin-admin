@@ -1,4 +1,4 @@
-/*Http协议接口管理表*/
+// Package model Http协议接口管理表
 package model
 
 // ApiHttp Http协议接口管理表

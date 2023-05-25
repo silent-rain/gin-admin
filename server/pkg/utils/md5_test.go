@@ -1,5 +1,4 @@
-/*MD5 加密
- */
+// Package utils MD5 加密
 package utils
 
 import (

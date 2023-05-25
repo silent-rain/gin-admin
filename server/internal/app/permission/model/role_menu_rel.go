@@ -1,5 +1,4 @@
-/* 角色菜单
- */
+// Package model 角色菜单
 package model
 
 // RoleMenuRel 角色菜单关联表

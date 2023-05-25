@@ -1,4 +1,4 @@
-/*限速器*/
+// Package middleware 限速器
 package middleware
 
 import (

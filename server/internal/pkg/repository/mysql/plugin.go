@@ -1,4 +1,4 @@
-/*MySQL 数据库插件*/
+// Package mysql Mysql 数据库插件
 package mysql
 
 import (

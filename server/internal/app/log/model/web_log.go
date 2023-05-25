@@ -1,5 +1,4 @@
-/*WEB 日志
- */
+// Package model WEB 日志
 package model
 
 // WebLog WEB 日志

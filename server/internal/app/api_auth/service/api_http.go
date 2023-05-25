@@ -1,4 +1,4 @@
-/*Http协议接口管理表*/
+// Package service Http协议接口管理表
 package service
 
 import (

@@ -1,5 +1,4 @@
-/*网络请求日志模型
- */
+// Package model 网络请求日志
 package model
 
 // HttpLog 网络请求日志

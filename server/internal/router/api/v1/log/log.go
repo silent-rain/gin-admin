@@ -1,4 +1,4 @@
-/*日志*/
+// Package log 日志
 package log
 
 import (

@@ -1,5 +1,4 @@
-/*验证码
- */
+// Package dto 验证码
 package dto
 
 // Captcha 验证码

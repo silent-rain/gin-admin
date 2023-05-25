@@ -1,5 +1,4 @@
-/*WEB 日志 DTO
- */
+// Package dto WEB 日志
 package dto
 
 import (

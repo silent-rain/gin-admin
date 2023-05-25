@@ -1,4 +1,4 @@
-/*文件处理工具*/
+// Package utils 文件处理工具
 package utils
 
 import "os"

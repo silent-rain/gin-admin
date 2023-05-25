@@ -1,5 +1,4 @@
-/*网络请求日志
- */
+// Package service 网络请求日志
 package service
 
 import (

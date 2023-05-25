@@ -1,4 +1,4 @@
-/*角色菜单关系管理*/
+// Package permission 角色菜单关系管理
 package permission
 
 import (

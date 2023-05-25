@@ -1,4 +1,4 @@
-/*Http 服务异常处理中间件*/
+// Package middleware Http 服务异常处理中间件
 package middleware
 
 import (

@@ -1,4 +1,4 @@
-/*验证码*/
+// Package system 验证码
 package system
 
 import (

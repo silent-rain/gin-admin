@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package service 字典维度管理
 package service
 
 import (

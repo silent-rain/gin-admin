@@ -1,4 +1,4 @@
-/*Http协议接口管理表*/
+// Package controller Http协议接口管理
 package controller
 
 import (

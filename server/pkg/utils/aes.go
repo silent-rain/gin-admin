@@ -1,4 +1,4 @@
-/*Aes 加密*/
+// Package utils Aes 加密/解密
 package utils
 
 import (

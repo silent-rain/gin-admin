@@ -1,4 +1,4 @@
-/*路由相关插件*/
+// Package plugin 路由相关插件
 package plugin
 
 import (

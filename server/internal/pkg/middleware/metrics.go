@@ -1,4 +1,4 @@
-/*指标记录*/
+// Package middleware 指标记录
 package middleware
 
 import (

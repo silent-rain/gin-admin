@@ -1,4 +1,4 @@
-/*验证码*/
+// Package utils 验证码
 package utils
 
 import (

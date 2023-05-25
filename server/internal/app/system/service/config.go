@@ -1,4 +1,4 @@
-/*应用配置表*/
+// Package service 应用配置表
 package service
 
 import (

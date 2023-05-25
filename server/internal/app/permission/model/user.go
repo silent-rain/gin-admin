@@ -1,5 +1,4 @@
-/*用户模型
- */
+// Package model 用户管理
 package model
 
 // User 用户表

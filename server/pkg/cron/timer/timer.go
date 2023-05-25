@@ -1,4 +1,4 @@
-/*定时器*/
+// Package timer 定时器
 package timer
 
 import (

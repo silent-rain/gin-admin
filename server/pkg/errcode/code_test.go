@@ -1,5 +1,4 @@
-/*业务状态码
- */
+// Package errcode 业务状态码
 package errcode
 
 import (

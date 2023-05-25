@@ -1,5 +1,4 @@
-/*用户登录/登出/注册
- */
+// Package controller 用户登录/登出/注册
 package controller
 
 import (

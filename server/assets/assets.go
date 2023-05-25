@@ -1,4 +1,4 @@
-/*内嵌外部资源
+/*Package assets 内嵌外部资源
  */
 package assets
 

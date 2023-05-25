@@ -1,5 +1,4 @@
-/*用户 DAO
- */
+// Package dao 用户管理
 package dao
 
 import (

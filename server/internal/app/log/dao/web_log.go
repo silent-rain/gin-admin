@@ -1,5 +1,4 @@
-/*WEB 日志 DAO
- */
+// Package dao WEB 日志
 package dao
 
 import (

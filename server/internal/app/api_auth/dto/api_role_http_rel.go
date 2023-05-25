@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package dto 角色与Http协议接口关联表
 package dto
 
 // QueryApiRoleHttpRelReq 角色Http协议接口关系查询条件

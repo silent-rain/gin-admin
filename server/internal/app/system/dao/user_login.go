@@ -1,4 +1,4 @@
-/*用户登录信息表*/
+// Package dao 用户登录信息表
 package dao
 
 import (

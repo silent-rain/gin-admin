@@ -1,4 +1,4 @@
-/*字典维度管理*/
+// Package dao 字典维度管理
 package dao
 
 import (

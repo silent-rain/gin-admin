@@ -1,5 +1,4 @@
-/*用户登录/登出/注册
- */
+// Package service 用户登录/登出/注册
 package service
 
 import (

@@ -1,5 +1,4 @@
-/*菜单, 路由/按钮/操作权限
- */
+// Package model 菜单, 路由/按钮/操作权限
 package model
 
 // Menu 菜单

@@ -1,4 +1,4 @@
-/*角色与Http协议接口关联表*/
+// Package service 角色与Http协议接口关联表
 package service
 
 import (

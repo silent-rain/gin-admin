@@ -1,4 +1,4 @@
-/*配置管理*/
+// Package system 配置管理
 package system
 
 import (

@@ -1,4 +1,4 @@
-/*角色管理*/
+// Package permission 角色管理
 package permission
 
 import (

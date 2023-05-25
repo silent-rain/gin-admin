@@ -1,5 +1,4 @@
-/*静态资源路由
- */
+// Package router 静态资源路由
 package router
 
 import (
