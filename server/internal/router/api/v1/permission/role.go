@@ -2,7 +2,7 @@
 package permission
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/permission"
+	"github.com/silent-rain/gin-admin/internal/app/permission/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,18 +13,18 @@ func InitRoleRouter(group *gin.RouterGroup) {
 	role := group.Group("/role")
 	{
 		// 获取所有角色列表
-		role.GET("/all", permission.NewRoleController().All)
+		role.GET("/all", controller.NewRoleController().All)
 		// 获取角色列表
-		role.GET("/list", permission.NewRoleController().List)
+		role.GET("/list", controller.NewRoleController().List)
 		// 添加角色
-		role.POST("/add", permission.NewRoleController().Add)
+		role.POST("/add", controller.NewRoleController().Add)
 		// 更新角色
-		role.PUT("/update", permission.NewRoleController().Update)
+		role.PUT("/update", controller.NewRoleController().Update)
 		// 删除角色
-		role.DELETE("/delete", permission.NewRoleController().Delete)
+		role.DELETE("/delete", controller.NewRoleController().Delete)
 		// 批量删除角色
-		role.DELETE("/batchDelete", permission.NewRoleController().BatchDelete)
+		role.DELETE("/batchDelete", controller.NewRoleController().BatchDelete)
 		// 更新角色状态
-		role.PUT("/status", permission.NewRoleController().Status)
+		role.PUT("/status", controller.NewRoleController().Status)
 	}
 }

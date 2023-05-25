@@ -2,7 +2,7 @@
 package system
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,10 +13,10 @@ func InitLoginRegisterRouter(group *gin.RouterGroup) {
 	userLogin := group.Group("/")
 	{
 		// 注册
-		userLogin.POST("/register", system.NewUserLoginRegisterController().Register)
+		userLogin.POST("/register", controller.NewUserLoginRegisterController().Register)
 		// 登录
-		userLogin.POST("/login", system.NewUserLoginRegisterController().Login)
+		userLogin.POST("/login", controller.NewUserLoginRegisterController().Login)
 		// 登出
-		userLogin.POST("/logout", system.NewUserLoginRegisterController().Logout)
+		userLogin.POST("/logout", controller.NewUserLoginRegisterController().Logout)
 	}
 }

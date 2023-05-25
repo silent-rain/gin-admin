@@ -5,7 +5,7 @@ package middleware
 import (
 	"strings"
 
-	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	systemDAO "github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/jwt"

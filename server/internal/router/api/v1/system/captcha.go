@@ -2,7 +2,7 @@
 package system
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +12,8 @@ func InitCaptchaRouter(group *gin.RouterGroup) {
 	captcha := group.Group("/captcha")
 	{
 		// 验证码
-		captcha.GET("", system.NewCaptchaController().Captcha)
+		captcha.GET("", controller.NewCaptchaController().Captcha)
 		// 验证码验证
-		captcha.GET("/captcha/verify", system.NewCaptchaController().CaptchaVerify)
+		captcha.GET("/captcha/verify", controller.NewCaptchaController().CaptchaVerify)
 	}
 }

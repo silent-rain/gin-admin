@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"time"
 
-	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/model"
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
@@ -38,7 +38,7 @@ func Metrics() gin.HandlerFunc {
 		}
 
 		// 记录指标
-		metrics.RecordMetrics(systemModel.MetricsMessage{
+		metrics.RecordMetrics(model.MetricsMessage{
 			ProjectName: constant.ProjectName,
 			Env:         conf.Instance().Environment.Env,
 			TraceID:     core.GetContext(ctx).TraceId,

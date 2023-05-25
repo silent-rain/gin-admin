@@ -2,7 +2,7 @@
 package permission
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/permission"
+	"github.com/silent-rain/gin-admin/internal/app/permission/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,31 +13,31 @@ func InitUserRouter(group *gin.RouterGroup) {
 	user := group.Group("/user")
 	{
 		// 获取用户信息
-		user.GET("/info", permission.NewUserController().Info)
+		user.GET("/info", controller.NewUserController().Info)
 		// 获取所有用户列表
-		user.GET("/all", permission.NewUserController().All)
+		user.GET("/all", controller.NewUserController().All)
 		// 获取用户列表
-		user.GET("/list", permission.NewUserController().List)
+		user.GET("/list", controller.NewUserController().List)
 		// 添加用户
-		user.POST("/add", permission.NewUserController().Add)
+		user.POST("/add", controller.NewUserController().Add)
 		// 更新用户详情信息
-		user.PUT("/update", permission.NewUserController().Update)
+		user.PUT("/update", controller.NewUserController().Update)
 		// 删除用户
-		user.DELETE("/delete", permission.NewUserController().Delete)
+		user.DELETE("/delete", controller.NewUserController().Delete)
 		// 批量删除用户
-		user.DELETE("/batchDelete", permission.NewUserController().BatchDelete)
+		user.DELETE("/batchDelete", controller.NewUserController().BatchDelete)
 	}
 
 	{
 		// 更新用户状态
-		user.PUT("/status", permission.NewUserController().Status)
+		user.PUT("/status", controller.NewUserController().Status)
 		// 重置用户密码
-		user.PUT("/resetPwd", permission.NewUserController().ResetPassword)
+		user.PUT("/resetPwd", controller.NewUserController().ResetPassword)
 		// 更新用户密码
-		user.PUT("/updatePwd", permission.NewUserController().UpdatePassword)
+		user.PUT("/updatePwd", controller.NewUserController().UpdatePassword)
 		// 更新用户手机号码
-		user.PUT("/updatePhone", permission.NewUserController().UpdatePhone)
+		user.PUT("/updatePhone", controller.NewUserController().UpdatePhone)
 		// 更新用户邮箱
-		user.PUT("/updateEmail", permission.NewUserController().UpdateEmail)
+		user.PUT("/updateEmail", controller.NewUserController().UpdateEmail)
 	}
 }

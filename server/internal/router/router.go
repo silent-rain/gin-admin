@@ -3,7 +3,7 @@
 package router
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller"
+	"github.com/silent-rain/gin-admin/internal/app/public/controller"
 	apiauth "github.com/silent-rain/gin-admin/internal/router/api/v1/api_auth"
 	datacenter "github.com/silent-rain/gin-admin/internal/router/api/v1/data_center"
 	"github.com/silent-rain/gin-admin/internal/router/api/v1/log"

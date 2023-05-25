@@ -8,8 +8,8 @@ import (
 	"os"
 	"runtime/debug"
 
-	logDAO "github.com/silent-rain/gin-admin/internal/dao/log"
-	logModel "github.com/silent-rain/gin-admin/internal/model/log"
+	logDAO "github.com/silent-rain/gin-admin/internal/app/log/dao"
+	logModel "github.com/silent-rain/gin-admin/internal/app/log/model"
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/pkg/errcode"

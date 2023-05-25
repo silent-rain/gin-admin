@@ -2,7 +2,7 @@
 package system
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,28 +13,28 @@ func InitConfigRouter(group *gin.RouterGroup) {
 	config := group.Group("/config")
 	{
 		// 获取所有配置树
-		config.GET("/allTree", system.NewConfigController().AllTree)
+		config.GET("/allTree", controller.NewConfigController().AllTree)
 		// 获取配置树
-		config.GET("/tree", system.NewConfigController().Tree)
+		config.GET("/tree", controller.NewConfigController().Tree)
 		// 获取配置列表
-		config.GET("/list", system.NewConfigController().List)
+		config.GET("/list", controller.NewConfigController().List)
 		// 获取配置信息
-		config.GET("/info", system.NewConfigController().Info)
+		config.GET("/info", controller.NewConfigController().Info)
 		// 添加配置
-		config.POST("/add", system.NewConfigController().Add)
+		config.POST("/add", controller.NewConfigController().Add)
 		// 更新配置
-		config.PUT("/update", system.NewConfigController().Update)
+		config.PUT("/update", controller.NewConfigController().Update)
 		// 批量更新配置
-		config.PUT("/batchUpdate", system.NewConfigController().BatchUpdate)
+		config.PUT("/batchUpdate", controller.NewConfigController().BatchUpdate)
 		// 删除配置
-		config.DELETE("/delete", system.NewConfigController().Delete)
+		config.DELETE("/delete", controller.NewConfigController().Delete)
 		// 批量删除配置
-		config.DELETE("/batchDelete", system.NewConfigController().BatchDelete)
+		config.DELETE("/batchDelete", controller.NewConfigController().BatchDelete)
 		// 更新配置状态
-		config.PUT("/status", system.NewConfigController().Status)
+		config.PUT("/status", controller.NewConfigController().Status)
 		// 通过上级 key 获取子配置列表
-		config.GET("/childrenByKey", system.NewConfigController().ChildrenByKey)
+		config.GET("/childrenByKey", controller.NewConfigController().ChildrenByKey)
 		// 查询网站配置列表
-		config.GET("/webSiteConfigList", system.NewConfigController().WebSiteConfigList)
+		config.GET("/webSiteConfigList", controller.NewConfigController().WebSiteConfigList)
 	}
 }

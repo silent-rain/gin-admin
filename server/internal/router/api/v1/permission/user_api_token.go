@@ -2,7 +2,7 @@
 package permission
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/permission"
+	"github.com/silent-rain/gin-admin/internal/app/permission/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +10,7 @@ import (
 // InitUserApiTokenRouter 初始化用户API接口Token令牌管理路由
 func InitUserApiTokenRouter(group *gin.RouterGroup) {
 	userApiToken := group.Group("/userApiToken")
-	api := permission.NewUserApiTokenController()
+	api := controller.NewUserApiTokenController()
 	{
 		// 获取 Token 令牌列表
 		userApiToken.GET("/list", api.List)

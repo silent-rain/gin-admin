@@ -2,7 +2,7 @@
 package metrics
 
 import (
-	systemModel "github.com/silent-rain/gin-admin/internal/model/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/model"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
@@ -41,7 +41,7 @@ var metricsRequestsCost = prometheus.NewHistogramVec(
 )
 
 // RecordMetrics 记录指标
-func RecordMetrics(msg systemModel.MetricsMessage) {
+func RecordMetrics(msg model.MetricsMessage) {
 	metricsRequestsTotal.With(prometheus.Labels{
 		"method": msg.Method,
 		"path":   msg.Path,

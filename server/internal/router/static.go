@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/silent-rain/gin-admin/assets"
-	"github.com/silent-rain/gin-admin/internal/controller"
+	"github.com/silent-rain/gin-admin/internal/app/public/controller"
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 

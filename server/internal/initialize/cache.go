@@ -2,7 +2,7 @@
 package initialize
 
 import (
-	systemDAO "github.com/silent-rain/gin-admin/internal/dao/system"
+	systemDAO "github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 
 	"github.com/gin-gonic/gin"

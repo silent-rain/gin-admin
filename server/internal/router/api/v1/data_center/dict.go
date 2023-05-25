@@ -2,7 +2,7 @@
 package datacenter
 
 import (
-	datacenter "github.com/silent-rain/gin-admin/internal/controller/data_center"
+	"github.com/silent-rain/gin-admin/internal/app/data_center/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +10,7 @@ import (
 // InitDictRouter 初始化字典维度管理路由
 func InitDictRouter(group *gin.RouterGroup) {
 	router := group.Group("/dict")
-	controller := datacenter.NewDictController()
+	controller := controller.NewDictController()
 	{
 		// 获取字典维度信息列表
 		router.GET("/list", controller.List)

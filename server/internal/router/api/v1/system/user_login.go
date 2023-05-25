@@ -2,7 +2,7 @@
 package system
 
 import (
-	"github.com/silent-rain/gin-admin/internal/controller/system"
+	"github.com/silent-rain/gin-admin/internal/app/system/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +13,8 @@ func InitUserLoginRouter(group *gin.RouterGroup) {
 	config := group.Group("/userLogin")
 	{
 		// 获取用户登录信息列表
-		config.GET("/list", system.NewUserLoginController().List)
+		config.GET("/list", controller.NewUserLoginController().List)
 		// 更新用户登录信息状态
-		config.PUT("/status", system.NewUserLoginController().Status)
+		config.PUT("/status", controller.NewUserLoginController().Status)
 	}
 }

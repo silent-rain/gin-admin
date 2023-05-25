@@ -2,7 +2,7 @@
 package apiauth
 
 import (
-	apiauth "github.com/silent-rain/gin-admin/internal/controller/api_auth"
+	 "github.com/silent-rain/gin-admin/internal/app/api_auth/controller"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,8 +12,8 @@ func InitApiRoleHttpRelRouter(group *gin.RouterGroup) {
 	roleMenuRel := group.Group("/apiRoleHttpRel")
 	{
 		// 获取角色与Http协议接口关系列表
-		roleMenuRel.GET("/list", apiauth.NewApiRoleHttpRelController().List)
+		roleMenuRel.GET("/list", controller.NewApiRoleHttpRelController().List)
 		// 更新角色与Http协议接口关系
-		roleMenuRel.PUT("/update", apiauth.NewApiRoleHttpRelController().Update)
+		roleMenuRel.PUT("/update", controller.NewApiRoleHttpRelController().Update)
 	}
 }
