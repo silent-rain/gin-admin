@@ -5,9 +5,7 @@ import "github.com/gin-gonic/gin"
 
 // Init 插件初始化
 func Init(engine *gin.Engine) {
-	// 服务启动后在浏览器中打开 URI
-	RegisterOpenBrowser()
-	// pprof 性能剖析工具
+	// Pprof 性能剖析工具
 	RegisterPprof(engine)
 	// Prometheus 监控指标
 	RegisterPrometheus(engine)
@@ -17,4 +15,6 @@ func Init(engine *gin.Engine) {
 	RegisterLogo()
 	//  服务启动后显示 IP 地址
 	RegisterAddr()
+	// 服务启动后在浏览器中打开 URI
+	RegisterOpenBrowser()
 }
