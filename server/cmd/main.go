@@ -16,7 +16,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/router"
 	"github.com/silent-rain/gin-admin/pkg/plugin"
 	"github.com/silent-rain/gin-admin/pkg/shutdown"
-	"github.com/silent-rain/gin-admin/tasks"
+	"github.com/silent-rain/gin-admin/schedule"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +31,7 @@ func main() {
 	// 初始化 Redis 数据库
 	redis.Init()
 	// 初始化定时任务
-	tasks.Init()
+	schedule.Init()
 	// 初始化数据
 	initialize.Init()
 

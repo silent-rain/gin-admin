@@ -1,5 +1,5 @@
-// Package tickertask 测试即时器
-package tickertask
+// Package timer 测试定时器任务
+package timer
 
 import (
 	"fmt"
@@ -7,6 +7,6 @@ import (
 
 // RegisterDemoPrintln 注册日志打印任务
 func RegisterDemoPrintln() error {
-	fmt.Println("ticker_task demo======")
+	fmt.Println("timer_task demo======")
 	return nil
 }

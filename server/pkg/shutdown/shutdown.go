@@ -14,9 +14,9 @@ import (
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 	"github.com/silent-rain/gin-admin/pkg/color"
-	"github.com/silent-rain/gin-admin/pkg/cron/ticker"
-	"github.com/silent-rain/gin-admin/pkg/cron/timer"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/schedule/ticker"
+	"github.com/silent-rain/gin-admin/pkg/schedule/timer"
 )
 
 // Hook a graceful shutdown hook, default with signals of SIGINT and SIGTERM
@@ -41,6 +41,7 @@ func NewHook() Hook {
 	return hook.WithSignals(syscall.SIGINT, syscall.SIGTERM)
 }
 
+// WithSignals 信号
 func (h *hook) WithSignals(signals ...syscall.Signal) Hook {
 	for _, s := range signals {
 		signal.Notify(h.ctx, s)
@@ -49,6 +50,7 @@ func (h *hook) WithSignals(signals ...syscall.Signal) Hook {
 	return h
 }
 
+// Close 关闭服务回调函数
 func (h *hook) Close(funcs ...func()) {
 	<-h.ctx
 	signal.Stop(h.ctx)

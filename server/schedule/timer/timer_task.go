@@ -1,9 +1,9 @@
-// Package timertask 定时器任务
-package timertask
+// Package timer 定时器任务
+package timer
 
 import (
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
-	"github.com/silent-rain/gin-admin/pkg/cron/timer"
+	"github.com/silent-rain/gin-admin/pkg/schedule/timer"
 )
 
 // Init 定时器任务
