@@ -34,7 +34,7 @@ env = "dev" # prod/test/dev
 
 # mysql 配置
 [mysql]
-  [mysql.base]
+  [mysql.options]
     max_open_conn = 10 # 最大打开的连接数
     max_idle_conn = 60 # 闲置的连接数
     conn_max_lifetime = 60 # 设置最大连接超时(min)
@@ -82,9 +82,9 @@ env = "dev" # prod/test/dev
   max_age = 30 # 日志过期时间
   color = true # 是否输出颜色
 
-# 定时任务
-[tasks]
-  [tasks.ticker] # 即时器
+# 任务调度
+[schedule]
+  [schedule.ticker] # 即时器
     enable_demo = false # 启用demo任务
-  [tasks.timer] # 定时器
+  [schedule.timer] # 定时器
     enable_demo = false # 启用demo任务

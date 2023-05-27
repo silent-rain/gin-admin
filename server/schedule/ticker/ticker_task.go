@@ -8,7 +8,7 @@ import (
 
 // Init 即时器任务
 func Init() {
-	cfg := conf.Instance().Tasks
+	cfg := conf.Instance().Schedule
 	// 添加任务
 	ticker.Add(ticker.New("demo", 10, cfg.IsEnableTicker("enable_demo"), RegisterDemoPrintln))
 

@@ -8,7 +8,7 @@ import (
 
 // Init 定时器任务
 func Init() {
-	cfg := conf.Instance().Tasks
+	cfg := conf.Instance().Schedule
 	// 添加任务
 	timer.Add(timer.New("demo", "*/5 * * * * ?", cfg.IsEnableTimer("enable_demo"), RegisterDemoPrintln))
 

@@ -9,6 +9,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -25,14 +26,12 @@ type DBRepo interface {
 }
 
 // New 新建数据库对象
-func New() (DBRepo, error) {
-	cfg := conf.Instance()
-
-	dbr, err := dbConnect(cfg, cfg.MySQL.Read)
+func New(dbCfgR, dbCfgW conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (DBRepo, error) {
+	dbr, err := dbConnect(dbCfgR, options)
 	if err != nil {
 		return nil, err
 	}
-	dbw, err := dbConnect(cfg, cfg.MySQL.Write)
+	dbw, err := dbConnect(dbCfgW, options)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +77,7 @@ func (d *dbRepo) DbWClose() error {
 }
 
 // 连接数据库
-func dbConnect(cfg conf.Config, dbCfg conf.MySQLAuthConfig) (*gorm.DB, error) {
+func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*gorm.DB, error) {
 	// 数据库地址
 	dsn := SourceDsn(dbCfg)
 	// 连接数据库
@@ -92,7 +91,7 @@ func dbConnect(cfg conf.Config, dbCfg conf.MySQLAuthConfig) (*gorm.DB, error) {
 			return time.Now().Local()
 		},
 		// 日志配置
-		// Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)
@@ -111,13 +110,13 @@ func dbConnect(cfg conf.Config, dbCfg conf.MySQLAuthConfig) (*gorm.DB, error) {
 	}
 
 	// 设置连接池 用于设置最大打开的连接数，默认值为0表示不限制.设置最大的连接数，可以避免并发太高导致连接mysql出现too many connections的错误。
-	sqlDB.SetMaxOpenConns(cfg.MySQL.Base.MaxOpenConn)
+	sqlDB.SetMaxOpenConns(options.MaxOpenConn)
 
 	// 设置最大连接数 用于设置闲置的连接数.设置闲置的连接数则当开启的一个连接使用完成后可以放在池里等候下一次使用。
-	sqlDB.SetMaxIdleConns(cfg.MySQL.Base.MaxIdleConn)
+	sqlDB.SetMaxIdleConns(options.MaxIdleConn)
 
 	// 设置最大连接超时
-	sqlDB.SetConnMaxLifetime(time.Minute * cfg.MySQL.Base.ConnMaxLifeTime)
+	sqlDB.SetConnMaxLifetime(time.Minute * options.ConnMaxLifeTime)
 
 	// 使用插件
 	db.Use(&LocalTimePlugin{})
@@ -140,7 +139,8 @@ func SourceDsn(cfg conf.MySQLAuthConfig) string {
 
 // Init 初始化数据库
 func Init() error {
-	db, err := New()
+	cfg := conf.Instance().MySQL
+	db, err := New(cfg.Read, cfg.Write, cfg.Options)
 	if err != nil {
 		panic(fmt.Sprintf("初始化 Mysql 数据库失败! err: %v", err))
 	}
