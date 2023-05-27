@@ -38,6 +38,7 @@ env = "dev" # prod/test/dev
     max_open_conn = 10 # 最大打开的连接数
     max_idle_conn = 60 # 闲置的连接数
     conn_max_lifetime = 60 # 设置最大连接超时(min)
+    log_level = "info" # 日志级别: info/warn/error/silent
   [mysql.read]
     key = "db" # db信息唯一标识
     host = "127.0.0.1" # IP或域名

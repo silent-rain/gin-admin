@@ -91,7 +91,7 @@ func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*go
 			return time.Now().Local()
 		},
 		// 日志配置
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(options.GetLogLevel()),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)

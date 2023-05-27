@@ -1,7 +1,11 @@
 // Package conf MySQL 配置
 package conf
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm/logger"
+)
 
 // MySQLConfig 数据库配置
 type MySQLConfig struct {
@@ -25,6 +29,22 @@ type MySQLOptionsConfig struct {
 	MaxOpenConn     int           `toml:"max_open_conn"`     // 最大打开的连接数
 	MaxIdleConn     int           `toml:"max_idle_conn"`     // 闲置的连接数
 	ConnMaxLifeTime time.Duration `toml:"conn_max_lifetime"` // 设置最大连接超时(min)
+	LogLevel        string        `toml:"log_level"`         // 日志级别: info/warn/error/silent
+}
+
+// GetLogLevel 获取数据库日志级别
+func (m MySQLOptionsConfig) GetLogLevel() logger.LogLevel {
+	dict := map[string]logger.LogLevel{
+		"info":   logger.Info,
+		"warn":   logger.Info,
+		"error":  logger.Info,
+		"silent": logger.Info,
+	}
+	level, ok := dict[m.LogLevel]
+	if !ok {
+		return logger.Warn
+	}
+	return level
 }
 
 // SqliteConfig sqlite3 数据库配置
