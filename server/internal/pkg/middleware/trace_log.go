@@ -17,7 +17,7 @@ func TraceLogger() gin.HandlerFunc {
 			traceId = tracer.GenerateTraceId(ctx)
 		}
 		// 设置上下文
-		core.GetContext(ctx).TraceId = traceId
+		core.Context(ctx).TraceId = traceId
 		ctx.Next()
 	}
 }

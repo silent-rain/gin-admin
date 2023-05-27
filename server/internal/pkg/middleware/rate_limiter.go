@@ -15,7 +15,7 @@ import (
 func RateLimiter() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 请求禁用接口限流
-		if core.GetContext(ctx).DisableCheckLogin {
+		if core.Context(ctx).DisableCheckLogin {
 			ctx.Next()
 			return
 		}

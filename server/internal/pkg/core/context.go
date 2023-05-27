@@ -7,8 +7,8 @@ import (
 
 var contextKey = "__context__"
 
-// 扩展 Context
-type etxContext struct {
+// 自定义 Context
+type context struct {
 	// 用户信息
 	UserId   uint   // 用户 ID
 	Nickname string // 用户昵称
@@ -21,9 +21,9 @@ type etxContext struct {
 	DisableRateLimiter bool // 禁用接口限流
 }
 
-// GetContext 获取扩展 Context
-func GetContext(ctx *gin.Context) *etxContext {
-	newC := &etxContext{
+// Context 获取自定义 Context
+func Context(ctx *gin.Context) *context {
+	newC := &context{
 		DisableCheckLogin:  false,
 		DisableRateLimiter: false,
 	}
@@ -35,5 +35,5 @@ func GetContext(ctx *gin.Context) *etxContext {
 		ctx.Set(contextKey, newC)
 		return newC
 	}
-	return c.(*etxContext)
+	return c.(*context)
 }

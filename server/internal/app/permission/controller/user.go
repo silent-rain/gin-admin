@@ -205,7 +205,7 @@ func (c *userController) UpdateEmail(ctx *gin.Context) {
 
 // Info 获取用户信息
 func (c *userController) Info(ctx *gin.Context) {
-	userId := core.GetContext(ctx).UserId
+	userId := core.Context(ctx).UserId
 
 	result, err := c.service.Info(ctx, userId)
 	if err != nil {

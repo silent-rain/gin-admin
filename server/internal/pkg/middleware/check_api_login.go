@@ -25,7 +25,7 @@ func CheckApiLogin() gin.HandlerFunc {
 			return
 		}
 		// 请求是否禁用登录检查
-		if core.GetContext(ctx).DisableCheckLogin {
+		if core.Context(ctx).DisableCheckLogin {
 			ctx.Next()
 			return
 		}
@@ -49,10 +49,10 @@ func CheckApiLogin() gin.HandlerFunc {
 		tokenUri := token + ctx.Request.URL.Path
 		user, err := apiAuthDAO.NewApiTokenLoginCacheDao().Get(tokenUri)
 		if err == nil {
-			core.GetContext(ctx).UserId = user.UserId
-			core.GetContext(ctx).Nickname = user.Nickname
+			core.Context(ctx).UserId = user.UserId
+			core.Context(ctx).Nickname = user.Nickname
 			// 存在 API 令牌的情况下，不再验证用户密码
-			core.GetContext(ctx).DisableCheckLogin = true
+			core.Context(ctx).DisableCheckLogin = true
 			ctx.Next()
 			return
 		}
@@ -84,7 +84,7 @@ func CheckApiLogin() gin.HandlerFunc {
 		}
 
 		// 存在 API 令牌的情况下，不再验证用户密码
-		core.GetContext(ctx).DisableCheckLogin = true
+		core.Context(ctx).DisableCheckLogin = true
 
 		ctx.Next()
 	}
@@ -126,8 +126,8 @@ func (c chechkApiToken) setUserInfo(ctx *gin.Context, token string) error {
 		log.New(ctx).WithCode(errcode.ApiHttpTokenInvalidError).Errorf("")
 		return errcode.ApiHttpTokenInvalidError
 	}
-	core.GetContext(ctx).UserId = user.ID
-	core.GetContext(ctx).Nickname = user.Nickname
+	core.Context(ctx).UserId = user.ID
+	core.Context(ctx).Nickname = user.Nickname
 	return nil
 }
 
@@ -152,8 +152,8 @@ func (c chechkApiToken) checkApiUri(ctx *gin.Context, token string) error {
 // 设置 API Token 访问权限缓存
 func (c chechkApiToken) SetCache(ctx *gin.Context, token string) error {
 	tokenUri := token + ctx.Request.URL.Path
-	userId := core.GetContext(ctx).UserId
-	Nickname := core.GetContext(ctx).Nickname
+	userId := core.Context(ctx).UserId
+	Nickname := core.Context(ctx).Nickname
 	if err := apiAuthDAO.NewApiTokenLoginCacheDao().Set(tokenUri, userId, Nickname); err == nil {
 		log.New(ctx).WithCode(errcode.RedisSetKeyError).Errorf("%#v", err)
 		return nil

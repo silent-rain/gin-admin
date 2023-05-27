@@ -1,4 +1,4 @@
- // Package controller 菜单
+// Package controller 菜单
 package controller
 
 import (
@@ -73,7 +73,7 @@ func (c *menuController) Add(ctx *gin.Context) {
 	// 设置菜单打开类型为内链接的参数
 	menu = c.setMenuOpenTypeByInnerLinkParams(menu)
 
-	userId := core.GetContext(ctx).UserId
+	userId := core.Context(ctx).UserId
 	menu.CreateUserId = userId
 	menu.UpdateUserId = userId
 
@@ -156,7 +156,7 @@ func (c *menuController) Update(ctx *gin.Context) {
 	// 设置菜单打开类型为内链接的参数
 	menu = c.setMenuOpenTypeByInnerLinkParams(menu)
 
-	userId := core.GetContext(ctx).UserId
+	userId := core.Context(ctx).UserId
 	menu.UpdateUserId = userId
 
 	_, err := c.service.Update(ctx, menu)

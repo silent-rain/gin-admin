@@ -24,7 +24,7 @@ func CheckLogin() gin.HandlerFunc {
 			return
 		}
 		// 请求是否禁用登录检查
-		if core.GetContext(ctx).DisableCheckLogin {
+		if core.Context(ctx).DisableCheckLogin {
 			ctx.Next()
 			return
 		}
@@ -47,8 +47,8 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
-		core.GetContext(ctx).UserId = claim.UserId
-		core.GetContext(ctx).Nickname = claim.Nickname
+		core.Context(ctx).UserId = claim.UserId
+		core.Context(ctx).Nickname = claim.Nickname
 
 		// 检查单点登录
 		if err := checkSingleLogin(claim.UserId, token); err != nil {

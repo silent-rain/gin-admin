@@ -1,4 +1,4 @@
- // Package controller WEB 日志
+// Package controller WEB 日志
 package controller
 
 import (
@@ -52,9 +52,9 @@ func (c *webLogController) Add(ctx *gin.Context) {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
-	bean.UserId = core.GetContext(ctx).UserId
-	bean.Nickname = core.GetContext(ctx).Nickname
-	bean.TraceId = core.GetContext(ctx).TraceId
+	bean.UserId = core.Context(ctx).UserId
+	bean.Nickname = core.Context(ctx).Nickname
+	bean.TraceId = core.Context(ctx).TraceId
 
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {

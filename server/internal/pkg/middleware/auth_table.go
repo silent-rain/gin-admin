@@ -45,7 +45,7 @@ func AuthTable() gin.HandlerFunc {
 			reg := regexp.MustCompile(item)
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
-				core.GetContext(ctx).DisableCheckLogin = true
+				core.Context(ctx).DisableCheckLogin = true
 				break
 			}
 		}
@@ -55,7 +55,7 @@ func AuthTable() gin.HandlerFunc {
 			reg := regexp.MustCompile(item)
 			result := reg.FindAllString(path, -1)
 			if len(result) > 0 {
-				core.GetContext(ctx).DisableCheckLogin = true
+				core.Context(ctx).DisableCheckLogin = true
 				break
 			}
 		}

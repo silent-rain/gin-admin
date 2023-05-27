@@ -179,10 +179,12 @@ type logger struct {
 
 // New 创建日志对象
 func New(ctx *gin.Context) *logger {
-	extCtx := core.GetContext(ctx)
+	extCtx := core.Context(ctx)
+
 	traceId := extCtx.TraceId
 	userId := extCtx.UserId
 	nickname := extCtx.Nickname
+
 	fields := []zapcore.Field{
 		zap.String("trace_id", traceId),
 		zap.Uint("user_id", userId),
