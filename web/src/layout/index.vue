@@ -39,7 +39,7 @@ const basicStore = useBasicStore();
 
 const classObj = computed(() => {
   return {
-    container: true,
+    containerx: true,
     'close-sidebar': !sidebar.opened,
     'hide-sidebar': !settings.showLeftMenu,
     'fixed-header': settings.fixedHeader,
@@ -64,7 +64,7 @@ const handleClickOutside = () => {
 </script>
 
 <style lang="scss" scoped>
-.container {
+.containerx {
   .el-aside {
     width: var(--side-bar-width);
     background-color: var(--el-menu-bg-color);
@@ -75,7 +75,7 @@ const handleClickOutside = () => {
     margin-left: var(--side-bar-width);
   }
 }
-.container.close-sidebar {
+.containerx.close-sidebar {
   .el-aside {
     width: var(--side-bar-min-width) !important;
   }
@@ -84,7 +84,7 @@ const handleClickOutside = () => {
     margin-left: var(--side-bar-min-width);
   }
 }
-.container.hide-sidebar .el-aside {
+.containerx.hide-sidebar .el-aside {
   width: 0 !important;
 
   .el-container {
@@ -93,11 +93,11 @@ const handleClickOutside = () => {
 }
 
 // header
-.container .el-header {
+.containerx .el-header {
   height: auto;
 }
 // 固定 header
-.container.fixed-header .el-main {
+.containerx.fixed-header .el-main {
   height: calc(
     100vh - #{var(--nav-bar-height)} - #{var(--tag-view-height)} - #{var(
         --footer-height
@@ -113,17 +113,20 @@ const handleClickOutside = () => {
 }
 
 // 移动端布局
-.container.mobile {
+.containerx.mobile {
   .el-aside {
     z-index: 300;
+    display: none;
   }
   .el-container {
-    margin-left: var(--side-bar-min-width);
+    // margin-left: var(--side-bar-min-width);
+    margin-left: 0;
     z-index: 100;
   }
-  :not(.close-sidebar) .el-container {
-    margin-left: 0;
-  }
+}
+// 移动端布局 - 显示 sidebar
+.containerx.mobile:not(.close-sidebar) .el-aside {
+  display: block;
 }
 
 // 移动端主内容区域
