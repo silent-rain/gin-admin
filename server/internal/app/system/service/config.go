@@ -4,6 +4,7 @@ package service
 import (
 	"errors"
 
+	"github.com/silent-rain/gin-admin/internal/app/system/cache"
 	"github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
@@ -33,14 +34,14 @@ type ConfigService interface {
 // 配置
 type configService struct {
 	dao        dao.Config
-	innerCache dao.WebSiteConfigCache
+	innerCache cache.WebSiteConfigCache
 }
 
 // NewConfigService 创建配置对象
 func NewConfigService() *configService {
 	return &configService{
 		dao:        dao.NewConfigDao(),
-		innerCache: dao.NewWebSiteConfigCache(),
+		innerCache: cache.NewWebSiteConfigCache(),
 	}
 }
 

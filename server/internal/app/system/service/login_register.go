@@ -4,6 +4,7 @@ package service
 import (
 	permissionDTO "github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	permissionService "github.com/silent-rain/gin-admin/internal/app/permission/service"
+	"github.com/silent-rain/gin-admin/internal/app/system/cache"
 	"github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
@@ -24,14 +25,14 @@ type UserLoginRegisterService interface {
 // 用户登录/登出/注册
 type userLoginRegisterService struct {
 	dao   dao.Login
-	cache dao.UserLoginCache
+	cache cache.UserLoginCache
 }
 
 // NewUserLoginRegisterService 创建用户登录/登出/注册 对象
 func NewUserLoginRegisterService() *userLoginRegisterService {
 	return &userLoginRegisterService{
 		dao:   dao.NewLoginDao(),
-		cache: dao.NewUserLoginCacheDao(),
+		cache: cache.NewUserLoginCache(),
 	}
 }
 

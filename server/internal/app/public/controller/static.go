@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	"github.com/silent-rain/gin-admin/assets"
-	systemDAO "github.com/silent-rain/gin-admin/internal/app/system/dao"
+	"github.com/silent-rain/gin-admin/internal/app/system/cache"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
@@ -45,7 +45,7 @@ func Index(ctx *gin.Context) {
 	}
 
 	// 加载 SEO 内容
-	results, err := systemDAO.NewWebSiteConfigCache().Get()
+	results, err := cache.NewWebSiteConfigCache().Get()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.LoadIndexHtmlError).Errorf("站点配置缓存查询失败  %#v", err)
 		ctx.HTML(http.StatusOK, "index.html", nil)

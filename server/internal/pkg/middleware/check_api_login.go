@@ -4,6 +4,7 @@ package middleware
 import (
 	"strings"
 
+	apiAuthCache "github.com/silent-rain/gin-admin/internal/app/api_auth/cache"
 	apiAuthDAO "github.com/silent-rain/gin-admin/internal/app/api_auth/dao"
 	permissionDAO "github.com/silent-rain/gin-admin/internal/app/permission/dao"
 	"github.com/silent-rain/gin-admin/internal/pkg/constant"
@@ -47,7 +48,7 @@ func CheckApiLogin() gin.HandlerFunc {
 
 		// 获取缓存信息
 		tokenUri := token + ctx.Request.URL.Path
-		user, err := apiAuthDAO.NewApiTokenLoginCacheDao().Get(tokenUri)
+		user, err := apiAuthCache.NewApiTokenLoginCache().Get(tokenUri)
 		if err == nil {
 			core.Context(ctx).UserId = user.UserId
 			core.Context(ctx).Nickname = user.Nickname
@@ -154,7 +155,7 @@ func (c chechkApiToken) SetCache(ctx *gin.Context, token string) error {
 	tokenUri := token + ctx.Request.URL.Path
 	userId := core.Context(ctx).UserId
 	Nickname := core.Context(ctx).Nickname
-	if err := apiAuthDAO.NewApiTokenLoginCacheDao().Set(tokenUri, userId, Nickname); err == nil {
+	if err := apiAuthCache.NewApiTokenLoginCache().Set(tokenUri, userId, Nickname); err == nil {
 		log.New(ctx).WithCode(errcode.RedisSetKeyError).Errorf("%#v", err)
 		return nil
 	}

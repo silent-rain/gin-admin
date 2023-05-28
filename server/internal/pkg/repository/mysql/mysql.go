@@ -94,7 +94,7 @@ func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*go
 		Logger: logger.Default.LogMode(options.GetLogLevel()),
 	})
 	if err != nil {
-		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)
+		return nil, fmt.Errorf("[db connection failed] key name: %s, %w", dbCfg.Key, err)
 	}
 	// 设置表字符类型
 	db.Set("gorm:table_options", "CHARSET=utf8mb4")
@@ -106,7 +106,7 @@ func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*go
 
 	// 验证与数据库的连接是否仍然有效，必要时建立连接。
 	if err := sqlDB.Ping(); err != nil {
-		return nil, fmt.Errorf("[db connection failed] Database name: %s, %w", dbCfg.DbName, err)
+		return nil, fmt.Errorf("[db ping failed] key name: %s, %w", dbCfg.Key, err)
 	}
 
 	// 设置连接池 用于设置最大打开的连接数，默认值为0表示不限制.设置最大的连接数，可以避免并发太高导致连接mysql出现too many connections的错误。

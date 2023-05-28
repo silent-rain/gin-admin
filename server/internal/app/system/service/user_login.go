@@ -4,6 +4,7 @@ package service
 import (
 	"errors"
 
+	"github.com/silent-rain/gin-admin/internal/app/system/cache"
 	"github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
@@ -24,14 +25,14 @@ type UserLoginService interface {
 // 用户登录信息
 type userLoginService struct {
 	dao   dao.UserLogin
-	cache dao.UserLoginCache
+	cache cache.UserLoginCache
 }
 
 // NewUserLoginService 创建用户登录信息对象
 func NewUserLoginService() *userLoginService {
 	return &userLoginService{
 		dao:   dao.NewUserLoginDao(),
-		cache: dao.NewUserLoginCacheDao(),
+		cache: cache.NewUserLoginCache(),
 	}
 }
 

@@ -4,7 +4,7 @@ package middleware
 import (
 	"strings"
 
-	systemDAO "github.com/silent-rain/gin-admin/internal/app/system/dao"
+	"github.com/silent-rain/gin-admin/internal/app/system/cache"
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/jwt"
@@ -67,7 +67,7 @@ func checkSingleLogin(userId uint, token string) error {
 	if !conf.Instance().Server.Plugin.EnableSingleLogin {
 		return nil
 	}
-	tk, err := systemDAO.NewUserLoginCacheDao().Get(userId)
+	tk, err := cache.NewUserLoginCache().Get(userId)
 	if err != nil {
 		return err
 	}
