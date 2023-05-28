@@ -16,8 +16,8 @@ import (
 
 // FaviconIco 网站 favicon.ico
 func FaviconIco(ctx *gin.Context) {
-	ctx.Header("content-type", "image/x-icon")
-	ctx.FileFromFS("dist/favicon.ico", http.FS(assets.WebAssets))
+	// ctx.Header("content-type", "image/x-icon")
+	// ctx.FileFromFS("dist/favicon.ico", http.FS(assets.WebAssets))
 	ctx.Status(200)
 }
 
