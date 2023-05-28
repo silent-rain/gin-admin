@@ -78,6 +78,7 @@ const (
 	TokeConvertError                                           // 转换 Token 失败
 	TokenInvalidError                                          // 无效鉴权
 	TokenExpiredError                                          // 鉴权过期
+	TokenIssuerError                                           // 签发人错误
 	TokenUnconformityError                                     // Token 不一致, 已在别处登录，请重新登录
 	TokenDisableCurrentLoginError                              // 当前登录已被禁用
 	ApiHttpTokenPassphraseEmptyError                           // 令牌口令不能为空

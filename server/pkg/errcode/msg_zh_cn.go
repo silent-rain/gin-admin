@@ -55,6 +55,7 @@ var MsgZHCN = map[ErrorCode]error{
 	TokeConvertError:                  errors.New("转换 Token 失败"),
 	TokenInvalidError:                 errors.New("无效鉴权"),
 	TokenExpiredError:                 errors.New("鉴权过期"),
+	TokenIssuerError:                  errors.New("签发人错误"),
 	TokenUnconformityError:            errors.New("已在别处登录，请重新登录"),
 	TokenDisableCurrentLoginError:     errors.New("当前登录已被禁用"),
 	ApiHttpTokenPassphraseEmptyError:  errors.New("令牌口令不能为空"),

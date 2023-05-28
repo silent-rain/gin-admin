@@ -36,9 +36,9 @@ type MySQLOptionsConfig struct {
 func (m MySQLOptionsConfig) GetLogLevel() logger.LogLevel {
 	dict := map[string]logger.LogLevel{
 		"info":   logger.Info,
-		"warn":   logger.Info,
-		"error":  logger.Info,
-		"silent": logger.Info,
+		"warn":   logger.Warn,
+		"error":  logger.Error,
+		"silent": logger.Silent,
 	}
 	level, ok := dict[m.LogLevel]
 	if !ok {

@@ -2,33 +2,34 @@
 package jwt
 
 import (
+	"errors"
 	"time"
 
 	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // Token 令牌
 type Token struct {
-	UserId   uint
-	Nickname string
-	jwt.StandardClaims
+	UserId               uint   // 用户ID
+	Nickname             string // 用户昵称
+	jwt.RegisteredClaims        // 内嵌标准的声明
 }
 
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, nickname string) (string, error) {
 	cfgJWT := conf.Instance().JWT
-	cla := Token{
+	claims := Token{
 		UserId:   userId,
 		Nickname: nickname,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(cfgJWT.GetExpire()).Unix(), // 过期时间
-			Issuer:    cfgJWT.Issuer,                             // 签发人
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfgJWT.GetExpire())), // 过期时间
+			Issuer:    cfgJWT.Issuer,                                          // 签发人
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cla)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// 进行签名生成对应的token
 	tokenString, err := token.SignedString([]byte(cfgJWT.Secret))
 	if err != nil {
@@ -40,18 +41,21 @@ func GenerateToken(userId uint, nickname string) (string, error) {
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
 	cfgJWT := conf.Instance().JWT
-	token, _ := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
+	myToken := &Token{}
+	token, err := jwt.ParseWithClaims(tokenString, myToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(cfgJWT.Secret), nil
 	})
-	claims, ok := token.Claims.(*Token)
-	if !ok {
-		return nil, errcode.TokenInvalidError
-	} else if !claims.VerifyIssuer(cfgJWT.Issuer, true) {
-		return nil, errcode.TokenInvalidError
-	} else if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
+
+	if errors.Is(err, jwt.ErrTokenInvalidIssuer) {
+		return nil, errcode.TokenIssuerError
+	}
+	if errors.Is(err, jwt.ErrTokenExpired) {
 		return nil, errcode.TokenExpiredError
-	} else if !token.Valid {
+	}
+	// 对token对象中的Claim进行类型断言
+	// 校验token
+	if !token.Valid {
 		return nil, errcode.TokenInvalidError
 	}
-	return claims, nil
+	return myToken, nil
 }

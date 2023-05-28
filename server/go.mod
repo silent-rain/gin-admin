@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.2.1
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-redis/redis/v8 v8.11.0
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/unrolled/secure v1.0.7
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/gorm v1.25.1
@@ -57,7 +58,6 @@ require (
 )
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-contrib/sessions v0.0.5
 	github.com/gin-contrib/sse v0.1.0 // indirect
