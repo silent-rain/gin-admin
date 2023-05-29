@@ -4,13 +4,13 @@ package log
 import (
 	"testing"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 
 	"go.uber.org/zap"
 )
 
 func TestInit(t *testing.T) {
-	conf.Init("../../../cmd/conf.yaml")
+	global.Init()
 	Init()
 	zap.L().Debug("this is debug")
 	zap.L().Info("this is info")

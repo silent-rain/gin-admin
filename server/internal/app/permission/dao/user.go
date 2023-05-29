@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 
@@ -44,7 +45,7 @@ type user struct {
 // NewUserDao 创建用户 Dao 对象
 func NewUserDao() *user {
 	return &user{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

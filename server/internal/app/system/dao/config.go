@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"go.uber.org/zap"
@@ -35,7 +36,7 @@ type config struct {
 // NewConfigDao 创建配置对象
 func NewConfigDao() *config {
 	return &config{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

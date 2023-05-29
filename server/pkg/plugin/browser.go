@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 
 	"go.uber.org/zap"
 )
@@ -30,10 +30,11 @@ func Open(uri string) error {
 
 // RegisterOpenBrowser 服务启动后在浏览器中打开 URI
 func RegisterOpenBrowser() {
-	if !conf.Instance().Server.Plugin.EnableOpenBrowser {
+	cfg := global.Instance().Config().Server
+	if !cfg.Plugin.EnableOpenBrowser {
 		return
 	}
-	if err := Open(conf.Instance().Server.Plugin.OpenBrowserUrl); err != nil {
+	if err := Open(cfg.Plugin.OpenBrowserUrl); err != nil {
 		zap.S().Error(err)
 		return
 	}

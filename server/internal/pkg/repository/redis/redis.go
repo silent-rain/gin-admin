@@ -23,18 +23,15 @@ type DBRepo interface {
 	Del(ctx context.Context, key string) bool
 	Incr(ctx context.Context, key string) int64
 	Decr(ctx context.Context, key string) int64
+	Close() error
 }
 
-var (
-	dbInstance *dbPool
-)
-
-// DBType Rides 数据库类型
-type DBType = int
+// DBName Rides 数据库名称
+type DBName = int
 
 const (
 	// Default 默认表
-	Default DBType = iota
+	Default DBName = iota
 	// UserLogin 用户登录表
 	UserLogin
 	// ApiTokenLogin API Token 登录信息表
@@ -42,50 +39,29 @@ const (
 )
 
 // New 创建 Redis 客户端
-func New() (*dbPool, error) {
-	cfg := conf.Instance().Redis
+func New(cfg *conf.RedisConfig, dbName DBName) (*Pool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 
-	// 默认缓存库
-	defaultDB, err := dbConnect(*cfg, UserLogin)
+	db, err := dbConnect(*cfg, dbName)
 	if err != nil {
 		return nil, err
 	}
-	if err := defaultDB.Ping(ctx).Err(); err != nil {
+	if err := db.Ping(ctx).Err(); err != nil {
 		return nil, errcode.RedisPingError
 	}
-
-	// 用户登录缓存库
-	userLoginDB, err := dbConnect(*cfg, UserLogin)
-	if err != nil {
-		return nil, err
+	pool := &Pool{
+		db,
 	}
-	if err := userLoginDB.Ping(ctx).Err(); err != nil {
-		return nil, errcode.RedisPingError
-	}
-
-	// API Token 请求的存储用户缓存库
-	apiTokenLoginDB, err := dbConnect(*cfg, ApiTokenLogin)
-	if err != nil {
-		return nil, err
-	}
-	if err := apiTokenLoginDB.Ping(ctx).Err(); err != nil {
-		return nil, errcode.RedisPingError
-	}
-	return &dbPool{
-		defaultDB:       defaultDB,
-		userLoginDB:     userLoginDB,
-		apiTokenLoginDB: apiTokenLoginDB,
-	}, nil
+	return pool, nil
 }
 
 // 连接数据库
-func dbConnect(cfg conf.RedisConfig, db DBType) (*redis.Client, error) {
+func dbConnect(cfg conf.RedisConfig, dbName DBName) (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:       fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 		Password:   cfg.Password,
-		DB:         db,
+		DB:         dbName,
 		MaxRetries: cfg.MaxRetries,
 		PoolSize:   cfg.PoolSize,
 	})
@@ -100,53 +76,12 @@ func dbConnect(cfg conf.RedisConfig, db DBType) (*redis.Client, error) {
 }
 
 // 数据库连接池
-type dbPool struct {
-	defaultDB       *redis.Client
-	userLoginDB     *redis.Client
-	apiTokenLoginDB *redis.Client
-}
-
-// DB 切换数据库
-func (d *dbPool) DB(db ...DBType) DBRepo {
-	dbClient := &dbRepo{}
-	if len(db) == 0 {
-		dbClient.client = d.defaultDB
-		return dbClient
-	}
-	switch db[0] {
-	case Default:
-		dbClient.client = d.defaultDB
-	case UserLogin:
-		dbClient.client = d.userLoginDB
-	case ApiTokenLogin:
-		dbClient.client = d.apiTokenLoginDB
-	default:
-		panic(errcode.RedisUnknownClientError.Error())
-	}
-	return dbClient
-}
-
-// Close 关闭客户端
-func (d *dbPool) Close() error {
-	if err := d.defaultDB.Close(); err != nil {
-		return err
-	}
-	if err := d.userLoginDB.Close(); err != nil {
-		return err
-	}
-	if err := d.apiTokenLoginDB.Close(); err != nil {
-		return err
-	}
-	return nil
-}
-
-// 数据库
-type dbRepo struct {
+type Pool struct {
 	client *redis.Client
 }
 
 // Set set some <key,value,ttl> into redis
-func (d *dbRepo) Set(ctx context.Context, key, value string, ttl time.Duration) error {
+func (d *Pool) Set(ctx context.Context, key, value string, ttl time.Duration) error {
 	if err := d.client.Set(ctx, key, value, ttl).Err(); err != nil {
 		return errcode.RedisSetKeyError
 	}
@@ -154,7 +89,7 @@ func (d *dbRepo) Set(ctx context.Context, key, value string, ttl time.Duration) 
 }
 
 // Get 获取 KEY 的值
-func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
+func (d *Pool) Get(ctx context.Context, key string) (string, error) {
 	value, err := d.client.Get(ctx, key).Result()
 	if err != nil {
 		return "", errcode.RedisGetKeyError.WithMsg("获取鉴权信息失败")
@@ -163,7 +98,7 @@ func (d *dbRepo) Get(ctx context.Context, key string) (string, error) {
 }
 
 // TTL 查看 Key 剩余的过期时间，以秒为单位。
-func (d *dbRepo) TTL(ctx context.Context, key string) (time.Duration, error) {
+func (d *Pool) TTL(ctx context.Context, key string) (time.Duration, error) {
 	ttl, err := d.client.TTL(ctx, key).Result()
 	if err != nil {
 		return -1, errcode.RedisTTLGetKeyError
@@ -172,20 +107,20 @@ func (d *dbRepo) TTL(ctx context.Context, key string) (time.Duration, error) {
 }
 
 // Expire 设置 key 的过期时间，以秒为单位
-func (d *dbRepo) Expire(ctx context.Context, key string, ttl time.Duration) bool {
+func (d *Pool) Expire(ctx context.Context, key string, ttl time.Duration) bool {
 	ok, _ := d.client.Expire(ctx, key, ttl).Result()
 	return ok
 }
 
 // ExpireAt 用于为 key 设置过期时间，不同在于，它的时间参数值采用的是时间戳格式。
-func (d *dbRepo) ExpireAt(ctx context.Context, key string, ttl time.Time) bool {
+func (d *Pool) ExpireAt(ctx context.Context, key string, ttl time.Time) bool {
 	ok, _ := d.client.ExpireAt(ctx, key, ttl).Result()
 	return ok
 }
 
 // Exists 用于检查指定的一个 key 或者多个 key 是否存在。
 // 若存在则返回 1，否则返回 0
-func (d *dbRepo) Exists(ctx context.Context, keys ...string) bool {
+func (d *Pool) Exists(ctx context.Context, keys ...string) bool {
 	if len(keys) == 0 {
 		return true
 	}
@@ -194,7 +129,7 @@ func (d *dbRepo) Exists(ctx context.Context, keys ...string) bool {
 }
 
 // Del 若键存在的情况下，该命令用于删除键
-func (d *dbRepo) Del(ctx context.Context, key string) bool {
+func (d *Pool) Del(ctx context.Context, key string) bool {
 	if key == "" {
 		return true
 	}
@@ -203,28 +138,21 @@ func (d *dbRepo) Del(ctx context.Context, key string) bool {
 }
 
 // Incr 将 key 中储存的数字值增一
-func (d *dbRepo) Incr(ctx context.Context, key string) int64 {
+func (d *Pool) Incr(ctx context.Context, key string) int64 {
 	value, _ := d.client.Incr(ctx, key).Result()
 	return value
 }
 
 // Decr 将 key 中储存的数字值减一
-func (d *dbRepo) Decr(ctx context.Context, key string) int64 {
+func (d *Pool) Decr(ctx context.Context, key string) int64 {
 	value, _ := d.client.Decr(ctx, key).Result()
 	return value
 }
 
-// Init 初始化数据库
-func Init() error {
-	db, err := New()
-	if err != nil {
-		panic(fmt.Sprintf("初始化 Redis 数据库失败! err: %v", err))
+// Close 关闭客户端
+func (d *Pool) Close() error {
+	if err := d.client.Close(); err != nil {
+		return err
 	}
-	dbInstance = db
-	return err
-}
-
-// Instance 获取数据库实例
-func Instance() *dbPool {
-	return dbInstance
+	return nil
 }

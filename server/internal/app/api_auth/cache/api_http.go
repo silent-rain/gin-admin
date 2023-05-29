@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/dto"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 )
@@ -24,7 +25,7 @@ type redisApiTokenLogin struct {
 // NewApiTokenLoginCache 创建 API Token 登录信息缓存对象
 func NewApiTokenLoginCache() *redisApiTokenLogin {
 	return &redisApiTokenLogin{
-		db: redis.Instance().DB(redis.ApiTokenLogin),
+		db: global.Instance().Redis(redis.ApiTokenLogin),
 	}
 }
 

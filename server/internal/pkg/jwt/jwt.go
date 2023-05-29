@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -20,7 +20,7 @@ type Token struct {
 
 // GenerateToken 生成 Token
 func GenerateToken(userId uint, nickname string) (string, error) {
-	cfgJWT := conf.Instance().JWT
+	cfgJWT := global.Instance().Config().JWT
 	claims := Token{
 		UserId:   userId,
 		Nickname: nickname,
@@ -40,7 +40,7 @@ func GenerateToken(userId uint, nickname string) (string, error) {
 
 // ParseToken 解析 Token
 func ParseToken(tokenString string) (*Token, error) {
-	cfgJWT := conf.Instance().JWT
+	cfgJWT := global.Instance().Config().JWT
 	myToken := &Token{}
 	token, err := jwt.ParseWithClaims(tokenString, myToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(cfgJWT.Secret), nil

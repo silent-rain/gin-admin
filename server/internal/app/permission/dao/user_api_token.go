@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -30,7 +31,7 @@ type userApiToken struct {
 // NewUserApiTokenDao 创建 Token 令牌对象
 func NewUserApiTokenDao() *userApiToken {
 	return &userApiToken{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

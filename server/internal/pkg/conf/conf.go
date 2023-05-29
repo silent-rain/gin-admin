@@ -4,14 +4,11 @@ package conf
 import (
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/BurntSushi/toml"
 )
 
 var (
-	once   sync.Once
-	config *Config
 	// ConfigFile 配置文件路径
 	ConfigFile = "./conf.toml"
 )
@@ -28,22 +25,17 @@ type Config struct {
 	Schedule    *ScheduleConfig    `toml:"schedule"`    // 任务调度配置
 }
 
-// Init 加载配置文件
-func Init(filepath string) {
-	once.Do(func() {
-		// 读取配置文件
-		buf, err := os.ReadFile(filepath)
-		if err != nil {
-			panic(fmt.Sprintf("配置文件读取失败! err: %v", err))
-		}
-		// 解析配置信息至配置结构体
-		if err := toml.Unmarshal(buf, &config); err != nil {
-			panic(fmt.Sprintf("配置文件解析失败! err: %v", err))
-		}
-	})
-}
-
-// Instance 获取配置实例
-func Instance() Config {
-	return *config
+// New 创建配置对象
+func New(filepath string) *Config {
+	// 读取配置文件
+	buf, err := os.ReadFile(filepath)
+	if err != nil {
+		panic(fmt.Sprintf("配置文件读取失败! err: %v", err))
+	}
+	config := &Config{}
+	// 解析配置信息至配置结构体
+	if err := toml.Unmarshal(buf, &config); err != nil {
+		panic(fmt.Sprintf("配置文件解析失败! err: %v", err))
+	}
+	return config
 }

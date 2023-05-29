@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/dto"
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -33,7 +34,7 @@ type apiAuth struct {
 // NewApiHttpDao 创建Http协议接口 Dao 对象
 func NewApiHttpDao() *apiAuth {
 	return &apiAuth{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

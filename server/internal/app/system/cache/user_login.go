@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 )
 
@@ -24,13 +24,13 @@ type redisUserLogin struct {
 // NewUserLoginCache 创建用户登录信息对象
 func NewUserLoginCache() *redisUserLogin {
 	return &redisUserLogin{
-		db: redis.Instance().DB(redis.UserLogin),
+		db: global.Instance().Redis(redis.UserLogin),
 	}
 }
 
 // Set 设置缓存
 func (d *redisUserLogin) Set(userId uint, token string) error {
-	expire := conf.Instance().JWT.GetExpire()
+	expire := global.Instance().Config().JWT.GetExpire()
 	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 

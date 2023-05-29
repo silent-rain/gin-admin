@@ -4,6 +4,7 @@ package dao
 import (
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/dto"
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 
@@ -25,7 +26,7 @@ type apiRoleHttpRel struct {
 // NewApiRoleHttpRelDao 创建角色与Http协议接口关系 Dao 对象
 func NewApiRoleHttpRelDao() *apiRoleHttpRel {
 	return &apiRoleHttpRel{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

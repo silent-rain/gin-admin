@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/log/dto"
 	"github.com/silent-rain/gin-admin/internal/app/log/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -26,7 +27,7 @@ type httpLog struct {
 // NewHttpLogDao 创建网络请求日志 Dao 对象
 func NewHttpLogDao() *httpLog {
 	return &httpLog{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

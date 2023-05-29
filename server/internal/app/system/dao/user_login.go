@@ -4,6 +4,7 @@ package dao
 import (
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -24,7 +25,7 @@ type userLogin struct {
 // NewUserLoginDao 创建用户登录信息对象
 func NewUserLoginDao() *userLogin {
 	return &userLogin{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

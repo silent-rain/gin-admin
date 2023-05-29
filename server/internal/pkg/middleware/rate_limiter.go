@@ -4,7 +4,7 @@ package middleware
 import (
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func RateLimiter() gin.HandlerFunc {
 			return
 		}
 
-		cfg := conf.Instance().Server.Plugin
+		cfg := global.Instance().Config().Server.Plugin
 		if !cfg.EnableRateLimiter {
 			ctx.Next()
 			return

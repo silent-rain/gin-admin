@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/silent-rain/gin-admin/internal/app/system/cache"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/jwt"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
@@ -28,7 +28,7 @@ func CheckLogin() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
-		cfgJWT := conf.Instance().JWT
+		cfgJWT := global.Instance().Config().JWT
 		// 从请求头中获取Token
 		token := ctx.GetHeader(cfgJWT.Header)
 		if token == "" {
@@ -64,7 +64,7 @@ func CheckLogin() gin.HandlerFunc {
 
 // 检查单点登录
 func checkSingleLogin(userId uint, token string) error {
-	if !conf.Instance().Server.Plugin.EnableSingleLogin {
+	if !global.Instance().Config().Server.Plugin.EnableSingleLogin {
 		return nil
 	}
 	tk, err := cache.NewUserLoginCache().Get(userId)

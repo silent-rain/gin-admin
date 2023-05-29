@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -23,7 +24,7 @@ type login struct {
 // NewLoginDao 创建登录对象
 func NewLoginDao() *login {
 	return &login{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

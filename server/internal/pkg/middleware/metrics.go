@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/response"
@@ -19,7 +19,7 @@ import (
 // Metrics 指标记录
 func Metrics() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		if !conf.Instance().Server.Plugin.EnableRecordMetrics {
+		if !global.Instance().Config().Server.Plugin.EnableRecordMetrics {
 			ctx.Next()
 			return
 		}
@@ -40,7 +40,7 @@ func Metrics() gin.HandlerFunc {
 		// 记录指标
 		metrics.RecordMetrics(model.MetricsMessage{
 			ProjectName: constant.ProjectName,
-			Env:         conf.Instance().Environment.Env,
+			Env:         global.Instance().Config().Environment.Env,
 			TraceID:     core.Context(ctx).TraceId,
 			HOST:        ctx.Request.Host,
 			Path:        ctx.Request.URL.Path,

@@ -4,6 +4,7 @@ package dao
 import (
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -30,7 +31,7 @@ type menu struct {
 // NewMenuDao 创建菜单 Dao 对象
 func NewMenuDao() *menu {
 	return &menu{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

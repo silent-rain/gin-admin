@@ -4,6 +4,7 @@ package dao
 import (
 	"github.com/silent-rain/gin-admin/internal/app/log/dto"
 	"github.com/silent-rain/gin-admin/internal/app/log/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -23,7 +24,7 @@ type webLog struct {
 // NewWebLogDao 创建 WEB 日志对象
 func NewWebLogDao() *webLog {
 	return &webLog{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

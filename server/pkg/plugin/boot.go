@@ -4,7 +4,7 @@ package plugin
 import (
 	"fmt"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/pkg/color"
 )
 
@@ -20,7 +20,7 @@ const logo = `
 
 // RegisterLogo 服务启动后显示 logo
 func RegisterLogo() {
-	if !conf.Instance().Server.Plugin.EnableLogo {
+	if !global.Instance().Config().Server.Plugin.EnableLogo {
 		return
 	}
 	fmt.Println(color.Blue(logo))
@@ -28,9 +28,10 @@ func RegisterLogo() {
 
 // RegisterAddr 服务启动后显示 IP 地址
 func RegisterAddr() {
-	if !conf.Instance().Server.Plugin.EnableLogo {
+	cfg := global.Instance().Config().Server
+	if !cfg.Plugin.EnableLogo {
 		return
 	}
-	addr := conf.Instance().Server.ServerAddress()
+	addr := cfg.ServerAddress()
 	fmt.Println(color.Blue(fmt.Sprintf("➜  Local:   http://%s", addr)))
 }

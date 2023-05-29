@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 	"github.com/silent-rain/gin-admin/pkg/color"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
@@ -85,7 +85,7 @@ func WithCloseCron() func() {
 // WithCloseMysql 关闭 Mysql 服务
 func WithCloseMysql() func() {
 	return func() {
-		db := mysql.Instance()
+		db := global.Instance().Mysql()
 		if db == nil {
 			return
 		}
@@ -103,7 +103,23 @@ func WithCloseMysql() func() {
 // WithCloseRedis 关闭 Redis 服务
 func WithCloseRedis() func() {
 	return func() {
-		db := redis.Instance()
+		db := global.Instance().Redis(redis.Default)
+		if db == nil {
+			return
+		}
+		if err := db.Close(); err != nil {
+			log.New(nil).WithCode(errcode.DBReadCloseError).Error("")
+		}
+
+		db = global.Instance().Redis(redis.UserLogin)
+		if db == nil {
+			return
+		}
+		if err := db.Close(); err != nil {
+			log.New(nil).WithCode(errcode.DBReadCloseError).Error("")
+		}
+
+		db = global.Instance().Redis(redis.ApiTokenLogin)
 		if db == nil {
 			return
 		}

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/response"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 	timeutil "github.com/silent-rain/gin-admin/pkg/utils/time"
@@ -24,7 +24,7 @@ func Ping(ctx *gin.Context) {
 func Health(ctx *gin.Context) {
 	result := dto.Health{
 		Timestamp:   time.Now().Local().Format(timeutil.CSTMilliLayout),
-		Environment: conf.Instance().Environment.Env,
+		Environment: global.Instance().Config().Environment.Env,
 		Host:        ctx.Request.Host,
 		Status:      "ok",
 	}

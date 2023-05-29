@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/data_center/dto"
 	"github.com/silent-rain/gin-admin/internal/app/data_center/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -30,7 +31,7 @@ type dictDataCenter struct {
 // NewDictDataDao 创建字典数据信息对象
 func NewDictDataDao() *dictDataCenter {
 	return &dictDataCenter{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

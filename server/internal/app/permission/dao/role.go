@@ -6,6 +6,7 @@ import (
 
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 
 	"gorm.io/gorm"
@@ -31,7 +32,7 @@ type role struct {
 // NewRoleDao 创建角色 Dao 对象
 func NewRoleDao() *role {
 	return &role{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

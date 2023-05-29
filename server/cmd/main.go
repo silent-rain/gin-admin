@@ -6,13 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/initialize"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/internal/pkg/middleware"
 	_ "github.com/silent-rain/gin-admin/internal/pkg/repository/cache"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 	"github.com/silent-rain/gin-admin/internal/router"
 	"github.com/silent-rain/gin-admin/pkg/plugin"
 	"github.com/silent-rain/gin-admin/pkg/shutdown"
@@ -22,21 +20,17 @@ import (
 )
 
 func main() {
-	// 初始化配置
-	conf.Init(conf.ConfigFile)
+	// 初始化 global 对象
+	global.Init()
 	// 初始化日志
 	log.Init()
-	// 初始化 Mysql 数据库
-	mysql.Init()
-	// 初始化 Redis 数据库
-	redis.Init()
 	// 初始化定时任务
 	schedule.Init()
 	// 初始化数据
 	initialize.Init()
 
 	// 调试模式
-	gin.SetMode(conf.Instance().Environment.Active())
+	gin.SetMode(global.Instance().Config().Environment.Active())
 	// 强制终端日志有色显示
 	gin.ForceConsoleColor()
 
@@ -81,7 +75,7 @@ func main() {
 	plugin.Init(engine)
 
 	srv := &http.Server{
-		Addr:    conf.Instance().Server.ServerAddress(),
+		Addr:    global.Instance().Config().Server.ServerAddress(),
 		Handler: engine,
 	}
 

@@ -9,7 +9,7 @@ import (
 
 	logDAO "github.com/silent-rain/gin-admin/internal/app/log/dao"
 	logModel "github.com/silent-rain/gin-admin/internal/app/log/model"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
@@ -85,7 +85,7 @@ func getConsoleEncoder() zapcore.Encoder {
 
 // 日志写入文件日志配置
 func newWriteFileSyncer() zapcore.WriteSyncer {
-	config := conf.Instance().Logger
+	config := global.Instance().Config().Logger
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   config.Filename,   // 日志文件位置
 		MaxSize:    config.MaxSize,    // 进行切割之前，日志文件最大值(单位：MB)，默认100MB
@@ -100,7 +100,7 @@ func newWriteFileSyncer() zapcore.WriteSyncer {
 // 自定义日志级别
 func getLevelEnabler() zapcore.Level {
 	var level = zapcore.DebugLevel
-	switch conf.Instance().Logger.Level {
+	switch global.Instance().Config().Logger.Level {
 	case "info":
 		level = zapcore.InfoLevel
 	case "warn":

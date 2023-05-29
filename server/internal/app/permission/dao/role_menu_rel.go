@@ -4,6 +4,7 @@ package dao
 import (
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 
@@ -25,7 +26,7 @@ type roleMenuRel struct {
 // NewRoleMenuRelDao 创建角色菜单关系 Dao 对象
 func NewRoleMenuRelDao() *roleMenuRel {
 	return &roleMenuRel{
-		DBRepo: mysql.Instance(),
+		DBRepo: global.Instance().Mysql(),
 	}
 }
 

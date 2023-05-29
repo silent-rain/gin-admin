@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 	"github.com/silent-rain/gin-admin/pkg/utils"
@@ -46,7 +46,7 @@ func (h *uploadService) Avatar(ctx *gin.Context, file *multipart.FileHeader) (dt
 	result := dto.Image{}
 
 	// 文件夹是否存在, 不存在则创建
-	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, avatarDirName)
+	dstPath := filepath.Join(global.Instance().Config().Server.Upload.FilePath, avatarDirName)
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
 		return result, errcode.DirCreateError.
@@ -82,7 +82,7 @@ func (h *uploadService) Image(ctx *gin.Context, file *multipart.FileHeader) (dto
 
 	// 文件夹是否存在, 不存在则创建
 	timePath := time.Now().Format("2006-01-02")
-	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, imagesDirName, timePath)
+	dstPath := filepath.Join(global.Instance().Config().Server.Upload.FilePath, imagesDirName, timePath)
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)
 		return result, errcode.DirCreateError.
@@ -110,7 +110,7 @@ func (h *uploadService) Images(ctx *gin.Context, files []*multipart.FileHeader) 
 	results := make([]dto.Image, 0)
 
 	timePath := time.Now().Format("2006-01-02")
-	dstPath := filepath.Join(conf.Instance().Server.Upload.FilePath, imagesDirName, timePath)
+	dstPath := filepath.Join(global.Instance().Config().Server.Upload.FilePath, imagesDirName, timePath)
 	// 文件夹是否存在, 不存在则创建
 	if err := utils.DirNotExistCreate(dstPath); err != nil {
 		log.New(ctx).WithCode(errcode.DirCreateError).Errorf("%v", err)

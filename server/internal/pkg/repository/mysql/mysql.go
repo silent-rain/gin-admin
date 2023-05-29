@@ -13,33 +13,12 @@ import (
 	"gorm.io/gorm/schema"
 )
 
-var (
-	dbInstance DBRepo
-)
-
 // DBRepo 数据库接口
 type DBRepo interface {
 	GetDbR() *gorm.DB
 	GetDbW() *gorm.DB
 	DbRClose() error
 	DbWClose() error
-}
-
-// New 新建数据库对象
-func New(dbCfgR, dbCfgW conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (DBRepo, error) {
-	dbr, err := dbConnect(dbCfgR, options)
-	if err != nil {
-		return nil, err
-	}
-	dbw, err := dbConnect(dbCfgW, options)
-	if err != nil {
-		return nil, err
-	}
-
-	return &dbRepo{
-		DbR: dbr,
-		DbW: dbw,
-	}, nil
 }
 
 // 数据库
@@ -79,7 +58,7 @@ func (d *dbRepo) DbWClose() error {
 // 连接数据库
 func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*gorm.DB, error) {
 	// 数据库地址
-	dsn := SourceDsn(dbCfg)
+	dsn := sourceDsn(dbCfg)
 	// 连接数据库
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// 命名策略表，列命名策略
@@ -124,8 +103,8 @@ func dbConnect(dbCfg conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (*go
 	return db, nil
 }
 
-// Dsn 拼接 mysql 数据库地址
-func SourceDsn(cfg conf.MySQLAuthConfig) string {
+// 拼接 mysql 数据库地址
+func sourceDsn(cfg conf.MySQLAuthConfig) string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=%t&loc=%s",
 		cfg.Username,
 		cfg.Password,
@@ -137,18 +116,19 @@ func SourceDsn(cfg conf.MySQLAuthConfig) string {
 	)
 }
 
-// Init 初始化数据库
-func Init() error {
-	cfg := conf.Instance().MySQL
-	db, err := New(cfg.Read, cfg.Write, cfg.Options)
+// New 新建数据库对象
+func New(dbCfgR, dbCfgW conf.MySQLAuthConfig, options conf.MySQLOptionsConfig) (DBRepo, error) {
+	dbr, err := dbConnect(dbCfgR, options)
 	if err != nil {
-		panic(fmt.Sprintf("初始化 Mysql 数据库失败! err: %v", err))
+		return nil, err
 	}
-	dbInstance = db
-	return err
-}
+	dbw, err := dbConnect(dbCfgW, options)
+	if err != nil {
+		return nil, err
+	}
 
-// Instance 获取数据库实例
-func Instance() DBRepo {
-	return dbInstance
+	return &dbRepo{
+		DbR: dbr,
+		DbW: dbw,
+	}, nil
 }
