@@ -58,25 +58,26 @@ func CheckApiLogin() gin.HandlerFunc {
 			return
 		}
 
-		ct := chechkApiToken{}
 		// 令牌口令信息验证
-		if err := ct.checkApiToken(ctx, token, passphrase); err != nil {
+		if err := checkApiToken(ctx, token, passphrase); err != nil {
 			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
 		// 设置用户信息到上下文
-		if err := ct.setUserInfo(ctx, token); err != nil {
+		if err := setUserInfo(ctx, token); err != nil {
 			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
 		// 访问权限验证
-		if err := ct.checkApiUri(ctx, token); err != nil {
+		if err := checkApiUri(ctx, token); err != nil {
 			response.New(ctx).WithError(err).Json()
 			ctx.Abort()
 			return
 		}
+
+		ct := chechkApiToken{}
 		// 设置 API Token 访问权限缓存
 		if err := ct.SetCache(ctx, token); err != nil {
 			response.New(ctx).WithError(err).Json()
@@ -95,7 +96,7 @@ func CheckApiLogin() gin.HandlerFunc {
 type chechkApiToken struct{}
 
 // 密匙口令验证
-func (c chechkApiToken) checkApiToken(ctx *gin.Context, token, passphrase string) error {
+func checkApiToken(ctx *gin.Context, token, passphrase string) error {
 	tokenObj, ok, err := permissionDAO.NewUserApiTokenDao().Info(token)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")
@@ -117,7 +118,7 @@ func (c chechkApiToken) checkApiToken(ctx *gin.Context, token, passphrase string
 }
 
 // 设置用户信息到上下文
-func (c chechkApiToken) setUserInfo(ctx *gin.Context, token string) error {
+func setUserInfo(ctx *gin.Context, token string) error {
 	user, ok, err := permissionDAO.NewUserDao().InfoByApiToken(token)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")
@@ -133,7 +134,7 @@ func (c chechkApiToken) setUserInfo(ctx *gin.Context, token string) error {
 }
 
 // 访问 URI 资源权限验证
-func (c chechkApiToken) checkApiUri(ctx *gin.Context, token string) error {
+func checkApiUri(ctx *gin.Context, token string) error {
 	apiInfo, ok, err := apiAuthDAO.NewApiHttpDao().GetUriListByToken(token, ctx.Request.RequestURI)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("")

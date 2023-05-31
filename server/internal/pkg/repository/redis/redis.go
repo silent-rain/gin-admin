@@ -17,12 +17,12 @@ type DBRepo interface {
 	Set(ctx context.Context, key, value string, ttl time.Duration) error
 	Get(ctx context.Context, key string) (string, error)
 	TTL(ctx context.Context, key string) (time.Duration, error)
-	Expire(ctx context.Context, key string, ttl time.Duration) bool
-	ExpireAt(ctx context.Context, key string, ttl time.Time) bool
-	Exists(ctx context.Context, keys ...string) bool
-	Del(ctx context.Context, key string) bool
-	Incr(ctx context.Context, key string) int64
-	Decr(ctx context.Context, key string) int64
+	Expire(ctx context.Context, key string, ttl time.Duration) (bool, error)
+	ExpireAt(ctx context.Context, key string, ttl time.Time) (bool, error)
+	Exists(ctx context.Context, keys ...string) (bool, error)
+	Del(ctx context.Context, key string) (bool, error)
+	Incr(ctx context.Context, key string) (int64, error)
+	Decr(ctx context.Context, key string) (int64, error)
 	Close() error
 }
 
@@ -92,7 +92,7 @@ func (d *Pool) Set(ctx context.Context, key, value string, ttl time.Duration) er
 func (d *Pool) Get(ctx context.Context, key string) (string, error) {
 	value, err := d.client.Get(ctx, key).Result()
 	if err != nil {
-		return "", errcode.RedisGetKeyError.WithMsg("获取鉴权信息失败")
+		return "", errcode.RedisGetKeyError
 	}
 	return value, nil
 }
@@ -107,46 +107,64 @@ func (d *Pool) TTL(ctx context.Context, key string) (time.Duration, error) {
 }
 
 // Expire 设置 key 的过期时间，以秒为单位
-func (d *Pool) Expire(ctx context.Context, key string, ttl time.Duration) bool {
-	ok, _ := d.client.Expire(ctx, key, ttl).Result()
-	return ok
+func (d *Pool) Expire(ctx context.Context, key string, ttl time.Duration) (bool, error) {
+	ok, err := d.client.Expire(ctx, key, ttl).Result()
+	if err != nil {
+		return false, errcode.RedisSetKeyExpireError
+	}
+	return ok, nil
 }
 
 // ExpireAt 用于为 key 设置过期时间，不同在于，它的时间参数值采用的是时间戳格式。
-func (d *Pool) ExpireAt(ctx context.Context, key string, ttl time.Time) bool {
-	ok, _ := d.client.ExpireAt(ctx, key, ttl).Result()
-	return ok
+func (d *Pool) ExpireAt(ctx context.Context, key string, ttl time.Time) (bool, error) {
+	ok, err := d.client.ExpireAt(ctx, key, ttl).Result()
+	if err != nil {
+		return false, errcode.RedisSetKeyExpireAtError
+	}
+	return ok, nil
 }
 
 // Exists 用于检查指定的一个 key 或者多个 key 是否存在。
 // 若存在则返回 1，否则返回 0
-func (d *Pool) Exists(ctx context.Context, keys ...string) bool {
+func (d *Pool) Exists(ctx context.Context, keys ...string) (bool, error) {
 	if len(keys) == 0 {
-		return true
+		return true, nil
 	}
-	value, _ := d.client.Exists(ctx, keys...).Result()
-	return value > 0
+	value, err := d.client.Exists(ctx, keys...).Result()
+	if err != nil {
+		return false, errcode.RedisGetKeyExistsError
+	}
+	return value > 0, nil
 }
 
 // Del 若键存在的情况下，该命令用于删除键
-func (d *Pool) Del(ctx context.Context, key string) bool {
+func (d *Pool) Del(ctx context.Context, key string) (bool, error) {
 	if key == "" {
-		return true
+		return true, nil
 	}
-	value, _ := d.client.Del(ctx, key).Result()
-	return value > 0
+	value, err := d.client.Del(ctx, key).Result()
+	if err != nil {
+		return false, errcode.RedisDelKeyError
+	}
+	return value > 0, nil
 }
 
 // Incr 将 key 中储存的数字值增一
-func (d *Pool) Incr(ctx context.Context, key string) int64 {
-	value, _ := d.client.Incr(ctx, key).Result()
-	return value
+func (d *Pool) Incr(ctx context.Context, key string) (int64, error) {
+	value, err := d.client.Incr(ctx, key).Result()
+	if err != nil {
+		return -1, errcode.RedisIncrKeyError
+	}
+	return value, nil
 }
 
 // Decr 将 key 中储存的数字值减一
-func (d *Pool) Decr(ctx context.Context, key string) int64 {
-	value, _ := d.client.Decr(ctx, key).Result()
-	return value
+func (d *Pool) Decr(ctx context.Context, key string) (int64, error) {
+	value, err := d.client.Decr(ctx, key).Result()
+	if err != nil {
+		return -1, errcode.RedisDecrKeyError
+	}
+	return value, nil
 }
 
 // Close 关闭客户端

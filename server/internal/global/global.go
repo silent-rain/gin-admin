@@ -16,10 +16,11 @@ var (
 
 // 全局对象
 type globalImpl struct {
-	config *conf.Config
-	redis  *Redis
-	mysql  mysql.DBRepo
-	sqlite sqlite.DBRepo
+	config    *conf.Config
+	redis     *Redis
+	memSqlite *Redis
+	mysql     mysql.DBRepo
+	sqlite    sqlite.DBRepo
 }
 
 // Redis 对象
@@ -49,6 +50,10 @@ func (g *globalImpl) Config() *conf.Config {
 // 初始化 Redis 对象
 func (g *globalImpl) initRedis() *globalImpl {
 	cfg := g.Config().Redis
+	// 使用内存 sqlite3 缓存
+	if cfg.StoreType == "mem_sqlite" {
+		return g
+	}
 
 	// 用户登录表
 	defaultDB, err := redis.New(cfg, redis.Default)
@@ -74,8 +79,45 @@ func (g *globalImpl) initRedis() *globalImpl {
 	return g
 }
 
+// 初始化内存 Sqlite3 对象
+func (g *globalImpl) initMemSqlite() *globalImpl {
+	memFile := "file:memdb1?mode=memory&cache=shared"
+	// 用户登录表
+	defaultDB, err := sqlite.NewCache(memFile, redis.Default)
+	if err != nil {
+		panic(fmt.Sprintf("初始化 Redis 数据库失败! err: %v", err))
+	}
+	// 用户登录表
+	userLoginDB, err := sqlite.NewCache(memFile, redis.UserLogin)
+	if err != nil {
+		panic(fmt.Sprintf("初始化 Redis 数据库失败! err: %v", err))
+	}
+	// 登录信息表
+	apiTokenLoginDB, err := sqlite.NewCache(memFile, redis.ApiTokenLogin)
+	if err != nil {
+		panic(fmt.Sprintf("初始化 Redis 数据库失败! err: %v", err))
+	}
+	g.memSqlite = &Redis{
+		Default:       defaultDB,
+		UserLogin:     userLoginDB,
+		ApiTokenLogin: apiTokenLoginDB,
+	}
+	return g
+}
+
 // 获取 Redis 全局对象
 func (g *globalImpl) Redis(dbName redis.DBName) redis.DBRepo {
+	// sqlite3 缓存
+	if g.Config().Redis.StoreType == "mem_sqlite" {
+		switch dbName {
+		case redis.UserLogin:
+			return g.memSqlite.UserLogin
+		case redis.ApiTokenLogin:
+			return g.memSqlite.ApiTokenLogin
+		default:
+			return g.memSqlite.Default
+		}
+	}
 
 	// redis 缓存
 	switch dbName {
@@ -102,6 +144,9 @@ func (g *globalImpl) initSqlite() *globalImpl {
 // 初始化 Mysql 全局对象
 func (g *globalImpl) initMysql() *globalImpl {
 	cfg := g.Config().MySQL
+	if cfg.StoreType != "mysql" {
+		return g
+	}
 	db, err := mysql.New(cfg.Read, cfg.Write, cfg.Options)
 	if err != nil {
 		panic(fmt.Sprintf("初始化 Mysql 数据库失败! err: %v", err))
@@ -112,7 +157,7 @@ func (g *globalImpl) initMysql() *globalImpl {
 
 // 获取 Mysql 全局对象
 func (g *globalImpl) Mysql() mysql.DBRepo {
-	if g.Config().Sqlite != nil {
+	if g.Config().MySQL.StoreType == "sqlite" {
 		return g.sqlite
 	}
 	return g.mysql
@@ -122,12 +167,13 @@ func (g *globalImpl) Mysql() mysql.DBRepo {
 func Init() {
 	instance = NewGlobal().
 		initConfig().
-		initRedis().
-		// initSqlite().
-		initMysql()
+		initMemSqlite().
+		initSqlite().
+		initMysql().
+		initRedis()
 }
 
-// Instance 获取数据库实例
+// Instance 获取全局实例
 func Instance() *globalImpl {
 	return instance
 }

@@ -45,6 +45,7 @@ const (
 	DBQueryEmptyError                                 // 数据不存在
 	DBAddError                                        // 数据添加失败
 	DBUpdateError                                     // 数据更新失败
+	DBUpsertError                                     // 数据插入或更新失败
 	DBDeleteError                                     // 数据删除失败
 	DBBatchDeleteError                                // 数据批量删除失败
 	DBUpdateStatusError                               // 更新状态失败
@@ -57,12 +58,17 @@ const (
 
 // Redis 数据库
 const (
-	RedisPingError          ErrorCode = iota + 10350 // redis 连接失败
-	RedisUnknownClientError                          // redis 未知客户端
-	RedisSetKeyError                                 // redis 设置 KEY 失败
-	RedisGetKeyError                                 // redis 获取 KEY 失败
-	RedisTTLGetKeyError                              // redis 查看 Key 剩余的过期时间失败
-	RedisSetKeyExpireError                           // redis 设置 key 的过期时间失败
+	RedisPingError           ErrorCode = iota + 10350 // redis 连接失败
+	RedisUnknownClientError                           // redis 未知客户端
+	RedisSetKeyError                                  // redis 设置 KEY 失败
+	RedisGetKeyError                                  // redis 获取 KEY 失败
+	RedisDelKeyError                                  // redis 删除 KEY 失败
+	RedisIncrKeyError                                 // redis 自增 KEY 值失败
+	RedisDecrKeyError                                 // redis 自减 KEY 值失败
+	RedisTTLGetKeyError                               // redis 查看 Key 剩余的过期时间失败
+	RedisSetKeyExpireError                            // redis 设置 key 的过期时间失败
+	RedisSetKeyExpireAtError                          // redis 设置 key 的过期时间戳失败
+	RedisGetKeyExistsError                            // redis 查看一个或多个 KEY 是否存在异常
 )
 
 // Cache 内部缓存

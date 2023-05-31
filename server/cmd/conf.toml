@@ -34,6 +34,7 @@ env = "dev" # prod/test/dev
 
 # mysql 配置
 [mysql]
+  store_type = "mysql" # 数据库类型, mysql/sqlite
   [mysql.options]
     max_open_conn = 10 # 最大打开的连接数
     max_idle_conn = 60 # 闲置的连接数
@@ -54,6 +55,10 @@ env = "dev" # prod/test/dev
     password = "pass"
     db_name = "gin_admin"
 
+# sqlite3 数据库配置, 开启此配置后，优先使用此数据库
+[sqlite]
+  filepath = "data.dat" # 文件路径
+
 # redis 配置
 [redis]
   host = "127.0.0.1" # IP或域名
@@ -61,6 +66,7 @@ env = "dev" # prod/test/dev
   password = "foobared" # 密码
   max_retries = 3 # 最大重试次数
   pool_size = 10 # 连接池大小
+  store_type = "mem_sqlite" # 数据库类型, redis/mem_sqlite
 
 # 语言
 [language]

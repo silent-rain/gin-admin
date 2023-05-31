@@ -8,4 +8,5 @@ type RedisConfig struct {
 	Password   string `toml:"password"`    // 连接密码
 	MaxRetries int    `toml:"max_retries"` // 最大重试次数
 	PoolSize   int    `toml:"pool_size"`   // 连接池大小
+	StoreType  string `toml:"store_type"`  // 数据库类型, redis/mem_sqlite
 }
