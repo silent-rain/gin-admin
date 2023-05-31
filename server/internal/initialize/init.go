@@ -6,5 +6,5 @@ func Init() {
 	// 初始化站点配置缓存
 	initWebSiteConfigCache()
 	// 数据库表自动迁移
-	// initTableAutoMigrate()
+	initTableAutoMigrate()
 }
