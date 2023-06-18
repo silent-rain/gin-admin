@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true, // 保存格式化
+  // TOML 格式化
+  "evenBetterToml.formatter.indentEntries": false,
+  "evenBetterToml.formatter.indentTables": true,
+  "evenBetterToml.formatter.inlineTableExpand": true,
+  "evenBetterToml.formatter.indentString": "    ", // 缩进
+  "evenBetterToml.formatter.compactInlineTables": true,
+}
