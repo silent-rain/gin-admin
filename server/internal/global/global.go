@@ -42,7 +42,7 @@ func (g *globalImpl) initConfig() *globalImpl {
 	return g
 }
 
-// 获取全局配置
+// Config 获取全局配置
 func (g *globalImpl) Config() *conf.Config {
 	return g.config
 }
@@ -81,6 +81,9 @@ func (g *globalImpl) initRedis() *globalImpl {
 
 // 初始化内存 Sqlite3 对象
 func (g *globalImpl) initMemSqlite() *globalImpl {
+	if g.Config().Redis.StoreType != "mem_sqlite" {
+		return g
+	}
 	memFile := "file:memdb1?mode=memory&cache=shared"
 	// 用户登录表
 	defaultDB, err := sqlite.NewCache(memFile, redis.Default)
@@ -105,7 +108,7 @@ func (g *globalImpl) initMemSqlite() *globalImpl {
 	return g
 }
 
-// 获取 Redis 全局对象
+// Redis 获取 Redis 全局对象
 func (g *globalImpl) Redis(dbName redis.DBName) redis.DBRepo {
 	// sqlite3 缓存
 	if g.Config().Redis.StoreType == "mem_sqlite" {
@@ -132,6 +135,9 @@ func (g *globalImpl) Redis(dbName redis.DBName) redis.DBRepo {
 
 // 初始化 Sqlite3 全局对象
 func (g *globalImpl) initSqlite() *globalImpl {
+	if g.Config().Environment.Env != "embed" {
+		return g
+	}
 	cfg := g.Config().Sqlite
 	db, err := sqlite.New(*cfg)
 	if err != nil {
@@ -143,10 +149,10 @@ func (g *globalImpl) initSqlite() *globalImpl {
 
 // 初始化 Mysql 全局对象
 func (g *globalImpl) initMysql() *globalImpl {
-	cfg := g.Config().MySQL
-	if cfg.StoreType != "mysql" {
+	if g.Config().Environment.Env == "embed" {
 		return g
 	}
+	cfg := g.Config().MySQL
 	db, err := mysql.New(cfg.Read, cfg.Write, cfg.Options)
 	if err != nil {
 		panic(fmt.Sprintf("初始化 Mysql 数据库失败! err: %v", err))
@@ -155,9 +161,9 @@ func (g *globalImpl) initMysql() *globalImpl {
 	return g
 }
 
-// 获取 Mysql 全局对象
+// Mysql 获取 Mysql 全局对象
 func (g *globalImpl) Mysql() mysql.DBRepo {
-	if g.Config().MySQL.StoreType == "sqlite" {
+	if g.Config().Environment.Env == "embed" {
 		return g.sqlite
 	}
 	return g.mysql

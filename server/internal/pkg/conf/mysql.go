@@ -9,10 +9,9 @@ import (
 
 // MySQLConfig 数据库配置
 type MySQLConfig struct {
-	StoreType string             `toml:"store_type"` // 数据库类型, mysql/sqlite
-	Read      MySQLAuthConfig    `toml:"read"`
-	Write     MySQLAuthConfig    `toml:"write"`
-	Options   MySQLOptionsConfig `toml:"options"`
+	Read    MySQLAuthConfig    `toml:"read"`
+	Write   MySQLAuthConfig    `toml:"write"`
+	Options MySQLOptionsConfig `toml:"options"`
 }
 
 // MySQLConfig Mysql 认证信息

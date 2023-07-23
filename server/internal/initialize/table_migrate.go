@@ -14,7 +14,7 @@ import (
 // 迁移 schema
 // 仅让 sqlite3 进行自动迁移
 func initTableAutoMigrate() {
-	if global.Instance().Config().Sqlite == nil {
+	if global.Instance().Config().Environment.Env != "embed" {
 		return
 	}
 	db := global.Instance().Mysql().GetDbW()
@@ -33,4 +33,5 @@ func initTableAutoMigrate() {
 	db.AutoMigrate(&permissionModel.UserRoleRel{})
 	db.AutoMigrate(&systemModel.Config{})
 	db.AutoMigrate(&systemModel.UserLogin{})
+
 }
