@@ -8,7 +8,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/md5"
 
 	"github.com/gin-gonic/gin"
 )
@@ -58,7 +58,7 @@ func (h *UserService) Add(ctx *gin.Context, req dto.AddUserReq) error {
 	}
 
 	// 密码加密
-	req.Password = utils.EncryptMd5(req.Password)
+	req.Password = md5.EncryptMd5(req.Password)
 
 	// 数据转换
 	user := new(model.User)

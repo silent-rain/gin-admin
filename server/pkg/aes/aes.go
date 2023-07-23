@@ -1,5 +1,5 @@
-// Package utils Aes 加密/解密
-package utils
+// Package aes Aes 加密/解密
+package aes
 
 import (
 	"bytes"

@@ -10,7 +10,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
 	"github.com/silent-rain/gin-admin/internal/pkg/response"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/md5"
 
 	"github.com/gin-gonic/gin"
 )
@@ -145,8 +145,8 @@ func (c *userController) UpdatePassword(ctx *gin.Context) {
 	}
 
 	// 密码加密
-	req.OldPassword = utils.EncryptMd5(req.OldPassword)
-	req.NewPassword = utils.EncryptMd5(req.NewPassword)
+	req.OldPassword = md5.EncryptMd5(req.OldPassword)
+	req.NewPassword = md5.EncryptMd5(req.NewPassword)
 
 	if _, err := c.service.UpdatePassword(ctx, req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -164,7 +164,7 @@ func (c *userController) ResetPassword(ctx *gin.Context) {
 	}
 
 	// 默认密码加密
-	password := utils.EncryptMd5(constant.ServerUserDefaultPwd)
+	password := md5.EncryptMd5(constant.ServerUserDefaultPwd)
 
 	if _, err := c.service.ResetPassword(ctx, req.ID, password); err != nil {
 		response.New(ctx).WithError(err).Json()

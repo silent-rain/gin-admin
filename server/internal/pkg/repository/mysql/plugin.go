@@ -4,7 +4,7 @@ package mysql
 import (
 	"time"
 
-	timeutil "github.com/silent-rain/gin-admin/pkg/utils/time"
+	timeutil "github.com/silent-rain/gin-admin/pkg/time"
 
 	"gorm.io/gorm"
 )

@@ -6,7 +6,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/model"
 	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/slices"
 
 	"gorm.io/gorm"
 )
@@ -96,7 +96,7 @@ func (d *ApiRoleHttpRel) addRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint
 	// 需要新增的关系列表
 	addRels := make([]model.ApiRoleHttpRel, 0)
 	for _, id := range apiIds {
-		if utils.IndexOfArray(relIds, id) == -1 {
+		if slices.IndexOfArray(relIds, id) == -1 {
 			addRels = append(addRels, model.ApiRoleHttpRel{
 				RoleId: roleId,
 				ApiId:  id,
@@ -118,7 +118,7 @@ func (d *ApiRoleHttpRel) delRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint
 	// 需要删除的关系列表
 	delRels := make([]uint, 0)
 	for _, id := range relIds {
-		if utils.IndexOfArray(apiIds, id) == -1 {
+		if slices.IndexOfArray(apiIds, id) == -1 {
 			delRels = append(delRels, id)
 		}
 	}

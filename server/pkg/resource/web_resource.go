@@ -1,6 +1,6 @@
-// Package utils 静态内嵌资源处理
+// Package resource 静态内嵌 WEB 资源
 // 主要用于路由访问路径重置
-package utils
+package resource
 
 import (
 	"embed"

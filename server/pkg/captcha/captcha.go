@@ -1,5 +1,5 @@
-// Package utils 验证码
-package utils
+// Package captcha 验证码
+package captcha
 
 import (
 	"image/color"

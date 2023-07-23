@@ -9,7 +9,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/response"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
-	timeutil "github.com/silent-rain/gin-admin/pkg/utils/time"
+	timeutil "github.com/silent-rain/gin-admin/pkg/time"
 
 	"github.com/gin-gonic/gin"
 )

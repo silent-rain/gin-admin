@@ -8,7 +8,7 @@ import (
 	DTO "github.com/silent-rain/gin-admin/internal/dto"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
 	"github.com/silent-rain/gin-admin/internal/pkg/response"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/md5"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,7 +55,7 @@ func (c *userApiTokenController) Add(ctx *gin.Context) {
 	}
 
 	// 生成用户API接口Token
-	bean.Token = utils.GenerateTUserApiToken()
+	bean.Token = md5.GenerateUserApiToken()
 	_, err := c.service.Add(ctx, bean)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()

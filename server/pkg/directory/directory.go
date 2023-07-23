@@ -1,5 +1,5 @@
-// Package utils 文件处理工具
-package utils
+// Package directory 目录操作
+package directory
 
 import "os"
 

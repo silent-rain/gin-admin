@@ -8,7 +8,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
 	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/slices"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -180,7 +180,7 @@ func (d *User) updateUserRoles(tx *gorm.DB, userId uint, roleIds []uint) error {
 	// 新增用户角色关联信息列表
 	addUserRoles := make([]model.UserRoleRel, 0)
 	for _, roleId := range roleIds {
-		if utils.IndexOfArray(userRoleIds, roleId) == -1 {
+		if slices.IndexOfArray(userRoleIds, roleId) == -1 {
 			addUserRoles = append(addUserRoles, model.UserRoleRel{
 				UserId: userId,
 				RoleId: roleId,
@@ -191,7 +191,7 @@ func (d *User) updateUserRoles(tx *gorm.DB, userId uint, roleIds []uint) error {
 	// 删除用户角色关联信息列表
 	deleteUserRoleIds := make([]uint, 0)
 	for _, roleId := range userRoleIds {
-		if utils.IndexOfArray(roleIds, roleId) == -1 {
+		if slices.IndexOfArray(roleIds, roleId) == -1 {
 			deleteUserRoleIds = append(deleteUserRoleIds, roleId)
 		}
 	}

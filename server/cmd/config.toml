@@ -3,7 +3,7 @@ app_name = "gin-admin"
 
 # 系统环境
 [environment]
-env = "embed" # prod/test/dev/embed
+env = "dev" # prod/test/dev/embed
 
 # 系统服务
 [server]

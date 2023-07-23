@@ -12,7 +12,7 @@ import (
 
 // 上传
 type uploadController struct {
-	service service.UploadService
+	service *service.UploadService
 }
 
 // NewUploadController 创建上传对象

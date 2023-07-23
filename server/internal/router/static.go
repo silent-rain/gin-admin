@@ -8,7 +8,7 @@ import (
 	"github.com/silent-rain/gin-admin/assets"
 	"github.com/silent-rain/gin-admin/internal/app/public/controller"
 	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/resource"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,9 +16,9 @@ import (
 // 初始化静态资源路由
 func InitStaticRouter(engine *gin.Engine) {
 	// 加载静态资源
-	engine.StaticFS("/static", http.FS(utils.NewResource()))
+	engine.StaticFS("/static", http.FS(resource.NewResource()))
 	// Api Docs 静态内嵌资源
-	engine.StaticFS("/docs", http.FS(utils.NewDocsResource()))
+	engine.StaticFS("/docs", http.FS(resource.NewDocsResource()))
 	// 本地静态资源
 	engine.Static("/upload", global.Instance().Config().Server.Upload.FilePath)
 	// WEB 首页模板

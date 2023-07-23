@@ -6,7 +6,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
 	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
-	"github.com/silent-rain/gin-admin/pkg/utils"
+	"github.com/silent-rain/gin-admin/pkg/slices"
 
 	"gorm.io/gorm"
 )
@@ -94,7 +94,7 @@ func (d *RoleMenuRel) addRoleMenuRels(tx *gorm.DB, menuIds, roleMenuIds []uint, 
 	// 新增的 menuId 列表
 	addRoleMenuRels := make([]model.RoleMenuRel, 0)
 	for _, menuId := range menuIds {
-		if utils.IndexOfArray(roleMenuIds, menuId) == -1 {
+		if slices.IndexOfArray(roleMenuIds, menuId) == -1 {
 			addRoleMenuRels = append(addRoleMenuRels, model.RoleMenuRel{
 				RoleId: roleId,
 				MenuId: menuId,
@@ -116,7 +116,7 @@ func (d *RoleMenuRel) deleteRoleMenuIds(tx *gorm.DB, menuIds, roleMenuIds []uint
 	// 删除的 menuId 列表
 	deleteRoleMenuIds := make([]uint, 0)
 	for _, roleId := range roleMenuIds {
-		if utils.IndexOfArray(menuIds, roleId) == -1 {
+		if slices.IndexOfArray(menuIds, roleId) == -1 {
 			deleteRoleMenuIds = append(deleteRoleMenuIds, roleId)
 		}
 	}

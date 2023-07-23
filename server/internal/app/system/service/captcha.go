@@ -5,8 +5,8 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
+	"github.com/silent-rain/gin-admin/pkg/captcha"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
-	"github.com/silent-rain/gin-admin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +33,7 @@ func (h *captchaService) Captcha(ctx *gin.Context) (dto.Captcha, error) {
 		B64s:      "",
 	}
 
-	captchaId, b64s, err := utils.NewCaptcha().MekeCaptcha(constant.CaptchaType)
+	captchaId, b64s, err := captcha.NewCaptcha().MekeCaptcha(constant.CaptchaType)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.CaptchaGenerateError).Errorf("%v", err)
 		return result, errcode.CaptchaGenerateError
@@ -50,7 +50,7 @@ func (h *captchaService) CaptchaVerify(ctx *gin.Context, captchaId string, verif
 	// 注意 Verify(id, VerifyValue, true) 中的 true参数
 	// 当为 true 时，校验 传入的id 的验证码，校验完 这个ID的验证码就要在内存中删除
 	// 当为 false 时，校验 传入的id 的验证码，校验完 这个ID的验证码不删除
-	if !utils.CaptchaStore.Verify(captchaId, verifyValue, true) {
+	if !captcha.CaptchaStore.Verify(captchaId, verifyValue, true) {
 		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
 		return errcode.CaptchaVerifyError
 	}
@@ -58,8 +58,8 @@ func (h *captchaService) CaptchaVerify(ctx *gin.Context, captchaId string, verif
 }
 
 // 检查验证码
-func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) error {
-	if captcha == "" {
+func chechkCaptcha(ctx *gin.Context, captchaId, captchaValue string) error {
+	if captchaValue == "" {
 		log.New(ctx).WithCode(errcode.SessionGetCaptchaEmptyError).Error("")
 		return errcode.SessionGetCaptchaEmptyError
 	}
@@ -69,7 +69,7 @@ func chechkCaptcha(ctx *gin.Context, captchaId, captcha string) error {
 	}
 
 	// 校验验证码
-	if !utils.CaptchaStore.Verify(captchaId, captcha, true) {
+	if !captcha.CaptchaStore.Verify(captchaId, captchaValue, true) {
 		log.New(ctx).WithCode(errcode.CaptchaVerifyError).Error("")
 		return errcode.CaptchaVerifyError
 	}

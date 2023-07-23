@@ -1,5 +1,5 @@
-// Package utils MD5 加密
-package utils
+// Package md5 MD5 加密
+package md5
 
 import (
 	"testing"
