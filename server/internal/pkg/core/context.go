@@ -10,15 +10,19 @@ var contextKey = "__context__"
 // 自定义 Context
 type context struct {
 	// 用户信息
-	UserId   uint   // 用户 ID
-	Nickname string // 用户昵称
+	// 用户 ID
+	UserId uint
+	// 用户昵称
+	Nickname string
 
 	// 日志链路 ID
 	TraceId string
 
 	// 中间件处理
-	DisableCheckLogin  bool // 禁用登录检查
-	DisableRateLimiter bool // 禁用接口限流
+	// 禁用登录检查
+	DisableCheckLogin bool
+	// 禁用接口限流
+	DisableRateLimiter bool
 }
 
 // Context 获取自定义 Context
