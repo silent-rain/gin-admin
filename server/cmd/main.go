@@ -30,7 +30,7 @@ func main() {
 	initialize.Init()
 
 	// 调试模式
-	gin.SetMode(global.Instance().Config().Environment.Active())
+	gin.SetMode(global.Instance().Config().Environment.GinMode())
 	// 强制终端日志有色显示
 	gin.ForceConsoleColor()
 

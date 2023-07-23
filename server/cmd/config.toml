@@ -1,6 +1,9 @@
+# 应用名称
+app_name = "gin-admin"
+
 # 系统环境
 [environment]
-env = "dev" # prod/test/dev
+env = "dev" # prod/test/dev/embed
 
 # 系统服务
 [server]

@@ -15,6 +15,7 @@ var (
 
 // Config 定义配置信息
 type Config struct {
+	AppName     string             `toml:"app_name"`    // 应用名称
 	Environment *EnvironmentConfig `toml:"environment"` // 系统环境
 	Server      *ServerConfig      `toml:"server"`      // 系统服务配置
 	JWT         *JWTConfig         `toml:"jwt"`         // jwt 鉴权
