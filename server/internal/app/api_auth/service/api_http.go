@@ -117,7 +117,7 @@ func (h *ApiHttpService) Update(ctx *gin.Context, bean model.ApiHttp) (int64, er
 
 // Delete 删除
 func (h *ApiHttpService) Delete(ctx *gin.Context, id uint) (int64, error) {
-	childrenConfig, err := h.dao.Children(id)
+	childrenConfig, err := h.dao.Childrens(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return 0, errcode.DBQueryError

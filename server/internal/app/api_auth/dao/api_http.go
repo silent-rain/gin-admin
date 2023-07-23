@@ -129,8 +129,8 @@ func (d *ApiHttp) UpdateStatus(id uint, status uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Children 通过父 ID 获取子配置列表
-func (d *ApiHttp) Children(parentId uint) ([]model.ApiHttp, error) {
+// Childrens 通过父 ID 获取子配置列表
+func (d *ApiHttp) Childrens(parentId uint) ([]model.ApiHttp, error) {
 	beans := make([]model.ApiHttp, 0)
 	result := d.GetDbR().Where("parent_id = ?", parentId).
 		Order("sort ASC").Order("id ASC").
