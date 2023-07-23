@@ -66,7 +66,7 @@ export default defineConfig(({ command }) => {
         localEnabled: command === 'serve',
         prodEnabled: prodMock,
         injectCode: `
-          import { setupProdMockServer } from '../mock-prod-server';
+          import { setupProdMockServer } from '../utils/mock-prod-server';
           setupProdMockServer();
         `,
         logger: true,

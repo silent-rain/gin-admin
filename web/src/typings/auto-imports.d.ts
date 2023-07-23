@@ -73,7 +73,7 @@ declare global {
   const getApiHttpTree: typeof import('../api/api-auth/api-http')['getApiHttpTree']
   const getApiRoleHttpRelList: typeof import('../api/api-auth/api-role-http-rel')['getApiRoleHttpRelList']
   const getCaptcha: typeof import('../api/system/login')['getCaptcha']
-  const getConfigChildrenByKey: typeof import('../api/data-center/config')['getConfigChildrenByKey']
+  const getConfigChildrensByKey: typeof import('../api/data-center/config')['getConfigChildrensByKey']
   const getConfigInfo: typeof import('../api/data-center/config')['getConfigInfo']
   const getConfigList: typeof import('../api/data-center/config')['getConfigList']
   const getConfigTree: typeof import('../api/data-center/config')['getConfigTree']

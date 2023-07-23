@@ -1,24 +1,28 @@
 <template>
   <el-container :class="classObj">
-    <el-aside>
-      <Sidebar v-if="settings.showLeftMenu" />
+    <!-- 侧边栏 -->
+    <el-aside v-if="settings.showLeftMenu">
+      <Sidebar />
     </el-aside>
 
     <el-container>
+      <!-- 顶部导航栏 -->
       <el-header :class="headerClassObj">
         <Navbar v-if="settings.showTopNavbar" />
         <TagsView v-if="settings.showTagsView" />
       </el-header>
+      <!-- 主内容区域 -->
       <el-main>
         <div
-          v-if="basicStore.isMobile() && sidebar.opened"
+          v-if="sidebar.opened"
           class="drawer-bg"
           @click="handleClickOutside"
         />
         <AppMain />
       </el-main>
-      <el-footer v-if="!basicStore.isMobile()">
-        <Footer v-if="settings.showFooter" />
+      <!-- 页脚 -->
+      <el-footer v-if="settings.showFooter">
+        <Footer />
       </el-footer>
     </el-container>
   </el-container>
@@ -40,10 +44,10 @@ const basicStore = useBasicStore();
 const classObj = computed(() => {
   return {
     containerx: true,
+    headerx: true,
     'close-sidebar': !sidebar.opened,
     'hide-sidebar': !settings.showLeftMenu,
     'fixed-header': settings.fixedHeader,
-    mobile: basicStore.device === 'mobile',
   };
 });
 const headerClassObj = computed(() => {
@@ -64,6 +68,7 @@ const handleClickOutside = () => {
 </script>
 
 <style lang="scss" scoped>
+// pc 默认展开样式
 .containerx {
   .el-aside {
     width: var(--side-bar-width);
@@ -73,8 +78,20 @@ const handleClickOutside = () => {
 
   .el-container {
     margin-left: var(--side-bar-width);
+
+    // 顶部导航
+    .el-header {
+      --el-header-padding: 0 0;
+
+      // 侧边栏收缩按钮
+      :deep(.hamburger-container) {
+        margin-left: 10px;
+      }
+    }
   }
 }
+
+// pc 默收缩样式
 .containerx.close-sidebar {
   .el-aside {
     width: var(--side-bar-min-width) !important;
@@ -84,64 +101,132 @@ const handleClickOutside = () => {
     margin-left: var(--side-bar-min-width);
   }
 }
-.containerx.hide-sidebar .el-aside {
-  width: 0 !important;
 
+// pc 隐藏侧边栏
+.containerx.hide-sidebar {
+  .el-aside {
+    width: 0 !important;
+  }
+  // 右侧层容器
   .el-container {
     margin-left: 0;
+
+    .el-header {
+      // 侧边栏收缩按钮
+      :deep(.hamburger-container) {
+        display: none;
+      }
+      // 面包屑导航
+      // :deep(.el-breadcrumb) {
+      //   display: none;
+      // }
+    }
   }
 }
 
 // header
-.containerx .el-header {
-  height: auto;
-}
+// .containerx .el-header {
+//   height: auto;
+// }
 // 固定 header
-.containerx.fixed-header .el-main {
-  height: calc(
-    100vh - #{var(--nav-bar-height)} - #{var(--tag-view-height)} - #{var(
-        --footer-height
-      )}
-  );
-}
+// .containerx.fixed-header .el-main {
+//   height: calc(
+//     100vh - #{var(--nav-bar-height)} - #{var(--tag-view-height)} - #{var(--footer-height)}
+//   );
+// }
+// .el-main {
+//   min-height: 100%;
+// }
 
 .el-footer {
   height: var(--footer-height);
+  width: 100%;
   background: #fafafa;
   // position: absolute;
   bottom: 0;
 }
 
+// .el-footer {
+//   height: var(--footer-height);
+//   background: #fafafa;
+//   position: absolute;
+//   bottom: 0;
+// }
+
 // 移动端布局
-.containerx.mobile {
-  .el-aside {
-    z-index: 300;
-    display: none;
-  }
-  .el-container {
-    // margin-left: var(--side-bar-min-width);
-    margin-left: 0;
-    z-index: 100;
-  }
-}
-// 移动端布局 - 显示 sidebar
-.containerx.mobile:not(.close-sidebar) .el-aside {
-  display: block;
-}
+@media screen and (max-width: 760px) {
+  // 展开样式
+  .containerx {
+    .el-aside {
+      width: var(--side-bar-width);
+      z-index: 300;
+      background-color: var(--el-menu-bg-color);
+      position: fixed;
+    }
 
-// 移动端主内容区域
-.container.mobile.fixed-header .el-main {
-  height: calc(100vh - #{var(--nav-bar-height)});
-}
+    .el-container {
+      margin-left: 0;
 
-// 移动端点击隐藏侧边栏
-.drawer-bg {
-  background: #000;
-  opacity: 0.3;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  position: absolute;
-  z-index: 999;
+      // 顶部导航
+      .el-header {
+        // 侧边栏收缩按钮
+        :deep(.hamburger-container) {
+          z-index: 300;
+          margin-left: calc(#{var(--side-bar-width)} + 10px);
+          display: block;
+        }
+        // 面包屑导航
+        :deep(.el-breadcrumb) {
+          display: none;
+        }
+        // tag 标签
+        :deep(.tags-view-container) {
+          display: none;
+        }
+      }
+
+      .el-main {
+        padding: 10px;
+      }
+    }
+  }
+
+  // 收缩样式
+  .containerx.close-sidebar {
+    .el-aside {
+      z-index: 300;
+      display: none;
+    }
+    .el-container {
+      margin-left: 0;
+
+      // 顶部导航
+      .el-header {
+        // 侧边栏收缩按钮
+        :deep(.hamburger-container) {
+          z-index: 300;
+          margin-left: 10px;
+          display: block;
+        }
+      }
+    }
+  }
+
+  // 移动端主内容区域
+  // .container.mobile.fixed-header .el-main {
+  //   height: calc(100vh - #{var(--nav-bar-height)});
+  // }
+
+  // 移动端点击隐藏侧边栏
+  .drawer-bg {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    margin-left: -10px;
+    background: #000;
+    opacity: 0.3;
+    top: 0;
+    z-index: 200;
+  }
 }
 </style>
