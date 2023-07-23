@@ -163,7 +163,7 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
 import {
-  getConfigChildrenByKey,
+  getConfigChildrensByKey,
   batchUpdateConfig,
 } from '@/api/data-center/config';
 import { ConfigListRsp, WebsiteConfig } from '@/typings/api/data-center/config';
@@ -217,14 +217,14 @@ const websitePropagandas = computed({
 });
 
 onBeforeMount(() => {
-  fetchConfigChildrenByKey();
+  fetchConfigChildrensByKey();
 });
 
 // 通过上级 key 获取子配置列表
-const fetchConfigChildrenByKey = async () => {
+const fetchConfigChildrensByKey = async () => {
   try {
     const resp = (
-      await getConfigChildrenByKey({
+      await getConfigChildrensByKey({
         key: WebsiteSettings,
       })
     ).data as ConfigListRsp;
@@ -256,7 +256,7 @@ const submitForm = async () => {
 
   try {
     await batchUpdateConfig(data);
-    await fetchConfigChildrenByKey();
+    await fetchConfigChildrensByKey();
     ElMessage.success('操作成功');
   } catch (error) {
     console.log(error);

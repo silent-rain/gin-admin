@@ -48,7 +48,7 @@ func (d *UserApiToken) List(req dto.QueryUserApiTokenReq) ([]dto.UserApiTokenRes
 
 	bean := make([]dto.UserApiTokenResp, 0)
 	result := tx.Offset(req.Offset()).Limit(req.PageSize).
-		Order("sort DESC").Order("updated_at DESC").
+		Order("sort DESC").Order("id ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error

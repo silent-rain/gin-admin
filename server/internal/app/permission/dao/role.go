@@ -52,7 +52,7 @@ func (d *Role) List(req dto.QueryRoleReq) ([]model.Role, int64, error) {
 
 	bean := make([]model.Role, 0)
 	result := stats().Offset(req.Offset()).Limit(req.PageSize).
-		Order("sort DESC").Order("updated_at DESC").
+		Order("sort DESC").Order("id ASC").
 		Find(&bean)
 	if result.Error != nil {
 		return nil, 0, result.Error
