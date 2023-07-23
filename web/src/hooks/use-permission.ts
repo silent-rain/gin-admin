@@ -27,11 +27,6 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
     } else {
       const url = menu.component.replace('@', '..');
       parentNode.component = modules[url];
-      // parentNode.component = importModule(url);
-      // parentNode.component = () => import(/* @vite-ignore */ url);
-      // parentNode.component = defineAsyncComponent(
-      //   () => import(/* @vite-ignore */ url),
-      // );
     }
 
     // 元数据处理
@@ -51,12 +46,6 @@ export const asyncRoutesByMenus = (menus: Menu[]) => {
   }
   return routes;
 };
-
-// 动态加载模块
-function importModule(path: string) {
-  // who knows what will be imported here?
-  return defineAsyncComponent(() => import(/* @vite-ignore */ path));
-}
 
 // 过滤异步路由
 export const filterAsyncRouter = (menus: Menu[]) => {
