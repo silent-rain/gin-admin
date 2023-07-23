@@ -10,7 +10,7 @@ import (
 
 var (
 	// ConfigFile 配置文件路径
-	ConfigFile = "./conf.toml"
+	ConfigFile = "./config.toml"
 )
 
 // Config 定义配置信息
