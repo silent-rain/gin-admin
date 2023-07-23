@@ -13,19 +13,19 @@ import (
 )
 
 // 字典数据信息
-type dictDataCenterController struct {
-	service service.DictDataService
+type dictDataController struct {
+	service *service.DictDataService
 }
 
 // NewDictDataController 创建字典数据信息控制器对象
-func NewDictDataController() *dictDataCenterController {
-	return &dictDataCenterController{
+func NewDictDataController() *dictDataController {
+	return &dictDataController{
 		service: service.NewDictDataService(),
 	}
 }
 
 // List 获取所有字典数据信息列表
-func (c *dictDataCenterController) List(ctx *gin.Context) {
+func (c *dictDataController) List(ctx *gin.Context) {
 	req := dto.QueryDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -41,7 +41,7 @@ func (c *dictDataCenterController) List(ctx *gin.Context) {
 }
 
 // Add 添加字典数据信息
-func (c *dictDataCenterController) Add(ctx *gin.Context) {
+func (c *dictDataController) Add(ctx *gin.Context) {
 	req := dto.AddDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -62,7 +62,7 @@ func (c *dictDataCenterController) Add(ctx *gin.Context) {
 }
 
 // Update 更新字典数据信息
-func (c *dictDataCenterController) Update(ctx *gin.Context) {
+func (c *dictDataController) Update(ctx *gin.Context) {
 	req := dto.UpdateDictDataReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -83,7 +83,7 @@ func (c *dictDataCenterController) Update(ctx *gin.Context) {
 }
 
 // Delete 删除字典数据信息
-func (c *dictDataCenterController) Delete(ctx *gin.Context) {
+func (c *dictDataController) Delete(ctx *gin.Context) {
 	req := DTO.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -99,7 +99,7 @@ func (c *dictDataCenterController) Delete(ctx *gin.Context) {
 }
 
 // BatchDelete 批量删除字典数据信息
-func (c *dictDataCenterController) BatchDelete(ctx *gin.Context) {
+func (c *dictDataController) BatchDelete(ctx *gin.Context) {
 	req := DTO.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -114,15 +114,15 @@ func (c *dictDataCenterController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新字典数据信息状态
-func (c *dictDataCenterController) Status(ctx *gin.Context) {
+// UpdateStatus 更新字典数据信息状态
+func (c *dictDataController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

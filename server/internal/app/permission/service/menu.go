@@ -11,32 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// MenuService 菜单接口
-type MenuService interface {
-	AllTree(ctx *gin.Context) ([]model.Menu, int64, error)
-	Tree(ctx *gin.Context, req dto.QueryMenuReq) ([]model.Menu, int64, error)
-	Add(ctx *gin.Context, menu model.Menu) (uint, error)
-	Update(ctx *gin.Context, menu model.Menu) (int64, error)
-	Delete(ctx *gin.Context, id uint) (int64, error)
-	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-	ChildrenMenu(ctx *gin.Context, parentId uint) ([]model.Menu, error)
-}
-
-// 菜单
-type menuService struct {
-	dao dao.Menu
+// MenuService 菜单
+type MenuService struct {
+	dao *dao.Menu
 }
 
 // NewMenuService 创建菜单对象
-func NewMenuService() *menuService {
-	return &menuService{
+func NewMenuService() *MenuService {
+	return &MenuService{
 		dao: dao.NewMenuDao(),
 	}
 }
 
 // AllTree 获取所有菜单树
-func (s *menuService) AllTree(ctx *gin.Context) ([]model.Menu, int64, error) {
+func (s *MenuService) AllTree(ctx *gin.Context) ([]model.Menu, int64, error) {
 	menus, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -49,7 +37,7 @@ func (s *menuService) AllTree(ctx *gin.Context) ([]model.Menu, int64, error) {
 }
 
 // Tree 获取菜单树
-func (s *menuService) Tree(ctx *gin.Context, req dto.QueryMenuReq) ([]model.Menu, int64, error) {
+func (s *MenuService) Tree(ctx *gin.Context, req dto.QueryMenuReq) ([]model.Menu, int64, error) {
 	menuList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -77,7 +65,7 @@ func (s *menuService) Tree(ctx *gin.Context, req dto.QueryMenuReq) ([]model.Menu
 }
 
 // Add 添加菜单
-func (s *menuService) Add(ctx *gin.Context, menu model.Menu) (uint, error) {
+func (s *MenuService) Add(ctx *gin.Context, menu model.Menu) (uint, error) {
 	id, err := s.dao.Add(menu)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBAddError).Errorf("%v", err)
@@ -87,7 +75,7 @@ func (s *menuService) Add(ctx *gin.Context, menu model.Menu) (uint, error) {
 }
 
 // Update 更新菜单
-func (s *menuService) Update(ctx *gin.Context, menu model.Menu) (int64, error) {
+func (s *MenuService) Update(ctx *gin.Context, menu model.Menu) (int64, error) {
 	row, err := s.dao.Update(menu)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
@@ -97,8 +85,8 @@ func (s *menuService) Update(ctx *gin.Context, menu model.Menu) (int64, error) {
 }
 
 // Delete 删除菜单
-func (s *menuService) Delete(ctx *gin.Context, id uint) (int64, error) {
-	childrenMenu, err := s.dao.ChildrenMenu(id)
+func (s *MenuService) Delete(ctx *gin.Context, id uint) (int64, error) {
+	childrenMenu, err := s.dao.ChildrenMenus(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return 0, errcode.DBQueryError
@@ -117,7 +105,7 @@ func (s *menuService) Delete(ctx *gin.Context, id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除菜单, 批量删除，不校验是否存在子菜单
-func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
+func (s *MenuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
@@ -126,9 +114,9 @@ func (s *menuService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	return row, nil
 }
 
-// Status 更新菜单状态
-func (s *menuService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := s.dao.Status(id, status)
+// UpdateStatus 更新菜单状态
+func (s *MenuService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := s.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError
@@ -157,9 +145,9 @@ func menuListToTree(src []model.Menu, parentId *uint) []model.Menu {
 	return tree
 }
 
-// ChildrenMenu 通过父 ID 获取子配置列表
-func (s *menuService) ChildrenMenu(ctx *gin.Context, parentId uint) ([]model.Menu, error) {
-	results, err := s.dao.ChildrenMenu(parentId)
+// ChildrenMenus 通过父 ID 获取子配置列表
+func (s *MenuService) ChildrenMenus(ctx *gin.Context, parentId uint) ([]model.Menu, error) {
+	results, err := s.dao.ChildrenMenus(parentId)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return nil, errcode.DBQueryError

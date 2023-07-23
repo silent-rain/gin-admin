@@ -10,33 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Menu 菜单接口
-type Menu interface {
-	All() ([]model.Menu, int64, error)
-	List(req dto.QueryMenuReq) ([]model.Menu, int64, error)
-	Add(bean model.Menu) (uint, error)
-	Update(bean model.Menu) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-	ListByRoleIds(roleIds []uint) ([]model.Menu, error)
-	ChildrenMenu(parentId uint) ([]model.Menu, error)
-}
-
-// 菜单
-type menu struct {
+// Menu 菜单
+type Menu struct {
 	mysql.DBRepo
 }
 
 // NewMenuDao 创建菜单 Dao 对象
-func NewMenuDao() *menu {
-	return &menu{
+func NewMenuDao() *Menu {
+	return &Menu{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // All 获取所有菜单列表
-func (d *menu) All() ([]model.Menu, int64, error) {
+func (d *Menu) All() ([]model.Menu, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		return stats
@@ -52,7 +39,7 @@ func (d *menu) All() ([]model.Menu, int64, error) {
 }
 
 // List 查询菜单列表
-func (d *menu) List(req dto.QueryMenuReq) ([]model.Menu, int64, error) {
+func (d *Menu) List(req dto.QueryMenuReq) ([]model.Menu, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.Title != "" {
@@ -74,7 +61,7 @@ func (d *menu) List(req dto.QueryMenuReq) ([]model.Menu, int64, error) {
 }
 
 // Add 添加菜单
-func (d *menu) Add(bean model.Menu) (uint, error) {
+func (d *Menu) Add(bean model.Menu) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -83,13 +70,13 @@ func (d *menu) Add(bean model.Menu) (uint, error) {
 }
 
 // Update 更新菜单
-func (d *menu) Update(bean model.Menu) (int64, error) {
+func (d *Menu) Update(bean model.Menu) (int64, error) {
 	result := d.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除菜单
-func (d *menu) Delete(id uint) (int64, error) {
+func (d *Menu) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.Menu{
 		ID: id,
 	})
@@ -97,7 +84,7 @@ func (d *menu) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除菜单
-func (d *menu) BatchDelete(ids []uint) (int64, error) {
+func (d *Menu) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.Menu, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.Menu{
@@ -108,8 +95,8 @@ func (d *menu) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *menu) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *Menu) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.Menu{
 		ID:     id,
 		Status: status,
@@ -117,8 +104,9 @@ func (d *menu) Status(id uint, status uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// 通过 role_ids 获取菜单列表, 菜单去重
-func (d *menu) ListByRoleIds(roleIds []uint) ([]model.Menu, error) {
+// 通过 role_ids 获取菜单列表
+// 同时菜单去重
+func (d *Menu) ListByRoleIds(roleIds []uint) ([]model.Menu, error) {
 	beans := make([]model.Menu, 0)
 	result := d.GetDbR().Model(&model.Menu{}).
 		Joins("left join perm_role_menu_rel on perm_role_menu_rel.menu_id = perm_menu.id").
@@ -133,8 +121,8 @@ func (d *menu) ListByRoleIds(roleIds []uint) ([]model.Menu, error) {
 	return beans, nil
 }
 
-// ChildrenMenu 通过父 ID 获取子菜单列表
-func (d *menu) ChildrenMenu(parentId uint) ([]model.Menu, error) {
+// ChildrenMenus 通过父 ID 获取子菜单列表
+func (d *Menu) ChildrenMenus(parentId uint) ([]model.Menu, error) {
 	bean := make([]model.Menu, 0)
 	result := d.GetDbR().Where("status=1").Where("parent_id=?", parentId).
 		Order("sort ASC").Order("id ASC").

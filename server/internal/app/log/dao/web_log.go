@@ -10,26 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// WebLog 系统日志接口
-type WebLog interface {
-	List(req dto.QueryWebLogReq) ([]model.WebLog, int64, error)
-	Add(bean model.WebLog) (uint, error)
-}
-
-// WEB 日志
-type webLog struct {
+// WebLog WEB 日志
+type WebLog struct {
 	mysql.DBRepo
 }
 
 // NewWebLogDao 创建 WEB 日志对象
-func NewWebLogDao() *webLog {
-	return &webLog{
+func NewWebLogDao() *WebLog {
+	return &WebLog{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询 WEB 日志列表
-func (d *webLog) List(req dto.QueryWebLogReq) ([]model.WebLog, int64, error) {
+func (d *WebLog) List(req dto.QueryWebLogReq) ([]model.WebLog, int64, error) {
 	tx := d.GetDbR()
 	if req.Nickname != "" {
 		tx = tx.Where("nickname = ?", req.Nickname)
@@ -67,7 +61,7 @@ func (d *webLog) List(req dto.QueryWebLogReq) ([]model.WebLog, int64, error) {
 }
 
 // Add 添加 WEB 日志
-func (d *webLog) Add(bean model.WebLog) (uint, error) {
+func (d *WebLog) Add(bean model.WebLog) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error

@@ -124,15 +124,15 @@ func (c *apiAuthController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新Http协议接口信息状态
-func (c *apiAuthController) Status(ctx *gin.Context) {
+// UpdateStatus 更新Http协议接口信息状态
+func (c *apiAuthController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

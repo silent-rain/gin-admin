@@ -15,7 +15,7 @@ import (
 
 // 角色
 type roleController struct {
-	service service.RoleService
+	service *service.RoleService
 }
 
 // NewRoleController 创建角色对象
@@ -128,15 +128,15 @@ func (c *roleController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新角色状态
-func (c *roleController) Status(ctx *gin.Context) {
+// UpdateStatus 更新角色状态
+func (c *roleController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

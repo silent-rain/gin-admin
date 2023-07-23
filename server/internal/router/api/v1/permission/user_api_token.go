@@ -23,6 +23,6 @@ func InitUserApiTokenRouter(group *gin.RouterGroup) {
 		// 批量删除 Token 令牌
 		userApiToken.DELETE("/batchDelete", api.BatchDelete)
 		// 更新 Token 令牌状态
-		userApiToken.PUT("/status", api.Status)
+		userApiToken.PUT("/updateStatus", api.UpdateStatus)
 	}
 }

@@ -11,30 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// DictDataService 字典数据信息接口
-type DictDataService interface {
-	List(ctx *gin.Context, req dto.QueryDictDataReq) ([]model.DictData, int64, error)
-	Add(ctx *gin.Context, bean model.DictData) (uint, error)
-	Update(ctx *gin.Context, bean model.DictData) (int64, error)
-	Delete(ctx *gin.Context, id uint) (int64, error)
-	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-}
-
-// 字典数据信息
-type dictDataService struct {
-	dao dao.DictData
+// DictDataService 字典数据信息
+type DictDataService struct {
+	dao *dao.DictData
 }
 
 // NewDictDataService 创建字典数据信息服务对象
-func NewDictDataService() *dictDataService {
-	return &dictDataService{
+func NewDictDataService() *DictDataService {
+	return &DictDataService{
 		dao: dao.NewDictDataDao(),
 	}
 }
 
 // List 获取字典数据信息列表
-func (s *dictDataService) List(ctx *gin.Context, req dto.QueryDictDataReq) ([]model.DictData, int64, error) {
+func (s *DictDataService) List(ctx *gin.Context, req dto.QueryDictDataReq) ([]model.DictData, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -45,7 +35,7 @@ func (s *dictDataService) List(ctx *gin.Context, req dto.QueryDictDataReq) ([]mo
 }
 
 // Add 添加字典数据信息
-func (h *dictDataService) Add(ctx *gin.Context, bean model.DictData) (uint, error) {
+func (h *DictDataService) Add(ctx *gin.Context, bean model.DictData) (uint, error) {
 	_, ok, err := h.dao.InfoByValue(bean.DictId, bean.Value)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -65,7 +55,7 @@ func (h *dictDataService) Add(ctx *gin.Context, bean model.DictData) (uint, erro
 }
 
 // Update 更新字典数据信息
-func (h *dictDataService) Update(ctx *gin.Context, bean model.DictData) (int64, error) {
+func (h *DictDataService) Update(ctx *gin.Context, bean model.DictData) (int64, error) {
 	row, err := h.dao.Update(bean)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
@@ -75,7 +65,7 @@ func (h *dictDataService) Update(ctx *gin.Context, bean model.DictData) (int64, 
 }
 
 // Delete 删除字典数据信息
-func (h *dictDataService) Delete(ctx *gin.Context, id uint) (int64, error) {
+func (h *DictDataService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
@@ -85,7 +75,7 @@ func (h *dictDataService) Delete(ctx *gin.Context, id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除字典数据信息
-func (h *dictDataService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
+func (h *DictDataService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
@@ -94,9 +84,9 @@ func (h *dictDataService) BatchDelete(ctx *gin.Context, ids []uint) (int64, erro
 	return row, nil
 }
 
-// Status 更新字典数据信息状态
-func (h *dictDataService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := h.dao.Status(id, status)
+// UpdateStatus 更新字典数据信息状态
+func (h *DictDataService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := h.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError

@@ -11,31 +11,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RoleService 角色接口
-type RoleService interface {
-	All(ctx *gin.Context) ([]model.Role, int64, error)
-	List(ctx *gin.Context, req dto.QueryRoleReq) ([]model.Role, int64, error)
-	Add(ctx *gin.Context, role model.Role) (uint, error)
-	Update(ctx *gin.Context, role model.Role) (int64, error)
-	Delete(ctx *gin.Context, id uint) (int64, error)
-	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-}
-
-// 角色
-type roleService struct {
-	dao dao.Role
+// RoleService 角色
+type RoleService struct {
+	dao *dao.Role
 }
 
 // NewRoleService 创建角色对象
-func NewRoleService() *roleService {
-	return &roleService{
+func NewRoleService() *RoleService {
+	return &RoleService{
 		dao: dao.NewRoleDao(),
 	}
 }
 
 // All 获取所有角色列表
-func (s *roleService) All(ctx *gin.Context) ([]model.Role, int64, error) {
+func (s *RoleService) All(ctx *gin.Context) ([]model.Role, int64, error) {
 	roles, total, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -46,7 +35,7 @@ func (s *roleService) All(ctx *gin.Context) ([]model.Role, int64, error) {
 }
 
 // List 获取所有角色列表
-func (s *roleService) List(ctx *gin.Context, req dto.QueryRoleReq) ([]model.Role, int64, error) {
+func (s *RoleService) List(ctx *gin.Context, req dto.QueryRoleReq) ([]model.Role, int64, error) {
 	roles, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -57,7 +46,7 @@ func (s *roleService) List(ctx *gin.Context, req dto.QueryRoleReq) ([]model.Role
 }
 
 // Add 添加角色
-func (h *roleService) Add(ctx *gin.Context, role model.Role) (uint, error) {
+func (h *RoleService) Add(ctx *gin.Context, role model.Role) (uint, error) {
 	_, ok, err := h.dao.InfoByName(role.Name)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -77,7 +66,7 @@ func (h *roleService) Add(ctx *gin.Context, role model.Role) (uint, error) {
 }
 
 // Update 更新角色
-func (h *roleService) Update(ctx *gin.Context, role model.Role) (int64, error) {
+func (h *RoleService) Update(ctx *gin.Context, role model.Role) (int64, error) {
 	row, err := h.dao.Update(role)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
@@ -87,7 +76,7 @@ func (h *roleService) Update(ctx *gin.Context, role model.Role) (int64, error) {
 }
 
 // Delete 删除角色
-func (h *roleService) Delete(ctx *gin.Context, id uint) (int64, error) {
+func (h *RoleService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
@@ -97,7 +86,7 @@ func (h *roleService) Delete(ctx *gin.Context, id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除角色
-func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
+func (h *RoleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
@@ -106,9 +95,9 @@ func (h *roleService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	return row, nil
 }
 
-// Status 更新角色状态
-func (h *roleService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := h.dao.Status(id, status)
+// UpdateStatus 更新角色状态
+func (h *RoleService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := h.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError

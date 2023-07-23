@@ -25,6 +25,6 @@ func InitRoleRouter(group *gin.RouterGroup) {
 		// 批量删除角色
 		role.DELETE("/batchDelete", controller.NewRoleController().BatchDelete)
 		// 更新角色状态
-		role.PUT("/status", controller.NewRoleController().Status)
+		role.PUT("/updateStatus", controller.NewRoleController().UpdateStatus)
 	}
 }

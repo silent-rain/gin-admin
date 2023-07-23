@@ -12,31 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserApiToken Token令牌接口
-type UserApiToken interface {
-	List(req dto.QueryUserApiTokenReq) ([]dto.UserApiTokenResp, int64, error)
-	Info(token string) (model.UserApiToken, bool, error)
-	Add(bean model.UserApiToken) (uint, error)
-	Update(bean model.UserApiToken) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-}
-
-// Token 令牌
-type userApiToken struct {
+// UserApiToken Token 令牌
+type UserApiToken struct {
 	mysql.DBRepo
 }
 
 // NewUserApiTokenDao 创建 Token 令牌对象
-func NewUserApiTokenDao() *userApiToken {
-	return &userApiToken{
+func NewUserApiTokenDao() *UserApiToken {
+	return &UserApiToken{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询 Token 令牌列表
-func (d *userApiToken) List(req dto.QueryUserApiTokenReq) ([]dto.UserApiTokenResp, int64, error) {
+func (d *UserApiToken) List(req dto.QueryUserApiTokenReq) ([]dto.UserApiTokenResp, int64, error) {
 	tx := d.GetDbR().Model(&model.UserApiToken{}).
 		Select("perm_user_api_token.*, perm_user.nickname").
 		Joins("left join perm_user on perm_user.id = perm_user_api_token.user_id")
@@ -68,7 +57,7 @@ func (d *userApiToken) List(req dto.QueryUserApiTokenReq) ([]dto.UserApiTokenRes
 }
 
 // Info 获取 Token 令牌信息
-func (d *userApiToken) Info(token string) (model.UserApiToken, bool, error) {
+func (d *UserApiToken) Info(token string) (model.UserApiToken, bool, error) {
 	bean := model.UserApiToken{}
 	result := d.GetDbR().Where("token = ?", token).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -81,7 +70,7 @@ func (d *userApiToken) Info(token string) (model.UserApiToken, bool, error) {
 }
 
 // Add 添加 Token 令牌
-func (d *userApiToken) Add(bean model.UserApiToken) (uint, error) {
+func (d *UserApiToken) Add(bean model.UserApiToken) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -90,13 +79,13 @@ func (d *userApiToken) Add(bean model.UserApiToken) (uint, error) {
 }
 
 // Update 更新 Token 令牌
-func (d *userApiToken) Update(bean model.UserApiToken) (int64, error) {
+func (d *UserApiToken) Update(bean model.UserApiToken) (int64, error) {
 	result := d.GetDbW().Select("permission", "passphrase", "note", "status").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除 Token 令牌
-func (d *userApiToken) Delete(id uint) (int64, error) {
+func (d *UserApiToken) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.UserApiToken{
 		ID: id,
 	})
@@ -104,7 +93,7 @@ func (d *userApiToken) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除 Token 令牌
-func (d *userApiToken) BatchDelete(ids []uint) (int64, error) {
+func (d *UserApiToken) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.UserApiToken, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.UserApiToken{
@@ -115,8 +104,8 @@ func (d *userApiToken) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *userApiToken) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *UserApiToken) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.UserApiToken{
 		ID:     id,
 		Status: status,

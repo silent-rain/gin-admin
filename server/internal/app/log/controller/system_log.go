@@ -12,7 +12,7 @@ import (
 
 // 系统日志
 type systemLogController struct {
-	service service.SystemLogService
+	service *service.SystemLogService
 }
 
 // NewSystemLogController 创建系统日志对象

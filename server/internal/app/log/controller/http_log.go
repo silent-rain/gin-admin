@@ -12,7 +12,7 @@ import (
 
 // 网络请求日志
 type httpLogController struct {
-	service service.HttpLogService
+	service *service.HttpLogService
 }
 
 // NewHttpLogController 创建网络请求日志对象

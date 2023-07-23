@@ -24,6 +24,6 @@ func InitApiHttpRouter(group *gin.RouterGroup) {
 		// 批量删除Http协议接口信息
 		role.DELETE("/batchDelete", controller.NewApiHttpController().BatchDelete)
 		// 更新Http协议接口信息状态
-		role.PUT("/status", controller.NewApiHttpController().Status)
+		role.PUT("/updateStatus", controller.NewApiHttpController().UpdateStatus)
 	}
 }

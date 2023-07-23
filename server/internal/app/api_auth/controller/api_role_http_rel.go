@@ -14,7 +14,7 @@ import (
 
 // 角色与Http协议接口关系
 type apiRoleHttpRelController struct {
-	service service.ApiRoleHttpRelService
+	service *service.ApiRoleHttpRelService
 }
 
 // NewApiRoleHttpRelController 创建角色与Http协议接口关系对象

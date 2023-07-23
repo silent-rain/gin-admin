@@ -13,7 +13,7 @@ import (
 
 // 用户登录/登出/注册
 type userLoginRegisterController struct {
-	service service.UserLoginRegisterService
+	service *service.UserLoginRegisterService
 }
 
 // NewUserLoginRegisterController 创建用户登录/登出/注册 对象

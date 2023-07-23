@@ -12,31 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Dict 字典维度信息接口
-type Dict interface {
-	List(req dto.QueryDictReq) ([]model.Dict, int64, error)
-	InfoByCode(uri string) (model.Dict, bool, error)
-	Add(bean model.Dict) (uint, error)
-	Update(bean model.Dict) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-}
-
-// 字典维度信息
-type dictCenter struct {
+// Dict 字典维度信息
+type Dict struct {
 	mysql.DBRepo
 }
 
 // NewDictDao 创建字典维度信息对象
-func NewDictDao() *dictCenter {
-	return &dictCenter{
+func NewDictDao() *Dict {
+	return &Dict{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询字典维度信息列表
-func (d *dictCenter) List(req dto.QueryDictReq) ([]model.Dict, int64, error) {
+func (d *Dict) List(req dto.QueryDictReq) ([]model.Dict, int64, error) {
 	tx := d.GetDbR()
 	if req.Name != "" {
 		tx = tx.Where("name like ?", "%"+req.Name+"%")
@@ -60,7 +49,7 @@ func (d *dictCenter) List(req dto.QueryDictReq) ([]model.Dict, int64, error) {
 }
 
 // InfoByCode 获取字典维度信息
-func (d *dictCenter) InfoByCode(code string) (model.Dict, bool, error) {
+func (d *Dict) InfoByCode(code string) (model.Dict, bool, error) {
 	bean := model.Dict{}
 	result := d.GetDbR().Where("code = ?", code).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -73,7 +62,7 @@ func (d *dictCenter) InfoByCode(code string) (model.Dict, bool, error) {
 }
 
 // Add 添加字典维度信息
-func (d *dictCenter) Add(bean model.Dict) (uint, error) {
+func (d *Dict) Add(bean model.Dict) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -82,13 +71,13 @@ func (d *dictCenter) Add(bean model.Dict) (uint, error) {
 }
 
 // Update 更新字典维度信息
-func (d *dictCenter) Update(bean model.Dict) (int64, error) {
+func (d *Dict) Update(bean model.Dict) (int64, error) {
 	result := d.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除字典维度信息
-func (d *dictCenter) Delete(id uint) (int64, error) {
+func (d *Dict) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.Dict{
 		ID: id,
 	})
@@ -96,7 +85,7 @@ func (d *dictCenter) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除字典维度信息
-func (d *dictCenter) BatchDelete(ids []uint) (int64, error) {
+func (d *Dict) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.Dict, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.Dict{
@@ -107,8 +96,8 @@ func (d *dictCenter) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新字典维度信息状态
-func (d *dictCenter) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新字典维度信息状态
+func (d *Dict) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.Dict{
 		ID:     id,
 		Status: status,

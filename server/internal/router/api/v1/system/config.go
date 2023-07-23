@@ -31,9 +31,9 @@ func InitConfigRouter(group *gin.RouterGroup) {
 		// 批量删除配置
 		config.DELETE("/batchDelete", controller.NewConfigController().BatchDelete)
 		// 更新配置状态
-		config.PUT("/status", controller.NewConfigController().Status)
+		config.PUT("/updateStatus", controller.NewConfigController().UpdateStatus)
 		// 通过上级 key 获取子配置列表
-		config.GET("/childrenByKey", controller.NewConfigController().ChildrenByKey)
+		config.GET("/childrensByKey", controller.NewConfigController().ChildrensByKey)
 		// 查询网站配置列表
 		config.GET("/webSiteConfigList", controller.NewConfigController().WebSiteConfigList)
 	}

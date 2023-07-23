@@ -14,7 +14,7 @@ import (
 
 // 角色菜单关系
 type roleMenuRelController struct {
-	service service.RoleMenuRelService
+	service *service.RoleMenuRelService
 }
 
 // NewRoleMenuRelController 创建角色菜单关系对象

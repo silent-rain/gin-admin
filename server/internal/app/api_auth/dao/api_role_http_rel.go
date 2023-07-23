@@ -8,30 +8,23 @@ import (
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-// ApiRoleHttpRel 角色与Http协议接口关系接口
-type ApiRoleHttpRel interface {
-	List(req dto.QueryApiRoleHttpRelReq) ([]model.ApiRoleHttpRel, int64, error)
-	Update(roleId uint, menuIds []uint) error
-}
-
-// 角色与Http协议接口关系
-type apiRoleHttpRel struct {
+// ApiRoleHttpRel 角色与Http协议接口关系
+type ApiRoleHttpRel struct {
 	mysql.DBRepo
 }
 
 // NewApiRoleHttpRelDao 创建角色与Http协议接口关系 Dao 对象
-func NewApiRoleHttpRelDao() *apiRoleHttpRel {
-	return &apiRoleHttpRel{
+func NewApiRoleHttpRelDao() *ApiRoleHttpRel {
+	return &ApiRoleHttpRel{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 角色关联的Http协议接口列表
-func (d *apiRoleHttpRel) List(req dto.QueryApiRoleHttpRelReq) ([]model.ApiRoleHttpRel, int64, error) {
+func (d *ApiRoleHttpRel) List(req dto.QueryApiRoleHttpRelReq) ([]model.ApiRoleHttpRel, int64, error) {
 	tx := d.GetDbR()
 	if req.ApiId != 0 {
 		tx = tx.Where("api_id = ?", req.ApiId)
@@ -55,7 +48,7 @@ func (d *apiRoleHttpRel) List(req dto.QueryApiRoleHttpRelReq) ([]model.ApiRoleHt
 }
 
 // Update 更新角色关联的Http协议接口
-func (d *apiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
+func (d *ApiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
 	// 未传入 apiIds, 不做处理
 	if apiIds == nil {
 		return nil
@@ -67,12 +60,6 @@ func (d *apiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
 	}
 
 	tx := d.GetDbW().Begin()
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-			zap.S().Panic("更新角色接口关联关系异常, err: %v", err)
-		}
-	}()
 
 	// 批量添加关系
 	if err := d.addRels(tx, relIds, apiIds, roleId); err != nil {
@@ -90,7 +77,7 @@ func (d *apiRoleHttpRel) Update(roleId uint, apiIds []uint) error {
 }
 
 // 获取角色关联的Http协议接口的 ID 列表
-func (d *apiRoleHttpRel) getApiIds(roleId uint) ([]uint, error) {
+func (d *ApiRoleHttpRel) getApiIds(roleId uint) ([]uint, error) {
 	beans := make([]model.ApiRoleHttpRel, 0)
 	results := d.GetDbR().Where("role_id = ?", roleId).Find(&beans)
 	if results.Error != nil {
@@ -105,7 +92,7 @@ func (d *apiRoleHttpRel) getApiIds(roleId uint) ([]uint, error) {
 }
 
 // 批量添加关系
-func (d *apiRoleHttpRel) addRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint) error {
+func (d *ApiRoleHttpRel) addRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint) error {
 	// 需要新增的关系列表
 	addRels := make([]model.ApiRoleHttpRel, 0)
 	for _, id := range apiIds {
@@ -127,7 +114,7 @@ func (d *apiRoleHttpRel) addRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint
 }
 
 // 批量删除关系
-func (d *apiRoleHttpRel) delRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint) error {
+func (d *ApiRoleHttpRel) delRels(tx *gorm.DB, relIds, apiIds []uint, roleId uint) error {
 	// 需要删除的关系列表
 	delRels := make([]uint, 0)
 	for _, id := range relIds {

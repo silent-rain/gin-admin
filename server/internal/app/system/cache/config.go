@@ -30,7 +30,7 @@ func NewWebSiteConfigCache() *webSiteConfigCache {
 
 // Set 设置站点配置缓存
 func (c *webSiteConfigCache) Set() error {
-	results, err := dao.NewConfigDao().ChildrenByKey(constant.WebsiteConfigKey)
+	results, err := dao.NewConfigDao().ChildrensByKey(constant.WebsiteConfigKey)
 	if err != nil {
 		return err
 	}

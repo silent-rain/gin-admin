@@ -12,31 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// DictData 字典数据信息接口
-type DictData interface {
-	List(req dto.QueryDictDataReq) ([]model.DictData, int64, error)
-	InfoByValue(dictId uint, value string) (model.DictData, bool, error)
-	Add(bean model.DictData) (uint, error)
-	Update(bean model.DictData) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-}
-
-// 字典数据信息
-type dictDataCenter struct {
+// DictData 字典数据信息
+type DictData struct {
 	mysql.DBRepo
 }
 
 // NewDictDataDao 创建字典数据信息对象
-func NewDictDataDao() *dictDataCenter {
-	return &dictDataCenter{
+func NewDictDataDao() *DictData {
+	return &DictData{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询字典数据信息列表
-func (d *dictDataCenter) List(req dto.QueryDictDataReq) ([]model.DictData, int64, error) {
+func (d *DictData) List(req dto.QueryDictDataReq) ([]model.DictData, int64, error) {
 	tx := d.GetDbR()
 	if req.DictId != 0 {
 		tx = tx.Where("dict_id = ?", req.DictId)
@@ -63,7 +52,7 @@ func (d *dictDataCenter) List(req dto.QueryDictDataReq) ([]model.DictData, int64
 }
 
 // InfoByValue 获取指定字典的字典项数据信息
-func (d *dictDataCenter) InfoByValue(dictId uint, value string) (model.DictData, bool, error) {
+func (d *DictData) InfoByValue(dictId uint, value string) (model.DictData, bool, error) {
 	bean := model.DictData{}
 	result := d.GetDbR().Where("dict_id = ? and value = ?", dictId, value).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -76,7 +65,7 @@ func (d *dictDataCenter) InfoByValue(dictId uint, value string) (model.DictData,
 }
 
 // Add 添加字典数据信息
-func (d *dictDataCenter) Add(bean model.DictData) (uint, error) {
+func (d *DictData) Add(bean model.DictData) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -85,13 +74,13 @@ func (d *dictDataCenter) Add(bean model.DictData) (uint, error) {
 }
 
 // Update 更新字典数据信息
-func (d *dictDataCenter) Update(bean model.DictData) (int64, error) {
+func (d *DictData) Update(bean model.DictData) (int64, error) {
 	result := d.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除字典数据信息
-func (d *dictDataCenter) Delete(id uint) (int64, error) {
+func (d *DictData) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.DictData{
 		ID: id,
 	})
@@ -99,7 +88,7 @@ func (d *dictDataCenter) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除字典数据信息
-func (d *dictDataCenter) BatchDelete(ids []uint) (int64, error) {
+func (d *DictData) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.DictData, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.DictData{
@@ -110,8 +99,8 @@ func (d *dictDataCenter) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新字典数据信息状态
-func (d *dictDataCenter) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新字典数据信息状态
+func (d *DictData) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.DictData{
 		ID:     id,
 		Status: status,

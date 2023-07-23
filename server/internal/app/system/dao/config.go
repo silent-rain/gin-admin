@@ -13,35 +13,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Config 配置接口
-type Config interface {
-	All() ([]model.Config, int64, error)
-	List(req dto.QueryConfigReq) ([]model.Config, int64, error)
-	Info(key string) (model.Config, bool, error)
-	Add(bean model.Config) (uint, error)
-	Update(bean model.Config) (int64, error)
-	BatchUpdate(beans []model.Config) error
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-	Children(parentId uint) ([]model.Config, error)
-	ChildrenByKey(key string) ([]model.Config, error)
-}
-
-// 配置
-type config struct {
+// Config 配置
+type Config struct {
 	mysql.DBRepo
 }
 
 // NewConfigDao 创建配置对象
-func NewConfigDao() *config {
-	return &config{
+func NewConfigDao() *Config {
+	return &Config{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // All 获取所有配置列表
-func (d *config) All() ([]model.Config, int64, error) {
+func (d *Config) All() ([]model.Config, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		return stats
@@ -57,7 +42,7 @@ func (d *config) All() ([]model.Config, int64, error) {
 }
 
 // List 查询配置列表
-func (d *config) List(req dto.QueryConfigReq) ([]model.Config, int64, error) {
+func (d *Config) List(req dto.QueryConfigReq) ([]model.Config, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.Name != "" {
@@ -82,7 +67,7 @@ func (d *config) List(req dto.QueryConfigReq) ([]model.Config, int64, error) {
 }
 
 // Info 获取配置信息
-func (d *config) Info(key string) (model.Config, bool, error) {
+func (d *Config) Info(key string) (model.Config, bool, error) {
 	bean := model.Config{}
 	result := d.GetDbR().Where("status=1").Where("`key` = ?", key).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -95,7 +80,7 @@ func (d *config) Info(key string) (model.Config, bool, error) {
 }
 
 // Add 添加配置
-func (d *config) Add(bean model.Config) (uint, error) {
+func (d *Config) Add(bean model.Config) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -104,13 +89,13 @@ func (d *config) Add(bean model.Config) (uint, error) {
 }
 
 // Update 更新配置
-func (d *config) Update(bean model.Config) (int64, error) {
+func (d *Config) Update(bean model.Config) (int64, error) {
 	result := d.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // BatchUpdate 批量更新配置
-func (d *config) BatchUpdate(beans []model.Config) error {
+func (d *Config) BatchUpdate(beans []model.Config) error {
 	tx := d.GetDbW().Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -132,7 +117,7 @@ func (d *config) BatchUpdate(beans []model.Config) error {
 }
 
 // Delete 删除配置
-func (d *config) Delete(id uint) (int64, error) {
+func (d *Config) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.Config{
 		ID: id,
 	})
@@ -140,7 +125,7 @@ func (d *config) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除配置
-func (d *config) BatchDelete(ids []uint) (int64, error) {
+func (d *Config) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.Config, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.Config{
@@ -151,8 +136,8 @@ func (d *config) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *config) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *Config) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.Config{
 		ID:     id,
 		Status: status,
@@ -160,8 +145,8 @@ func (d *config) Status(id uint, status uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Children 通过父 ID 获取子配置列表
-func (d *config) Children(parentId uint) ([]model.Config, error) {
+// Childrens 通过父 ID 获取子配置列表
+func (d *Config) Childrens(parentId uint) ([]model.Config, error) {
 	beans := make([]model.Config, 0)
 	result := d.GetDbR().Where("status=1").Where("parent_id=?", parentId).
 		Order("sort ASC").Order("id ASC").
@@ -172,8 +157,8 @@ func (d *config) Children(parentId uint) ([]model.Config, error) {
 	return beans, nil
 }
 
-// ChildrenByKey 通过父 key 获取子配置列表
-func (d *config) ChildrenByKey(key string) ([]model.Config, error) {
+// ChildrensByKey 通过父 key 获取子配置列表
+func (d *Config) ChildrensByKey(key string) ([]model.Config, error) {
 	beans := make([]model.Config, 0)
 	subQuery := d.GetDbR().Model(&model.Config{}).Where("status=1").Where("`key` = ?", key).Select("id")
 	result := d.GetDbR().Model(&model.Config{}).Where("status=1").Where("parent_id = (?)", subQuery).

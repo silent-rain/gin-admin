@@ -11,25 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Login 登录接口
-type Login interface {
-	Login(username, password string) (model.User, bool, error)
-}
-
-// 登录
-type login struct {
+// Login 登录
+type Login struct {
 	mysql.DBRepo
 }
 
 // NewLoginDao 创建登录对象
-func NewLoginDao() *login {
-	return &login{
+func NewLoginDao() *Login {
+	return &Login{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // Login 查询登录用户信息 邮件/手机号
-func (d *login) Login(username, password string) (model.User, bool, error) {
+func (d *Login) Login(username, password string) (model.User, bool, error) {
 	bean := model.User{}
 	result := d.GetDbR().
 		Where("(phone = ? OR email = ?) AND password = ?", username, username, password).First(&bean)

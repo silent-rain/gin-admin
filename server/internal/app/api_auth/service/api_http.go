@@ -11,9 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 角色与Http协议接口关系
+// ApiHttpService 角色与Http协议接口关系
 type ApiHttpService struct {
-	dao dao.ApiHttp
+	dao *dao.ApiHttp
 }
 
 // NewApiHttpService 创建服务对象
@@ -145,9 +145,9 @@ func (h *ApiHttpService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error
 	return row, nil
 }
 
-// Status 更新状态
-func (h *ApiHttpService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := h.dao.Status(id, status)
+// UpdateStatus 更新状态
+func (h *ApiHttpService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := h.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError

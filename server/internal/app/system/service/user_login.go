@@ -15,29 +15,22 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserLoginService 用户登录信息接口
-type UserLoginService interface {
-	List(ctx *gin.Context, req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error)
-	Add(ctx *gin.Context, bean model.UserLogin) (uint, error)
-	Status(ctx *gin.Context, id, userId uint, status uint) (int64, error)
-}
-
-// 用户登录信息
-type userLoginService struct {
-	dao   dao.UserLogin
+// UserLoginService 用户登录信息
+type UserLoginService struct {
+	dao   *dao.UserLogin
 	cache cache.UserLoginCache
 }
 
 // NewUserLoginService 创建用户登录信息对象
-func NewUserLoginService() *userLoginService {
-	return &userLoginService{
+func NewUserLoginService() *UserLoginService {
+	return &UserLoginService{
 		dao:   dao.NewUserLoginDao(),
 		cache: cache.NewUserLoginCache(),
 	}
 }
 
 // List 获取用户登录信息列表
-func (s *userLoginService) List(ctx *gin.Context, req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error) {
+func (s *UserLoginService) List(ctx *gin.Context, req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error) {
 	results, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -47,7 +40,7 @@ func (s *userLoginService) List(ctx *gin.Context, req dto.QueryUserLoginReq) ([]
 }
 
 // Add 添加用户登录信息
-func (s *userLoginService) Add(ctx *gin.Context, bean model.UserLogin) (uint, error) {
+func (s *UserLoginService) Add(ctx *gin.Context, bean model.UserLogin) (uint, error) {
 	id, err := s.dao.Add(bean)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, nil
@@ -59,9 +52,9 @@ func (s *userLoginService) Add(ctx *gin.Context, bean model.UserLogin) (uint, er
 	return id, nil
 }
 
-// Status 更新用户登录信息状态
-func (s *userLoginService) Status(ctx *gin.Context, id, userId uint, status uint) (int64, error) {
-	row, err := s.dao.Status(id, status)
+// UpdateStatus 更新用户登录信息状态
+func (s *UserLoginService) UpdateStatus(ctx *gin.Context, id, userId uint, status uint) (int64, error) {
+	row, err := s.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError

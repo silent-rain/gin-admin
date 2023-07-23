@@ -10,27 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// UserLogin 用户登录信息接口
-type UserLogin interface {
-	List(req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error)
-	Add(bean model.UserLogin) (uint, error)
-	Status(id uint, status uint) (int64, error)
-}
-
 // 用户登录信息
-type userLogin struct {
+type UserLogin struct {
 	mysql.DBRepo
 }
 
 // NewUserLoginDao 创建用户登录信息对象
-func NewUserLoginDao() *userLogin {
-	return &userLogin{
+func NewUserLoginDao() *UserLogin {
+	return &UserLogin{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询用户登录信息列表
-func (d *userLogin) List(req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error) {
+func (d *UserLogin) List(req dto.QueryUserLoginReq) ([]model.UserLogin, int64, error) {
 	tx := d.GetDbR()
 	if req.Nickname != "" {
 		tx = tx.Where("nickname like ?", req.Nickname+"%")
@@ -54,7 +47,7 @@ func (d *userLogin) List(req dto.QueryUserLoginReq) ([]model.UserLogin, int64, e
 }
 
 // Add 添加用户登录信息
-func (d *userLogin) Add(bean model.UserLogin) (uint, error) {
+func (d *UserLogin) Add(bean model.UserLogin) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -62,8 +55,8 @@ func (d *userLogin) Add(bean model.UserLogin) (uint, error) {
 	return bean.ID, nil
 }
 
-// Status 更新用户登录信息状态
-func (d *userLogin) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新用户登录信息状态
+func (d *UserLogin) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.UserLogin{
 		ID:     id,
 		Status: status,

@@ -10,26 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// SystemLog 系统日志接口
-type SystemLog interface {
-	List(req dto.QuerySystemLogReq) ([]model.SystemLog, int64, error)
-	Add(bean model.SystemLog) (uint, error)
-}
-
-// 系统日志
-type systemLog struct {
+// SystemLog 系统日志
+type SystemLog struct {
 	mysql.DBRepo
 }
 
 // NewSystemLogDao 创建系统日志对象
-func NewSystemLogDao() *systemLog {
-	return &systemLog{
+func NewSystemLogDao() *SystemLog {
+	return &SystemLog{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // List 查询系统日志列表
-func (d *systemLog) List(req dto.QuerySystemLogReq) ([]model.SystemLog, int64, error) {
+func (d *SystemLog) List(req dto.QuerySystemLogReq) ([]model.SystemLog, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.UserId != 0 {
@@ -66,7 +60,7 @@ func (d *systemLog) List(req dto.QuerySystemLogReq) ([]model.SystemLog, int64, e
 }
 
 // Add 添加系统日志
-func (d *systemLog) Add(bean model.SystemLog) (uint, error) {
+func (d *SystemLog) Add(bean model.SystemLog) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error

@@ -12,32 +12,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// Role 角色接口
-type Role interface {
-	All() ([]model.Role, int64, error)
-	List(req dto.QueryRoleReq) ([]model.Role, int64, error)
-	InfoByName(name string) (model.Role, bool, error)
-	Add(bean model.Role) (uint, error)
-	Update(bean model.Role) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-}
-
-// 角色
-type role struct {
+// Role 角色
+type Role struct {
 	mysql.DBRepo
 }
 
 // NewRoleDao 创建角色 Dao 对象
-func NewRoleDao() *role {
-	return &role{
+func NewRoleDao() *Role {
+	return &Role{
 		DBRepo: global.Instance().Mysql(),
 	}
 }
 
 // All 获取所有角色列表
-func (d *role) All() ([]model.Role, int64, error) {
+func (d *Role) All() ([]model.Role, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		return stats
@@ -53,7 +41,7 @@ func (d *role) All() ([]model.Role, int64, error) {
 }
 
 // List 查询角色列表
-func (d *role) List(req dto.QueryRoleReq) ([]model.Role, int64, error) {
+func (d *Role) List(req dto.QueryRoleReq) ([]model.Role, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.Name != "" {
@@ -75,7 +63,7 @@ func (d *role) List(req dto.QueryRoleReq) ([]model.Role, int64, error) {
 }
 
 // InfoByName 获取角色信息
-func (d *role) InfoByName(name string) (model.Role, bool, error) {
+func (d *Role) InfoByName(name string) (model.Role, bool, error) {
 	bean := model.Role{}
 	result := d.GetDbR().Where("name=?", name).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -88,7 +76,7 @@ func (d *role) InfoByName(name string) (model.Role, bool, error) {
 }
 
 // Add 添加角色
-func (d *role) Add(bean model.Role) (uint, error) {
+func (d *Role) Add(bean model.Role) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -97,13 +85,13 @@ func (d *role) Add(bean model.Role) (uint, error) {
 }
 
 // Update 更新角色
-func (d *role) Update(bean model.Role) (int64, error) {
+func (d *Role) Update(bean model.Role) (int64, error) {
 	result := d.GetDbW().Select("name", "status", "sort", "note").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除角色
-func (d *role) Delete(id uint) (int64, error) {
+func (d *Role) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.Role{
 		ID: id,
 	})
@@ -111,7 +99,7 @@ func (d *role) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除角色
-func (d *role) BatchDelete(ids []uint) (int64, error) {
+func (d *Role) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.Role, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.Role{
@@ -122,8 +110,8 @@ func (d *role) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *role) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *Role) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.Role{
 		ID:     id,
 		Status: status,

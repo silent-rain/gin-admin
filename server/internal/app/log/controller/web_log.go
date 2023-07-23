@@ -14,7 +14,7 @@ import (
 
 // WEB 日志
 type webLogController struct {
-	service service.WebLogService
+	service *service.WebLogService
 }
 
 // NewWebLogController 创建 WEB 日志对象
