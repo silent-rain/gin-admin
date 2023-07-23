@@ -4,9 +4,9 @@ package cache
 import (
 	"github.com/silent-rain/gin-admin/internal/app/system/dao"
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
-	"github.com/silent-rain/gin-admin/internal/pkg/constant"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/cache"
+	"github.com/silent-rain/gin-admin/pkg/constant"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/repository/cache"
 )
 
 // Config 站点配置缓存接口

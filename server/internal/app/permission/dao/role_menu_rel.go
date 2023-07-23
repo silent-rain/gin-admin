@@ -2,10 +2,10 @@
 package dao
 
 import (
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/permission/dto"
 	"github.com/silent-rain/gin-admin/internal/app/permission/model"
-	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/slices"
 
 	"gorm.io/gorm"

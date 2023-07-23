@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/golang-jwt/jwt/v5"

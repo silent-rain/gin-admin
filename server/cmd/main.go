@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/initialize"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/internal/pkg/middleware"
-	_ "github.com/silent-rain/gin-admin/internal/pkg/repository/cache"
 	"github.com/silent-rain/gin-admin/internal/router"
 	"github.com/silent-rain/gin-admin/pkg/plugin"
+	_ "github.com/silent-rain/gin-admin/pkg/repository/cache"
 	"github.com/silent-rain/gin-admin/pkg/shutdown"
 	"github.com/silent-rain/gin-admin/schedule"
 

@@ -2,7 +2,7 @@
 package log
 
 import (
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

@@ -4,7 +4,7 @@ package log
 import (
 	"testing"
 
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 
 	"go.uber.org/zap"
 )

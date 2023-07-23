@@ -4,13 +4,13 @@ package middleware
 import (
 	"strings"
 
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/system/cache"
-	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
-	"github.com/silent-rain/gin-admin/internal/pkg/jwt"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/jwt"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,7 @@ package sqlite
 import (
 	"fmt"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/conf"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

@@ -2,7 +2,7 @@
 package timer
 
 import (
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/pkg/schedule/timer"
 )
 

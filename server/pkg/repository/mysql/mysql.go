@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/conf"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

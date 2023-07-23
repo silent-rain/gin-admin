@@ -4,10 +4,10 @@ package dao
 import (
 	"errors"
 
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/data_center/dto"
 	"github.com/silent-rain/gin-admin/internal/app/data_center/model"
-	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/repository/mysql"
 
 	"gorm.io/gorm"
 )

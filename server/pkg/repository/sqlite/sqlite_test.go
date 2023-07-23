@@ -4,7 +4,7 @@ package sqlite
 import (
 	"testing"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/conf"
 )
 
 func TestNew(t *testing.T) {

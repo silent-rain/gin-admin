@@ -2,8 +2,8 @@
 package middleware
 
 import (
-	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
+	"github.com/silent-rain/gin-admin/pkg/constant"
 	"github.com/silent-rain/gin-admin/pkg/tracer"
 
 	"github.com/gin-gonic/gin"

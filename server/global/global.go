@@ -4,10 +4,10 @@ package global
 import (
 	"fmt"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/sqlite"
+	"github.com/silent-rain/gin-admin/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/repository/mysql"
+	"github.com/silent-rain/gin-admin/pkg/repository/redis"
+	"github.com/silent-rain/gin-admin/pkg/repository/sqlite"
 )
 
 var (

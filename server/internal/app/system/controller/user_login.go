@@ -5,7 +5,7 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
 	"github.com/silent-rain/gin-admin/internal/app/system/service"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

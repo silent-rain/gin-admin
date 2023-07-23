@@ -8,7 +8,7 @@ import (
 	DTO "github.com/silent-rain/gin-admin/internal/dto"
 	"github.com/silent-rain/gin-admin/internal/pkg/core"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

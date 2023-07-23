@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/pkg/conf"
+	"github.com/silent-rain/gin-admin/pkg/conf"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
 
 	"github.com/go-redis/redis/v8"

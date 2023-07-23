@@ -2,12 +2,12 @@
 package initialize
 
 import (
+	"github.com/silent-rain/gin-admin/global"
 	apiAuthModel "github.com/silent-rain/gin-admin/internal/app/api_auth/model"
 	dataCenterModel "github.com/silent-rain/gin-admin/internal/app/data_center/model"
 	logModel "github.com/silent-rain/gin-admin/internal/app/log/model"
 	permissionModel "github.com/silent-rain/gin-admin/internal/app/permission/model"
 	systemModel "github.com/silent-rain/gin-admin/internal/app/system/model"
-	"github.com/silent-rain/gin-admin/internal/global"
 )
 
 // 数据库表自动迁移

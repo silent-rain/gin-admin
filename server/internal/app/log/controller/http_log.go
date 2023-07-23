@@ -1,11 +1,11 @@
- // Package controller 网络请求日志
+// Package controller 网络请求日志
 package controller
 
 import (
 	"github.com/silent-rain/gin-admin/internal/app/log/dto"
 	"github.com/silent-rain/gin-admin/internal/app/log/service"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

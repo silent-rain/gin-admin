@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
+	"github.com/silent-rain/gin-admin/global"
+	"github.com/silent-rain/gin-admin/pkg/repository/redis"
 )
 
 // UserLoginCache 用户登录信息缓存接口

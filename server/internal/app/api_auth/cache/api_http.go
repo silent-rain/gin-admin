@@ -5,10 +5,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/api_auth/dto"
-	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/internal/pkg/constant"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
+	"github.com/silent-rain/gin-admin/pkg/constant"
+	"github.com/silent-rain/gin-admin/pkg/repository/redis"
 )
 
 // ApiTokenLoginCache API Token 登录信息缓存接口

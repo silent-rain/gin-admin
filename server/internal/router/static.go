@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/silent-rain/gin-admin/assets"
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/public/controller"
-	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/pkg/resource"
 
 	"github.com/gin-gonic/gin"

@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/silent-rain/gin-admin/internal/global"
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
-	"github.com/silent-rain/gin-admin/internal/pkg/repository/redis"
 	"github.com/silent-rain/gin-admin/pkg/color"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/repository/redis"
 	"github.com/silent-rain/gin-admin/pkg/schedule/ticker"
 	"github.com/silent-rain/gin-admin/pkg/schedule/timer"
 )

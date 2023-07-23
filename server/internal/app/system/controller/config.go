@@ -6,11 +6,11 @@ import (
 	"github.com/silent-rain/gin-admin/internal/app/system/model"
 	"github.com/silent-rain/gin-admin/internal/app/system/service"
 	DTO "github.com/silent-rain/gin-admin/internal/dto"
-	"github.com/silent-rain/gin-admin/internal/pkg/constant"
 	"github.com/silent-rain/gin-admin/internal/pkg/http"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
+	"github.com/silent-rain/gin-admin/pkg/constant"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

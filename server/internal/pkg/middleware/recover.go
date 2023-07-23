@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

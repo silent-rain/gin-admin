@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
-	"github.com/silent-rain/gin-admin/internal/global"
 	"github.com/silent-rain/gin-admin/internal/pkg/log"
 	"github.com/silent-rain/gin-admin/pkg/directory"
 	"github.com/silent-rain/gin-admin/pkg/errcode"

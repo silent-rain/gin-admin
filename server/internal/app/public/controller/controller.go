@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/silent-rain/gin-admin/global"
 	"github.com/silent-rain/gin-admin/internal/app/system/dto"
-	"github.com/silent-rain/gin-admin/internal/global"
-	"github.com/silent-rain/gin-admin/internal/pkg/response"
 	"github.com/silent-rain/gin-admin/pkg/errcode"
+	"github.com/silent-rain/gin-admin/pkg/response"
 	timeutil "github.com/silent-rain/gin-admin/pkg/time"
 
 	"github.com/gin-gonic/gin"
