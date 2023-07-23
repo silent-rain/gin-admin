@@ -4,49 +4,49 @@ env = "dev" # prod/test/dev
 
 # 系统服务
 [server]
-  # 系统服务地址配置
-  [server.base]
+    # 系统服务地址配置
+    [server.base]
     address = "127.0.0.1" # 服务地址
-    port = 8080 # 服务端口
-  # 插件配置
-  [server.plugin]
-    enable_single_login = true # 是否启单点登录
-    enable_logo = true # 是否启用启动后显示 logo
-    enable_rate_limiter = true # 是否限速
-    max_requests_per_second = 10000 # 是否启用限速
-    enable_pprof = true # 是否启用 pprof 性能剖析工具
-    enable_prometheus = false # 是否启用 Prometheus 监控指标
-    enable_record_metrics = false # 是否启用 记录指标
-    enable_swagger = false # 是否启用 swagger API 文档
-    enable_open_browser = false # 是否启用服务启动后打开浏览器
+    port = 8080           # 服务端口
+    # 插件配置
+    [server.plugin]
+    enable_single_login = true                 # 是否启单点登录
+    enable_logo = true                         # 是否启用启动后显示 logo
+    enable_rate_limiter = true                 # 是否限速
+    max_requests_per_second = 10000            # 是否启用限速
+    enable_pprof = true                        # 是否启用 pprof 性能剖析工具
+    enable_prometheus = false                  # 是否启用 Prometheus 监控指标
+    enable_record_metrics = false              # 是否启用 记录指标
+    enable_swagger = false                     # 是否启用 swagger API 文档
+    enable_open_browser = false                # 是否启用服务启动后打开浏览器
     open_browser_url = "http://127.0.0.1:5005" # 启动后在浏览器中打开的 URL
-  # 上传路径配置
-  [server.upload]
+    # 上传路径配置
+    [server.upload]
     filepath = "./upload" # 上传文件路径
 
 # jwt 鉴权
 [jwt]
-	secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=" # 加密密匙
-	expire = 24 # 过期时间(h)
-	issuer = "silent-rain" # 签发人
-	prefix = "Bearer " # 前缀
-	header = "Authorization" # 请求标识
+secret = "8Xui8SN4mI+7egV/9dlfYYLGQJeEx4+DwmSQLwDVXJg=" # 加密密匙
+expire = 24                                             # 过期时间(h)
+issuer = "silent-rain"                                  # 签发人
+prefix = "Bearer "                                      # 前缀
+header = "Authorization"                                # 请求标识
 
 # mysql 配置
 [mysql]
-  [mysql.options]
-    max_open_conn = 10 # 最大打开的连接数
-    max_idle_conn = 60 # 闲置的连接数
+    [mysql.options]
+    max_open_conn = 10     # 最大打开的连接数
+    max_idle_conn = 60     # 闲置的连接数
     conn_max_lifetime = 60 # 设置最大连接超时(min)
-    log_level = "warn" # 日志级别: info/warn/error/silent
-  [mysql.read]
-    key = "gin_admin" # db信息唯一标识
-    host = "127.0.0.1" # IP或域名
-    port = 3306 # 端口
-    username = "one" # 账号
-    password = "pass" # 密码
+    log_level = "warn"     # 日志级别: info/warn/error/silent
+    [mysql.read]
+    key = "gin_admin"     # db信息唯一标识
+    host = "127.0.0.1"    # IP或域名
+    port = 3306           # 端口
+    username = "one"      # 账号
+    password = "pass"     # 密码
     db_name = "gin_admin" # 数据库名称
-  [mysql.write]
+    [mysql.write]
     key = "gin_admin"
     host = "127.0.0.1"
     port = 3306
@@ -56,36 +56,36 @@ env = "dev" # prod/test/dev
 
 # redis 配置
 [redis]
-  host = "127.0.0.1" # IP或域名
-  port = 6379 # 端口
-  password = "foobared" # 密码
-  max_retries = 3 # 最大重试次数
-  pool_size = 10 # 连接池大小
+host = "127.0.0.1"    # IP或域名
+port = 6379           # 端口
+password = "foobared" # 密码
+max_retries = 3       # 最大重试次数
+pool_size = 10        # 连接池大小
 
 # 语言
 [language]
-  local = "zh-cn"
+local = "zh-cn"
 
 # 邮件配置
 [mail]
-  host = "smtp.163.com"
-  port = 465
-  password = ""
-  username = ""
-  to = ""
+host = "smtp.163.com"
+port = 465
+password = ""
+username = ""
+to = ""
 
 # 日志
 [logger]
-  filename = "logs/log.log" # 日志文件路径
-  level = "debug" # debug/info/warn/error/panic
-  max_size = 256 # 日志文件大小
-  max_backups = 50 # 日志备份数量
-  max_age = 30 # 日志过期时间
-  color = true # 是否输出颜色
+filename = "logs/log.log" # 日志文件路径
+level = "debug"           # debug/info/warn/error/panic
+max_size = 256            # 日志文件大小
+max_backups = 50          # 日志备份数量
+max_age = 30              # 日志过期时间
+color = true              # 是否输出颜色
 
 # 任务调度
 [schedule]
-  [schedule.ticker] # 即时器
+    [schedule.ticker] # 即时器
     enable_demo = false # 启用demo任务
-  [schedule.timer] # 定时器
+    [schedule.timer] # 定时器
     enable_demo = false # 启用demo任务

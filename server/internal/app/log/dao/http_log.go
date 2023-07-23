@@ -11,27 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// HttpLog 网络请求日志接口
-type HttpLog interface {
-	List(req dto.QueryHttpLogReq) ([]model.HttpLog, int64, error)
-	Add(bean model.HttpLog) (uint, error)
-	GetBody(id uint) (model.HttpLog, bool, error)
-}
-
-// 网络请求日志结构
-type httpLog struct {
+// HttpLog 网络请求日志结构
+type HttpLog struct {
 	mysql.DBRepo
 }
 
 // NewHttpLogDao 创建网络请求日志 Dao 对象
-func NewHttpLogDao() *httpLog {
-	return &httpLog{
+func NewHttpLogDao() *HttpLog {
+	return &HttpLog{
 		DBRepo: mysql.Instance(),
 	}
 }
 
 // List 查询网络请求日志列表
-func (d *httpLog) List(req dto.QueryHttpLogReq) ([]model.HttpLog, int64, error) {
+func (d *HttpLog) List(req dto.QueryHttpLogReq) ([]model.HttpLog, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR().Omit("body")
 		if req.UserId != 0 {
@@ -71,7 +64,7 @@ func (d *httpLog) List(req dto.QueryHttpLogReq) ([]model.HttpLog, int64, error) 
 }
 
 // Add 添加网络请求日志
-func (d *httpLog) Add(bean model.HttpLog) (uint, error) {
+func (d *HttpLog) Add(bean model.HttpLog) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -79,8 +72,8 @@ func (d *httpLog) Add(bean model.HttpLog) (uint, error) {
 	return bean.ID, nil
 }
 
-// GetBody 获取 body 信息
-func (d *httpLog) GetBody(id uint) (model.HttpLog, bool, error) {
+// Info 获取详情信息
+func (d *HttpLog) Info(id uint) (model.HttpLog, bool, error) {
 	bean := model.HttpLog{
 		ID: id,
 	}

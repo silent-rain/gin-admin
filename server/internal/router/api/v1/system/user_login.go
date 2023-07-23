@@ -15,6 +15,6 @@ func InitUserLoginRouter(group *gin.RouterGroup) {
 		// 获取用户登录信息列表
 		config.GET("/list", controller.NewUserLoginController().List)
 		// 更新用户登录信息状态
-		config.PUT("/status", controller.NewUserLoginController().Status)
+		config.PUT("/updateStatus", controller.NewUserLoginController().UpdateStatus)
 	}
 }

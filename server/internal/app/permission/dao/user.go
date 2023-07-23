@@ -13,43 +13,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// User 用户接口
-type User interface {
-	All() ([]model.User, int64, error)
-	List(req dto.QueryUserReq) ([]model.User, int64, error)
-	Info(id uint) (model.User, bool, error)
-	Add(user model.User, roleIds []uint) error
-	Update(user model.User, roles []uint) error
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-
-	UpdatePassword(id uint, password string) (int64, error)
-	ResetPassword(id uint, password string) (int64, error)
-	UpdatePhone(id uint, phone string) (int64, error)
-	UpdateEmail(id uint, email string) (int64, error)
-
-	GetUserByPhone(phone string) (model.User, bool, error)
-	GetUserByEmail(email string) (model.User, bool, error)
-	ExistUserPassword(userId uint, password string) (bool, error)
-
-	InfoByApiToken(token string) (model.User, bool, error)
-}
-
-// 用户
-type user struct {
+// User 用户
+type User struct {
 	mysql.DBRepo
 }
 
 // NewUserDao 创建用户 Dao 对象
-func NewUserDao() *user {
-	return &user{
+func NewUserDao() *User {
+	return &User{
 		DBRepo: mysql.Instance(),
 	}
 }
 
 // All 获取所有用户列表
-func (d *user) All() ([]model.User, int64, error) {
+func (d *User) All() ([]model.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		return stats
@@ -67,7 +44,7 @@ func (d *user) All() ([]model.User, int64, error) {
 }
 
 // List 获取用户列表
-func (d *user) List(req dto.QueryUserReq) ([]model.User, int64, error) {
+func (d *User) List(req dto.QueryUserReq) ([]model.User, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.Nickname != "" {
@@ -96,7 +73,7 @@ func (d *user) List(req dto.QueryUserReq) ([]model.User, int64, error) {
 }
 
 // Info 获取用户信息
-func (d *user) Info(id uint) (model.User, bool, error) {
+func (d *User) Info(id uint) (model.User, bool, error) {
 	bean := model.User{ID: id}
 	result := d.GetDbR().Model(&model.User{}).Preload("Roles", "status=1").First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -109,7 +86,7 @@ func (d *user) Info(id uint) (model.User, bool, error) {
 }
 
 // Add 添加用户
-func (d *user) Add(user model.User, roleIds []uint) error {
+func (d *User) Add(User model.User, roleIds []uint) error {
 	tx := d.GetDbW().Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -118,7 +95,7 @@ func (d *user) Add(user model.User, roleIds []uint) error {
 		}
 	}()
 	// 添加用户
-	userId, err := d.addUser(tx, user)
+	userId, err := d.addUser(tx, User)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -133,7 +110,7 @@ func (d *user) Add(user model.User, roleIds []uint) error {
 }
 
 // 添加用户
-func (d *user) addUser(tx *gorm.DB, bean model.User) (uint, error) {
+func (d *User) addUser(tx *gorm.DB, bean model.User) (uint, error) {
 	result := tx.Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -142,7 +119,7 @@ func (d *user) addUser(tx *gorm.DB, bean model.User) (uint, error) {
 }
 
 // 添加用户角色关联信息
-func (d *user) addUserRole(tx *gorm.DB, userId uint, roleIds []uint) error {
+func (d *User) addUserRole(tx *gorm.DB, userId uint, roleIds []uint) error {
 	if len(roleIds) == 0 {
 		return nil
 	}
@@ -158,7 +135,7 @@ func (d *user) addUserRole(tx *gorm.DB, userId uint, roleIds []uint) error {
 }
 
 // Update 更新用户详情信息
-func (d *user) Update(user model.User, roles []uint) error {
+func (d *User) Update(User model.User, roles []uint) error {
 	tx := d.GetDbW().Begin()
 	defer func() {
 		if err := recover(); err != nil {
@@ -168,12 +145,12 @@ func (d *user) Update(user model.User, roles []uint) error {
 	}()
 
 	// 更新用户信息
-	if err := d.updateUser(tx, user); err != nil {
+	if err := d.updateUser(tx, User); err != nil {
 		tx.Rollback()
 		return err
 	}
 	// 更新用户角色信息
-	if err := d.updateUserRoles(tx, user.ID, roles); err != nil {
+	if err := d.updateUserRoles(tx, User.ID, roles); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -182,14 +159,14 @@ func (d *user) Update(user model.User, roles []uint) error {
 }
 
 // 更新用户信息
-func (d *user) updateUser(tx *gorm.DB, user model.User) error {
+func (d *User) updateUser(tx *gorm.DB, User model.User) error {
 	result := tx.
-		Select("*").Omit("password", "created_at").Updates(&user)
+		Select("*").Omit("password", "created_at").Updates(&User)
 	return result.Error
 }
 
 // 更新用户角色信息
-func (d *user) updateUserRoles(tx *gorm.DB, userId uint, roleIds []uint) error {
+func (d *User) updateUserRoles(tx *gorm.DB, userId uint, roleIds []uint) error {
 	// 未传入 role_ids, 不做处理
 	if roleIds == nil {
 		return nil
@@ -233,7 +210,7 @@ func (d *user) updateUserRoles(tx *gorm.DB, userId uint, roleIds []uint) error {
 }
 
 // 获取用户关联的角色 roleId 列表
-func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
+func (d *User) getUserRoleByRoleIds(userId uint) ([]uint, error) {
 	userRoles := make([]model.UserRoleRel, 0)
 	results := d.GetDbR().Where("user_id = ?", userId).Find(&userRoles)
 	if results.Error != nil {
@@ -247,7 +224,7 @@ func (d *user) getUserRoleByRoleIds(userId uint) ([]uint, error) {
 }
 
 // Delete 删除用户
-func (d *user) Delete(id uint) (int64, error) {
+func (d *User) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.User{
 		ID: id,
 	})
@@ -255,7 +232,7 @@ func (d *user) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除用户
-func (d *user) BatchDelete(ids []uint) (int64, error) {
+func (d *User) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.User, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.User{
@@ -266,8 +243,8 @@ func (d *user) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *user) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *User) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.User{
 		ID:     id,
 		Status: status,
@@ -276,20 +253,20 @@ func (d *user) Status(id uint, status uint) (int64, error) {
 }
 
 // UpdatePassword 更新密码
-func (d *user) UpdatePassword(id uint, password string) (int64, error) {
+func (d *User) UpdatePassword(id uint, password string) (int64, error) {
 	result := d.GetDbW().Model(&model.User{}).Where("id = ?", id).
 		Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // ResetPassword 重置密码
-func (d *user) ResetPassword(id uint, password string) (int64, error) {
+func (d *User) ResetPassword(id uint, password string) (int64, error) {
 	result := d.GetDbW().Model(&model.User{}).Where("id = ?", id).Update("password", password)
 	return result.RowsAffected, result.Error
 }
 
 // UpdatePhone 更新手机号码
-func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
+func (d *User) UpdatePhone(id uint, phone string) (int64, error) {
 	result := d.GetDbW().Updates(&model.User{
 		ID:    id,
 		Phone: phone,
@@ -298,7 +275,7 @@ func (d *user) UpdatePhone(id uint, phone string) (int64, error) {
 }
 
 // UpdateEmail 更新邮箱
-func (d *user) UpdateEmail(id uint, email string) (int64, error) {
+func (d *User) UpdateEmail(id uint, email string) (int64, error) {
 	result := d.GetDbW().Updates(&model.User{
 		ID:    id,
 		Email: email,
@@ -307,7 +284,7 @@ func (d *user) UpdateEmail(id uint, email string) (int64, error) {
 }
 
 // GetUserByPhone 获取用户信息
-func (d *user) GetUserByPhone(phone string) (model.User, bool, error) {
+func (d *User) GetUserByPhone(phone string) (model.User, bool, error) {
 	bean := model.User{}
 	result := d.GetDbW().Where("phone=?", phone).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -320,7 +297,7 @@ func (d *user) GetUserByPhone(phone string) (model.User, bool, error) {
 }
 
 // GetUserByEmail 获取用户信息
-func (d *user) GetUserByEmail(email string) (model.User, bool, error) {
+func (d *User) GetUserByEmail(email string) (model.User, bool, error) {
 	bean := model.User{}
 	result := d.GetDbR().Where("email=?", email).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -333,7 +310,7 @@ func (d *user) GetUserByEmail(email string) (model.User, bool, error) {
 }
 
 // ExistUserPassword 判断用户密码是否正确
-func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
+func (d *User) ExistUserPassword(userId uint, password string) (bool, error) {
 	result := d.GetDbR().Where("id = ? AND password = ?", userId, password).First(&model.User{})
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return false, nil
@@ -345,7 +322,7 @@ func (d *user) ExistUserPassword(userId uint, password string) (bool, error) {
 }
 
 // InfoByApiToken 通过 api token 获取用户信息
-func (d *user) InfoByApiToken(token string) (model.User, bool, error) {
+func (d *User) InfoByApiToken(token string) (model.User, bool, error) {
 	bean := model.User{}
 	result := d.GetDbR().Model(&model.User{}).
 		Select("perm_user.*").

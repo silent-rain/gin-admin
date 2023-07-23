@@ -15,38 +15,22 @@ import (
 	"gorm.io/gorm"
 )
 
-// ConfigService 配置接口
-type ConfigService interface {
-	AllTree(ctx *gin.Context) ([]model.Config, int64, error)
-	Tree(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error)
-	List(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error)
-	Info(ctx *gin.Context, key string) (model.Config, error)
-	Add(ctx *gin.Context, config model.Config) (uint, error)
-	Update(ctx *gin.Context, config model.Config) (int64, error)
-	BatchUpdate(ctx *gin.Context, configs []model.Config) error
-	Delete(ctx *gin.Context, id uint) (int64, error)
-	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-	ChildrenByKey(ctx *gin.Context, key string) ([]model.Config, error)
-	WebSiteConfigList(ctx *gin.Context, key string) ([]model.Config, error)
-}
-
-// 配置
-type configService struct {
-	dao        dao.Config
+// ConfigService 配置
+type ConfigService struct {
+	dao        *dao.Config
 	innerCache cache.WebSiteConfigCache
 }
 
 // NewConfigService 创建配置对象
-func NewConfigService() *configService {
-	return &configService{
+func NewConfigService() *ConfigService {
+	return &ConfigService{
 		dao:        dao.NewConfigDao(),
 		innerCache: cache.NewWebSiteConfigCache(),
 	}
 }
 
 // AllTree 获取所有配置树
-func (s *configService) AllTree(ctx *gin.Context) ([]model.Config, int64, error) {
+func (s *ConfigService) AllTree(ctx *gin.Context) ([]model.Config, int64, error) {
 	results, _, err := s.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -58,7 +42,7 @@ func (s *configService) AllTree(ctx *gin.Context) ([]model.Config, int64, error)
 }
 
 // Tree 获取配置树
-func (s *configService) Tree(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error) {
+func (s *ConfigService) Tree(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error) {
 	configList, _, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -86,7 +70,7 @@ func (s *configService) Tree(ctx *gin.Context, req dto.QueryConfigReq) ([]model.
 }
 
 // List 获取配置列表
-func (s *configService) List(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error) {
+func (s *ConfigService) List(ctx *gin.Context, req dto.QueryConfigReq) ([]model.Config, int64, error) {
 	configList, total, err := s.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -96,7 +80,7 @@ func (s *configService) List(ctx *gin.Context, req dto.QueryConfigReq) ([]model.
 }
 
 // Info 获取配置信息
-func (s *configService) Info(ctx *gin.Context, key string) (model.Config, error) {
+func (s *ConfigService) Info(ctx *gin.Context, key string) (model.Config, error) {
 	result, ok, err := s.dao.Info(key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -109,9 +93,9 @@ func (s *configService) Info(ctx *gin.Context, key string) (model.Config, error)
 	return result, nil
 }
 
-// ChildrenByKey 通过父 key 获取子配置列表
-func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]model.Config, error) {
-	configList, err := s.dao.ChildrenByKey(key)
+// ChildrensByKey 通过父 key 获取子配置列表
+func (s *ConfigService) ChildrensByKey(ctx *gin.Context, key string) ([]model.Config, error) {
+	configList, err := s.dao.ChildrensByKey(key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return nil, errcode.DBQueryError
@@ -120,7 +104,7 @@ func (s *configService) ChildrenByKey(ctx *gin.Context, key string) ([]model.Con
 }
 
 // Add 添加配置
-func (s *configService) Add(ctx *gin.Context, config model.Config) (uint, error) {
+func (s *ConfigService) Add(ctx *gin.Context, config model.Config) (uint, error) {
 	_, ok, err := s.dao.Info(config.Key)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -146,7 +130,7 @@ func (s *configService) Add(ctx *gin.Context, config model.Config) (uint, error)
 }
 
 // Update 更新配置
-func (s *configService) Update(ctx *gin.Context, config model.Config) (int64, error) {
+func (s *ConfigService) Update(ctx *gin.Context, config model.Config) (int64, error) {
 	row, err := s.dao.Update(config)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
@@ -159,7 +143,7 @@ func (s *configService) Update(ctx *gin.Context, config model.Config) (int64, er
 }
 
 // BatchUpdate 批量更新配置
-func (s *configService) BatchUpdate(ctx *gin.Context, configs []model.Config) error {
+func (s *ConfigService) BatchUpdate(ctx *gin.Context, configs []model.Config) error {
 	err := s.dao.BatchUpdate(configs)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
@@ -172,8 +156,8 @@ func (s *configService) BatchUpdate(ctx *gin.Context, configs []model.Config) er
 }
 
 // Delete 删除配置
-func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
-	childrenConfig, err := s.dao.Children(id)
+func (s *ConfigService) Delete(ctx *gin.Context, id uint) (int64, error) {
+	childrenConfig, err := s.dao.Childrens(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
 		return 0, errcode.DBQueryError
@@ -195,7 +179,7 @@ func (s *configService) Delete(ctx *gin.Context, id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除配置, 批量删除，不校验是否存在子配置
-func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
+func (s *ConfigService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := s.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
@@ -207,9 +191,9 @@ func (s *configService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
 	return row, nil
 }
 
-// Status 更新配置状态
-func (s *configService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := s.dao.Status(id, status)
+// UpdateStatus 更新配置状态
+func (s *ConfigService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := s.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError
@@ -242,7 +226,7 @@ func configListToTree(src []model.Config, parentId *uint) []model.Config {
 }
 
 // WebSiteConfigList 查询网站配置列表
-func (s *configService) WebSiteConfigList(ctx *gin.Context, key string) ([]model.Config, error) {
+func (s *ConfigService) WebSiteConfigList(ctx *gin.Context, key string) ([]model.Config, error) {
 	results, err := s.innerCache.Get()
 	if err != nil {
 		return nil, err

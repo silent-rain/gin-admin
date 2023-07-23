@@ -12,7 +12,7 @@ import (
 
 // 用户登录信息
 type userLoginController struct {
-	service service.UserLoginService
+	service *service.UserLoginService
 }
 
 // NewUserLoginController 创建用户登录信息对象
@@ -38,15 +38,15 @@ func (c *userLoginController) List(ctx *gin.Context) {
 	response.New(ctx).WithDataList(results, total).Json()
 }
 
-// Status 更新用户登录信息状态
-func (c *userLoginController) Status(ctx *gin.Context) {
+// UpdateStatus 更新用户登录信息状态
+func (c *userLoginController) UpdateStatus(ctx *gin.Context) {
 	req := dto.UpdateUserLoginStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	row, err := c.service.Status(ctx, req.ID, req.UserId, req.Status)
+	row, err := c.service.UpdateStatus(ctx, req.ID, req.UserId, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

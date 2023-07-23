@@ -13,19 +13,19 @@ import (
 )
 
 // 字典维度信息
-type dictCenterController struct {
-	service service.DictService
+type dictController struct {
+	service *service.DictService
 }
 
 // NewDictController 创建字典维度信息控制器对象
-func NewDictController() *dictCenterController {
-	return &dictCenterController{
+func NewDictController() *dictController {
+	return &dictController{
 		service: service.NewDictService(),
 	}
 }
 
 // List 获取所有字典维度信息列表
-func (c *dictCenterController) List(ctx *gin.Context) {
+func (c *dictController) List(ctx *gin.Context) {
 	req := dto.QueryDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -41,7 +41,7 @@ func (c *dictCenterController) List(ctx *gin.Context) {
 }
 
 // Add 添加字典维度信息
-func (c *dictCenterController) Add(ctx *gin.Context) {
+func (c *dictController) Add(ctx *gin.Context) {
 	req := dto.AddDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -62,7 +62,7 @@ func (c *dictCenterController) Add(ctx *gin.Context) {
 }
 
 // Update 更新字典维度信息
-func (c *dictCenterController) Update(ctx *gin.Context) {
+func (c *dictController) Update(ctx *gin.Context) {
 	req := dto.UpdateDictReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -83,7 +83,7 @@ func (c *dictCenterController) Update(ctx *gin.Context) {
 }
 
 // Delete 删除字典维度信息
-func (c *dictCenterController) Delete(ctx *gin.Context) {
+func (c *dictController) Delete(ctx *gin.Context) {
 	req := DTO.DeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -99,7 +99,7 @@ func (c *dictCenterController) Delete(ctx *gin.Context) {
 }
 
 // BatchDelete 批量删除字典维度信息
-func (c *dictCenterController) BatchDelete(ctx *gin.Context) {
+func (c *dictController) BatchDelete(ctx *gin.Context) {
 	req := DTO.BatchDeleteReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
@@ -114,15 +114,15 @@ func (c *dictCenterController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新字典维度信息状态
-func (c *dictCenterController) Status(ctx *gin.Context) {
+// UpdateStatus 更新字典维度信息状态
+func (c *dictController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

@@ -7,30 +7,23 @@ import (
 	"github.com/silent-rain/gin-admin/internal/pkg/repository/mysql"
 	"github.com/silent-rain/gin-admin/pkg/utils"
 
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
-// RoleMenuRel 角色菜单关系接口
-type RoleMenuRel interface {
-	List(req dto.QueryRoleMenuRelReq) ([]model.RoleMenuRel, int64, error)
-	Update(roleId uint, menuIds []uint) error
-}
-
-// 角色菜单关系
-type roleMenuRel struct {
+// RoleMenuRel 角色菜单关系
+type RoleMenuRel struct {
 	mysql.DBRepo
 }
 
 // NewRoleMenuRelDao 创建角色菜单关系 Dao 对象
-func NewRoleMenuRelDao() *roleMenuRel {
-	return &roleMenuRel{
+func NewRoleMenuRelDao() *RoleMenuRel {
+	return &RoleMenuRel{
 		DBRepo: mysql.Instance(),
 	}
 }
 
 // List 角色关联的菜单列表
-func (d *roleMenuRel) List(req dto.QueryRoleMenuRelReq) ([]model.RoleMenuRel, int64, error) {
+func (d *RoleMenuRel) List(req dto.QueryRoleMenuRelReq) ([]model.RoleMenuRel, int64, error) {
 	var stats = func() *gorm.DB {
 		stats := d.GetDbR()
 		if req.MenuId != 0 {
@@ -53,7 +46,7 @@ func (d *roleMenuRel) List(req dto.QueryRoleMenuRelReq) ([]model.RoleMenuRel, in
 }
 
 // Update 更新角色关联的菜单
-func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
+func (d *RoleMenuRel) Update(roleId uint, menuIds []uint) error {
 	// 未传入 menu_ids, 不做处理
 	if menuIds == nil {
 		return nil
@@ -65,12 +58,6 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 	}
 
 	tx := d.GetDbW().Begin()
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-			zap.S().Panic("更新角色关联关系异常, err: %v", err)
-		}
-	}()
 
 	// 批量删除关系
 	if err := d.deleteRoleMenuIds(tx, menuIds, roleMenuIds, roleId); err != nil {
@@ -87,7 +74,7 @@ func (d *roleMenuRel) Update(roleId uint, menuIds []uint) error {
 }
 
 // 获取角色关联的菜单 menuId 列表
-func (d *roleMenuRel) getRoleMenuRelByMenuIds(roleId uint) ([]uint, error) {
+func (d *RoleMenuRel) getRoleMenuRelByMenuIds(roleId uint) ([]uint, error) {
 	beans := make([]model.RoleMenuRel, 0)
 	results := d.GetDbR().Where("role_id = ?", roleId).Find(&beans)
 	if results.Error != nil {
@@ -102,7 +89,7 @@ func (d *roleMenuRel) getRoleMenuRelByMenuIds(roleId uint) ([]uint, error) {
 }
 
 // 批量添加关系
-func (d *roleMenuRel) addRoleMenuRels(tx *gorm.DB, menuIds, roleMenuIds []uint, roleId uint) error {
+func (d *RoleMenuRel) addRoleMenuRels(tx *gorm.DB, menuIds, roleMenuIds []uint, roleId uint) error {
 	// 新增的 menuId 列表
 	addRoleMenuRels := make([]model.RoleMenuRel, 0)
 	for _, menuId := range menuIds {
@@ -124,7 +111,7 @@ func (d *roleMenuRel) addRoleMenuRels(tx *gorm.DB, menuIds, roleMenuIds []uint, 
 }
 
 // 批量删除关系
-func (d *roleMenuRel) deleteRoleMenuIds(tx *gorm.DB, menuIds, roleMenuIds []uint, roleId uint) error {
+func (d *RoleMenuRel) deleteRoleMenuIds(tx *gorm.DB, menuIds, roleMenuIds []uint, roleId uint) error {
 	// 删除的 menuId 列表
 	deleteRoleMenuIds := make([]uint, 0)
 	for _, roleId := range roleMenuIds {

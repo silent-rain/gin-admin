@@ -23,6 +23,6 @@ func InitDictDataRouter(group *gin.RouterGroup) {
 		// 批量删除字典数据信息
 		router.DELETE("/batchDelete", controller.BatchDelete)
 		// 更新字典数据信息状态
-		router.PUT("/status", controller.Status)
+		router.PUT("/updateStatus", controller.UpdateStatus)
 	}
 }

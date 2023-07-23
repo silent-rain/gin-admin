@@ -11,34 +11,20 @@ import (
 	"gorm.io/gorm"
 )
 
-// ApiHttp Http协议接口信息接口
-type ApiHttp interface {
-	All() ([]model.ApiHttp, int64, error)
-	List(req dto.QueryApiHttpReq) ([]model.ApiHttp, int64, error)
-	InfoByUri(uri string) (model.ApiHttp, bool, error)
-	Add(bean model.ApiHttp) (uint, error)
-	Update(bean model.ApiHttp) (int64, error)
-	Delete(id uint) (int64, error)
-	BatchDelete(ids []uint) (int64, error)
-	Status(id uint, status uint) (int64, error)
-	Children(parentId uint) ([]model.ApiHttp, error)
-	GetUriListByToken(token, uri string) (model.ApiHttp, bool, error)
-}
-
-// Http协议接口信息
-type apiAuth struct {
+// ApiHttp Http协议接口信息
+type ApiHttp struct {
 	mysql.DBRepo
 }
 
 // NewApiHttpDao 创建Http协议接口 Dao 对象
-func NewApiHttpDao() *apiAuth {
-	return &apiAuth{
+func NewApiHttpDao() *ApiHttp {
+	return &ApiHttp{
 		DBRepo: mysql.Instance(),
 	}
 }
 
 // All 获取所有Http协议接口列表
-func (d *apiAuth) All() ([]model.ApiHttp, int64, error) {
+func (d *ApiHttp) All() ([]model.ApiHttp, int64, error) {
 	tx := d.GetDbR().Session(&gorm.Session{})
 
 	var total int64 = 0
@@ -55,7 +41,7 @@ func (d *apiAuth) All() ([]model.ApiHttp, int64, error) {
 }
 
 // List 查询Http协议接口列表
-func (d *apiAuth) List(req dto.QueryApiHttpReq) ([]model.ApiHttp, int64, error) {
+func (d *ApiHttp) List(req dto.QueryApiHttpReq) ([]model.ApiHttp, int64, error) {
 	tx := d.GetDbR()
 	if req.Method != "" {
 		tx = tx.Where("method = ?", req.Method)
@@ -86,7 +72,7 @@ func (d *apiAuth) List(req dto.QueryApiHttpReq) ([]model.ApiHttp, int64, error) 
 }
 
 // InfoByUri 获取Http协议接口信息
-func (d *apiAuth) InfoByUri(uri string) (model.ApiHttp, bool, error) {
+func (d *ApiHttp) InfoByUri(uri string) (model.ApiHttp, bool, error) {
 	bean := model.ApiHttp{}
 	result := d.GetDbR().Where("uri = ?", uri).First(&bean)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -99,7 +85,7 @@ func (d *apiAuth) InfoByUri(uri string) (model.ApiHttp, bool, error) {
 }
 
 // Add 添加Http协议接口
-func (d *apiAuth) Add(bean model.ApiHttp) (uint, error) {
+func (d *ApiHttp) Add(bean model.ApiHttp) (uint, error) {
 	result := d.GetDbW().Create(&bean)
 	if result.Error != nil {
 		return 0, result.Error
@@ -108,13 +94,13 @@ func (d *apiAuth) Add(bean model.ApiHttp) (uint, error) {
 }
 
 // Update 更新Http协议接口
-func (d *apiAuth) Update(bean model.ApiHttp) (int64, error) {
+func (d *ApiHttp) Update(bean model.ApiHttp) (int64, error) {
 	result := d.GetDbW().Select("*").Omit("created_at").Updates(&bean)
 	return result.RowsAffected, result.Error
 }
 
 // Delete 删除Http协议接口
-func (d *apiAuth) Delete(id uint) (int64, error) {
+func (d *ApiHttp) Delete(id uint) (int64, error) {
 	result := d.GetDbW().Delete(&model.ApiHttp{
 		ID: id,
 	})
@@ -122,7 +108,7 @@ func (d *apiAuth) Delete(id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除Http协议接口
-func (d *apiAuth) BatchDelete(ids []uint) (int64, error) {
+func (d *ApiHttp) BatchDelete(ids []uint) (int64, error) {
 	beans := make([]model.ApiHttp, len(ids))
 	for _, id := range ids {
 		beans = append(beans, model.ApiHttp{
@@ -133,8 +119,8 @@ func (d *apiAuth) BatchDelete(ids []uint) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-// Status 更新状态
-func (d *apiAuth) Status(id uint, status uint) (int64, error) {
+// UpdateStatus 更新状态
+func (d *ApiHttp) UpdateStatus(id uint, status uint) (int64, error) {
 	result := d.GetDbW().Select("status").Updates(&model.ApiHttp{
 		ID:     id,
 		Status: status,
@@ -143,7 +129,7 @@ func (d *apiAuth) Status(id uint, status uint) (int64, error) {
 }
 
 // Children 通过父 ID 获取子配置列表
-func (d *apiAuth) Children(parentId uint) ([]model.ApiHttp, error) {
+func (d *ApiHttp) Children(parentId uint) ([]model.ApiHttp, error) {
 	beans := make([]model.ApiHttp, 0)
 	result := d.GetDbR().Where("parent_id = ?", parentId).
 		Order("sort ASC").Order("id ASC").
@@ -155,7 +141,7 @@ func (d *apiAuth) Children(parentId uint) ([]model.ApiHttp, error) {
 }
 
 // GetUriListByToken 获取 Token 令牌对应的 URI 资源列表
-func (d *apiAuth) GetUriListByToken(token, uri string) (model.ApiHttp, bool, error) {
+func (d *ApiHttp) GetUriListByToken(token, uri string) (model.ApiHttp, bool, error) {
 	bean := model.ApiHttp{}
 	result := d.GetDbR().Model(&model.ApiHttp{}).
 		Joins("left join api_role_http_rel arhr on arhr.api_id = api_http.id").

@@ -17,7 +17,7 @@ import (
 
 // 用户管理
 type userController struct {
-	service service.UserService
+	service *service.UserService
 }
 
 // 创建用户对象
@@ -121,15 +121,15 @@ func (c *userController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新用户状态
-func (c *userController) Status(ctx *gin.Context) {
+// UpdateStatus 更新用户状态
+func (c *userController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	if _, err := c.service.Status(ctx, req.ID, req.Status); err != nil {
+	if _, err := c.service.UpdateStatus(ctx, req.ID, req.Status); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}

@@ -14,37 +14,21 @@ import (
 )
 
 // UserService 用户管理
-type UserService interface {
-	All(ctx *gin.Context) ([]model.User, int64, error)
-	List(ctx *gin.Context, req dto.QueryUserReq) ([]model.User, int64, error)
-	Add(ctx *gin.Context, req dto.AddUserReq) error
-	Update(ctx *gin.Context, user model.User, roleIds []uint) error
-	Delete(ctx *gin.Context, id uint) (int64, error)
-	BatchDelete(ctx *gin.Context, ids []uint) (int64, error)
-	Status(ctx *gin.Context, id uint, status uint) (int64, error)
-	UpdatePassword(ctx *gin.Context, req dto.UpdateUserPasswordReq) (int64, error)
-	ResetPassword(ctx *gin.Context, id uint, password string) (int64, error)
-	UpdatePhone(ctx *gin.Context, req dto.UpdateUserPhoneReq) (int64, error)
-	UpdateEmail(ctx *gin.Context, req dto.UpdateUserEmailReq) (int64, error)
-	Info(ctx *gin.Context, userId uint) (dto.UserInfoRsp, error)
-}
-
-// 用户管理
-type userService struct {
-	dao     dao.User
-	menuDao dao.Menu
+type UserService struct {
+	dao     *dao.User
+	menuDao *dao.Menu
 }
 
 // 创建角色对象
-func NewUserService() *userService {
-	return &userService{
+func NewUserService() *UserService {
+	return &UserService{
 		dao:     dao.NewUserDao(),
 		menuDao: dao.NewMenuDao(),
 	}
 }
 
 // All 获取所有用户列表
-func (h *userService) All(ctx *gin.Context) ([]model.User, int64, error) {
+func (h *UserService) All(ctx *gin.Context) ([]model.User, int64, error) {
 	results, total, err := h.dao.All()
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -54,7 +38,7 @@ func (h *userService) All(ctx *gin.Context) ([]model.User, int64, error) {
 }
 
 // List 获取用户列表
-func (h *userService) List(ctx *gin.Context, req dto.QueryUserReq) ([]model.User, int64, error) {
+func (h *UserService) List(ctx *gin.Context, req dto.QueryUserReq) ([]model.User, int64, error) {
 	results, total, err := h.dao.List(req)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -64,7 +48,7 @@ func (h *userService) List(ctx *gin.Context, req dto.QueryUserReq) ([]model.User
 }
 
 // Add 添加用户
-func (h *userService) Add(ctx *gin.Context, req dto.AddUserReq) error {
+func (h *UserService) Add(ctx *gin.Context, req dto.AddUserReq) error {
 	// 判断用户是否存在 邮件/手机号
 	if h.chechkPhone(ctx, req.Phone) {
 		return errcode.ExistPhoneError.WithMsg("手机号已存在")
@@ -92,7 +76,7 @@ func (h *userService) Add(ctx *gin.Context, req dto.AddUserReq) error {
 }
 
 // 检查手机号是否存在
-func (h *userService) chechkPhone(ctx *gin.Context, phone string) bool {
+func (h *UserService) chechkPhone(ctx *gin.Context, phone string) bool {
 	if phone == "" {
 		return false
 	}
@@ -107,7 +91,7 @@ func (h *userService) chechkPhone(ctx *gin.Context, phone string) bool {
 }
 
 // 检查邮箱是否存在
-func (h *userService) chechkEmail(ctx *gin.Context, email string) bool {
+func (h *UserService) chechkEmail(ctx *gin.Context, email string) bool {
 	if email == "" {
 		return false
 	}
@@ -123,7 +107,7 @@ func (h *userService) chechkEmail(ctx *gin.Context, email string) bool {
 }
 
 // Update 更新用户详情信息
-func (h *userService) Update(ctx *gin.Context, user model.User, roleIds []uint) error {
+func (h *UserService) Update(ctx *gin.Context, user model.User, roleIds []uint) error {
 	if err := h.dao.Update(user, roleIds); err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateError).Errorf("%v", err)
 		return errcode.DBUpdateError
@@ -132,7 +116,7 @@ func (h *userService) Update(ctx *gin.Context, user model.User, roleIds []uint) 
 }
 
 // Delete 删除用户
-func (h *userService) Delete(ctx *gin.Context, id uint) (int64, error) {
+func (h *UserService) Delete(ctx *gin.Context, id uint) (int64, error) {
 	row, err := h.dao.Delete(id)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBDeleteError).Errorf("%v", err)
@@ -142,7 +126,7 @@ func (h *userService) Delete(ctx *gin.Context, id uint) (int64, error) {
 }
 
 // BatchDelete 批量删除用户
-func (h *userService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
+func (h *UserService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	row, err := h.dao.BatchDelete(ids)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBBatchDeleteError).Errorf("%v", err)
@@ -151,9 +135,9 @@ func (h *userService) BatchDelete(ctx *gin.Context, ids []uint) (int64, error) {
 	return row, nil
 }
 
-// Status 更新用户状态
-func (h *userService) Status(ctx *gin.Context, id uint, status uint) (int64, error) {
-	row, err := h.dao.Status(id, status)
+// UpdateStatus 更新用户状态
+func (h *UserService) UpdateStatus(ctx *gin.Context, id uint, status uint) (int64, error) {
+	row, err := h.dao.UpdateStatus(id, status)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBUpdateStatusError).Errorf("%v", err)
 		return 0, errcode.DBUpdateStatusError
@@ -162,7 +146,7 @@ func (h *userService) Status(ctx *gin.Context, id uint, status uint) (int64, err
 }
 
 // UpdatePassword 更新密码
-func (h *userService) UpdatePassword(ctx *gin.Context, req dto.UpdateUserPasswordReq) (int64, error) {
+func (h *UserService) UpdatePassword(ctx *gin.Context, req dto.UpdateUserPasswordReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.OldPassword)
 	if err != nil {
@@ -183,7 +167,7 @@ func (h *userService) UpdatePassword(ctx *gin.Context, req dto.UpdateUserPasswor
 }
 
 // ResetPassword 重置密码
-func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) (int64, error) {
+func (h *UserService) ResetPassword(ctx *gin.Context, id uint, password string) (int64, error) {
 	row, err := h.dao.ResetPassword(id, password)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBResetError).Errorf("%v", err)
@@ -193,7 +177,7 @@ func (h *userService) ResetPassword(ctx *gin.Context, id uint, password string) 
 }
 
 // UpdatePhone 更新手机号码
-func (h *userService) UpdatePhone(ctx *gin.Context, req dto.UpdateUserPhoneReq) (int64, error) {
+func (h *UserService) UpdatePhone(ctx *gin.Context, req dto.UpdateUserPhoneReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
@@ -228,7 +212,7 @@ func (h *userService) UpdatePhone(ctx *gin.Context, req dto.UpdateUserPhoneReq) 
 }
 
 // UpdateEmail 更新邮箱
-func (h *userService) UpdateEmail(ctx *gin.Context, req dto.UpdateUserEmailReq) (int64, error) {
+func (h *UserService) UpdateEmail(ctx *gin.Context, req dto.UpdateUserEmailReq) (int64, error) {
 	// 用户密码验证
 	ok, err := h.dao.ExistUserPassword(req.ID, req.Password)
 	if err != nil {
@@ -263,7 +247,7 @@ func (h *userService) UpdateEmail(ctx *gin.Context, req dto.UpdateUserEmailReq) 
 }
 
 // Info 获取用户信息
-func (h *userService) Info(ctx *gin.Context, userId uint) (dto.UserInfoRsp, error) {
+func (h *UserService) Info(ctx *gin.Context, userId uint) (dto.UserInfoRsp, error) {
 	user, ok, err := h.dao.Info(userId)
 	if err != nil {
 		log.New(ctx).WithCode(errcode.DBQueryError).Errorf("%v", err)
@@ -305,7 +289,7 @@ func (h *userService) Info(ctx *gin.Context, userId uint) (dto.UserInfoRsp, erro
 }
 
 // 根据角色获取菜单列表
-func (h *userService) getRoleMenuList(roles []model.Role) ([]model.Menu, error) {
+func (h *UserService) getRoleMenuList(roles []model.Role) ([]model.Menu, error) {
 	// 获取角色ID
 	roleIds := make([]uint, 0)
 	for _, item := range roles {
@@ -320,7 +304,7 @@ func (h *userService) getRoleMenuList(roles []model.Role) ([]model.Menu, error) 
 }
 
 // 菜单路由列表：菜单类型为菜单的数据解析
-func (h *userService) getMenuList(menus []model.Menu) []model.Menu {
+func (h *UserService) getMenuList(menus []model.Menu) []model.Menu {
 	results := make([]model.Menu, 0)
 	if len(menus) == 0 {
 		return results
@@ -334,7 +318,7 @@ func (h *userService) getMenuList(menus []model.Menu) []model.Menu {
 }
 
 // 按钮权限列表：菜单类型为按钮的数据解析
-func (h *userService) getPermissionList(menus []model.Menu) []dto.ButtonPermission {
+func (h *UserService) getPermissionList(menus []model.Menu) []dto.ButtonPermission {
 	results := make([]dto.ButtonPermission, 0)
 	if len(menus) == 0 {
 		return results

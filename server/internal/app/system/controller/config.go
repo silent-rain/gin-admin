@@ -17,7 +17,7 @@ import (
 
 // 配置
 type configController struct {
-	service service.ConfigService
+	service *service.ConfigService
 }
 
 // NewConfigController 创建配置对象
@@ -87,15 +87,15 @@ func (c *configController) Info(ctx *gin.Context) {
 	response.New(ctx).WithData(result).Json()
 }
 
-// ChildrenByKey 通过父 key 获取子配置列表
-func (c *configController) ChildrenByKey(ctx *gin.Context) {
+// ChildrensByKey 通过父 key 获取子配置列表
+func (c *configController) ChildrensByKey(ctx *gin.Context) {
 	req := dto.QueryConfigReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	results, err := c.service.ChildrenByKey(ctx, req.Key)
+	results, err := c.service.ChildrensByKey(ctx, req.Key)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
@@ -198,15 +198,15 @@ func (c *configController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新配置状态
-func (c *configController) Status(ctx *gin.Context) {
+// UpdateStatus 更新配置状态
+func (c *configController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	if _, err := c.service.Status(ctx, req.ID, req.Status); err != nil {
+	if _, err := c.service.UpdateStatus(ctx, req.ID, req.Status); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}

@@ -15,7 +15,7 @@ import (
 
 // Token 令牌
 type userApiTokenController struct {
-	service service.UserApiTokenService
+	service *service.UserApiTokenService
 }
 
 // NewUserApiTokenController 创建 Token 令牌对象
@@ -117,15 +117,15 @@ func (c *userApiTokenController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新 Token 令牌状态
-func (c *userApiTokenController) Status(ctx *gin.Context) {
+// UpdateStatus 更新 Token 令牌状态
+func (c *userApiTokenController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

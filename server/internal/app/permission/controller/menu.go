@@ -15,7 +15,7 @@ import (
 
 // 菜单
 type menuController struct {
-	service service.MenuService
+	service *service.MenuService
 }
 
 // NewMenuController 创建菜单对象
@@ -199,15 +199,15 @@ func (c *menuController) BatchDelete(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// Status 更新菜单状态
-func (c *menuController) Status(ctx *gin.Context) {
+// UpdateStatus 更新菜单状态
+func (c *menuController) UpdateStatus(ctx *gin.Context) {
 	req := DTO.UpdateStatusReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	_, err := c.service.Status(ctx, req.ID, req.Status)
+	_, err := c.service.UpdateStatus(ctx, req.ID, req.Status)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
@@ -215,15 +215,15 @@ func (c *menuController) Status(ctx *gin.Context) {
 	response.New(ctx).Json()
 }
 
-// ChildrenMenu 通过父 ID 获取子配置列表
-func (c *menuController) ChildrenMenu(ctx *gin.Context) {
+// ChildrenMenus 通过父 ID 获取子配置列表
+func (c *menuController) ChildrenMenus(ctx *gin.Context) {
 	req := dto.QueryChildrenMenuReq{}
 	if err := http.ParsingReqParams(ctx, &req); err != nil {
 		response.New(ctx).WithError(err).Json()
 		return
 	}
 
-	results, err := c.service.ChildrenMenu(ctx, req.ParentId)
+	results, err := c.service.ChildrenMenus(ctx, req.ParentId)
 	if err != nil {
 		response.New(ctx).WithError(err).Json()
 		return

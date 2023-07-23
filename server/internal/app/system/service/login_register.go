@@ -15,29 +15,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserLoginRegisterService 用户登录/登出/注册接口
-type UserLoginRegisterService interface {
-	Login(ctx *gin.Context, req dto.UserLoginReq) (dto.UserLogin, error)
-	Logout(ctx *gin.Context) (dto.UserLogin, error)
-	Register(ctx *gin.Context, req permissionDTO.AddUserReq) error
-}
-
-// 用户登录/登出/注册
-type userLoginRegisterService struct {
-	dao   dao.Login
+// UserLoginRegisterService 用户登录/登出/注册
+type UserLoginRegisterService struct {
+	dao   *dao.Login
 	cache cache.UserLoginCache
 }
 
 // NewUserLoginRegisterService 创建用户登录/登出/注册 对象
-func NewUserLoginRegisterService() *userLoginRegisterService {
-	return &userLoginRegisterService{
+func NewUserLoginRegisterService() *UserLoginRegisterService {
+	return &UserLoginRegisterService{
 		dao:   dao.NewLoginDao(),
 		cache: cache.NewUserLoginCache(),
 	}
 }
 
 // Login 登录
-func (h *userLoginRegisterService) Login(ctx *gin.Context, req dto.UserLoginReq) (dto.UserLogin, error) {
+func (h *UserLoginRegisterService) Login(ctx *gin.Context, req dto.UserLoginReq) (dto.UserLogin, error) {
 	// 返回 Token
 	result := dto.UserLogin{}
 
@@ -93,13 +86,13 @@ func (h *userLoginRegisterService) Login(ctx *gin.Context, req dto.UserLoginReq)
 }
 
 // Logout 注销系统
-func (h *userLoginRegisterService) Logout(ctx *gin.Context) (dto.UserLogin, error) {
+func (h *UserLoginRegisterService) Logout(ctx *gin.Context) (dto.UserLogin, error) {
 	result := dto.UserLogin{}
 	return result, nil
 }
 
 // Register 注册
-func (h *userLoginRegisterService) Register(ctx *gin.Context, req permissionDTO.AddUserReq) error {
+func (h *UserLoginRegisterService) Register(ctx *gin.Context, req permissionDTO.AddUserReq) error {
 	// 注册入口检查验证码
 	if ctx.Request.URL.Path == "/api/v1/register" {
 		if err := chechkCaptcha(ctx, req.CaptchaId, req.Captcha); err != nil {

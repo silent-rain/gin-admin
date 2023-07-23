@@ -30,7 +30,7 @@ func InitUserRouter(group *gin.RouterGroup) {
 
 	{
 		// 更新用户状态
-		user.PUT("/status", controller.NewUserController().Status)
+		user.PUT("/updateStatus", controller.NewUserController().UpdateStatus)
 		// 重置用户密码
 		user.PUT("/resetPwd", controller.NewUserController().ResetPassword)
 		// 更新用户密码
