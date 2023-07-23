@@ -24,9 +24,9 @@ export const getConfigList = async (params: any) => {
 };
 
 // 通过上级 key 获取子配置列表
-export const getConfigChildrenByKey = async (params: any) => {
+export const getConfigChildrensByKey = async (params: any) => {
   return axiosReq({
-    url: '/config/childrenByKey',
+    url: '/config/childrensByKey',
     method: 'get',
     isParams: true,
     data: params,
@@ -97,7 +97,7 @@ export const batchDeleteConfig = async (params: any) => {
 // 更新配置状态
 export const updateConfigStatus = async (params: any) => {
   return axiosReq({
-    url: '/config/status',
+    url: '/config/updateStatus',
     method: 'put',
     data: params,
   });

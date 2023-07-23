@@ -51,7 +51,7 @@ export const batchDeleteUserApiToken = async (params: any) => {
 // 更新 Token 令牌状态
 export const updateUserApiTokenStatus = async (params: any) => {
   return axiosReq({
-    url: '/userApiToken/status',
+    url: '/userApiToken/updateStatus',
     method: 'put',
     data: params,
   });

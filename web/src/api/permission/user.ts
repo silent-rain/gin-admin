@@ -69,7 +69,7 @@ export const batchDeleteUser = async (params: any) => {
 // 更新用户状态
 export const updateUserStatus = async (params: any) => {
   return axiosReq({
-    url: '/user/status',
+    url: '/user/updateStatus',
     method: 'put',
     data: params,
   });

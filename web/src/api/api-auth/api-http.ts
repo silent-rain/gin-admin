@@ -61,7 +61,7 @@ export const batchDeleteApiHttp = async (params: any) => {
 // 更新Http协议接口信息状态
 export const updateApiHttpStatus = async (params: any) => {
   return axiosReq({
-    url: '/apiHttp/status',
+    url: '/apiHttp/updateStatus',
     method: 'put',
     data: params,
   });

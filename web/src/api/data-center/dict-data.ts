@@ -51,7 +51,7 @@ export const batchDeleteDictData = async (params: any) => {
 // 更新字典数据信息状态
 export const updateDictDataStatus = async (params: any) => {
   return axiosReq({
-    url: '/dictData/status',
+    url: '/dictData/updateStatus',
     method: 'put',
     data: params,
   });

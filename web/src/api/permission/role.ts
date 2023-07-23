@@ -61,7 +61,7 @@ export const batchDeleteRole = async (params: any) => {
 // 更新角色状态
 export const updateRoleStatus = async (params: any) => {
   return axiosReq({
-    url: '/role/status',
+    url: '/role/updateStatus',
     method: 'put',
     data: params,
   });

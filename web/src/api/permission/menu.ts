@@ -61,7 +61,7 @@ export const batchDeleteMenu = async (params: any) => {
 // 更新菜单状态
 export const updateMenuStatus = async (params: any) => {
   return axiosReq({
-    url: '/menu/status',
+    url: '/menu/updateStatus',
     method: 'put',
     data: params,
   });

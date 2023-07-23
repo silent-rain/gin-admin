@@ -17,7 +17,7 @@ export const getUserLoginList = async (params: any) => {
 // 更新用户登录信息状态
 export const updateUserLoginStatus = async (params: any) => {
   return axiosReq({
-    url: '/userLogin/status',
+    url: '/userLogin/updateStatus',
     method: 'put',
     data: params,
   });
