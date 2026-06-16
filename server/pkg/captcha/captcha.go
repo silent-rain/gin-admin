@@ -121,6 +121,6 @@ func (r captcha) MekeCaptcha(captchaType string) (string, string, error) {
 
 	// 创建验证码并传入创建的类型的配置，以及存储的对象
 	captcha := base64Captcha.NewCaptcha(driver, CaptchaStore)
-	captchaId, base64string, err := captcha.Generate()
+	captchaId, base64string, _, err := captcha.Generate()
 	return captchaId, base64string, err
 }
