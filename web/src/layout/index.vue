@@ -1,3 +1,42 @@
+<script setup lang="ts">
+import { computed, onBeforeMount } from 'vue'
+import { resizeHandler } from '@/hooks/use-layout'
+import { useBasicStore } from '@/store/basic'
+import AppMain from './app-main/index.vue'
+import Footer from './footer/index.vue'
+import Navbar from './navbar/index.vue'
+import Sidebar from './sidebar/index.vue'
+import TagsView from './tags-view/index.vue'
+
+const { sidebar, settings } = useBasicStore()
+const basicStore = useBasicStore()
+
+const classObj = computed(() => {
+  return {
+    'containerx': true,
+    'headerx': true,
+    'close-sidebar': !sidebar.opened,
+    'hide-sidebar': !settings.showLeftMenu,
+    'fixed-header': settings.fixedHeader,
+  }
+})
+const headerClassObj = computed(() => {
+  return {
+    'show-navbar': settings.showTopNavbar,
+    'show-tags-view': settings.showTagsView,
+  }
+})
+
+onBeforeMount(() => {
+  resizeHandler()
+})
+
+// 移动端点击隐藏侧边栏
+function handleClickOutside() {
+  basicStore.setSidebarOpen(false)
+}
+</script>
+
 <template>
   <el-container :class="classObj">
     <!-- 侧边栏 -->
@@ -27,45 +66,6 @@
     </el-container>
   </el-container>
 </template>
-
-<script setup lang="ts">
-import { computed, onBeforeMount } from 'vue';
-import Sidebar from './sidebar/index.vue';
-import Navbar from './navbar/index.vue';
-import TagsView from './tags-view/index.vue';
-import AppMain from './app-main/index.vue';
-import Footer from './footer/index.vue';
-import { useBasicStore } from '@/store/basic';
-import { resizeHandler } from '@/hooks/use-layout';
-
-const { sidebar, settings } = useBasicStore();
-const basicStore = useBasicStore();
-
-const classObj = computed(() => {
-  return {
-    containerx: true,
-    headerx: true,
-    'close-sidebar': !sidebar.opened,
-    'hide-sidebar': !settings.showLeftMenu,
-    'fixed-header': settings.fixedHeader,
-  };
-});
-const headerClassObj = computed(() => {
-  return {
-    'show-navbar': settings.showTopNavbar,
-    'show-tags-view': settings.showTagsView,
-  };
-});
-
-onBeforeMount(() => {
-  resizeHandler();
-});
-
-// 移动端点击隐藏侧边栏
-const handleClickOutside = () => {
-  basicStore.setSidebarOpen(false);
-};
-</script>
 
 <style lang="scss" scoped>
 // pc 默认展开样式

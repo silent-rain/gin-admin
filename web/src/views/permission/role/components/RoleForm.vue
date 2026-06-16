@@ -1,3 +1,72 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import type { Role } from '~/api/permission/role'
+import { ElMessage } from 'element-plus'
+import { addRole, updateRole } from '@/api/permission/role'
+
+const props = withDefaults(
+  defineProps<{
+    data: Role
+    visible: boolean
+    type: string // add/edit
+    width?: string
+  }>(),
+  {
+    width: '100%',
+  },
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  name: [
+    { required: true, message: '请输入角色名称', trigger: 'blur' },
+    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
+  ],
+  sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
+})
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+
+    try {
+      if (props.type === 'add') {
+        await addRole(props.data)
+      }
+      else {
+        await updateRole(props.data)
+      }
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -44,70 +113,5 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateRole, addRole } from '@/api/permission/role';
-import { Role } from '~/api/permission/role';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: Role;
-    visible: boolean;
-    type: string; // add/edit
-    width?: string;
-  }>(),
-  {
-    width: '100%',
-  },
-);
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: '请输入角色名称', trigger: 'blur' },
-    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
-  ],
-  sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
-});
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-
-    try {
-      if (props.type === 'add') {
-        await addRole(props.data);
-      } else {
-        await updateRole(props.data);
-      }
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss"></style>

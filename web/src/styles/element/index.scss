@@ -1,0 +1,8 @@
+// Element Plus 主题定制文件
+// 这里可以覆盖 Element Plus 的默认变量
+
+// 示例：自定义主色调
+// @use "element-plus/theme-chalk/src/index" as *;
+// $--color-primary: #409eff;
+
+// 导出为空也可以，vite.config.ts 的 additionalData 配置需要这个文件存在

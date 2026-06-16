@@ -1,34 +1,27 @@
-<template>
-  <div class="tinymce-box">
-    <editor v-model="textContent" :init="init" :disabled="disabled" />
-  </div>
-</template>
-
 <script setup>
-import tinymce from 'tinymce/tinymce'; // tinymce默认hidden，不引入不显示
-import Editor from '@tinymce/tinymce-vue';
-import 'tinymce/themes/silver/theme'; // 主题文件
-import 'tinymce/icons/default';
-import 'tinymce/models/dom';
+import Editor from '@tinymce/tinymce-vue'
+import tinymce from 'tinymce/tinymce' // tinymce默认hidden，不引入不显示
+import 'tinymce/themes/silver/theme' // 主题文件
+import 'tinymce/icons/default'
+import 'tinymce/models/dom'
 // tinymce插件可按自己的需要进行导入
 // 更多插件参考：https://www.tiny.cloud/docs/plugins/
-import 'tinymce/plugins/image'; // 插入上传图片插件
-import 'tinymce/plugins/importcss'; // 图片工具
-import 'tinymce/plugins/media'; // 插入视频插件
-import 'tinymce/plugins/table'; // 插入表格插件
-import 'tinymce/plugins/lists'; // 列表插件
-import 'tinymce/plugins/charmap'; // 特殊字符
-import 'tinymce/plugins/wordcount'; // 字数统计插件
-import 'tinymce/plugins/codesample'; // 插入代码
-import 'tinymce/plugins/code'; // 查看源码
-import 'tinymce/plugins/fullscreen'; // 全屏
-import 'tinymce/plugins/link'; //
-import 'tinymce/plugins/preview'; // 预览
-import 'tinymce/plugins/template'; // 插入模板
-import 'tinymce/plugins/save'; // 保存
-import 'tinymce/plugins/searchreplace'; // 查询替换
-import 'tinymce/plugins/pagebreak'; // 分页
-import 'tinymce/plugins/insertdatetime'; // 时间插入
+import 'tinymce/plugins/image' // 插入上传图片插件
+import 'tinymce/plugins/importcss' // 图片工具
+import 'tinymce/plugins/media' // 插入视频插件
+import 'tinymce/plugins/table' // 插入表格插件
+import 'tinymce/plugins/lists' // 列表插件
+import 'tinymce/plugins/charmap' // 特殊字符
+import 'tinymce/plugins/wordcount' // 字数统计插件
+import 'tinymce/plugins/codesample' // 插入代码
+import 'tinymce/plugins/code' // 查看源码
+import 'tinymce/plugins/fullscreen' // 全屏
+import 'tinymce/plugins/link' //
+import 'tinymce/plugins/preview' // 预览
+import 'tinymce/plugins/save' // 保存
+import 'tinymce/plugins/searchreplace' // 查询替换
+import 'tinymce/plugins/pagebreak' // 分页
+import 'tinymce/plugins/insertdatetime' // 时间插入
 
 const props = defineProps({
   value: {
@@ -53,7 +46,7 @@ const props = defineProps({
     // default:
     //   "formats undo redo paste print fontsizeselect fontselect template fullpage|wordcount ltr rtl visualchars visualblocks toc spellchecker searchreplace|save preview pagebreak nonbreaking|media image|outdent indent aligncenter alignleft alignright alignjustify lineheight  underline quicklink h2 h3 blockquote numlist bullist table removeformat forecolor backcolor bold italic  strikethrough hr charmap link insertdatetime|subscript superscript cut codesample code |anchor preview fullscreen|help",
   },
-});
+})
 
 const init = {
   // width: 720,
@@ -76,7 +69,7 @@ const init = {
   // convert_urls: false,
   // 初始化完成
   init_instance_callback: (editor) => {
-    console.log('初始化完成：', editor);
+    console.log('初始化完成：', editor)
   },
   // 此处为自定义图片上传处理函数，
   // images_upload_handler: (blobInfo, progress) => {
@@ -93,27 +86,33 @@ const init = {
   //     console.log(res);
   //   });
   // },
-};
-let textContent = ref(props.value);
+}
+const textContent = ref(props.value)
 
 // 组件挂载完毕
 onMounted(() => {
-  tinymce.init({});
-});
+  tinymce.init({})
+})
 
 // 添加相关的事件，可用的事件参照文档=> https://github.com/tinymce/tinymce-vue => All available events
 // 可以添加一些自己的自定义事件，如清空内容
-const clear = () => {
-  textContent = '';
-};
+function clear() {
+  textContent.value = ''
+}
 
-const setContent = (value) => {
-  textContent.value = value;
-};
-const getContent = () => {
-  return textContent.value;
-};
-defineExpose({ setContent, getContent });
+function setContent(value) {
+  textContent.value = value
+}
+function getContent() {
+  return textContent.value
+}
+defineExpose({ setContent, getContent })
 </script>
+
+<template>
+  <div class="tinymce-box">
+    <Editor v-model="textContent" :init="init" :disabled="disabled" />
+  </div>
+</template>
 
 <style scoped></style>

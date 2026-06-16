@@ -1,3 +1,11 @@
+<script setup>
+const vueRouter = useRouter()
+function goToConfig() {
+  location.href
+    = 'https://github.jzfai.top/low-code-platform/#/permission-center/user-table-query'
+}
+</script>
+
 <template>
   <div>
     page test TestTableQuery.vue
@@ -11,17 +19,11 @@
     </div>
 
     <div class="mt-20px">
-      <el-button type="primary" @click="goToConfig">去配置</el-button>
+      <el-button type="primary" @click="goToConfig">
+        去配置
+      </el-button>
     </div>
   </div>
 </template>
-
-<script setup>
-const vueRouter = useRouter();
-const goToConfig = () => {
-  location.href =
-    'https://github.jzfai.top/low-code-platform/#/permission-center/user-table-query';
-};
-</script>
 
 <style scoped lang="scss"></style>

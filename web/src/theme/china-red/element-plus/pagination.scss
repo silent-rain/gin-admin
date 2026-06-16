@@ -13,7 +13,9 @@ html.china-red {
     --el-pagination-button-bg-color: var(--el-fill-color);
     --el-pagination-hover-color: var(--el-color-primary);
     --el-pagination-height-extra-small: 24px;
-    --el-pagination-line-height-extra-small: var(--el-pagination-height-extra-small);
+    --el-pagination-line-height-extra-small: var(
+      --el-pagination-height-extra-small
+    );
     white-space: nowrap;
     padding: 2px 5px;
     color: var(--el-pagination-text-color);

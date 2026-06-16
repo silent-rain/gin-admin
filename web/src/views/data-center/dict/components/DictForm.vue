@@ -1,3 +1,73 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import type { Dict } from '~/api/data-center/dict'
+import { ElMessage } from 'element-plus'
+import { addDict, updateDict } from '@/api/data-center/dict'
+
+const props = withDefaults(
+  defineProps<{
+    data: Dict
+    visible: boolean
+    type: string // add/edit
+  }>(),
+  {},
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  name: [
+    { required: true, message: '请输入字典名称', trigger: 'blur' },
+    { min: 2, message: '至少输入2个字符', trigger: 'blur' },
+  ],
+  code: [
+    { required: true, message: '请输入字典编码', trigger: 'blur' },
+    { min: 6, message: '至少输入6个字符', trigger: 'blur' },
+  ],
+  status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
+})
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+
+    try {
+      if (props.type === 'add') {
+        await addDict(props.data)
+      }
+      else {
+        await updateDict(props.data)
+      }
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -44,71 +114,5 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { updateDict, addDict } from '@/api/data-center/dict';
-import { Dict } from '~/api/data-center/dict';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: Dict;
-    visible: boolean;
-    type: string; // add/edit
-  }>(),
-  {},
-);
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: '请输入字典名称', trigger: 'blur' },
-    { min: 2, message: '至少输入2个字符', trigger: 'blur' },
-  ],
-  code: [
-    { required: true, message: '请输入字典编码', trigger: 'blur' },
-    { min: 6, message: '至少输入6个字符', trigger: 'blur' },
-  ],
-  status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
-});
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-
-    try {
-      if (props.type === 'add') {
-        await addDict(props.data);
-      } else {
-        await updateDict(props.data);
-      }
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss"></style>

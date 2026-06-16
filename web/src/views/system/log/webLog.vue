@@ -1,3 +1,173 @@
+<script setup lang="ts">
+import type { WebLog, WebLogListRsp } from '@/typings/api/system/log'
+import { Delete, Search } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
+import { onBeforeMount, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getWebList } from '@/api/system/log'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import LogDrawer from './components/LogDrawer.vue'
+
+const { settings } = storeToRefs(useBasicStore())
+const route = useRoute()
+const router = useRouter()
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  nickname: null,
+  os_type: null,
+  error_type: null,
+  level: null,
+  url: null,
+  msg: null,
+})
+
+const state = reactive({
+  stack: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+})
+
+// 日志级别
+const levelOptions = [
+  {
+    lebal: '调试',
+    level: 'DEBUG',
+    type: 'info',
+  },
+  {
+    lebal: '信息',
+    level: 'INFO',
+    type: '',
+  },
+  {
+    lebal: '警告',
+    level: 'WARN',
+    type: 'warning',
+  },
+  {
+    lebal: '错误',
+    level: 'ERROR',
+    type: 'danger',
+  },
+  {
+    lebal: '恐慌',
+    level: 'PANIC',
+    type: 'danger',
+  },
+]
+// 终端类型: 0: 未知,1: 安卓,2 :ios,3 :web
+const osTypeOptions = [
+  {
+    lebal: '未知',
+    value: 0,
+    type: 'info',
+  },
+  {
+    lebal: '安卓',
+    value: 1,
+    type: '',
+  },
+  {
+    lebal: 'IOS',
+    value: 2,
+    type: '',
+  },
+  {
+    lebal: 'WEB',
+    value: 3,
+    type: '',
+  },
+]
+// 错误类型: 1:接口报错,2:代码报错
+const errorTypeOptions = [
+  {
+    lebal: '代码报错',
+    value: 2,
+    type: 'success',
+  },
+  {
+    lebal: '接口报错',
+    value: 1,
+    type: '',
+  },
+]
+
+// 过滤事件
+function handleFilter() {
+  router.push({
+    path: route.path,
+    query: listQuery.value,
+  })
+  fetchWebLogList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+}
+
+const checkAllList = [
+  { label: '日志ID', value: 'id', disabled: false, enabled: false },
+  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: false, enabled: false },
+  { label: '终端类型', value: 'os_type', disabled: true, enabled: true },
+  { label: '错误类型', value: 'error_type', disabled: true, enabled: true },
+  { label: '日志级别', value: 'level', disabled: true, enabled: true },
+  { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
+  { label: '错误页面', value: 'url', disabled: true, enabled: true },
+  { label: '日志消息', value: 'msg', disabled: false, enabled: true },
+  {
+    label: '堆栈信息',
+    value: 'stack',
+    disabled: false,
+    enabled: true,
+  },
+  { label: '备注', value: 'note', disabled: false, enabled: false },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+const tableSize = ref<string>(settings.value.defaultSize)
+const tableData = ref<WebLog[]>([])
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  defaultQuery()
+  fetchWebLogList()
+})
+
+// 默认请求参数
+function defaultQuery() {
+  listQuery.value.trace_id = route.query.trace_id
+}
+
+// 获取 WEB 日志列表
+async function fetchWebLogList() {
+  try {
+    const resp = (await getWebList(listQuery.value)).data as WebLogListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 显示堆栈信息
+function handleShowStack(v: string) {
+  state.stack.key = new Date().getMilliseconds()
+  state.stack.data = v
+  state.stack.visible = true
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -80,14 +250,14 @@
 
     <!-- 表格全局按钮 -->
     <div class="operation-button">
-      <div class="left-button"></div>
+      <div class="left-button" />
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-role'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-role"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchWebLogList"
+          @refresh-event="fetchWebLogList"
         />
       </div>
     </div>
@@ -130,8 +300,8 @@
             v-for="(item, _) in osTypeOptions.filter(
               (v) => v.value === scope.row.os_type,
             )"
-            size="small"
             :key="item.value"
+            size="small"
             :type="item.type"
           >
             {{ item.lebal }}
@@ -151,8 +321,8 @@
             v-for="(item, _) in errorTypeOptions.filter(
               (v) => v.value === scope.row.error_type,
             )"
-            size="small"
             :key="item.value"
+            size="small"
             :type="item.type"
           >
             {{ item.lebal }}
@@ -200,7 +370,7 @@
           >
             查看
           </el-button>
-          <span v-else></span>
+          <span v-else />
         </template>
       </el-table-column>
       <el-table-column
@@ -217,8 +387,8 @@
       />
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchWebLogList"
     />
@@ -226,183 +396,14 @@
     <!-- 堆栈信息 -->
     <LogDrawer
       v-if="state.stack.visible"
+      :key="state.stack.key"
       v-model="state.stack.visible"
       :data="state.stack.data"
-      :key="state.stack.key"
       language="text"
       size="800px"
-    ></LogDrawer>
+    />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia/dist/pinia';
-import { Search, Delete } from '@element-plus/icons-vue';
-import { useBasicStore } from '@/store/basic';
-import { getWebList } from '@/api/system/log';
-import { WebLog, WebLogListRsp } from '@/typings/api/system/log';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import LogDrawer from './components/LogDrawer.vue';
-
-const { settings } = storeToRefs(useBasicStore());
-const route = useRoute();
-const router = useRouter();
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  nickname: null,
-  os_type: null,
-  error_type: null,
-  level: null,
-  url: null,
-  msg: null,
-});
-
-const state = reactive({
-  stack: {
-    visible: false,
-    data: '',
-    key: new Date().getMilliseconds(),
-  },
-});
-
-// 日志级别
-const levelOptions = [
-  {
-    lebal: '调试',
-    level: 'DEBUG',
-    type: 'info',
-  },
-  {
-    lebal: '信息',
-    level: 'INFO',
-    type: '',
-  },
-  {
-    lebal: '警告',
-    level: 'WARN',
-    type: 'warning',
-  },
-  {
-    lebal: '错误',
-    level: 'ERROR',
-    type: 'danger',
-  },
-  {
-    lebal: '恐慌',
-    level: 'PANIC',
-    type: 'danger',
-  },
-];
-// 终端类型: 0: 未知,1: 安卓,2 :ios,3 :web
-const osTypeOptions = [
-  {
-    lebal: '未知',
-    value: 0,
-    type: 'info',
-  },
-  {
-    lebal: '安卓',
-    value: 1,
-    type: '',
-  },
-  {
-    lebal: 'IOS',
-    value: 2,
-    type: '',
-  },
-  {
-    lebal: 'WEB',
-    value: 3,
-    type: '',
-  },
-];
-// 错误类型: 1:接口报错,2:代码报错
-const errorTypeOptions = [
-  {
-    lebal: '代码报错',
-    value: 2,
-    type: 'success',
-  },
-  {
-    lebal: '接口报错',
-    value: 1,
-    type: '',
-  },
-];
-
-// 过滤事件
-const handleFilter = () => {
-  router.push({
-    path: route.path,
-    query: listQuery.value,
-  });
-  fetchWebLogList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-};
-
-const checkAllList = [
-  { label: '日志ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
-  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: false, enabled: false },
-  { label: '终端类型', value: 'os_type', disabled: true, enabled: true },
-  { label: '错误类型', value: 'error_type', disabled: true, enabled: true },
-  { label: '日志级别', value: 'level', disabled: true, enabled: true },
-  { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
-  { label: '错误页面', value: 'url', disabled: true, enabled: true },
-  { label: '日志消息', value: 'msg', disabled: false, enabled: true },
-  {
-    label: '堆栈信息',
-    value: 'stack',
-    disabled: false,
-    enabled: true,
-  },
-  { label: '备注', value: 'note', disabled: false, enabled: false },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<WebLog[]>([]);
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  defaultQuery();
-  fetchWebLogList();
-});
-
-// 默认请求参数
-const defaultQuery = () => {
-  listQuery.value.trace_id = route.query.trace_id;
-};
-
-// 获取 WEB 日志列表
-const fetchWebLogList = async () => {
-  try {
-    const resp = (await getWebList(listQuery.value)).data as WebLogListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 显示堆栈信息
-const handleShowStack = (v: string) => {
-  state.stack.key = new Date().getMilliseconds();
-  state.stack.data = v;
-  state.stack.visible = true;
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

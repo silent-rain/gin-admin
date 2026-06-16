@@ -1,6 +1,76 @@
+<script setup lang="ts">
+import { copyValueToClipboard } from '@/hooks/use-common'
+// import { Delete, FolderAdd } from '@element-plus/icons-vue'
+import { useTable } from '@/hooks/use-table'
+
+const searchForm = reactive({
+  log: '',
+  pageUrl: '',
+  startEndArr: '',
+})
+function selectPageReq() {
+  const reqConfig = {
+    url: '/integration-front/errorCollection/selectPage',
+    method: 'get',
+  }
+  tableListReq(reqConfig).then(({ data }) => {
+    tableListData.value = data.records
+    totalPage.value = data.total
+  })
+}
+// 重置
+const refSearchForm = $ref()
+function resetForm() {
+  refSearchForm.resetFields()
+  dateRangePacking(['', ''])
+  resetPageReq()
+}
+
+// 批量删除
+function multiDelBtnClick() {
+  const reqConfig = {
+    url: '/integration-front/errorCollection/deleteBatchIds',
+    method: 'delete',
+    bfLoading: true,
+  }
+  multiDelBtnDill(reqConfig)
+}
+
+// 单个删除
+function tableDelClick(row) {
+  const reqConfig = {
+    url: '/integration-front/errorCollection/deleteById',
+    params: { id: row.id },
+    method: 'delete',
+  }
+  tableDelDill(row, reqConfig)
+}
+
+// 添加和修改详情
+onMounted(() => {
+  selectPageReq()
+})
+
+// 引入table-query相关的hooks 方法
+let {
+  pageNum,
+  pageSize,
+  totalPage,
+  tableListData,
+  tableListReq,
+  dateRangePacking,
+  handleSelectionChange,
+  handleCurrentChange,
+  handleSizeChange,
+  resetPageReq,
+  multiDelBtnDill,
+  tableDelDill,
+} = useTable(searchForm, selectPageReq)
+</script>
+
 <template>
   <div class="mt-10px query-page-style">
-    <!--条件搜索-->
+    <!-- 条件搜索 -->
 
     <el-form ref="refSearchForm" :inline="true" :model="searchForm">
       <el-form-item prop="log">
@@ -30,30 +100,34 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="resetPageReq">search</el-button>
+        <el-button type="primary" @click="resetPageReq">
+          search
+        </el-button>
 
-        <el-button type="primary" @click="resetForm">reset</el-button>
+        <el-button type="primary" @click="resetForm">
+          reset
+        </el-button>
       </el-form-item>
     </el-form>
 
     <div class="rowES mb-10px">
       <el-button type="primary" @click="multiDelBtnClick">
-        <!--        <el-icon style="vertical-align: middle">-->
+        <!--        <el-icon style="vertical-align: middle"> -->
 
-        <!--          <Delete />-->
+        <!--          <Delete /> -->
 
-        <!--        </el-icon>-->
+        <!--        </el-icon> -->
 
         <span style="vertical-align: middle">multiDel</span>
       </el-button>
     </div>
 
-    <!--表格和分页-->
+    <!-- 表格和分页 -->
 
     <el-table
       id="resetElementDialog"
       ref="refuserTable"
-      :height="`calc(100vh - 260px)`"
+      height="calc(100vh - 260px)"
       border
       :data="tableListData"
       @selection-change="handleSelectionChange"
@@ -108,7 +182,7 @@
         min-width="120"
       />
 
-      <!--点击操作-->
+      <!-- 点击操作 -->
 
       <el-table-column fixed="right" align="center" label="操作" width="72">
         <template #default="{ row }">
@@ -119,7 +193,7 @@
       </el-table-column>
     </el-table>
 
-    <!--分页-->
+    <!-- 分页 -->
 
     <div v-if="total >= 10" class="rowCC mt-20px">
       <el-pagination
@@ -134,75 +208,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-// import { Delete, FolderAdd } from '@element-plus/icons-vue'
-import { useTable } from '@/hooks/use-table';
-import { copyValueToClipboard } from '@/hooks/use-common';
-
-const searchForm = reactive({
-  log: '',
-  pageUrl: '',
-  startEndArr: '',
-});
-const selectPageReq = () => {
-  const reqConfig = {
-    url: '/integration-front/errorCollection/selectPage',
-    method: 'get',
-  };
-  tableListReq(reqConfig).then(({ data }) => {
-    tableListData.value = data.records;
-    totalPage.value = data.total;
-  });
-};
-// 重置
-const refSearchForm = $ref();
-const resetForm = () => {
-  refSearchForm.resetFields();
-  dateRangePacking(['', '']);
-  resetPageReq();
-};
-
-// 批量删除
-const multiDelBtnClick = () => {
-  const reqConfig = {
-    url: '/integration-front/errorCollection/deleteBatchIds',
-    method: 'delete',
-    bfLoading: true,
-  };
-  multiDelBtnDill(reqConfig);
-};
-
-// 单个删除
-const tableDelClick = (row) => {
-  const reqConfig = {
-    url: '/integration-front/errorCollection/deleteById',
-    params: { id: row.id },
-    method: 'delete',
-  };
-  tableDelDill(row, reqConfig);
-};
-
-// 添加和修改详情
-onMounted(() => {
-  selectPageReq();
-});
-
-// 引入table-query相关的hooks 方法
-let {
-  pageNum,
-  pageSize,
-  totalPage,
-  tableListData,
-  tableListReq,
-  dateRangePacking,
-  handleSelectionChange,
-  handleCurrentChange,
-  handleSizeChange,
-  resetPageReq,
-  multiDelBtnDill,
-  tableDelDill,
-} = useTable(searchForm, selectPageReq);
-</script>
 
 <style scoped lang="scss"></style>

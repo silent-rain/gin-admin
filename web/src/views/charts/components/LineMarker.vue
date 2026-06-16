@@ -1,9 +1,5 @@
-<template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }" />
-</template>
-
 <script setup>
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
 const props = defineProps({
   className: {
@@ -22,23 +18,22 @@ const props = defineProps({
     type: String,
     default: '200px',
   },
-});
+})
 const state = reactive({
   chart: null,
-});
+})
 onMounted(() => {
-  initChart();
-});
+  initChart()
+})
 onBeforeUnmount(() => {
   if (!state.chart) {
-    return;
+    return
   }
-  state.chart.dispose();
-  state.chart = null;
-});
-const initChart = () => {
-  // eslint-disable-next-line unicorn/prefer-query-selector
-  state.chart = echarts.init(document.getElementById(props.id));
+  state.chart.dispose()
+  state.chart = null
+})
+function initChart() {
+  state.chart = echarts.init(document.getElementById(props.id))
 
   state.chart.setOption({
     backgroundColor: '#394056',
@@ -264,8 +259,8 @@ const initChart = () => {
         data: [220, 182, 125, 145, 122, 191, 134, 150, 120, 110, 165, 122],
       },
     ],
-  });
-};
+  })
+}
 // let helloFunc = () => {
 //   console.log("helloFunc");
 // };
@@ -274,5 +269,9 @@ const initChart = () => {
 // 导出属性到页面中使用
 // let {levelList} = toRefs(state);
 </script>
+
+<template>
+  <div :id="id" :class="className" :style="{ height, width }" />
+</template>
 
 <style scoped lang="scss"></style>

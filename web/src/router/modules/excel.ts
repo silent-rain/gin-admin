@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const excel = {
   path: '/excel',
@@ -19,6 +19,6 @@ const excel = {
       meta: { title: 'importExcel' },
     },
   ],
-};
+}
 
-export default excel;
+export default excel

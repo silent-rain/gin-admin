@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const guid = {
   path: '/guide',
@@ -11,5 +11,5 @@ const guid = {
       meta: { title: 'Guide', icon: 'guide' },
     },
   ],
-};
-export default guid;
+}
+export default guid

@@ -1,3 +1,97 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import type { Menu, MenuListRsp } from '~/api/permission/menu'
+import { QuestionFilled } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { addMenu, getAllMenuTree, updateMenu } from '@/api/permission/menu'
+import IconMenu from '@/components/IconMenu/index.vue'
+import { MenuType, OpenType } from '@/constant/permission/menu'
+
+const props = withDefaults(
+  defineProps<{
+    data: Menu
+    visible: boolean
+    type: string // add/edit
+    width?: string
+  }>(),
+  {
+    width: '100%',
+  },
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  title: [
+    { required: true, message: '请输入菜单名称', trigger: 'blur' },
+    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
+  ],
+})
+// 菜单列表
+const menuOptions = ref<Menu[]>([])
+
+onBeforeMount(() => {
+  fetchAllMenuTree()
+})
+
+// 获取所有菜单树
+async function fetchAllMenuTree() {
+  try {
+    const resp = (await getAllMenuTree()).data as MenuListRsp
+    menuOptions.value = resp.data_list.filter((v: any) => {
+      // 过滤自身选择, 防止自依赖
+      if (v.id !== props.data.id) {
+        return true
+      }
+    })
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+
+    try {
+      if (props.type === 'add') {
+        await addMenu(props.data)
+      }
+      else {
+        await updateMenu(props.data)
+      }
+      fetchAllMenuTree()
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -44,8 +138,12 @@
               v-model="props.data.menu_type"
               :disabled="props.type === 'edit'"
             >
-              <el-radio :label="0">菜单</el-radio>
-              <el-radio :label="1">按钮</el-radio>
+              <el-radio :label="0">
+                菜单
+              </el-radio>
+              <el-radio :label="1">
+                按钮
+              </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -60,9 +158,15 @@
               v-model="props.data.open_type"
               :disabled="props.data.menu_type === MenuType.Button"
             >
-              <el-radio :label="0">组件</el-radio>
-              <el-radio :label="1">内链</el-radio>
-              <el-radio :label="2">外链</el-radio>
+              <el-radio :label="0">
+                组件
+              </el-radio>
+              <el-radio :label="1">
+                内链
+              </el-radio>
+              <el-radio :label="2">
+                外链
+              </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -85,8 +189,8 @@
             <el-input
               v-model="props.data.name"
               :disabled="
-                props.data.menu_type === MenuType.Button ||
-                props.data.open_type === OpenType.OuterLink
+                props.data.menu_type === MenuType.Button
+                  || props.data.open_type === OpenType.OuterLink
               "
               placeholder="请选输入路由别名"
             />
@@ -104,8 +208,8 @@
         <el-col :span="12">
           <el-form-item
             v-if="
-              props.data.open_type === OpenType.Component ||
-              props.data.open_type === OpenType.Link
+              props.data.open_type === OpenType.Component
+                || props.data.open_type === OpenType.Link
             "
             label="路由地址"
             prop="path"
@@ -171,8 +275,8 @@
             <el-input
               v-model="props.data.component"
               :disabled="
-                props.data.menu_type === MenuType.Button ||
-                props.data.open_type === OpenType.OuterLink
+                props.data.menu_type === MenuType.Button
+                  || props.data.open_type === OpenType.OuterLink
               "
               placeholder="请输入组件路径"
             />
@@ -186,7 +290,9 @@
           >
             <!-- 按钮设置 -->
             <el-radio-group v-model="props.data.hidden">
-              <el-radio :label="0">可用</el-radio>
+              <el-radio :label="0">
+                可用
+              </el-radio>
               <el-radio :label="1">
                 禁用
                 <el-tooltip content="选择禁用, 按钮将不能点击" placement="top">
@@ -199,7 +305,9 @@
           </el-form-item>
           <el-form-item v-else label="是否隐藏" prop="hidden">
             <el-radio-group v-model="props.data.hidden">
-              <el-radio :label="0">显示</el-radio>
+              <el-radio :label="0">
+                显示
+              </el-radio>
               <el-radio :label="1">
                 隐藏
                 <el-tooltip
@@ -219,9 +327,9 @@
             <el-input
               v-model="props.data.redirect"
               :disabled="
-                props.data.menu_type === MenuType.Button ||
-                props.data.open_type === OpenType.OuterLink ||
-                props.data.open_type === OpenType.Link
+                props.data.menu_type === MenuType.Button
+                  || props.data.open_type === OpenType.OuterLink
+                  || props.data.open_type === OpenType.Link
               "
               placeholder="请选输入重定向路由"
             />
@@ -233,7 +341,9 @@
               v-model="props.data.always_show"
               :disabled="props.data.menu_type === MenuType.Button"
             >
-              <el-radio :label="1">显示</el-radio>
+              <el-radio :label="1">
+                显示
+              </el-radio>
               <el-radio :label="0">
                 隐藏
                 <el-tooltip
@@ -251,8 +361,12 @@
         <el-col :span="24">
           <el-form-item label="启用状态" prop="status">
             <el-radio-group v-model="props.data.status">
-              <el-radio :label="1">启用</el-radio>
-              <el-radio :label="0">停用</el-radio>
+              <el-radio :label="1">
+                启用
+              </el-radio>
+              <el-radio :label="0">
+                停用
+              </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -265,7 +379,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12"></el-col>
+        <el-col :span="12" />
       </el-row>
     </el-form>
 
@@ -279,95 +393,6 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { QuestionFilled } from '@element-plus/icons-vue';
-import { updateMenu, addMenu, getAllMenuTree } from '@/api/permission/menu';
-import { Menu, MenuListRsp } from '~/api/permission/menu';
-import { MenuType, OpenType } from '@/constant/permission/menu';
-import IconMenu from '@/components/IconMenu/index.vue';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: Menu;
-    visible: boolean;
-    type: string; // add/edit
-    width?: string;
-  }>(),
-  {
-    width: '100%',
-  },
-);
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  title: [
-    { required: true, message: '请输入菜单名称', trigger: 'blur' },
-    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
-  ],
-});
-// 菜单列表
-const menuOptions = ref<Menu[]>([]);
-
-onBeforeMount(() => {
-  fetchAllMenuTree();
-});
-
-// 获取所有菜单树
-const fetchAllMenuTree = async () => {
-  try {
-    const resp = (await getAllMenuTree()).data as MenuListRsp;
-    menuOptions.value = resp.data_list.filter((v: any) => {
-      // 过滤自身选择, 防止自依赖
-      if (v.id !== props.data.id) {
-        return true;
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-
-    try {
-      if (props.type === 'add') {
-        await addMenu(props.data);
-      } else {
-        await updateMenu(props.data);
-      }
-      fetchAllMenuTree();
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss">
 .el-divider--horizontal {

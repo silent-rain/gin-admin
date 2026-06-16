@@ -1,3 +1,196 @@
+<script setup lang="ts">
+import type { TableInstance } from 'element-plus'
+import type { Config, ConfigListRsp } from '~/api/data-center/config'
+import {
+  Delete,
+  EditPen,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteConfig,
+  deleteConfig,
+  getConfigTree,
+  updateConfigStatus,
+} from '@/api/data-center/config'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import ConfigForm from './components/ConfigForm.vue'
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = reactive({
+  page: 1,
+  page_size: 10,
+  name: '',
+})
+// 过滤事件
+function handleFilter() {
+  fetchConfigTree()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.name = ''
+}
+
+const state = reactive({
+  formData: {
+    data: {} as Config,
+    visible: false,
+    type: '',
+  },
+})
+
+const checkAllList = [
+  { label: '配置ID', value: 'id', disabled: true, enabled: true },
+  { label: '配置名称', value: 'name', disabled: true, enabled: true },
+  { label: '配置KEY', value: 'key', disabled: true, enabled: true },
+  { label: '配置值', value: 'value', disabled: true, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '备注', value: 'note', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableExpandAll = ref<boolean>(false)
+const tableRef = ref<TableInstance>()
+const tableData = ref<Config[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<Config[]>([])
+
+onBeforeMount(() => {
+  fetchConfigTree()
+})
+
+// 获取配置树
+async function fetchConfigTree() {
+  try {
+    const resp = (await getConfigTree(listQuery)).data as ConfigListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: Config) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteConfig(data)
+    fetchConfigTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: Config) {
+  state.formData.data = { ...row }
+  state.formData.type = 'edit'
+  state.formData.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.formData.data.status = 1
+  state.formData.data.sort = 1
+  state.formData.type = 'add'
+  state.formData.visible = true
+}
+// 指定上级配置添加
+async function handleAddById(row: Config) {
+  state.formData.data.parent_id = row.id
+  state.formData.data.status = 1
+  state.formData.data.sort = 1
+  state.formData.type = 'add'
+  state.formData.visible = true
+}
+// 多选事件
+function handleSelectionChange(val: Config[]) {
+  multipleSelection.value = val
+}
+
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: Config) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteConfig(data)
+    fetchConfigTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: Config) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    const resp = (await updateConfigStatus(data)).data as ConfigListRsp
+    tableData.value = resp.data_list
+    fetchConfigTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 全部展开/全部折叠 事件
+function handleExpandAllEvent(value: boolean) {
+  toggleRowExpansionAll(tableData.value, value)
+}
+
+// 全部展开/全部折叠
+function toggleRowExpansionAll(dataList: Config[] | undefined, value: boolean) {
+  if (!dataList) {
+    return
+  }
+  dataList.forEach((v) => {
+    tableRef.value?.toggleRowExpansion(v, value)
+    if (v.children !== undefined && v.children !== null) {
+      toggleRowExpansionAll(v.children, value)
+    }
+  })
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -71,10 +264,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-config'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-config"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchConfigTree"
+          @refresh-event="fetchConfigTree"
         />
       </div>
     </div>
@@ -211,204 +404,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchConfigTree"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Delete,
-  Plus,
-  InfoFilled,
-} from '@element-plus/icons-vue';
-import { ElMessage, TableInstance } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getConfigTree,
-  updateConfigStatus,
-  deleteConfig,
-  batchDeleteConfig,
-} from '@/api/data-center/config';
-import { ConfigListRsp, Config } from '~/api/data-center/config';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import ConfigForm from './components/ConfigForm.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = reactive({
-  page: 1,
-  page_size: 10,
-  name: '',
-});
-// 过滤事件
-const handleFilter = () => {
-  fetchConfigTree();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.name = '';
-};
-
-const state = reactive({
-  formData: {
-    data: {} as Config,
-    visible: false,
-    type: '',
-  },
-});
-
-const checkAllList = [
-  { label: '配置ID', value: 'id', disabled: true, enabled: true },
-  { label: '配置名称', value: 'name', disabled: true, enabled: true },
-  { label: '配置KEY', value: 'key', disabled: true, enabled: true },
-  { label: '配置值', value: 'value', disabled: true, enabled: true },
-  { label: '排序', value: 'sort', disabled: false, enabled: true },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '备注', value: 'note', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableExpandAll = ref<boolean>(false);
-const tableRef = ref<TableInstance>();
-const tableData = ref<Config[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<Config[]>([]);
-
-onBeforeMount(() => {
-  fetchConfigTree();
-});
-
-// 获取配置树
-const fetchConfigTree = async () => {
-  try {
-    const resp = (await getConfigTree(listQuery)).data as ConfigListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: Config) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteConfig(data);
-    fetchConfigTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: Config) => {
-  state.formData.data = { ...row };
-  state.formData.type = 'edit';
-  state.formData.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.formData.data.status = 1;
-  state.formData.data.sort = 1;
-  state.formData.type = 'add';
-  state.formData.visible = true;
-};
-// 指定上级配置添加
-const handleAddById = async (row: Config) => {
-  state.formData.data.parent_id = row.id;
-  state.formData.data.status = 1;
-  state.formData.data.sort = 1;
-  state.formData.type = 'add';
-  state.formData.visible = true;
-};
-// 多选事件
-const handleSelectionChange = (val: Config[]) => {
-  multipleSelection.value = val;
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: Config) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteConfig(data);
-    fetchConfigTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: Config) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    const resp = (await updateConfigStatus(data)).data as ConfigListRsp;
-    tableData.value = resp.data_list;
-    fetchConfigTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 全部展开/全部折叠 事件
-const handleExpandAllEvent = (value: boolean) => {
-  toggleRowExpansionAll(tableData.value, value);
-};
-
-// 全部展开/全部折叠
-const toggleRowExpansionAll = (
-  dataList: Config[] | undefined,
-  value: boolean,
-) => {
-  if (!dataList) {
-    return;
-  }
-  dataList.forEach((v) => {
-    tableRef.value?.toggleRowExpansion(v, value);
-    if (v.children !== undefined && v.children !== null) {
-      toggleRowExpansionAll(v.children, value);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

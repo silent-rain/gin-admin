@@ -1,4 +1,4 @@
-/**日志 */
+/** 日志 */
 
 // web 错误类型
 export enum WebErrorType {

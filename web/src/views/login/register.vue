@@ -1,113 +1,41 @@
-<template>
-  <div class="register-container columnCE">
-    <div class="register-hero">
-      <img src="@/assets/layout/register.svg" :alt="settings.title" />
-    </div>
-
-    <el-form
-      ref="ruleFormRef"
-      class="register-form"
-      :model="userForm"
-      label-position="right"
-      label-width="80px"
-      :rules="rules"
-    >
-      <div class="title-container">
-        <h3 class="title text-center">用户注册</h3>
-      </div>
-
-      <el-form-item label="姓名" prop="realname">
-        <el-input v-model="userForm.realname" placeholder="请输入姓名" />
-      </el-form-item>
-      <el-form-item label="昵称" prop="nickname">
-        <el-input v-model="userForm.nickname" placeholder="请输入昵称" />
-      </el-form-item>
-      <el-form-item class="form-phone" label="手机号码" prop="phone">
-        <el-input v-model="userForm.phone" placeholder="请输入手机号码" />
-      </el-form-item>
-      <el-form-item class="form-email" label="邮箱" prop="email">
-        <el-input v-model="userForm.email" placeholder="请输入邮箱" />
-      </el-form-item>
-      <el-form-item label="性别" prop="gender">
-        <el-radio-group v-model="userForm.gender">
-          <el-radio :label="1">女</el-radio>
-          <el-radio :label="2">男性</el-radio>
-          <el-radio :label="0">保密</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="年龄" prop="age">
-        <el-input-number v-model="userForm.age" :min="1" />
-      </el-form-item>
-      <el-form-item label="出生日期" prop="birthday">
-        <el-date-picker
-          v-model="userForm.birthday"
-          type="date"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          placeholder="请选择出生日期"
-        />
-      </el-form-item>
-
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="userForm.password" placeholder="请输入密码" />
-      </el-form-item>
-      <el-form-item label="确认密码" prop="password2">
-        <el-input v-model="userForm.password2" placeholder="请再次输入密码" />
-      </el-form-item>
-
-      <!-- 验证码 -->
-      <el-form-item label="验证码" prop="captcha">
-        <div class="form-captcha">
-          <el-input v-model="userForm.captcha" placeholder="请输入验证码" />
-          <img class="captcha" :src="state.captchaSrc" @click="fetchCaptcha" />
-        </div>
-      </el-form-item>
-
-      <div class="form-submit">
-        <el-button type="" link @click="handleLogin">返回登录</el-button>
-        <el-button type="primary" @click="submitForm(ruleFormRef)">
-          提交
-        </el-button>
-      </div>
-    </el-form>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import { useUserStore } from '@/store/user';
-import { register, getCaptcha } from '@/api/system/login';
-import { User } from '@/typings/api/permission/user';
-import { GetCaptchaRsp } from '~/api/system/login';
+import type { FormInstance, FormRules } from 'element-plus'
+import type { User } from '@/typings/api/permission/user'
+import type { GetCaptchaRsp } from '~/api/system/login'
+import { ElMessage } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getCaptcha, register } from '@/api/system/login'
+import { useBasicStore } from '@/store/basic'
+import { useUserStore } from '@/store/user'
 
-const route = useRoute();
-const router = useRouter();
-const userStore = useUserStore();
-const { settings } = useBasicStore();
+const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
+const { settings } = useBasicStore()
 
 const state: any = reactive({
   otherQuery: {},
   redirect: undefined,
   captchaSrc: '',
-});
-const ruleFormRef = ref<FormInstance>();
+})
+const ruleFormRef = ref<FormInstance>()
 const userForm = reactive({
   age: 0,
-} as User);
+} as User)
 
 // 检查密码
-const validatePass2 = (_rule: any, value: any, callback: any) => {
+function validatePass2(_rule: any, value: any, callback: any) {
   if (value === '') {
-    callback(new Error('请再次输入密码'));
-  } else if (value !== userForm.password) {
-    callback(new Error('两次密码不一致!'));
-  } else {
-    callback();
+    callback(new Error('请再次输入密码'))
   }
-};
+  else if (value !== userForm.password) {
+    callback(new Error('两次密码不一致!'))
+  }
+  else {
+    callback()
+  }
+}
 const rules = reactive<FormRules>({
   realname: [
     { required: true, message: '请输入姓名', trigger: 'blur' },
@@ -135,48 +63,136 @@ const rules = reactive<FormRules>({
     },
   ],
   captcha: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
-});
+})
 
 onBeforeMount(() => {
-  fetchCaptcha();
-});
+  fetchCaptcha()
+})
 
 // 获取验证码
-const fetchCaptcha = async () => {
+async function fetchCaptcha() {
   try {
-    const resp = (await getCaptcha()).data as GetCaptchaRsp;
-    state.captchaSrc = resp.b64s;
-    userForm.captcha_id = resp.captcha_id;
-  } catch (error) {
-    console.log(error);
+    const resp = (await getCaptcha()).data as GetCaptchaRsp
+    state.captchaSrc = resp.b64s
+    userForm.captcha_id = resp.captcha_id
   }
-};
+  catch (error) {
+    console.log(error)
+  }
+}
 
 // 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
   await formEl.validate(async (valid, fields) => {
     if (!valid) {
-      console.log('error submit!', fields);
-      return;
+      console.log('error submit!', fields)
+      return
     }
-    const data = { ...userForm };
+    const data = { ...userForm }
     try {
-      await register(data);
-      ElMessage.success('注册成功');
-      router.push('/login');
-    } catch (error) {
-      console.log(error);
-      fetchCaptcha();
+      await register(data)
+      ElMessage.success('注册成功')
+      router.push('/login')
     }
-  });
-};
+    catch (error) {
+      console.log(error)
+      fetchCaptcha()
+    }
+  })
+}
 
 // 返回登录
-const handleLogin = () => {
-  router.push('/login');
-};
+function handleLogin() {
+  router.push('/login')
+}
 </script>
+
+<template>
+  <div class="register-container columnCE">
+    <div class="register-hero">
+      <img src="@/assets/layout/register.svg" :alt="settings.title">
+    </div>
+
+    <el-form
+      ref="ruleFormRef"
+      class="register-form"
+      :model="userForm"
+      label-position="right"
+      label-width="80px"
+      :rules="rules"
+    >
+      <div class="title-container">
+        <h3 class="title text-center">
+          用户注册
+        </h3>
+      </div>
+
+      <el-form-item label="姓名" prop="realname">
+        <el-input v-model="userForm.realname" placeholder="请输入姓名" />
+      </el-form-item>
+      <el-form-item label="昵称" prop="nickname">
+        <el-input v-model="userForm.nickname" placeholder="请输入昵称" />
+      </el-form-item>
+      <el-form-item class="form-phone" label="手机号码" prop="phone">
+        <el-input v-model="userForm.phone" placeholder="请输入手机号码" />
+      </el-form-item>
+      <el-form-item class="form-email" label="邮箱" prop="email">
+        <el-input v-model="userForm.email" placeholder="请输入邮箱" />
+      </el-form-item>
+      <el-form-item label="性别" prop="gender">
+        <el-radio-group v-model="userForm.gender">
+          <el-radio :label="1">
+            女
+          </el-radio>
+          <el-radio :label="2">
+            男性
+          </el-radio>
+          <el-radio :label="0">
+            保密
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="年龄" prop="age">
+        <el-input-number v-model="userForm.age" :min="1" />
+      </el-form-item>
+      <el-form-item label="出生日期" prop="birthday">
+        <el-date-picker
+          v-model="userForm.birthday"
+          type="date"
+          format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD"
+          placeholder="请选择出生日期"
+        />
+      </el-form-item>
+
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="userForm.password" placeholder="请输入密码" />
+      </el-form-item>
+      <el-form-item label="确认密码" prop="password2">
+        <el-input v-model="userForm.password2" placeholder="请再次输入密码" />
+      </el-form-item>
+
+      <!-- 验证码 -->
+      <el-form-item label="验证码" prop="captcha">
+        <div class="form-captcha">
+          <el-input v-model="userForm.captcha" placeholder="请输入验证码" />
+          <img class="captcha" :src="state.captchaSrc" @click="fetchCaptcha">
+        </div>
+      </el-form-item>
+
+      <div class="form-submit">
+        <el-button type="" link @click="handleLogin">
+          返回登录
+        </el-button>
+        <el-button type="primary" @click="submitForm(ruleFormRef)">
+          提交
+        </el-button>
+      </div>
+    </el-form>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 $bg: #fbfcff;

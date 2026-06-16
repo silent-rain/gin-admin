@@ -1,26 +1,10 @@
-<template>
-  <!-- 自定义 Icon -->
-  <el-tab-pane label="自定义" name="custom">
-    <el-row>
-      <el-col :span="4" v-for="(item, _) in getOptions">
-        <el-dropdown-item
-          :command="item.value"
-          :class="`custom-icon-${item.value}-item`"
-        >
-          <svg-icon :icon-class="item.value" class="custom-icon" />
-        </el-dropdown-item>
-      </el-col>
-    </el-row>
-  </el-tab-pane>
-</template>
-
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    query: string;
+    query: string
   }>(),
   {},
-);
+)
 
 const options = [
   // common
@@ -87,16 +71,32 @@ const options = [
   { label: 'theme-icon', value: 'theme-icon' },
   { label: 'tree', value: 'tree' },
   { label: 'user', value: 'user' },
-];
+]
 
 const getOptions = computed(() => {
   if (props.query === '') {
-    return options;
+    return options
   }
-  const re = new RegExp(`${props.query}`,"i");
-  return options.filter((v) => re.test(v.value));
-});
+  const re = new RegExp(`${props.query}`, 'i')
+  return options.filter(v => re.test(v.value))
+})
 </script>
+
+<template>
+  <!-- 自定义 Icon -->
+  <el-tab-pane label="自定义" name="custom">
+    <el-row>
+      <el-col v-for="(item, _) in getOptions" :span="4">
+        <el-dropdown-item
+          :command="item.value"
+          :class="`custom-icon-${item.value}-item`"
+        >
+          <svg-icon :icon-class="item.value" class="custom-icon" />
+        </el-dropdown-item>
+      </el-col>
+    </el-row>
+  </el-tab-pane>
+</template>
 
 <style scoped lang="scss">
 .custom-icon {

@@ -1,3 +1,108 @@
+<script setup lang="ts">
+import type { HttpLog, HttpLogListRsp } from '@/typings/api/system/log'
+import { Delete, Search } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
+import { onBeforeMount, ref } from 'vue'
+import { getHttpLogBody, getHttpLogList } from '@/api/system/log'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import LogDrawer from './components/LogDrawer.vue'
+
+const { settings } = storeToRefs(useBasicStore())
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  user_id: null,
+  trace_id: null,
+  status_code: null,
+  method: '',
+  path: '',
+  remote_addr: '',
+  htpp_type: '',
+})
+const state = reactive({
+  body: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+})
+
+const checkAllList = [
+  { label: '日志ID', value: 'id', disabled: false, enabled: false },
+  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
+  { label: 'Span ID', value: '', disabled: true, enabled: true },
+  { label: '状态码', value: 'status_code', disabled: true, enabled: true },
+  { label: '路径', value: 'method', disabled: true, enabled: true },
+  { label: '请求方法', value: 'path', disabled: true, enabled: true },
+  { label: '请求参数', value: 'query', disabled: false, enabled: false },
+  { label: '请求体/响应体', value: 'body', disabled: false, enabled: true },
+  { label: '请求IP', value: 'remote_addr', disabled: false, enabled: true },
+  { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
+  { label: '耗时(纳秒)', value: 'cost', disabled: false, enabled: false },
+  { label: '请求类型', value: 'htpp_type', disabled: true, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: false },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+const tableSize = ref<string>(settings.value.defaultSize)
+const tableData = ref<HttpLog[]>()
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  fetchHttpLogList()
+})
+
+// 获取网络请求日志列表
+async function fetchHttpLogList() {
+  try {
+    const resp = (await getHttpLogList(listQuery.value)).data as HttpLogListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 获取网络请求日志 body
+async function fetchHttpLogBody(id: number) {
+  try {
+    state.body.visible = true
+    const resp = (
+      await getHttpLogBody({
+        id,
+      })
+    ).data
+    state.body.data = ''
+    const data = resp.body
+    if (data === '') {
+      return
+    }
+    state.body.data = JSON.stringify(JSON.parse(data), null, 2)
+    state.body.key = new Date().getMilliseconds()
+  }
+  catch (error) {
+    console.log(error)
+    state.body.visible = false
+  }
+}
+
+// 过滤事件
+function handleFilter() {
+  fetchHttpLogList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -75,14 +180,14 @@
 
     <!-- 表格全局按钮 -->
     <div class="operation-button">
-      <div class="left-button"></div>
+      <div class="left-button" />
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-role'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-role"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchHttpLogList"
+          @refresh-event="fetchHttpLogList"
         />
       </div>
     </div>
@@ -228,124 +333,21 @@
       />
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchHttpLogList"
     />
 
     <!-- 日志详情 -->
     <LogDrawer
+      :key="state.body.key"
       v-model="state.body.visible"
       :data="state.body.data"
-      :key="state.body.key"
       language="json"
-    ></LogDrawer>
+    />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
-import { Search, Delete } from '@element-plus/icons-vue';
-import { useBasicStore } from '@/store/basic';
-import { getHttpLogList, getHttpLogBody } from '@/api/system/log';
-import { HttpLog, HttpLogListRsp } from '@/typings/api/system/log';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import LogDrawer from './components/LogDrawer.vue';
-
-const { settings } = storeToRefs(useBasicStore());
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  user_id: null,
-  trace_id: null,
-  status_code: null,
-  method: '',
-  path: '',
-  remote_addr: '',
-  htpp_type: '',
-});
-const state = reactive({
-  body: {
-    visible: false,
-    data: '',
-    key: new Date().getMilliseconds(),
-  },
-});
-
-const checkAllList = [
-  { label: '日志ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
-  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
-  { label: 'Span ID', value: '', disabled: true, enabled: true },
-  { label: '状态码', value: 'status_code', disabled: true, enabled: true },
-  { label: '路径', value: 'method', disabled: true, enabled: true },
-  { label: '请求方法', value: 'path', disabled: true, enabled: true },
-  { label: '请求参数', value: 'query', disabled: false, enabled: false },
-  { label: '请求体/响应体', value: 'body', disabled: false, enabled: true },
-  { label: '请求IP', value: 'remote_addr', disabled: false, enabled: true },
-  { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
-  { label: '耗时(纳秒)', value: 'cost', disabled: false, enabled: false },
-  { label: '请求类型', value: 'htpp_type', disabled: true, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: false },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<HttpLog[]>();
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  fetchHttpLogList();
-});
-
-// 获取网络请求日志列表
-const fetchHttpLogList = async () => {
-  try {
-    const resp = (await getHttpLogList(listQuery.value)).data as HttpLogListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 获取网络请求日志 body
-const fetchHttpLogBody = async (id: number) => {
-  try {
-    state.body.visible = true;
-    const resp = (
-      await getHttpLogBody({
-        id: id,
-      })
-    ).data;
-    state.body.data = '';
-    const data = resp.body;
-    if (data === '') {
-      return;
-    }
-    state.body.data = JSON.stringify(JSON.parse(data), null, 2);
-    state.body.key = new Date().getMilliseconds();
-  } catch (error) {
-    console.log(error);
-    state.body.visible = false;
-  }
-};
-
-// 过滤事件
-const handleFilter = () => {
-  fetchHttpLogList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

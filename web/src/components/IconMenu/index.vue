@@ -1,3 +1,33 @@
+<script setup lang="ts">
+import * as ElSvg from '@element-plus/icons-vue'
+import CustomIcon from './CustomIcon.vue'
+import ElementIcon from './ElementIcon.vue'
+
+const props = withDefaults(
+  defineProps<{
+    icon?: string
+    el_svg_icon?: string
+  }>(),
+  {},
+)
+
+const emits = defineEmits(['update:icon', 'update:el_svg_icon'])
+
+const activeName = ref('element')
+const query = ref('')
+
+function handleCommand(command: string | number | object) {
+  if (activeName.value == 'element') {
+    emits('update:el_svg_icon', command)
+    emits('update:icon', '')
+  }
+  else {
+    emits('update:icon', command)
+    emits('update:el_svg_icon', '')
+  }
+}
+</script>
+
 <template>
   <!-- Icon 菜单 -->
   <el-dropdown split-button type="" trigger="click" @command="handleCommand">
@@ -18,8 +48,8 @@
     </span>
     <template #dropdown>
       <el-input
-        class="filter"
         v-model="query"
+        class="filter"
         placeholder="图标搜索"
         :suffix-icon="ElSvg.Search"
       />
@@ -34,35 +64,6 @@
     </template>
   </el-dropdown>
 </template>
-
-<script setup lang="ts">
-import * as ElSvg from '@element-plus/icons-vue';
-import ElementIcon from './ElementIcon.vue';
-import CustomIcon from './CustomIcon.vue';
-
-const props = withDefaults(
-  defineProps<{
-    icon?: string;
-    el_svg_icon?: string;
-  }>(),
-  {},
-);
-
-const emits = defineEmits(['update:icon', 'update:el_svg_icon']);
-
-const activeName = ref('element');
-const query = ref('');
-
-const handleCommand = (command: string | number | object) => {
-  if (activeName.value == 'element') {
-    emits('update:el_svg_icon', command);
-    emits('update:icon', '');
-  } else {
-    emits('update:icon', command);
-    emits('update:el_svg_icon', '');
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .el-dropdown-link {

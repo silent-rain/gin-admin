@@ -1,0 +1,9 @@
+import './theme/index.scss';
+import 'uno.css';
+import '@/styles/index.scss';
+import 'virtual:svg-icons-register';
+import './permission';
+import 'element-plus/dist/index.css';
+import 'vxe-table/lib/style.css';
+import 'highlight.js/styles/atom-one-dark.css';
+import 'highlight.js/lib/common';

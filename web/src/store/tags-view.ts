@@ -1,12 +1,13 @@
-import { defineStore } from 'pinia';
-import setting from '@/settings';
-import { RouteLocationNormalizedLoaded } from 'vue-router';
+import type { StoreDefinition } from 'pinia'
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { defineStore } from 'pinia'
+import setting from '@/settings'
 
-export const useTagsViewStore = defineStore('tagsView', {
+export const useTagsViewStore: StoreDefinition = defineStore('tagsView', {
   state: () => {
     return {
       visitedViews: [] as RouteLocationNormalizedLoaded[], // tag标签数组
-    };
+    }
   },
   actions: {
     addVisitedView(view: RouteLocationNormalizedLoaded) {
@@ -16,22 +17,24 @@ export const useTagsViewStore = defineStore('tagsView', {
           state.visitedViews.some(
             (v: RouteLocationNormalizedLoaded) => v.path === view.path,
           )
-        )
-          return;
+        ) {
+          return
+        }
         // 添加的数量如果大于 setting.tagsViewNum,则替换最后一个元素，否则在visitedViews数组后插入一个元素
         if (state.visitedViews.length >= setting.tagsViewNum) {
-          state.visitedViews.pop();
+          state.visitedViews.pop()
           state.visitedViews.push({
             ...view,
             title: view.meta?.title || 'no-name',
-          });
-        } else {
-          state.visitedViews.push({
-            ...view,
-            title: view.meta?.title || 'no-name',
-          });
+          })
         }
-      });
+        else {
+          state.visitedViews.push({
+            ...view,
+            title: view.meta?.title || 'no-name',
+          })
+        }
+      })
     },
     // 关闭当前标签
     async delVisitedView(view: RouteLocationNormalizedLoaded) {
@@ -39,22 +42,22 @@ export const useTagsViewStore = defineStore('tagsView', {
         // 匹配view.path元素将其删除
         for (const [i, v] of state.visitedViews.entries()) {
           if (v.path === view.path) {
-            state.visitedViews.splice(i, 1);
-            break;
+            state.visitedViews.splice(i, 1)
+            break
           }
         }
-      });
-      return [...this.visitedViews];
+      })
+      return [...this.visitedViews]
     },
 
     // 关闭其他标签
     async delOthersVisitedViews(view: RouteLocationNormalizedLoaded) {
       this.$patch((state) => {
         state.visitedViews = state.visitedViews.filter((v: ObjKeys) => {
-          return v.meta.affix || v.path === view.path;
-        });
-      });
-      return [...this.visitedViews];
+          return v.meta.affix || v.path === view.path
+        })
+      })
+      return [...this.visitedViews]
     },
 
     // 关闭所有标签
@@ -63,9 +66,9 @@ export const useTagsViewStore = defineStore('tagsView', {
         // keep affix tags
         state.visitedViews = state.visitedViews.filter(
           (tag: ObjKeys) => tag.meta?.affix,
-        );
-      });
-      return [...this.visitedViews];
+        )
+      })
+      return [...this.visitedViews]
     },
   },
-});
+})

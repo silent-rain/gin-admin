@@ -1,27 +1,12 @@
-<template>
-  <!-- Element Icon -->
-  <el-tab-pane label="Element UI" name="element">
-    <el-row>
-      <el-col :span="4" v-for="(item, _) in getOptions">
-        <el-dropdown-item :command="item.value">
-          <el-icon class="el-svg-icon">
-            <component :is="ElSvg[item.value]" />
-          </el-icon>
-        </el-dropdown-item>
-      </el-col>
-    </el-row>
-  </el-tab-pane>
-</template>
-
 <script setup lang="ts">
-import * as ElSvg from '@element-plus/icons-vue';
+import * as ElSvg from '@element-plus/icons-vue'
 
 const props = withDefaults(
   defineProps<{
-    query: string;
+    query: string
   }>(),
   {},
-);
+)
 
 const options = [
   // System
@@ -326,16 +311,31 @@ const options = [
   { label: 'Shop', value: 'Shop' },
   { label: 'SwitchFilled', value: 'SwitchFilled' },
   { label: 'WindPower', value: 'WindPower' },
-];
+]
 
 const getOptions = computed(() => {
   if (props.query === '') {
-    return options;
+    return options
   }
-  const re = new RegExp(`${props.query}`, 'i');
-  return options.filter((v) => re.test(v.value));
-});
+  const re = new RegExp(`${props.query}`, 'i')
+  return options.filter(v => re.test(v.value))
+})
 </script>
+
+<template>
+  <!-- Element Icon -->
+  <el-tab-pane label="Element UI" name="element">
+    <el-row>
+      <el-col v-for="(item, _) in getOptions" :span="4">
+        <el-dropdown-item :command="item.value">
+          <el-icon class="el-svg-icon">
+            <component :is="ElSvg[item.value]" />
+          </el-icon>
+        </el-dropdown-item>
+      </el-col>
+    </el-row>
+  </el-tab-pane>
+</template>
 
 <style scoped lang="scss">
 .el-svg-icon {

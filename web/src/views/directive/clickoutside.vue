@@ -1,3 +1,15 @@
+<script setup>
+const sideStr = ref('')
+function setData(type) {
+  if (type) {
+    sideStr.value = 'outSide'
+  }
+  else {
+    sideStr.value = 'inSide'
+  }
+}
+</script>
+
 <template>
   <div class="layout-container">
     <div class="layout-container-table">
@@ -8,17 +20,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-const sideStr = ref('');
-const setData = (type) => {
-  if (type) {
-    sideStr.value = 'outSide';
-  } else {
-    sideStr.value = 'inSide';
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .box {

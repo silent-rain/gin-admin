@@ -1,3 +1,116 @@
+<script setup lang="ts">
+import type { Dict, DictListRsp } from '~/api/data-center/dict'
+import { ArrowRight, InfoFilled } from '@element-plus/icons-vue'
+import { ElMessage, ElTable } from 'element-plus'
+import { ref } from 'vue'
+import { deleteDict, getDictList } from '@/api/data-center/dict'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import DictForm from './DictForm.vue'
+
+const emits = defineEmits(['update:dictId'])
+
+// 筛选过滤条件
+const listQuery = ref({
+  page: 1,
+  page_size: 10,
+  name: null,
+  code: null,
+})
+
+const state = reactive({
+  form: {
+    data: {} as Dict,
+    visible: false,
+    type: '',
+  },
+})
+
+const currentRow = ref()
+const singleTableRef = ref<InstanceType<typeof ElTable>>()
+const tableData = ref<Dict[]>([])
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  fetchDictList()
+})
+
+// 获取角色列表
+async function fetchDictList() {
+  try {
+    const resp = (await getDictList(listQuery.value)).data as DictListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+
+    // 默认设置选中第一行
+    if (tableData.value.length > 0) {
+      setCurrent(tableData.value[0])
+    }
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 过滤事件
+function handleFilter() {
+  fetchDictList()
+}
+
+// 设置选中行
+function setCurrent(row?: Dict) {
+  singleTableRef.value!.setCurrentRow(row)
+  emits('update:dictId', row?.id)
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+  fetchDictList()
+}
+
+// 选择所在的行
+function handleCurrentChange(val: Dict | undefined) {
+  currentRow.value = val
+  emits('update:dictId', val?.id)
+}
+
+// 添加
+function handleAdd() {
+  state.form.type = 'add'
+  state.form.visible = true
+}
+// 编辑
+function handleEdit() {
+  if (!currentRow.value) {
+    return
+  }
+  state.form.data = { ...currentRow.value }
+  state.form.type = 'edit'
+  state.form.visible = true
+}
+// 删除
+async function handleDel() {
+  if (!currentRow.value) {
+    return
+  }
+  const data = {
+    id: currentRow.value.id,
+  }
+  try {
+    await deleteDict(data)
+    fetchDictList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消删除
+function handleDelCancel() {
+  ElMessage.warning('取消操作')
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -82,11 +195,11 @@
       v-model:visible="state.form.visible"
       :type="state.form.type"
       @refresh="fetchDictList"
-    ></DictForm>
+    />
 
-    <el-table
-      class="content"
+    <ElTable
       ref="singleTableRef"
+      class="content"
       highlight-current-row
       border
       :data="tableData"
@@ -103,127 +216,16 @@
           </div>
         </template>
       </el-table-column>
-    </el-table>
+    </ElTable>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       layout="sizes, prev, pager, next"
       @pagination="fetchDictList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { ElMessage, ElTable } from 'element-plus';
-import { ArrowRight, InfoFilled } from '@element-plus/icons-vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import DictForm from './DictForm.vue';
-import { getDictList, deleteDict } from '@/api/data-center/dict';
-import { Dict, DictListRsp } from '~/api/data-center/dict';
-
-const emits = defineEmits(['update:dictId']);
-
-// 筛选过滤条件
-const listQuery = ref({
-  page: 1,
-  page_size: 10,
-  name: null,
-  code: null,
-});
-
-const state = reactive({
-  form: {
-    data: {} as Dict,
-    visible: false,
-    type: '',
-  },
-});
-
-const currentRow = ref();
-const singleTableRef = ref<InstanceType<typeof ElTable>>();
-const tableData = ref<Dict[]>([]);
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  fetchDictList();
-});
-
-// 获取角色列表
-const fetchDictList = async () => {
-  try {
-    const resp = (await getDictList(listQuery.value)).data as DictListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-
-    // 默认设置选中第一行
-    if (tableData.value.length > 0) {
-      setCurrent(tableData.value[0]);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 过滤事件
-const handleFilter = () => {
-  fetchDictList();
-};
-
-// 设置选中行
-const setCurrent = (row?: Dict) => {
-  singleTableRef.value!.setCurrentRow(row);
-  emits('update:dictId', row?.id);
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-  fetchDictList();
-};
-
-// 选择所在的行
-const handleCurrentChange = (val: Dict | undefined) => {
-  currentRow.value = val;
-  emits('update:dictId', val?.id);
-};
-
-// 添加
-const handleAdd = () => {
-  state.form.type = 'add';
-  state.form.visible = true;
-};
-// 编辑
-const handleEdit = () => {
-  if (!currentRow.value) {
-    return;
-  }
-  state.form.data = { ...currentRow.value };
-  state.form.type = 'edit';
-  state.form.visible = true;
-};
-// 删除
-const handleDel = async () => {
-  if (!currentRow.value) {
-    return;
-  }
-  const data = {
-    id: currentRow.value.id,
-  };
-  try {
-    await deleteDict(data);
-    fetchDictList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消删除
-const handleDelCancel = () => {
-  ElMessage.warning('取消操作');
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

@@ -1,3 +1,98 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import type { ApiHttp, ApiHttpTreeRsp } from '~/api/api-auth/api-http'
+import { ElMessage } from 'element-plus'
+import {
+  addApiHttp,
+  getAllApiHttpTree,
+  updateApiHttp,
+} from '@/api/api-auth/api-http'
+
+const props = withDefaults(
+  defineProps<{
+    data: ApiHttp
+    visible: boolean
+    type: string // add/edit
+    width?: string
+  }>(),
+  {
+    width: '500px',
+  },
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  name: [{ required: true, message: '请输入接口名称', trigger: 'change' }],
+  uri: [{ required: true, message: '请输入URI资源地址', trigger: 'blur' }],
+  method: [{ required: true, message: '请选择请求类型', trigger: 'blur' }],
+  status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+})
+
+const methodOptions = ['GET', 'POST', 'PUT', 'DELETE']
+// Http协议接口列表
+const apiOptions = ref<ApiHttp[]>([])
+
+onBeforeMount(() => {
+  fetchAllApiHttpTree()
+})
+
+// 获取所有Http协议接口信息树
+async function fetchAllApiHttpTree() {
+  try {
+    const resp = (await getAllApiHttpTree()).data as ApiHttpTreeRsp
+    apiOptions.value = resp.data_list.filter((v: ApiHttp) => {
+      // 过滤自身选择, 防止自依赖
+      if (v.id !== props.data.id) {
+        return true
+      }
+    })
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+    try {
+      if (props.type === 'add') {
+        await addApiHttp(props.data)
+      }
+      else {
+        await updateApiHttp(props.data)
+      }
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -80,95 +175,5 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import {
-  updateApiHttp,
-  addApiHttp,
-  getAllApiHttpTree,
-} from '@/api/api-auth/api-http';
-import { ApiHttp, ApiHttpTreeRsp } from '~/api/api-auth/api-http';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: ApiHttp;
-    visible: boolean;
-    type: string; // add/edit
-    width?: string;
-  }>(),
-  {
-    width: '500px',
-  },
-);
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  name: [{ required: true, message: '请输入接口名称', trigger: 'change' }],
-  uri: [{ required: true, message: '请输入URI资源地址', trigger: 'blur' }],
-  method: [{ required: true, message: '请选择请求类型', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
-});
-
-const methodOptions = ['GET', 'POST', 'PUT', 'DELETE'];
-// Http协议接口列表
-const apiOptions = ref<ApiHttp[]>([]);
-
-onBeforeMount(() => {
-  fetchAllApiHttpTree();
-});
-
-// 获取所有Http协议接口信息树
-const fetchAllApiHttpTree = async () => {
-  try {
-    const resp = (await getAllApiHttpTree()).data as ApiHttpTreeRsp;
-    apiOptions.value = resp.data_list.filter((v: ApiHttp) => {
-      // 过滤自身选择, 防止自依赖
-      if (v.id !== props.data.id) {
-        return true;
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-    try {
-      if (props.type === 'add') {
-        await addApiHttp(props.data);
-      } else {
-        await updateApiHttp(props.data);
-      }
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss"></style>

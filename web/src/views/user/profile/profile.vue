@@ -1,3 +1,44 @@
+<script setup lang="ts">
+import type { Role } from '~/api/permission/role'
+import type { User } from '~/api/permission/user'
+import { Connection, Iphone, UserFilled } from '@element-plus/icons-vue'
+import { getUserInfo } from '@/api/permission/user'
+import AccountTab from './components/AccountTab.vue'
+import ApiTokenTab from './components/ApiTokenTab/index.vue'
+import PasswordTab from './components/PasswordTab.vue'
+import UserInfoTab from './components/UserInfoTab.vue'
+
+const activeName = ref('user')
+const state = reactive({
+  user: {} as User,
+  roles: [] as Role[],
+})
+
+onBeforeMount(() => {
+  fetchUserInfo()
+})
+
+// 获取用户信息
+async function fetchUserInfo() {
+  try {
+    const resp = await getUserInfo()
+    state.user = resp.data.user as User
+    state.roles = resp.data.roles as Role[]
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 远程图片地址
+const remoteImageUrl = computed(() => {
+  if (!state.user.avatar) {
+    return ''
+  }
+  return import.meta.env.VITE_APP_IMAGE_URL + state.user.avatar
+})
+</script>
+
 <template>
   <el-row :gutter="10">
     <el-col :span="8">
@@ -26,7 +67,7 @@
             <el-link
               class="text"
               type="primary"
-              :href="'mailto:' + state.user.email"
+              :href="`mailto:${state.user.email}`"
               target="_blank"
             >
               {{ state.user.email }}
@@ -36,7 +77,7 @@
             <label class="icon">
               <el-icon><UserFilled /></el-icon>
             </label>
-            <el-tag class="text" v-for="(item, i) in state.roles">
+            <el-tag v-for="(item, i) in state.roles" class="text">
               {{ item.name }}
             </el-tag>
           </p>
@@ -50,65 +91,25 @@
             <UserInfoTab
               v-model:data="state.user"
               @refresh="fetchUserInfo"
-            ></UserInfoTab>
+            />
           </el-tab-pane>
           <el-tab-pane label="修改密码" name="password">
-            <PasswordTab></PasswordTab>
+            <PasswordTab />
           </el-tab-pane>
           <el-tab-pane label="账号绑定" name="account">
             <AccountTab
               :data="state.user"
               @refresh="fetchUserInfo"
-            ></AccountTab>
+            />
           </el-tab-pane>
           <el-tab-pane label="Token令牌" name="token">
-            <ApiTokenTab></ApiTokenTab>
+            <ApiTokenTab />
           </el-tab-pane>
         </el-tabs>
       </el-card>
     </el-col>
   </el-row>
 </template>
-
-<script setup lang="ts">
-import { UserFilled, Iphone, Connection } from '@element-plus/icons-vue';
-import { getUserInfo } from '@/api/permission/user';
-import { User } from '~/api/permission/user';
-import { Role } from '~/api/permission/role';
-import UserInfoTab from './components/UserInfoTab.vue';
-import PasswordTab from './components/PasswordTab.vue';
-import AccountTab from './components/AccountTab.vue';
-import ApiTokenTab from './components/ApiTokenTab/index.vue';
-
-const activeName = ref('user');
-const state = reactive({
-  user: {} as User,
-  roles: [] as Role[],
-});
-
-onBeforeMount(() => {
-  fetchUserInfo();
-});
-
-// 获取用户信息
-const fetchUserInfo = async () => {
-  try {
-    const resp = await getUserInfo();
-    state.user = resp.data.user as User;
-    state.roles = resp.data.roles as Role[];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 远程图片地址
-const remoteImageUrl = computed(() => {
-  if (!state.user.avatar) {
-    return '';
-  }
-  return import.meta.env.VITE_APP_IMAGE_URL + state.user.avatar;
-});
-</script>
 
 <style scoped lang="scss">
 .user-preview {

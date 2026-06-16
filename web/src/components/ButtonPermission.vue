@@ -1,3 +1,25 @@
+<script setup lang="ts">
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+
+const props = withDefaults(
+  defineProps<{
+    permission: string
+    icon?: any
+    type?: string
+    link?: boolean
+    size?: string
+  }>(),
+  {
+    link: false,
+  },
+)
+const emit = defineEmits(['click'])
+
+function handleClick() {
+  emit('click')
+}
+</script>
+
 <template>
   <el-button
     v-if="hasButtonPermission(props.permission)"
@@ -11,27 +33,5 @@
     <slot />
   </el-button>
 </template>
-
-<script setup lang="ts">
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const props = withDefaults(
-  defineProps<{
-    permission: string;
-    icon?: any;
-    type?: string;
-    link?: boolean;
-    size?: string;
-  }>(),
-  {
-    link: false,
-  },
-);
-const emit = defineEmits(['click']);
-
-const handleClick = () => {
-  emit('click');
-};
-</script>
 
 <style scoped lang="scss"></style>

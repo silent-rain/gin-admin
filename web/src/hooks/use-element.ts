@@ -1,74 +1,79 @@
-import { reactive, ref, toRefs } from 'vue';
+import type { EpPropMergeType } from 'element-plus/es/utils'
 import {
   ElLoading,
   ElMessage,
   ElMessageBox,
   ElNotification,
-} from 'element-plus';
-import type { EpPropMergeType } from 'element-plus/es/utils';
+} from 'element-plus'
+import { reactive, ref, toRefs } from 'vue'
 
-export const useElement = () => {
+export function useElement() {
   // 正整数
   const upZeroInt = (rule, value, callback, msg) => {
     if (!value) {
-      callback(new Error(`${msg}不能为空`));
+      callback(new Error(`${msg}不能为空`))
     }
     if (/^\+?[1-9]\d*$/.test(value)) {
-      callback();
-    } else {
-      callback(new Error(`${msg}输入有误`));
+      callback()
     }
-  };
+    else {
+      callback(new Error(`${msg}输入有误`))
+    }
+  }
 
   // 正整数（包括0）
   const zeroInt = (rule, value, callback, msg) => {
     if (!value) {
-      callback(new Error(`${msg}不能为空`));
+      callback(new Error(`${msg}不能为空`))
     }
-    if (/^\+?[0-9]\d*$/.test(value)) {
-      callback();
-    } else {
-      callback(new Error(`${msg}输入有误`));
+    if (/^\+?\d+$/.test(value)) {
+      callback()
     }
-  };
+    else {
+      callback(new Error(`${msg}输入有误`))
+    }
+  }
 
   // 金额
   const money = (rule, value, callback, msg) => {
     if (!value) {
-      callback(new Error(`${msg}不能为空`));
+      callback(new Error(`${msg}不能为空`))
     }
-    if (/((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/.test(value)) {
-      callback();
-    } else {
-      callback(new Error(`${msg}输入有误`));
+    if (/((^[1-9]\d*)|^0)(\.\d{0,2})?$/.test(value)) {
+      callback()
     }
-  };
+    else {
+      callback(new Error(`${msg}输入有误`))
+    }
+  }
 
   // 手机号
   const phone = (rule, value, callback, msg) => {
     if (!value) {
-      callback(new Error(`${msg}不能为空`));
+      callback(new Error(`${msg}不能为空`))
     }
-    if (/^0?1[0-9]{10}$/.test(value)) {
-      callback();
-    } else {
-      callback(new Error(`${msg}输入有误`));
+    if (/^0?1\d{10}$/.test(value)) {
+      callback()
     }
-  };
+    else {
+      callback(new Error(`${msg}输入有误`))
+    }
+  }
 
   // 邮箱
   const email = (rule, value, callback, msg) => {
     if (!value) {
-      callback(new Error(`${msg}不能为空`));
+      callback(new Error(`${msg}不能为空`))
     }
     if (
-      /(^([a-zA-Z]|[0-9])(\w|-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4}))$/.test(value)
+      /(^([a-z0-9])(\w|-)+@[a-z0-9]+\.([a-z]{2,4}))$/i.test(value)
     ) {
-      callback();
-    } else {
-      callback(new Error(`${msg}`));
+      callback()
     }
-  };
+    else {
+      callback(new Error(`${msg}`))
+    }
+  }
   const state = reactive({
     /* table */
     tableData: [],
@@ -137,7 +142,7 @@ export const useElement = () => {
     datePickerOptions: {
       // 选择今天以后的日期，包括今天
       disabledDate: (time: any) => {
-        return time.getTime() < Date.now() - 86400000;
+        return time.getTime() < Date.now() - 86400000
       },
     },
     startEndArr: [],
@@ -153,11 +158,11 @@ export const useElement = () => {
       children: 'children',
       label: 'label',
     },
-  });
+  })
   return {
     ...toRefs(state),
-  };
-};
+  }
+}
 
 /*
  * 通知弹框
@@ -165,30 +170,29 @@ export const useElement = () => {
  * type：通知类型
  * duration：通知显示时长（ms）
  * */
-export const elMessage = (message: string, type?) => {
+export function elMessage(message: string, type?) {
   ElMessage({
     showClose: true,
     message: message || '成功',
     type: type || ('success' as string),
-    center: false,
-  });
-};
+  })
+}
 /*
  * loading加载框
  * 调用后通过 loadingId.close() 进行关闭
  * */
-let loadingId: any = null;
-export const elLoading = (msg?: string) => {
+let loadingId: any = null
+export function elLoading(msg?: string) {
   loadingId = ElLoading.service({
     lock: true,
     text: msg || '数据载入中',
     // spinner: 'el-icon-loading',
     background: 'rgba(0, 0, 0, 0.1)',
-  });
-};
-export const closeElLoading = () => {
-  loadingId.close();
-};
+  })
+}
+export function closeElLoading() {
+  loadingId.close()
+}
 /*
  * 提示
  * message: 提示内容
@@ -196,12 +200,7 @@ export const closeElLoading = () => {
  * title：提示标题
  * duration：提示时长（ms）
  * */
-export const elNotify = (
-  message: string,
-  type: EpPropMergeType<any, any, any> | undefined,
-  title: string,
-  duration: number,
-) => {
+export function elNotify(message: string, type: EpPropMergeType<any, any, any> | undefined, title: string, duration: number) {
   ElNotification({
     title: title || '提示',
     type: type || 'success',
@@ -209,15 +208,15 @@ export const elNotify = (
     position: 'top-right',
     duration: duration || 2500,
     offset: 40,
-  });
-};
+  })
+}
 /*
   确认弹框(没有取消按钮)
 * title:提示的标题
 * message:提示的内容
 * return Promise
 * */
-export const elConfirmNoCancelBtn = (title: string, message: string) => {
+export function elConfirmNoCancelBtn(title: string, message: string) {
   return ElMessageBox({
     message: message || '你确定要删除吗',
     title: title || '确认框',
@@ -225,27 +224,27 @@ export const elConfirmNoCancelBtn = (title: string, message: string) => {
     cancelButtonText: '取消',
     showCancelButton: false,
     type: 'warning',
-  });
-};
+  })
+}
 /*
  * 确认弹框
  * title:提示的标题
  * message:提示的内容
  * return Promise
  * */
-export const elConfirm = (title: string, message: string) => {
+export function elConfirm(title: string, message: string) {
   return ElMessageBox({
     message: message || '你确定要删除吗',
     title: title || '确认框',
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
-  });
-};
+  })
+}
 
 /* 级联 */
-const cascaderKey = ref();
-export const casHandleChange = () => {
+const cascaderKey = ref()
+export function casHandleChange() {
   // 解决目前级联选择器搜索输入报错问题
-  cascaderKey.value += cascaderKey.value;
-};
+  cascaderKey.value += cascaderKey.value
+}

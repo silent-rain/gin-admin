@@ -1,4 +1,4 @@
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue'
 
 export default function useUserRepositories(state) {
   const gkNode = reactive([
@@ -30,7 +30,7 @@ export default function useUserRepositories(state) {
       title: '节点颜色',
       field: 'ys',
     },
-  ]);
+  ])
 
   const gzNode = reactive([
     {
@@ -61,7 +61,7 @@ export default function useUserRepositories(state) {
       title: '颜色',
       field: 'ys',
     },
-  ]);
+  ])
 
   const BOMNode = reactive([
     {
@@ -88,7 +88,7 @@ export default function useUserRepositories(state) {
       title: '节点颜色',
       field: 'url',
     },
-  ]);
+  ])
 
   const DLNode = reactive([
     {
@@ -103,7 +103,7 @@ export default function useUserRepositories(state) {
       title: '节点颜色',
       field: 'ys',
     },
-  ]);
+  ])
 
   const CLNode = reactive([
     {
@@ -118,7 +118,7 @@ export default function useUserRepositories(state) {
       title: '节点颜色',
       field: 'ys',
     },
-  ]);
+  ])
 
   const node = {
     gkNode,
@@ -126,18 +126,18 @@ export default function useUserRepositories(state) {
     BOMNode,
     DLNode,
     CLNode,
-  };
+  }
 
-  const nodeType = ref([]);
+  const nodeType = ref([])
   watch(
     () => state.types,
     (newValue) => {
-      nodeType.value = node[newValue];
+      nodeType.value = node[newValue]
     },
     { immediate: true },
-  );
+  )
 
   return {
     nodeType,
-  };
+  }
 }

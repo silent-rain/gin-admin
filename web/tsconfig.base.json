@@ -4,6 +4,8 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
+    // 模块解析策略，使用 bundler 适用于 Vite 等现代构建工具
+    "moduleResolution": "bundler",
     //启用所有严格类型检查选项。
     //启用 --strict相当于启用 --noImplicitAny, --noImplicitThis, --alwaysStrict， --strictNullChecks和 --strictFunctionTypes和--strictPropertyInitialization。
     "strict": true,
@@ -36,15 +38,13 @@
     "resolveJsonModule": true,
     //和noUnusedLocals一样，针对func
     "noUnusedParameters": false,
-    // 模块解析策略，ts默认用node的解析策略，即相对的方式导入
-    "moduleResolution": "node",
     //允许export=导出，由import from 导入
     "esModuleInterop": true,
     //忽略所有的声明文件（ *.d.ts）的类型检查。
     "skipLibCheck": true,
     "baseUrl": ".",
-    //指定默认读取的目录
-    //"typeRoots": ["./node_modules/@types/", "./types"],
+    // 忽略 TypeScript 6.0 的弃用警告
+    "ignoreDeprecations": "6.0",
     "lib": ["ES2018", "DOM"]
   }
 }

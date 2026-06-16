@@ -1,4 +1,4 @@
-import Mock from 'mockjs'
+import Mock from 'mockjs';
 
 const data = Mock.mock({
   'items|30': [
@@ -8,24 +8,24 @@ const data = Mock.mock({
       'status|1': ['published', 'draft', 'deleted'],
       author: 'name',
       display_time: '@datetime',
-      pageviews: '@integer(300, 5000)'
-    }
-  ]
-})
+      pageviews: '@integer(300, 5000)',
+    },
+  ],
+});
 
 export default [
   {
     url: '/vue3-admin-template/table/list',
     method: 'get',
     response: () => {
-      const items = data.items
+      const items = data.items;
       return {
         code: 20000,
         data: {
           total: items.length,
-          items
-        }
-      }
-    }
-  }
-]
+          items,
+        },
+      };
+    },
+  },
+];

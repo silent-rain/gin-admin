@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import type { WebsiteConfig } from '@/typings/api/data-center/config'
+import { useBasicStore } from '@/store/basic'
+
+const basicStore = useBasicStore()
+
+const configHash = computed(() => {
+  return basicStore.webSiteConfigMap as WebsiteConfig
+})
+</script>
+
 <template>
   <div class="footer">
     <el-form
@@ -53,17 +64,6 @@
     </el-form>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useBasicStore } from '@/store/basic';
-import { WebsiteConfig } from '@/typings/api/data-center/config';
-
-const basicStore = useBasicStore();
-
-const configHash = computed(() => {
-  return basicStore.webSiteConfigMap as WebsiteConfig;
-});
-</script>
 
 <style scoped lang="scss">
 .footer {

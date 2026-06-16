@@ -1,9 +1,9 @@
 /* 注册/登录/登出/验证码
  */
-import axiosReq from '@/utils/axios-req';
+import axiosReq from '@/utils/axios-req'
 
 // 获取验证码
-export const getCaptcha = async () => {
+export async function getCaptcha() {
   return axiosReq({
     url: '/captcha',
     method: 'get',
@@ -11,41 +11,41 @@ export const getCaptcha = async () => {
     isAlertErrorMsg: false,
     isParams: true,
     data: {},
-  });
-};
+  })
+}
 
 // 验证码验证
-export const captchaVerify = async (params: any) => {
+export async function captchaVerify(params: any) {
   return axiosReq({
     url: '/captcha/verify',
     method: 'get',
     isParams: true,
     data: params,
-  });
-};
+  })
+}
 
 // 注册
-export const register = async (params: any) => {
+export async function register(params: any) {
   return axiosReq({
     url: '/register',
     method: 'post',
     data: params,
-  });
-};
+  })
+}
 
 // 登录
-export const login = async (data: any) => {
+export async function login(data: any) {
   return axiosReq({
     url: '/login',
     data,
     method: 'post',
-  });
-};
+  })
+}
 
 // 退出登录
-export const logout = async () => {
+export async function logout() {
   return axiosReq({
     url: '/logout',
     method: 'post',
-  });
-};
+  })
+}

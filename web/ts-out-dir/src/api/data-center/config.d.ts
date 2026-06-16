@@ -1,0 +1,12 @@
+export declare const getAllConfigTree: () => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getConfigList: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getConfigChildrensByKey: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getConfigTree: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getConfigInfo: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const addConfig: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateConfig: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const batchUpdateConfig: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const deleteConfig: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const batchDeleteConfig: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateConfigStatus: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getWebSiteConfigList: () => Promise<import("axios").AxiosResponse<any, any, {}>>;

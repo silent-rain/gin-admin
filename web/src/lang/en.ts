@@ -1,57 +1,57 @@
 export default {
-  router: {
-    Dashboard: '',
+  'router': {
+    'Dashboard': '',
     'Setting Switch': '',
     'Error Log': '',
     'Error Index': '',
     'Error Generator': '',
 
-    Nested: '',
-    Menu1: '',
+    'Nested': '',
+    'Menu1': '',
     'Menu1-1': '',
     'Menu1-2': '',
     'Menu1-2-1': '',
     'Menu1-2-2': '',
     'Menu1-3': '',
-    menu2: '',
+    'menu2': '',
 
     'External Link': '',
 
     'Basic Demo': '',
-    Hook: '',
-    Pinia: '',
-    Mock: '',
+    'Hook': '',
+    'Pinia': '',
+    'Mock': '',
     'Svg Icon': '',
     'Parent Children': '',
     'KeepAlive Group': '',
     'Tab KeepAlive': '',
     'Third KeepAlive': '',
-    SecondChildren: '',
-    ThirdChildren: '',
+    'SecondChildren': '',
+    'ThirdChildren': '',
 
-    Worker: '',
+    'Worker': '',
 
-    Permission: '',
+    'Permission': '',
 
     'Permission Switch': '',
     'Role Index': '',
     'Code Index': '',
     'Button Permission': '',
   },
-  navbar: {
-    Home: '',
-    Github: '',
-    Docs: '',
+  'navbar': {
+    'Home': '',
+    'Github': '',
+    'Docs': '',
     'login out': '',
   },
 
   // page
-  dashboard: {
+  'dashboard': {
     'switch theme': '',
     'switch size': '',
     'switch language': '',
-    en: 'English',
-    zh: '中文',
+    'en': 'English',
+    'zh': '中文',
     'Button Group': '',
     'unocss using': '',
     'global var': '',
@@ -66,7 +66,7 @@ export default {
     reset: '',
     multiDel: '',
   },
-  permission: {
+  'permission': {
     addRole: '',
     editPermission: '',
     roles: '',
@@ -76,12 +76,12 @@ export default {
     confirm: '确定',
     cancel: '取消',
   },
-  guide: {
+  'guide': {
     description:
       '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',
     button: '打开引导',
   },
-  components: {
+  'components': {
     documentation: '文档',
     tinymceTips:
       '富文本是管理后台一个核心的功能，但同时又是一个有很多坑的地方。在选择富文本的过程中我也走了不少的弯路，市面上常见的富文本都基本用过了，最终权衡了一下选择了Tinymce。更详细的富文本比较和介绍见',
@@ -94,7 +94,7 @@ export default {
     imageUploadTips:
       '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。',
   },
-  table: {
+  'table': {
     dynamicTips1: '固定表头, 按照表头顺序排序',
     dynamicTips2: '不固定表头, 按照点击顺序排序',
     dragTips1: '默认顺序',
@@ -120,4 +120,4 @@ export default {
     cancel: '取 消',
     confirm: '确 定',
   },
-};
+}

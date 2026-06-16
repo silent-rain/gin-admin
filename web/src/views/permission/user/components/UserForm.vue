@@ -1,3 +1,240 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules, UploadProps } from 'element-plus'
+import type { User } from '@/typings/api/permission/user'
+import type { Role, RoleListRsp } from '~/api/permission/role'
+import { EditPen } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { getAllRole } from '@/api/permission/role'
+import {
+  addUser,
+  updateEmail,
+  updatePhone,
+  updateUser,
+} from '@/api/permission/user'
+import UploadAvatar from '@/components/Upload/UploadAvatar.vue'
+import { useUserStore } from '@/store/user'
+
+const props = withDefaults(
+  defineProps<{
+    data: User
+    visible: boolean
+    type: string // add/edit
+    width?: string
+  }>(),
+  {
+    width: '100%',
+  },
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const userStore = useUserStore()
+
+// const { data } = toRefs(props);
+// const data = toRef(props, 'data');
+
+const state = reactive({
+  isPhoneEdit: false,
+  newPhone: '',
+  isEmailEdit: false,
+  newEmail: '',
+  imageUrl: '',
+})
+const headerObj = {
+  authorization: userStore.token,
+}
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  nickname: [
+    { required: true, message: '请输入昵称', trigger: 'blur' },
+    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
+  ],
+  gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
+  birthday: [{ required: true, message: '请选择出生日期', trigger: 'blur' }],
+  phone: [
+    { required: true, message: '请输入手机号码', trigger: 'blur' },
+    { min: 11, max: 11, message: '手机号码不合法', trigger: 'blur' },
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, message: '至少输入6个字符', trigger: 'blur' },
+  ],
+  sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
+})
+const roleList = ref<Role[]>([])
+const roleIds = ref<number[]>([])
+
+onBeforeMount(() => {
+  fetchAllRole()
+  state.imageUrl = props.data.avatar
+})
+
+// 获取所有角色
+async function fetchAllRole() {
+  try {
+    const resp = (await getAllRole()).data as RoleListRsp
+    roleList.value = resp.data_list
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+  state.imageUrl = ''
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+  state.imageUrl = ''
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+    const data = { ...props.data }
+    data.role_ids = roleIds.value
+    data.avatar = state.imageUrl
+    try {
+      if (props.type === 'add') {
+        await addUser(data)
+      }
+      else {
+        await updateUser(data)
+      }
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+
+// 更新手机号码
+async function handleUpdatePhone() {
+  if (state.newPhone.trim() === '') {
+    ElMessage.warning('新手机号码不能为空')
+    return
+  }
+  if (state.newPhone.trim().length !== 11) {
+    ElMessage.warning('非法手机号码')
+    return
+  }
+
+  const data = {
+    id: props.data.id,
+    phone: state.newPhone.trim(),
+  }
+  try {
+    await updatePhone(data)
+    state.isPhoneEdit = false
+    emit('refresh')
+    emit('update:data', { ...props.data, phone: state.newPhone })
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 更新邮箱
+async function handleUpdateEmail() {
+  if (state.newEmail.trim() === '') {
+    ElMessage.warning('新邮箱不能为空')
+    return
+  }
+
+  const data = {
+    id: props.data.id,
+    email: state.newEmail.trim(),
+  }
+  try {
+    await updateEmail(data)
+    state.isEmailEdit = false
+    emit('refresh')
+    emit('update:data', { ...props.data, email: state.newEmail })
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 上传头像成功事件
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+  response,
+  uploadFile,
+) => {
+  // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
+  state.imageUrl = `${response.data.url}`
+}
+// 上传头像事件
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  const imgfileType = [
+    'image/gif',
+    'image/jpg',
+    'image/jpeg',
+    'image/x-png',
+    'image/png',
+  ]
+  if (!imgfileType.includes(rawFile.type)) {
+    ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!')
+    return false
+  }
+  if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!')
+    return false
+  }
+  return true
+}
+
+// 远程图片地址
+const remoteImageUrl = computed(() => {
+  if (!state.imageUrl) {
+    return ''
+  }
+  return import.meta.env.VITE_APP_IMAGE_URL + state.imageUrl
+})
+
+// 角色赋值
+watch(
+  () => props.data.roles,
+  () => {
+    if (!props.data.roles) {
+      return
+    }
+    roleIds.value = props.data.roles.map(v => v.id)
+  },
+  { immediate: true },
+)
+
+// 头像赋值
+watch(
+  () => props.data.avatar,
+  () => {
+    if (!props.data.avatar) {
+      return
+    }
+    state.imageUrl = props.data.avatar
+  },
+  { immediate: true },
+)
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -110,9 +347,15 @@
         <el-col :span="24">
           <el-form-item label="性别" prop="gender">
             <el-radio-group v-model="props.data.gender">
-              <el-radio :label="1">女</el-radio>
-              <el-radio :label="2">男性</el-radio>
-              <el-radio :label="0">保密</el-radio>
+              <el-radio :label="1">
+                女
+              </el-radio>
+              <el-radio :label="2">
+                男性
+              </el-radio>
+              <el-radio :label="0">
+                保密
+              </el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
@@ -144,9 +387,9 @@
         <el-col :span="12">
           <el-form-item label="头像" prop="avatar">
             <UploadAvatar
-              class="avatar-uploader"
               v-model:url="props.data.avatar"
-            ></UploadAvatar>
+              class="avatar-uploader"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -217,236 +460,6 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules, UploadProps } from 'element-plus';
-import { EditPen, Plus } from '@element-plus/icons-vue';
-import {
-  updateUser,
-  addUser,
-  updatePhone,
-  updateEmail,
-} from '@/api/permission/user';
-import { getAllRole } from '@/api/permission/role';
-import { useUserStore } from '@/store/user';
-import { User } from '@/typings/api/permission/user';
-import { RoleListRsp, Role } from '~/api/permission/role';
-import UploadAvatar from '@/components/Upload/UploadAvatar.vue';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: User;
-    visible: boolean;
-    type: string; // add/edit
-    width?: string;
-  }>(),
-  {
-    width: '100%',
-  },
-);
-
-const userStore = useUserStore();
-
-// const { data } = toRefs(props);
-// const data = toRef(props, 'data');
-
-const state = reactive({
-  isPhoneEdit: false,
-  newPhone: '',
-  isEmailEdit: false,
-  newEmail: '',
-  imageUrl: '',
-});
-const headerObj = {
-  authorization: userStore.token,
-};
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  nickname: [
-    { required: true, message: '请输入昵称', trigger: 'blur' },
-    { min: 2, message: '至少输入两个字符', trigger: 'blur' },
-  ],
-  gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-  birthday: [{ required: true, message: '请选择出生日期', trigger: 'blur' }],
-  phone: [
-    { required: true, message: '请输入手机号码', trigger: 'blur' },
-    { min: 11, max: 11, message: '手机号码不合法', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '至少输入6个字符', trigger: 'blur' },
-  ],
-  sort: [{ required: true, message: '最小为1', trigger: 'blur' }],
-});
-const roleList = ref<Role[]>([]);
-const roleIds = ref<number[]>([]);
-
-onBeforeMount(() => {
-  fetchAllRole();
-  state.imageUrl = props.data.avatar;
-});
-
-// 获取所有角色
-const fetchAllRole = async () => {
-  try {
-    const resp = (await getAllRole()).data as RoleListRsp;
-    roleList.value = resp.data_list;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-  state.imageUrl = '';
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-  state.imageUrl = '';
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-    const data = { ...props.data };
-    data.role_ids = roleIds.value;
-    data.avatar = state.imageUrl;
-    try {
-      if (props.type === 'add') {
-        await addUser(data);
-      } else {
-        await updateUser(data);
-      }
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-
-// 更新手机号码
-const handleUpdatePhone = async () => {
-  if (state.newPhone.trim() === '') {
-    ElMessage.warning('新手机号码不能为空');
-    return;
-  }
-  if (state.newPhone.trim().length !== 11) {
-    ElMessage.warning('非法手机号码');
-    return;
-  }
-
-  const data = {
-    id: props.data.id,
-    phone: state.newPhone.trim(),
-  };
-  try {
-    await updatePhone(data);
-    state.isPhoneEdit = false;
-    emit('refresh');
-    emit('update:data', { ...props.data, phone: state.newPhone });
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 更新邮箱
-const handleUpdateEmail = async () => {
-  if (state.newEmail.trim() === '') {
-    ElMessage.warning('新邮箱不能为空');
-    return;
-  }
-
-  const data = {
-    id: props.data.id,
-    email: state.newEmail.trim(),
-  };
-  try {
-    await updateEmail(data);
-    state.isEmailEdit = false;
-    emit('refresh');
-    emit('update:data', { ...props.data, email: state.newEmail });
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 上传头像成功事件
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile,
-) => {
-  // state.imageBlob = URL.createObjectURL(uploadFile.raw!);
-  state.imageUrl = `${response.data.url}`;
-};
-// 上传头像事件
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  const imgfileType = [
-    'image/gif',
-    'image/jpg',
-    'image/jpeg',
-    'image/x-png',
-    'image/png',
-  ];
-  if (imgfileType.indexOf(rawFile.type) === -1) {
-    ElMessage.error('Avatar picture must be JPG/JPEG/PNG/GIF format!');
-    return false;
-  }
-  if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!');
-    return false;
-  }
-  return true;
-};
-
-// 远程图片地址
-const remoteImageUrl = computed(() => {
-  if (!state.imageUrl) {
-    return '';
-  }
-  return import.meta.env.VITE_APP_IMAGE_URL + state.imageUrl;
-});
-
-// 角色赋值
-watch(
-  () => props.data.roles,
-  () => {
-    if (!props.data.roles) {
-      return;
-    }
-    roleIds.value = props.data.roles.map((v) => v.id);
-  },
-  { immediate: true },
-);
-
-// 头像赋值
-watch(
-  () => props.data.avatar,
-  () => {
-    if (!props.data.avatar) {
-      return;
-    }
-    state.imageUrl = props.data.avatar;
-  },
-  { immediate: true },
-);
-</script>
 
 <style scoped lang="scss">
 .form-phone,

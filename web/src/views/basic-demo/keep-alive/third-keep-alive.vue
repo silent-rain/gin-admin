@@ -1,6 +1,13 @@
+<script setup lang="ts" name="ThirdKeepAlive">
+const testInput = ref()
+const { cachedViewsDeep } = useBasicStore()
+</script>
+
 <template>
   <div>
-    <div class="font-bold mb-10px">third-keep-alive demo</div>
+    <div class="font-bold mb-10px">
+      third-keep-alive demo
+    </div>
     <el-input
       v-model="testInput"
       style="width: 400px"
@@ -14,10 +21,5 @@
     </router-view>
   </div>
 </template>
-
-<script setup lang="ts" name="ThirdKeepAlive">
-const testInput = ref();
-const { cachedViewsDeep } = useBasicStore();
-</script>
 
 <style scoped lang="scss"></style>

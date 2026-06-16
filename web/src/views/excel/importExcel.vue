@@ -1,3 +1,32 @@
+<script setup>
+import { Upload } from '@element-plus/icons-vue'
+import { toRefs } from 'vue'
+import { importsExcel } from '@/utils/excel'
+
+const state = reactive({
+  list: null,
+  headers: null,
+  listLoading: false,
+})
+
+function handleOnChange(uploadFile) {
+  state.listLoading = true
+  importsExcel(uploadFile)
+    .then((res) => {
+      state.list = res.tableData
+      state.headers = res.headers
+      state.listLoading = false
+    })
+    .catch((err) => {
+      console.log(err)
+      state.listLoading = false
+    })
+}
+
+// 导出属性到页面中使用
+const { list, headers, listLoading } = toRefs(state)
+</script>
+
 <template>
   <div class="app-container scroll-y">
     <el-upload
@@ -26,34 +55,5 @@
     </el-table>
   </div>
 </template>
-
-<script setup>
-import { Upload } from '@element-plus/icons-vue';
-import { toRefs } from 'vue';
-import { importsExcel } from '@/utils/excel';
-
-const state = reactive({
-  list: null,
-  headers: null,
-  listLoading: false,
-});
-
-const handleOnChange = (uploadFile) => {
-  state.listLoading = true;
-  importsExcel(uploadFile)
-    .then((res) => {
-      state.list = res.tableData;
-      state.headers = res.headers;
-      state.listLoading = false;
-    })
-    .catch((err) => {
-      console.log(err);
-      state.listLoading = false;
-    });
-};
-
-// 导出属性到页面中使用
-const { list, headers, listLoading } = toRefs(state);
-</script>
 
 <style scoped lang="scss"></style>

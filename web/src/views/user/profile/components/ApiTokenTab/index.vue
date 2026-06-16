@@ -1,3 +1,127 @@
+<script setup lang="ts">
+import type { ConfigRsp } from '~/api/data-center/config'
+import type {
+  UserApiToken,
+  UserApiTokenListRsp,
+} from '~/api/permission/user-api-token'
+import { Delete, EditPen, InfoFilled, Plus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import { getConfigInfo } from '@/api/data-center/config'
+import {
+  deleteUserApiToken,
+  getUserApiTokenList,
+  updateUserApiTokenStatus,
+} from '@/api/permission/user-api-token'
+import { useUserStore } from '@/store/user'
+import ApiTokenForm from './ApiTokenForm.vue'
+
+const userStore = useUserStore()
+
+const state = reactive({
+  form: {
+    data: {} as UserApiToken,
+    visible: false,
+    type: '',
+  },
+  api_auth_max_token_num: 5,
+})
+
+const tableData = ref<UserApiToken[]>()
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  fetchUserApiTokenList()
+  fetchConfigInfo()
+})
+
+// 获取令牌列表
+async function fetchUserApiTokenList() {
+  if (!userStore.userId) {
+    return
+  }
+  const data = {
+    page: 1,
+    page_size: 20,
+    user_id: userStore.userId,
+    nickname: null,
+    status: null,
+  }
+  try {
+    const resp = (await getUserApiTokenList(data)).data as UserApiTokenListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.data_list.length
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 通过 key 获取可申请最大令牌数
+async function fetchConfigInfo() {
+  try {
+    const resp = (await getConfigInfo({
+      key: 'api_auth_max_token_num',
+    })) as ConfigRsp
+    state.api_auth_max_token_num = resp.data.value
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: UserApiToken) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteUserApiToken(data)
+    fetchUserApiTokenList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: UserApiToken) {
+  state.form.data = { ...row }
+  state.form.type = 'edit'
+  state.form.visible = true
+  state.form.data.user_id = userStore.userId
+}
+// 添加
+async function handleAdd() {
+  state.form.type = 'add'
+  state.form.visible = true
+  state.form.data.status = 1
+  state.form.data.user_id = userStore.userId
+  state.form.data.permission = ''
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: UserApiToken) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateUserApiTokenStatus(data)
+    fetchUserApiTokenList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <el-card>
     <!-- 提示 -->
@@ -18,7 +142,7 @@
           添加
         </el-button>
       </div>
-      <div class="right-button"></div>
+      <div class="right-button" />
     </div>
 
     <!-- 添加/编辑表单 -->
@@ -83,126 +207,6 @@
     </el-table>
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import { EditPen, Delete, InfoFilled, Plus } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import { useUserStore } from '@/store/user';
-import {
-  getUserApiTokenList,
-  updateUserApiTokenStatus,
-  deleteUserApiToken,
-} from '@/api/permission/user-api-token';
-import {
-  UserApiTokenListRsp,
-  UserApiToken,
-} from '~/api/permission/user-api-token';
-import { getConfigInfo } from '@/api/data-center/config';
-import { ConfigRsp } from '~/api/data-center/config';
-import ApiTokenForm from './ApiTokenForm.vue';
-
-const userStore = useUserStore();
-
-const state = reactive({
-  form: {
-    data: {} as UserApiToken,
-    visible: false,
-    type: '',
-  },
-  api_auth_max_token_num: 5,
-});
-
-const tableData = ref<UserApiToken[]>();
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  fetchUserApiTokenList();
-  fetchConfigInfo();
-});
-
-// 获取令牌列表
-const fetchUserApiTokenList = async () => {
-  if (!userStore.userId) {
-    return;
-  }
-  const data = {
-    page: 1,
-    page_size: 20,
-    user_id: userStore.userId,
-    nickname: null,
-    status: null,
-  };
-  try {
-    const resp = (await getUserApiTokenList(data)).data as UserApiTokenListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.data_list.length;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 通过 key 获取可申请最大令牌数
-const fetchConfigInfo = async () => {
-  try {
-    const resp = (await getConfigInfo({
-      key: 'api_auth_max_token_num',
-    })) as ConfigRsp;
-    state.api_auth_max_token_num = resp.data.value;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: UserApiToken) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteUserApiToken(data);
-    fetchUserApiTokenList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: UserApiToken) => {
-  state.form.data = { ...row };
-  state.form.type = 'edit';
-  state.form.visible = true;
-  state.form.data.user_id = userStore.userId;
-};
-// 添加
-const handleAdd = async () => {
-  state.form.type = 'add';
-  state.form.visible = true;
-  state.form.data.status = 1;
-  state.form.data.user_id = userStore.userId;
-  state.form.data.permission = '';
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: UserApiToken) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateUserApiTokenStatus(data);
-    fetchUserApiTokenList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .tips {

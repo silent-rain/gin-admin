@@ -1,3 +1,85 @@
+<script setup lang="ts">
+import type { User } from '@/typings/api/permission/user'
+import { ElMessage } from 'element-plus'
+import { updateEmail, updatePhone } from '@/api/permission/user'
+import { md5Encode } from '@/utils/md5'
+
+const props = withDefaults(
+  defineProps<{
+    data: User
+  }>(),
+  {},
+)
+
+const emits = defineEmits(['refresh'])
+
+const state = reactive({
+  isPhoneEdit: false,
+  newPhone: '',
+  isEmailEdit: false,
+  newEmail: '',
+  password: '',
+})
+
+// 更新手机号码
+async function handleUpdatePhone() {
+  if (state.newPhone.trim() === '') {
+    ElMessage.warning('新手机号码不能为空')
+    return
+  }
+  if (state.newPhone.trim().length !== 11) {
+    ElMessage.warning('非法手机号码')
+    return
+  }
+  if (state.password.trim() === '') {
+    ElMessage.warning('密码不能为空')
+    return
+  }
+
+  const data = {
+    id: props.data.id,
+    phone: state.newPhone.trim(),
+    password: md5Encode(state.password),
+  }
+  try {
+    await updatePhone(data)
+    state.isPhoneEdit = false
+    emits('refresh')
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 更新邮箱
+async function handleUpdateEmail() {
+  if (state.newEmail.trim() === '') {
+    ElMessage.warning('新邮箱不能为空')
+    return
+  }
+  if (state.password.trim() === '') {
+    ElMessage.warning('密码不能为空')
+    return
+  }
+
+  const data = {
+    id: props.data.id,
+    email: state.newEmail.trim(),
+    password: md5Encode(state.password),
+  }
+  try {
+    await updateEmail(data)
+    state.isEmailEdit = false
+    emits('refresh')
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <el-card>
     <div class="account">
@@ -81,86 +163,6 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import { updatePhone, updateEmail } from '@/api/permission/user';
-import { User } from '@/typings/api/permission/user';
-import { md5Encode } from '@/utils/md5';
-
-const props = withDefaults(
-  defineProps<{
-    data: User;
-  }>(),
-  {},
-);
-
-const emits = defineEmits(['refresh']);
-
-const state = reactive({
-  isPhoneEdit: false,
-  newPhone: '',
-  isEmailEdit: false,
-  newEmail: '',
-  password: '',
-});
-
-// 更新手机号码
-const handleUpdatePhone = async () => {
-  if (state.newPhone.trim() === '') {
-    ElMessage.warning('新手机号码不能为空');
-    return;
-  }
-  if (state.newPhone.trim().length !== 11) {
-    ElMessage.warning('非法手机号码');
-    return;
-  }
-  if (state.password.trim() === '') {
-    ElMessage.warning('密码不能为空');
-    return;
-  }
-
-  const data = {
-    id: props.data.id,
-    phone: state.newPhone.trim(),
-    password: md5Encode(state.password),
-  };
-  try {
-    await updatePhone(data);
-    state.isPhoneEdit = false;
-    emits('refresh');
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 更新邮箱
-const handleUpdateEmail = async () => {
-  if (state.newEmail.trim() === '') {
-    ElMessage.warning('新邮箱不能为空');
-    return;
-  }
-  if (state.password.trim() === '') {
-    ElMessage.warning('密码不能为空');
-    return;
-  }
-
-  const data = {
-    id: props.data.id,
-    email: state.newEmail.trim(),
-    password: md5Encode(state.password),
-  };
-  try {
-    await updateEmail(data);
-    state.isEmailEdit = false;
-    emits('refresh');
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .account {

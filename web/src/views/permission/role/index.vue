@@ -1,3 +1,177 @@
+<script setup lang="ts">
+import type { Role, RoleListRsp } from '~/api/permission/role'
+import {
+  Delete,
+  EditPen,
+  Finished,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteRole,
+  deleteRole,
+  getRoleList,
+  updateRoleStatus,
+} from '@/api/permission/role'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import DrawerPermission from './components/DrawerPermission.vue'
+import RoleForm from './components/RoleForm.vue'
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = ref({
+  page: 1,
+  page_size: 10,
+  name: null,
+})
+// 过滤事件
+function handleFilter() {
+  fetchRoleList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+  fetchRoleList()
+}
+
+const state = reactive({
+  roleForm: {
+    data: {} as Role,
+    visible: false,
+    type: '',
+    width: '500px',
+  },
+  permission: {
+    roleId: 0,
+    visible: false,
+  },
+})
+
+const checkAllList = [
+  { label: '角色ID', value: 'id', disabled: false, enabled: true },
+  { label: '角色名称', value: 'name', disabled: true, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableData = ref<Role[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<Role[]>([])
+
+onBeforeMount(() => {
+  fetchRoleList()
+})
+
+// 获取字典维度信息列表
+async function fetchRoleList() {
+  try {
+    const resp = (await getRoleList(listQuery.value)).data as RoleListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: Role) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteRole(data)
+    fetchRoleList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: Role) {
+  state.roleForm.data = { ...row }
+  state.roleForm.type = 'edit'
+  state.roleForm.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.roleForm.data.sort = 1
+  state.roleForm.type = 'add'
+  state.roleForm.visible = true
+}
+// 多选事件
+function handleSelectionChange(val: Role[]) {
+  multipleSelection.value = val
+}
+
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: Role) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteRole(data)
+    fetchRoleList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: Role) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateRoleStatus(data)
+    fetchRoleList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 分配权限
+async function handleMenuPermission(row: Role) {
+  state.permission.roleId = row.id
+  state.permission.visible = true
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -57,10 +231,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-role'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-role"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchRoleList"
+          @refresh-event="fetchRoleList"
         />
       </div>
     </div>
@@ -79,7 +253,7 @@
     <DrawerPermission
       v-if="state.permission.visible"
       v-model="state.permission.visible"
-      :roleId="state.permission.roleId"
+      :role-id="state.permission.roleId"
     />
 
     <el-table
@@ -198,183 +372,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchRoleList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Delete,
-  Finished,
-  InfoFilled,
-  Plus,
-} from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getRoleList,
-  updateRoleStatus,
-  deleteRole,
-  batchDeleteRole,
-} from '@/api/permission/role';
-import { RoleListRsp, Role } from '~/api/permission/role';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import RoleForm from './components/RoleForm.vue';
-import DrawerPermission from './components/DrawerPermission.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = ref({
-  page: 1,
-  page_size: 10,
-  name: null,
-});
-// 过滤事件
-const handleFilter = () => {
-  fetchRoleList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-  fetchRoleList();
-};
-
-const state = reactive({
-  roleForm: {
-    data: {} as Role,
-    visible: false,
-    type: '',
-    width: '500px',
-  },
-  permission: {
-    roleId: 0,
-    visible: false,
-  },
-});
-
-const checkAllList = [
-  { label: '角色ID', value: 'id', disabled: false, enabled: true },
-  { label: '角色名称', value: 'name', disabled: true, enabled: true },
-  { label: '排序', value: 'sort', disabled: false, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: true },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableData = ref<Role[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<Role[]>([]);
-
-onBeforeMount(() => {
-  fetchRoleList();
-});
-
-// 获取字典维度信息列表
-const fetchRoleList = async () => {
-  try {
-    const resp = (await getRoleList(listQuery.value)).data as RoleListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: Role) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteRole(data);
-    fetchRoleList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: Role) => {
-  state.roleForm.data = { ...row };
-  state.roleForm.type = 'edit';
-  state.roleForm.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.roleForm.data.sort = 1;
-  state.roleForm.type = 'add';
-  state.roleForm.visible = true;
-};
-// 多选事件
-const handleSelectionChange = (val: Role[]) => {
-  multipleSelection.value = val;
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: Role) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteRole(data);
-    fetchRoleList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: Role) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateRoleStatus(data);
-    fetchRoleList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 分配权限
-const handleMenuPermission = async (row: Role) => {
-  state.permission.roleId = row.id;
-  state.permission.visible = true;
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

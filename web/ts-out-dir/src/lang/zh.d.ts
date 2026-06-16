@@ -1,0 +1,76 @@
+declare const _default: {
+    router: {
+        Dashboard: string;
+        LowCodePlatFrom: string;
+        RBAC: string;
+        'Setting Switch': string;
+        'Error Log': string;
+        'Error Index': string;
+        'Error Generator': string;
+        Nested: string;
+        Menu1: string;
+        'Menu1-1': string;
+        'Menu1-2': string;
+        'Menu1-2-1': string;
+        'Menu1-2-2': string;
+        'Menu1-3': string;
+        menu2: string;
+        'External Link': string;
+        'Basic Demo': string;
+        Hook: string;
+        Pinia: string;
+        Mock: string;
+        'Svg Icon': string;
+        'Parent Children': string;
+        'KeepAlive Group': string;
+        'Tab KeepAlive': string;
+        'Third KeepAlive': string;
+        SecondChildren: string;
+        ThirdChildren: string;
+        Worker: string;
+        Permission: string;
+        'Permission Switch': string;
+        'Role Index': string;
+        'Code Index': string;
+        'Button Permission': string;
+        Charts: string;
+        Excel: string;
+        'Rich Text': string;
+        Table: string;
+        Guid: string;
+        Other: string;
+    };
+    tagsView: {
+        Refresh: string;
+        Close: string;
+        'Close Others': string;
+        'Close All': string;
+    };
+    navbar: {
+        Home: string;
+        Github: string;
+        Docs: string;
+        'login out': string;
+    };
+    dashboard: {
+        'switch theme': string;
+        'switch size': string;
+        'switch language': string;
+        en: string;
+        zh: string;
+        'Button Group': string;
+        'unocss using': string;
+        'global var': string;
+    };
+    'error-log': {
+        log: string;
+        pageUrl: string;
+        startDate: string;
+        endDate: string;
+        github: string;
+        search: string;
+        reset: string;
+        multiDel: string;
+    };
+};
+export default _default;

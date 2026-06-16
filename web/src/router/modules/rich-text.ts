@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const richText = {
   path: '/rich-text',
@@ -13,6 +13,6 @@ const richText = {
       meta: { title: 'Tinymce', icon: 'nested' },
     },
   ],
-};
+}
 
-export default richText;
+export default richText

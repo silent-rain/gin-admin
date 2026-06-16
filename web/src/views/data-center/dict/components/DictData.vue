@@ -1,3 +1,187 @@
+<script setup lang="ts">
+import type { DictData, DictDataListRsp } from '~/api/data-center/dict-data'
+import {
+  Delete,
+  EditPen,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteDictData,
+  deleteDictData,
+  getDictDataList,
+  updateDictDataStatus,
+} from '@/api/data-center/dict-data'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import DictDataForm from './DictDataForm.vue'
+
+const props = withDefaults(
+  defineProps<{
+    dictId: number
+  }>(),
+  {},
+)
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = ref({
+  page: 1,
+  page_size: 10,
+  name: null,
+  dict_id: 0,
+  value: null,
+})
+// 过滤事件
+function handleFilter() {
+  fetchDictDataList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+  fetchDictDataList()
+}
+
+const state = reactive({
+  form: {
+    data: {} as DictData,
+    visible: false,
+    type: '',
+  },
+})
+
+const checkAllList = [
+  { label: '字典项ID', value: 'id', disabled: false, enabled: true },
+  { label: '字典维度ID', value: 'dict_id', disabled: false, enabled: false },
+  { label: '字典项名称', value: 'name', disabled: false, enabled: true },
+  { label: '字典项值', value: 'value', disabled: false, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableData = ref<DictData[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<DictData[]>([])
+
+onBeforeMount(() => {
+  listQuery.value.dict_id = props.dictId
+  fetchDictDataList()
+})
+
+// 获取字典数据信息列表
+async function fetchDictDataList() {
+  try {
+    const resp = (await getDictDataList(listQuery.value))
+      .data as DictDataListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: DictData) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteDictData(data)
+    fetchDictDataList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: DictData) {
+  state.form.data = { ...row }
+  state.form.type = 'edit'
+  state.form.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.form.type = 'add'
+  state.form.visible = true
+  state.form.data.dict_id = props.dictId
+}
+// 多选事件
+function handleSelectionChange(val: DictData[]) {
+  multipleSelection.value = val
+}
+
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: DictData) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteDictData(data)
+    fetchDictDataList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: DictData) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateDictDataStatus(data)
+    fetchDictDataList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+watch(
+  () => props.dictId,
+  () => {
+    if (!props.dictId) {
+      return
+    }
+    listQuery.value.dict_id = props.dictId
+    fetchDictDataList()
+  },
+)
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -64,10 +248,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-full'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-full"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchDictDataList"
+          @refresh-event="fetchDictDataList"
         />
       </div>
     </div>
@@ -192,193 +376,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchDictDataList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Delete,
-  InfoFilled,
-  Plus,
-} from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import { useBasicStore } from '@/store/basic';
-import {
-  getDictDataList,
-  updateDictDataStatus,
-  deleteDictData,
-  batchDeleteDictData,
-} from '@/api/data-center/dict-data';
-import { DictDataListRsp, DictData } from '~/api/data-center/dict-data';
-import DictDataForm from './DictDataForm.vue';
-
-const props = withDefaults(
-  defineProps<{
-    dictId: number;
-  }>(),
-  {},
-);
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = ref({
-  page: 1,
-  page_size: 10,
-  name: null,
-  dict_id: 0,
-  value: null,
-});
-// 过滤事件
-const handleFilter = () => {
-  fetchDictDataList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-  fetchDictDataList();
-};
-
-const state = reactive({
-  form: {
-    data: {} as DictData,
-    visible: false,
-    type: '',
-  },
-});
-
-const checkAllList = [
-  { label: '字典项ID', value: 'id', disabled: false, enabled: true },
-  { label: '字典维度ID', value: 'dict_id', disabled: false, enabled: false },
-  { label: '字典项名称', value: 'name', disabled: false, enabled: true },
-  { label: '字典项值', value: 'value', disabled: false, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: true },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableData = ref<DictData[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<DictData[]>([]);
-
-onBeforeMount(() => {
-  listQuery.value.dict_id = props.dictId;
-  fetchDictDataList();
-});
-
-// 获取字典数据信息列表
-const fetchDictDataList = async () => {
-  try {
-    const resp = (await getDictDataList(listQuery.value))
-      .data as DictDataListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: DictData) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteDictData(data);
-    fetchDictDataList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: DictData) => {
-  state.form.data = { ...row };
-  state.form.type = 'edit';
-  state.form.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.form.type = 'add';
-  state.form.visible = true;
-  state.form.data.dict_id = props.dictId;
-};
-// 多选事件
-const handleSelectionChange = (val: DictData[]) => {
-  multipleSelection.value = val;
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: DictData) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteDictData(data);
-    fetchDictDataList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: DictData) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateDictDataStatus(data);
-    fetchDictDataList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-watch(
-  () => props.dictId,
-  () => {
-    if (!props.dictId) {
-      return;
-    }
-    listQuery.value.dict_id = props.dictId;
-    fetchDictDataList();
-  },
-);
-</script>
 
 <style scoped lang="scss">
 .filter {

@@ -1,4 +1,4 @@
 // bus even
-import mitt from 'mitt';
+import mitt from 'mitt'
 
-export default mitt();
+export default mitt()

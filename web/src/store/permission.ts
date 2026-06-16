@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import { RouteRawConfig, RouterTypes } from '~/store/router';
-import { Menu, ButtonPermission } from '~/api/permission/menu';
+import type { ButtonPermission, Menu } from '~/api/permission/menu'
+import type { RouteRawConfig, RouterTypes } from '~/store/router'
+import { defineStore } from 'pinia'
 
 export const usePermissionStore = defineStore('permission', {
   state: () => {
@@ -15,7 +15,7 @@ export const usePermissionStore = defineStore('permission', {
       asyncRoutes: [] as RouteRawConfig[],
       // 所有路由
       allRoutes: [] as RouterTypes,
-    };
+    }
   },
   actions: {
     // 设置过滤异步路由
@@ -25,27 +25,27 @@ export const usePermissionStore = defineStore('permission', {
       allRoutes: RouteRawConfig[],
     ) {
       this.$patch((state) => {
-        state.menus = menus;
-        state.asyncRoutes = asyncRoutes;
-        state.allRoutes = allRoutes;
-      });
+        state.menus = menus
+        state.asyncRoutes = asyncRoutes
+        state.allRoutes = allRoutes
+      })
     },
     // 设置按钮权限
     setButtonPermission(permissions: ButtonPermission[], permissionHash: any) {
       this.$patch((state) => {
-        state.permissions = permissions;
-        state.permissionHash = permissionHash;
-      });
+        state.permissions = permissions
+        state.permissionHash = permissionHash
+      })
     },
     // 重置状态
     resetState() {
       this.$patch((state) => {
-        state.menus = [];
+        state.menus = []
         // state.codes = [];
-        state.allRoutes = [];
-        state.permissions = [];
-        state.asyncRoutes = [];
-      });
+        state.allRoutes = []
+        state.permissions = []
+        state.asyncRoutes = []
+      })
     },
   },
-});
+})

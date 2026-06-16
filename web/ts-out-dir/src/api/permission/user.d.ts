@@ -1,0 +1,12 @@
+export declare const getUserInfo: () => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getAllUser: () => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const getUserList: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const addUser: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateUser: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const deleteUser: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const batchDeleteUser: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateUserStatus: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateUserPwd: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const resetUserPwd: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updatePhone: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;
+export declare const updateEmail: (params: any) => Promise<import("axios").AxiosResponse<any, any, {}>>;

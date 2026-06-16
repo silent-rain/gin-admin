@@ -1,50 +1,48 @@
-import type { RouteRecordName } from 'vue-router';
-import type { RouteRawConfig, RouterTypes, rawConfig } from '~/store/router';
+import type { rawConfig, RouteRawConfig, RouterTypes } from '~/store/router'
 /**
  * 根据请求，过滤异步路由
  * @param:menuList 异步路由数组
  * return 过滤后的异步路由
  */
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 /*
  * 路由操作
  * */
-import router, { constantRoutes } from '@/router';
 // 进度条
-import 'nprogress/nprogress.css';
-import { useUserStore } from '@/store/user';
+import 'nprogress/nprogress.css'
 
-const buttonCodes: Array<number> = []; // 按钮权限
+const buttonCodes: Array<number> = [] // 按钮权限
 interface menuRow {
-  category: number;
-  code: number;
-  children: RouterTypes;
+  category: number
+  code: number
+  children: RouterTypes
 }
 
 // 过滤菜单路由数组
-export const filterAsyncRoutesByMenuList = (menuList: menuRow[]) => {
-  const filterRouter: RouterTypes = [];
+export function filterAsyncRoutesByMenuList(menuList: menuRow[]) {
+  const filterRouter: RouterTypes = []
   menuList.forEach((route: menuRow) => {
     // button permission
     if (route.category === 3) {
-      buttonCodes.push(route.code);
-    } else {
+      buttonCodes.push(route.code)
+    }
+    else {
       // generator every router item by menuList
-      const itemFromReqRouter = getRouteItemFromReqRouter(route);
+      const itemFromReqRouter = getRouteItemFromReqRouter(route)
       if (route.children?.length) {
         // judge  the type is router or button
         itemFromReqRouter.children = filterAsyncRoutesByMenuList(
           route.children,
-        );
+        )
       }
-      filterRouter.push(itemFromReqRouter);
+      filterRouter.push(itemFromReqRouter)
     }
-  });
-  return filterRouter;
-};
+  })
+  return filterRouter
+}
 
-const getRouteItemFromReqRouter = (route): RouteRawConfig => {
-  const tmp: rawConfig = { meta: { title: '' } };
+function getRouteItemFromReqRouter(route): RouteRawConfig {
+  const tmp: rawConfig = { meta: { title: '' } }
   const routeKeyArr = [
     'path',
     'component',
@@ -52,45 +50,52 @@ const getRouteItemFromReqRouter = (route): RouteRawConfig => {
     'alwaysShow',
     'name',
     'hidden',
-  ];
-  const metaKeyArr = ['title', 'activeMenu', 'elSvgIcon', 'icon'];
-  const modules = import.meta.glob('../views/**/**.vue');
+  ]
+  const metaKeyArr = ['title', 'activeMenu', 'elSvgIcon', 'icon']
+  const modules = import.meta.glob('../views/**/**.vue')
   // generator routeKey
   routeKeyArr.forEach((fItem: string) => {
     if (fItem === 'component') {
       if (route[fItem] === 'Layout') {
-        tmp[fItem] = Layout;
-      } else {
+        tmp[fItem] = Layout
+      }
+      else {
         // has error , i will fix it through plugins
         // tmp[fItem] = () => import(`@/views/permission-center/test/TestTableQuery.vue`)
-        tmp[fItem] = modules[`../views/${route[fItem]}`];
+        tmp[fItem] = modules[`../views/${route[fItem]}`]
       }
-    } else if (fItem === 'path' && route.parentId === 0) {
-      tmp[fItem] = `/${route[fItem]}`;
-    } else if (['hidden', 'alwaysShow'].includes(fItem)) {
-      tmp[fItem] = !!route[fItem];
-    } else if (['name'].includes(fItem)) {
-      tmp[fItem] = route.code;
-    } else if (route[fItem]) {
-      tmp[fItem] = route[fItem];
     }
-  });
+    else if (fItem === 'path' && route.parentId === 0) {
+      tmp[fItem] = `/${route[fItem]}`
+    }
+    else if (['hidden', 'alwaysShow'].includes(fItem)) {
+      tmp[fItem] = !!route[fItem]
+    }
+    else if (['name'].includes(fItem)) {
+      tmp[fItem] = route.code
+    }
+    else if (route[fItem]) {
+      tmp[fItem] = route[fItem]
+    }
+  })
   // generator metaKey
   metaKeyArr.forEach((fItem) => {
-    if (route[fItem] && tmp.meta) tmp.meta[fItem] = route[fItem];
-  });
+    if (route[fItem] && tmp.meta)
+      tmp.meta[fItem] = route[fItem]
+  })
   // route extra insert
   if (route.extra) {
     Object.entries(route.extra.parse(route.extra)).forEach(([key, value]) => {
       if (key === 'meta' && tmp.meta) {
-        tmp.meta[key] = value;
-      } else {
-        tmp[key] = value;
+        tmp.meta[key] = value
       }
-    });
+      else {
+        tmp[key] = value
+      }
+    })
   }
-  return tmp as RouteRawConfig;
-};
+  return tmp as RouteRawConfig
+}
 
 /**
  * 根据角色数组过滤异步路由
@@ -102,25 +107,25 @@ export function filterAsyncRoutesByRoles(
   routes: RouteRawConfig[],
   roles: number[],
 ) {
-  const res: RouterTypes = [];
+  const res: RouterTypes = []
   routes.forEach((route) => {
-    const tmp: RouteRawConfig = { ...route };
+    const tmp: RouteRawConfig = { ...route }
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutesByRoles(tmp.children, roles);
+        tmp.children = filterAsyncRoutesByRoles(tmp.children, roles)
       }
-      res.push(tmp);
+      res.push(tmp)
     }
-  });
-  return res;
+  })
+  return res
 }
 
 // 是否存在 role 权限
 function hasPermission(roles: number[], route: RouteRawConfig) {
   if (route?.meta?.roles) {
-    return roles?.some((role) => route.meta?.roles?.includes(role));
+    return roles?.some(role => route.meta?.roles?.includes(role))
   }
-  return true;
+  return true
 }
 
 /**
@@ -133,24 +138,25 @@ export function filterAsyncRouterByCodes(
   codesRoutes: RouteRawConfig[],
   codes: number[],
 ) {
-  const filterRouter: RouterTypes = [];
+  const filterRouter: RouterTypes = []
   codesRoutes.forEach((routeItem: RouteRawConfig) => {
     if (hasCodePermission(codes, routeItem)) {
-      if (routeItem.children)
+      if (routeItem.children) {
         routeItem.children = filterAsyncRouterByCodes(
           routeItem.children,
           codes,
-        );
-      filterRouter.push(routeItem);
+        )
+      }
+      filterRouter.push(routeItem)
     }
-  });
-  return filterRouter;
+  })
+  return filterRouter
 }
 
 // 是否存在 code
 function hasCodePermission(codes: number[], routeItem: RouteRawConfig) {
   if (routeItem.meta?.code) {
-    return codes.includes(routeItem.meta.code) || routeItem.hidden;
+    return codes.includes(routeItem.meta.code) || routeItem.hidden
   }
-  return true;
+  return true
 }

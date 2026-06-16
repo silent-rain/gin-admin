@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const BasicDemo = {
   path: '/basic-demo',
@@ -98,9 +98,7 @@ const BasicDemo = {
           path: 'second-children',
           name: 'SecondChildren',
           component: () =>
-            import(
-              '@/views/basic-demo/keep-alive/third-children/SecondChildren.vue'
-            ),
+            import('@/views/basic-demo/keep-alive/third-children/SecondChildren.vue'),
           meta: {
             title: 'SecondChildren',
             cachePage: true,
@@ -111,9 +109,7 @@ const BasicDemo = {
           path: 'third-children',
           name: 'ThirdChildren',
           component: () =>
-            import(
-              '@/views/basic-demo/keep-alive/third-children/ThirdChildren.vue'
-            ),
+            import('@/views/basic-demo/keep-alive/third-children/ThirdChildren.vue'),
           meta: {
             title: 'ThirdChildren',
             cachePage: true,
@@ -129,6 +125,6 @@ const BasicDemo = {
       meta: { title: 'Worker' },
     },
   ],
-};
+}
 
-export default BasicDemo;
+export default BasicDemo

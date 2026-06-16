@@ -1,3 +1,280 @@
+<script setup lang="ts">
+import type { User, UserListRsp } from '@/typings/api/permission/user'
+import {
+  Delete,
+  EditPen,
+  Finished,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteUser,
+  deleteUser,
+  getUserList,
+  resetUserPwd,
+  updateUserStatus,
+} from '@/api/permission/user'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import { aoaToSheetXlsx } from '@/utils/excel'
+import UserForm from './components/UserForm.vue'
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = reactive({
+  nickname: '',
+  phone: '',
+  email: '',
+  page: 1,
+  page_size: 10,
+})
+// 过滤事件
+function handleFilter() {
+  fetchUserList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.nickname = ''
+  listQuery.phone = ''
+  listQuery.email = ''
+}
+
+const state = reactive({
+  userForm: {
+    data: {} as User,
+    visible: false,
+    type: '',
+    width: '750px',
+  },
+})
+
+const checkAllList = [
+  { label: '用户ID', value: 'id', disabled: false, enabled: true },
+  { label: '姓名', value: 'realname', disabled: false, enabled: true },
+  { label: '昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: '性别', value: 'gender', disabled: false, enabled: true },
+  { label: '年龄', value: 'age', disabled: false, enabled: false },
+  { label: '出生日期', value: 'birthday', disabled: false, enabled: false },
+  { label: '头像', value: 'avatar', disabled: false, enabled: false },
+  { label: '手机号码', value: 'phone', disabled: false, enabled: true },
+  { label: '邮箱', value: 'email', disabled: false, enabled: true },
+  { label: '介绍', value: 'intro', disabled: false, enabled: false },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '角色', value: 'roles', disabled: false, enabled: true },
+  { label: '排序', value: 'sort', disabled: false, enabled: false },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableData = ref<User[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<User[]>([])
+
+onBeforeMount(() => {
+  fetchUserList()
+})
+
+// 获取用户列表
+async function fetchUserList() {
+  try {
+    const resp = (await getUserList(listQuery)).data as UserListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: User) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteUser(data)
+    fetchUserList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: User) {
+  state.userForm.data = { ...row }
+  state.userForm.type = 'edit'
+  state.userForm.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.userForm.data.age = 0
+  state.userForm.data.sort = 1
+  state.userForm.data.gender = 0
+  state.userForm.data.avatar = ''
+  state.userForm.data.password = basicStore.settings.defaultPassword
+  state.userForm.data.role_ids = []
+  state.userForm.type = 'add'
+  state.userForm.visible = true
+}
+// 多选事件
+function handleSelectionChange(val: User[]) {
+  multipleSelection.value = val
+}
+
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: User) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteUser(data)
+    fetchUserList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: User) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateUserStatus(data)
+    fetchUserList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 重置密码
+async function handleResetUserPwd(id: number) {
+  const data = {
+    id,
+  }
+  try {
+    await resetUserPwd(data)
+    fetchUserList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 导入
+function handleImportEvent() {
+  console.log('导入')
+}
+
+// 导出
+async function handleExportEvent() {
+  const fileName = '用户列表'
+  const header = [
+    '用户ID',
+    '姓名',
+    '昵称',
+    '性别',
+    '年龄',
+    '出生日期',
+    '手机号码',
+    '邮箱',
+    '介绍',
+    '备注',
+    '角色',
+    '排序',
+    '状态',
+    '创建时间',
+    '更新时间',
+  ]
+  const data = tableData.value?.map((item, _index) => {
+    const {
+      id,
+      realname,
+      nickname,
+      gender,
+      age,
+      birthday,
+      phone,
+      email,
+      intro,
+      note,
+      roles,
+      sort,
+      status,
+      created_at,
+      updated_at,
+    } = item
+    const genderMap = {
+      0: '保密',
+      1: '女',
+      2: '男',
+    }
+    const genderZh = genderMap[gender]
+    const statusZh = status === 1 ? '启用' : '禁用'
+    const rolesList: string[] = []
+    roles.forEach((v) => {
+      rolesList.push(v.name)
+    })
+
+    return [
+      id,
+      realname,
+      nickname,
+      genderZh,
+      age,
+      birthday,
+      phone,
+      email,
+      intro,
+      note,
+      rolesList.join(';'),
+      sort,
+      statusZh,
+      created_at,
+      updated_at,
+    ]
+  })
+  aoaToSheetXlsx({
+    data,
+    header,
+    filename: `${unref(fileName)}.xlsx`,
+  })
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -85,10 +362,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-user'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-user"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchUserList"
+          @refresh-event="fetchUserList"
         />
       </div>
     </div>
@@ -138,9 +415,15 @@
         width="90"
       >
         <template #default="scope">
-          <el-tag v-if="scope.row.gender === 0" type="info">保密</el-tag>
-          <el-tag v-else-if="scope.row.gender === 1" type="success">女</el-tag>
-          <el-tag v-else>男</el-tag>
+          <el-tag v-if="scope.row.gender === 0" type="info">
+            保密
+          </el-tag>
+          <el-tag v-else-if="scope.row.gender === 1" type="success">
+            女
+          </el-tag>
+          <el-tag v-else>
+            男
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -303,285 +586,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchUserList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Finished,
-  Delete,
-  Plus,
-  InfoFilled,
-} from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getUserList,
-  updateUserStatus,
-  deleteUser,
-  batchDeleteUser,
-  resetUserPwd,
-} from '@/api/permission/user';
-import { UserListRsp, User } from '@/typings/api/permission/user';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import UserForm from './components/UserForm.vue';
-import { aoaToSheetXlsx } from '@/utils/excel';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = reactive({
-  nickname: '',
-  phone: '',
-  email: '',
-  page: 1,
-  page_size: 10,
-});
-// 过滤事件
-const handleFilter = () => {
-  fetchUserList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.nickname = '';
-  listQuery.phone = '';
-  listQuery.email = '';
-};
-
-const state = reactive({
-  userForm: {
-    data: {} as User,
-    visible: false,
-    type: '',
-    width: '750px',
-  },
-});
-
-const checkAllList = [
-  { label: '用户ID', value: 'id', disabled: false, enabled: true },
-  { label: '姓名', value: 'realname', disabled: false, enabled: true },
-  { label: '昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: '性别', value: 'gender', disabled: false, enabled: true },
-  { label: '年龄', value: 'age', disabled: false, enabled: false },
-  { label: '出生日期', value: 'birthday', disabled: false, enabled: false },
-  { label: '头像', value: 'avatar', disabled: false, enabled: false },
-  { label: '手机号码', value: 'phone', disabled: false, enabled: true },
-  { label: '邮箱', value: 'email', disabled: false, enabled: true },
-  { label: '介绍', value: 'intro', disabled: false, enabled: false },
-  { label: '备注', value: 'note', disabled: false, enabled: true },
-  { label: '角色', value: 'roles', disabled: false, enabled: true },
-  { label: '排序', value: 'sort', disabled: false, enabled: false },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableData = ref<User[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<User[]>([]);
-
-onBeforeMount(() => {
-  fetchUserList();
-});
-
-// 获取用户列表
-const fetchUserList = async () => {
-  try {
-    const resp = (await getUserList(listQuery)).data as UserListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: User) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteUser(data);
-    fetchUserList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: User) => {
-  state.userForm.data = { ...row };
-  state.userForm.type = 'edit';
-  state.userForm.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.userForm.data.age = 0;
-  state.userForm.data.sort = 1;
-  state.userForm.data.gender = 0;
-  state.userForm.data.avatar = '';
-  state.userForm.data.password = basicStore.settings.defaultPassword;
-  state.userForm.data.role_ids = [];
-  state.userForm.type = 'add';
-  state.userForm.visible = true;
-};
-// 多选事件
-const handleSelectionChange = (val: User[]) => {
-  multipleSelection.value = val;
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: User) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteUser(data);
-    fetchUserList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: User) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateUserStatus(data);
-    fetchUserList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 重置密码
-const handleResetUserPwd = async (id: number) => {
-  const data = {
-    id,
-  };
-  try {
-    await resetUserPwd(data);
-    fetchUserList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 导入
-const handleImportEvent = () => {
-  console.log('导入');
-};
-
-// 导出
-const handleExportEvent = async () => {
-  const fileName = '用户列表';
-  const header = [
-    '用户ID',
-    '姓名',
-    '昵称',
-    '性别',
-    '年龄',
-    '出生日期',
-    '手机号码',
-    '邮箱',
-    '介绍',
-    '备注',
-    '角色',
-    '排序',
-    '状态',
-    '创建时间',
-    '更新时间',
-  ];
-  const data = tableData.value?.map((item, _index) => {
-    const {
-      id,
-      realname,
-      nickname,
-      gender,
-      age,
-      birthday,
-      phone,
-      email,
-      intro,
-      note,
-      roles,
-      sort,
-      status,
-      created_at,
-      updated_at,
-    } = item;
-    const genderMap = {
-      0: '保密',
-      1: '女',
-      2: '男',
-    };
-    const genderZh = genderMap[gender];
-    const statusZh = status === 1 ? '启用' : '禁用';
-    const rolesList: string[] = [];
-    roles.forEach((v) => {
-      rolesList.push(v.name);
-    });
-
-    return [
-      id,
-      realname,
-      nickname,
-      genderZh,
-      age,
-      birthday,
-      phone,
-      email,
-      intro,
-      note,
-      rolesList.join(';'),
-      sort,
-      statusZh,
-      created_at,
-      updated_at,
-    ];
-  });
-  aoaToSheetXlsx({
-    data,
-    header,
-    filename: `${unref(fileName)}.xlsx`,
-  });
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

@@ -1,11 +1,5 @@
-<template>
-  <svg :class="svgClass" aria-hidden="true">
-    <use :xlink:href="iconName" />
-  </svg>
-</template>
-
 <script setup lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
   iconClass: {
@@ -16,16 +10,22 @@ const props = defineProps({
     type: String,
     default: '',
   },
-});
+})
 
-const iconName = computed(() => `#icon-${props.iconClass}`);
+const iconName = computed(() => `#icon-${props.iconClass}`)
 const svgClass = computed(() => {
   if (props.className) {
-    return `svg-icon ${props.className}`;
+    return `svg-icon ${props.className}`
   }
-  return 'svg-icon';
-});
+  return 'svg-icon'
+})
 </script>
+
+<template>
+  <svg :class="svgClass" aria-hidden="true">
+    <use :xlink:href="iconName" />
+  </svg>
+</template>
 
 <style scoped lang="scss">
 .sub-el-icon,

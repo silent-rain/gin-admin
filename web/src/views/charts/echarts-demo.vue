@@ -1,32 +1,12 @@
-<template>
-  <div class="scroll-y">
-    <div className="mb-1">折线图</div>
-    <div className="rowSS">
-      <div id="echartsContainerLineF" style="width: 550px; height: 400px" />
-      <div id="echartsContainerLineS" style="width: 550px; height: 400px" />
-    </div>
-    <div className="mb-1">柱状图</div>
-    <div className="rowSS">
-      <div id="echartsContainerBarF" style="width: 550px; height: 400px" />
-      <div id="echartsContainerBarS" style="width: 550px; height: 400px" />
-    </div>
-
-    <div className="mb-1">饼图</div>
-    <div className="rowSS">
-      <div id="echartsContainerPieF" style="width: 550px; height: 400px" />
-      <div id="echartsContainerPieS" style="width: 550px; height: 400px" />
-    </div>
-  </div>
-</template>
 <script setup>
 // echarts 例子地址 https://echarts.apache.org/examples/zh/index.html#chart-type-line
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 /* 折线图 */
-const echartsInstanceF = ref(null);
-const initEchartsF = () => {
+const echartsInstanceF = ref(null)
+function initEchartsF() {
   echartsInstanceF.value = echarts.init(
     document.querySelector('#echartsContainerLineF'),
-  );
+  )
   const option = {
     title: {
       text: '一天用电量分布',
@@ -114,8 +94,26 @@ const initEchartsF = () => {
         type: 'line',
         smooth: true,
         data: [
-          300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500,
-          600, 750, 800, 700, 600, 400,
+          300,
+          280,
+          250,
+          260,
+          270,
+          300,
+          550,
+          500,
+          400,
+          390,
+          380,
+          390,
+          400,
+          500,
+          600,
+          750,
+          800,
+          700,
+          600,
+          400,
         ],
         markArea: {
           itemStyle: {
@@ -144,14 +142,14 @@ const initEchartsF = () => {
         },
       },
     ],
-  };
-  echartsInstanceF.value.setOption(option);
-};
-const echartsInstanceS = ref(null);
-const initEchartsS = () => {
+  }
+  echartsInstanceF.value.setOption(option)
+}
+const echartsInstanceS = ref(null)
+function initEchartsS() {
   echartsInstanceS.value = echarts.init(
     document.querySelector('#echartsContainerLineS'),
-  );
+  )
   const option = {
     xAxis: {
       type: 'category',
@@ -168,16 +166,16 @@ const initEchartsS = () => {
         areaStyle: {},
       },
     ],
-  };
-  echartsInstanceS.value.setOption(option);
-};
+  }
+  echartsInstanceS.value.setOption(option)
+}
 
 /* 柱状图 */
-const echartsBarF = ref(null);
-const initBarF = () => {
+const echartsBarF = ref(null)
+function initBarF() {
   echartsBarF.value = echarts.init(
     document.querySelector('#echartsContainerBarF'),
-  );
+  )
   const option = {
     xAxis: {
       type: 'category',
@@ -196,14 +194,14 @@ const initBarF = () => {
         },
       },
     ],
-  };
-  echartsBarF.value.setOption(option);
-};
-const echartsBarS = ref(null);
-const initBarS = () => {
+  }
+  echartsBarF.value.setOption(option)
+}
+const echartsBarS = ref(null)
+function initBarS() {
   echartsBarS.value = echarts.init(
     document.querySelector('#echartsContainerBarS'),
-  );
+  )
   const option = {
     title: {
       text: '某地区蒸发量和降水量',
@@ -254,7 +252,18 @@ const initBarS = () => {
         name: '蒸发量',
         type: 'bar',
         data: [
-          2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
+          2.0,
+          4.9,
+          7.0,
+          23.2,
+          25.6,
+          76.7,
+          135.6,
+          162.2,
+          32.6,
+          20.0,
+          6.4,
+          3.3,
         ],
         markPoint: {
           data: [
@@ -270,7 +279,18 @@ const initBarS = () => {
         name: '降水量',
         type: 'bar',
         data: [
-          2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3,
+          2.6,
+          5.9,
+          9.0,
+          26.4,
+          28.7,
+          70.7,
+          175.6,
+          182.2,
+          48.7,
+          18.8,
+          6.0,
+          2.3,
         ],
         markPoint: {
           data: [
@@ -283,16 +303,16 @@ const initBarS = () => {
         },
       },
     ],
-  };
-  echartsBarS.value.setOption(option);
-};
+  }
+  echartsBarS.value.setOption(option)
+}
 
 /* 饼图 */
-const echartsPieF = ref(null);
-const initPieF = () => {
+const echartsPieF = ref(null)
+function initPieF() {
   echartsPieF.value = echarts.init(
     document.querySelector('#echartsContainerPieF'),
-  );
+  )
   const option = {
     title: {
       text: '某站点用户访问来源',
@@ -327,14 +347,14 @@ const initPieF = () => {
         },
       },
     ],
-  };
-  echartsPieF.value.setOption(option);
-};
-const echartsPieS = ref(null);
-const initPieS = () => {
+  }
+  echartsPieF.value.setOption(option)
+}
+const echartsPieS = ref(null)
+function initPieS() {
   echartsPieS.value = echarts.init(
     document.querySelector('#echartsContainerPieS'),
-  );
+  )
   const option = {
     tooltip: {
       trigger: 'item',
@@ -372,17 +392,44 @@ const initPieS = () => {
         ],
       },
     ],
-  };
-  echartsPieS.value.setOption(option);
-};
+  }
+  echartsPieS.value.setOption(option)
+}
 onMounted(() => {
-  initEchartsF();
-  initEchartsS();
-  initBarF();
-  initBarS();
-  initPieF();
-  initPieS();
-});
+  initEchartsF()
+  initEchartsS()
+  initBarF()
+  initBarS()
+  initPieF()
+  initPieS()
+})
 </script>
+
+<template>
+  <div class="scroll-y">
+    <div className="mb-1">
+      折线图
+    </div>
+    <div className="rowSS">
+      <div id="echartsContainerLineF" style="width: 550px; height: 400px" />
+      <div id="echartsContainerLineS" style="width: 550px; height: 400px" />
+    </div>
+    <div className="mb-1">
+      柱状图
+    </div>
+    <div className="rowSS">
+      <div id="echartsContainerBarF" style="width: 550px; height: 400px" />
+      <div id="echartsContainerBarS" style="width: 550px; height: 400px" />
+    </div>
+
+    <div className="mb-1">
+      饼图
+    </div>
+    <div className="rowSS">
+      <div id="echartsContainerPieF" style="width: 550px; height: 400px" />
+      <div id="echartsContainerPieS" style="width: 550px; height: 400px" />
+    </div>
+  </div>
+</template>
 
 <style scoped lang="scss"></style>

@@ -1,15 +1,59 @@
+<script setup lang="ts">
+import { CaretBottom } from '@element-plus/icons-vue'
+import { nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { logout } from '@/api/system/login'
+import { langTitle } from '@/hooks/use-common'
+import { elMessage } from '@/hooks/use-element'
+import { resetState } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import { useUserStore } from '@/store/user'
+import Breadcrumb from './component/Breadcrumb.vue'
+import Hamburger from './component/Hamburger.vue'
+import LangSelect from './component/LangSelect.vue'
+import ScreenFull from './component/ScreenFull.vue'
+import ScreenLock from './component/ScreenLock.vue'
+import SizeSelect from './component/SizeSelect.vue'
+import ThemeSelect from './component/ThemeSelect.vue'
+
+const basicStore = useBasicStore()
+const { settings, sidebar, setToggleSideBar } = basicStore
+const router = useRouter()
+const userStore = useUserStore()
+
+// 切换sidebar按钮
+function toggleSideBar() {
+  setToggleSideBar()
+}
+
+// 退出登录
+async function loginOut() {
+  try {
+    await logout()
+    nextTick(() => {
+      resetState()
+    })
+    elMessage('退出登录成功')
+    router.push('/login?redirect=/')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <div class="navbar">
     <div class="heard-left">
       <!-- 切换sidebar按钮  -->
-      <hamburger
+      <Hamburger
         v-if="settings.showHamburger"
         :is-active="sidebar.opened"
         class="hamburger-container"
-        @toggleClick="toggleSideBar"
+        @toggle-click="toggleSideBar"
       />
       <!-- 面包屑导航  -->
-      <breadcrumb
+      <Breadcrumb
         v-if="basicStore.device === 'desktop'"
         class="breadcrumb-container"
       />
@@ -49,56 +93,15 @@
               <el-dropdown-item>{{ langTitle('Github') }}</el-dropdown-item>
             </a>
 
-            <el-dropdown-item divided @click="loginOut">登出</el-dropdown-item>
+            <el-dropdown-item divided @click="loginOut">
+              登出
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { nextTick } from 'vue';
-import { CaretBottom } from '@element-plus/icons-vue';
-import { useRouter } from 'vue-router';
-import Breadcrumb from './component/Breadcrumb.vue';
-import Hamburger from './component/Hamburger.vue';
-import LangSelect from './component/LangSelect.vue';
-import ScreenFull from './component/ScreenFull.vue';
-import SizeSelect from './component/SizeSelect.vue';
-import ThemeSelect from './component/ThemeSelect.vue';
-import ScreenLock from './component/ScreenLock.vue';
-import { resetState } from '@/hooks/use-permission';
-import { elMessage } from '@/hooks/use-element';
-import { langTitle } from '@/hooks/use-common';
-import { useBasicStore } from '@/store/basic';
-import { useUserStore } from '@/store/user';
-import { logout } from '@/api/system/login';
-
-const basicStore = useBasicStore();
-const { settings, sidebar, setToggleSideBar } = basicStore;
-const router = useRouter();
-const userStore = useUserStore();
-
-// 切换sidebar按钮
-const toggleSideBar = () => {
-  setToggleSideBar();
-};
-
-// 退出登录
-const loginOut = async () => {
-  try {
-    await logout();
-    nextTick(() => {
-      resetState();
-    });
-    elMessage('退出登录成功');
-    router.push('/login?redirect=/');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 // navbar

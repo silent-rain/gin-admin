@@ -1,14 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import Layout from '@/layout/index.vue';
-import type { RouteRawConfig, RouterTypes } from '@/typings/store/router';
-import basicDemo from './modules/basic-demo';
-import charts from './modules/charts';
-import richText from './modules/rich-text';
-import table from './modules/table';
-import excel from './modules/excel';
-import directive from './modules/directive';
-import other from './modules/other';
-import guid from './modules/guid';
+import type { RouterTypes } from '@/typings/store/router'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Layout from '@/layout/index.vue'
 
 // 系统固定公开路由
 export const constantRoutes: RouterTypes = [
@@ -59,7 +51,7 @@ export const constantRoutes: RouterTypes = [
       },
     ],
   },
-];
+]
 
 export const catchRoutes: RouterTypes = [
   {
@@ -73,7 +65,7 @@ export const catchRoutes: RouterTypes = [
     redirect: '/404',
     hidden: true,
   },
-];
+]
 
 // export const constantRoutes2: RouterTypes = [
 //   {
@@ -312,6 +304,6 @@ const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior: () => ({ top: 0 }),
   routes: constantRoutes,
-});
+})
 
-export default router;
+export default router

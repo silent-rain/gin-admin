@@ -1,8 +1,8 @@
 @use 'sass:map';
 
 @use './var' as *;
-@use '../../mixins/var'  as *;
-@use '../../mixins/mixins'  as *;
+@use '../../mixins/var' as *;
+@use '../../mixins/mixins' as *;
 
 html.china-red {
   color-scheme: china-red;

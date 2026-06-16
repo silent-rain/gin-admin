@@ -1,3 +1,21 @@
+<script setup>
+import { QuestionFilled } from '@element-plus/icons-vue'
+import { driver } from 'driver.js'
+import { useI18n } from 'vue-i18n'
+import steps from './steps'
+import 'driver.js/dist/driver.css'
+
+const { t } = useI18n()
+
+function guide() {
+  const driverObj = driver({
+    showProgress: true,
+    steps,
+  })
+  driverObj.drive()
+}
+</script>
+
 <template>
   <div class="app-container">
     <aside class="font-bold">
@@ -16,25 +34,3 @@
     </el-button>
   </div>
 </template>
-
-<script setup>
-import Driver from 'driver.js';
-import 'driver.js/dist/driver.min.css';
-import { QuestionFilled } from '@element-plus/icons-vue';
-import { useI18n } from 'vue-i18n';
-import steps from './steps';
-
-const { t } = useI18n();
-let driver = ref();
-
-onMounted(() => {
-  driver = new Driver();
-});
-
-const guide = () => {
-  if (driver) {
-    driver.defineSteps(steps);
-    driver.start();
-  }
-};
-</script>

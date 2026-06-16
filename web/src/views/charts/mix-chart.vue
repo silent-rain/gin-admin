@@ -1,12 +1,12 @@
+<script setup>
+import Chart from './components/MixChart.vue'
+</script>
+
 <template>
   <div class="chart-container">
-    <chart height="100%" width="100%" />
+    <Chart height="100%" width="100%" />
   </div>
 </template>
-
-<script setup>
-import Chart from './components/MixChart.vue';
-</script>
 
 <style scoped>
 .chart-container {

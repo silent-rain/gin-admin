@@ -18,7 +18,12 @@
   $currentSelector: '';
   @each $unit in $element {
     //el-button__text
-    $currentSelector: #{$currentSelector + '.' + $B + $element-separator + $unit + ','};
+    $currentSelector: #{$currentSelector +
+      '.' +
+      $B +
+      $element-separator +
+      $unit +
+      ','};
   }
 
   @if hitAllSpecialNestRule($selector) {
@@ -42,7 +47,11 @@
   $selector: &;
   $currentSelector: '';
   @each $unit in $modifier {
-    $currentSelector: #{$currentSelector + $selector + $modifier-separator + $unit + ','};
+    $currentSelector: #{$currentSelector +
+      $selector +
+      $modifier-separator +
+      $unit +
+      ','};
   }
 
   @at-root {

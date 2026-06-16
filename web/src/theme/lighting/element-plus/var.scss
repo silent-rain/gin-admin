@@ -13,23 +13,23 @@ $colors: map.deep-merge(
     'white': #ffffff,
     'black': #000000,
     'primary': (
-      'base': #c72210//#409eff
+      'base': #c72210//#409eff,
     ),
     'success': (
-      'base': #45b207
+      'base': #45b207,
     ),
     'warning': (
-      'base': #ec8828
+      'base': #ec8828,
     ),
     'danger': (
-      'base': #f56c6c
+      'base': #f56c6c,
     ),
     'error': (
-      'base': #d24934
+      'base': #d24934,
     ),
     'info': (
-      'base': #909399
-    )
+      'base': #909399,
+    ),
   ),
   $colors
 );
@@ -44,12 +44,21 @@ $color-error: map.get($colors, 'error', 'base') !default;
 $color-info: map.get($colors, 'info', 'base') !default;
 
 //$colors添加 --el-color-primary-light-7
-@mixin set-color-mix-level($type, $number, $mode: 'light', $mix-color: $color-white) {
+@mixin set-color-mix-level(
+  $type,
+  $number,
+  $mode: 'light',
+  $mix-color: $color-white
+) {
   $colors: map.deep-merge(
     (
       $type: (
-        '#{$mode}-#{$number}': mix($mix-color, map.get($colors, $type, 'base'), math.percentage(math.div($number, 10)))
-      )
+        '#{$mode}-#{$number}': mix(
+            $mix-color,
+            map.get($colors, $type, 'base'),
+            math.percentage(math.div($number, 10))
+          ),
+      ),
     ),
     $colors
   ) !global;

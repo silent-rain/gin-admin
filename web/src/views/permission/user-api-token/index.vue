@@ -1,3 +1,189 @@
+<script setup lang="ts">
+import type {
+  UserApiToken,
+  UserApiTokenListRsp,
+} from '~/api/permission/user-api-token'
+import {
+  Delete,
+  EditPen,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteUserApiToken,
+  deleteUserApiToken,
+  getUserApiTokenList,
+  updateUserApiTokenStatus,
+} from '@/api/permission/user-api-token'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import UserApiTokenForm from './components/UserApiTokenForm.vue'
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  nickname: null,
+  status: null,
+})
+const statusOptions = [
+  {
+    label: '启用',
+    value: 1,
+  },
+  {
+    label: '禁用',
+    value: 0,
+  },
+]
+// 过滤事件
+function handleFilter() {
+  fetchUserApiTokenList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {}
+}
+// 状态变更事件
+function handleChangeStatus(value: any) {
+  if (!value) {
+    listQuery.value.status = null
+  }
+  handleFilter()
+}
+
+const state = reactive({
+  form: {
+    data: {} as UserApiToken,
+    visible: false,
+    type: '',
+  },
+})
+
+const checkAllList = [
+  { label: '自增ID', value: 'id', disabled: false, enabled: false },
+  { label: '用户ID', value: 'user_id', disabled: true, enabled: true },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: '权限标识', value: 'permission', disabled: true, enabled: true },
+  { label: '令牌', value: 'token', disabled: true, enabled: true },
+  { label: '口令', value: 'passphrase', disabled: true, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableData = ref<UserApiToken[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<UserApiToken[]>([])
+
+onBeforeMount(() => {
+  fetchUserApiTokenList()
+})
+
+// 获取令牌列表
+async function fetchUserApiTokenList() {
+  try {
+    const resp = (await getUserApiTokenList(listQuery.value))
+      .data as UserApiTokenListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: UserApiToken) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteUserApiToken(data)
+    fetchUserApiTokenList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: UserApiToken) {
+  state.form.data = { ...row }
+  state.form.type = 'edit'
+  state.form.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.form.type = 'add'
+  state.form.visible = true
+  state.form.data.status = 1
+  state.form.data.permission = ''
+}
+// 多选事件
+function handleSelectionChange(val: UserApiToken[]) {
+  multipleSelection.value = val
+}
+
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: UserApiToken) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteUserApiToken(data)
+    fetchUserApiTokenList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: UserApiToken) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateUserApiTokenStatus(data)
+    fetchUserApiTokenList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -71,10 +257,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-full'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-full"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchUserApiTokenList"
+          @refresh-event="fetchUserApiTokenList"
         />
       </div>
     </div>
@@ -211,195 +397,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchUserApiTokenList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Delete,
-  InfoFilled,
-  Plus,
-} from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getUserApiTokenList,
-  updateUserApiTokenStatus,
-  deleteUserApiToken,
-  batchDeleteUserApiToken,
-} from '@/api/permission/user-api-token';
-import {
-  UserApiTokenListRsp,
-  UserApiToken,
-} from '~/api/permission/user-api-token';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import UserApiTokenForm from './components/UserApiTokenForm.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  nickname: null,
-  status: null,
-});
-const statusOptions = [
-  {
-    label: '启用',
-    value: 1,
-  },
-  {
-    label: '禁用',
-    value: 0,
-  },
-];
-// 过滤事件
-const handleFilter = () => {
-  fetchUserApiTokenList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {};
-};
-// 状态变更事件
-const handleChangeStatus = (value: any) => {
-  if (!value) {
-    listQuery.value.status = null;
-  }
-  handleFilter();
-};
-
-const state = reactive({
-  form: {
-    data: {} as UserApiToken,
-    visible: false,
-    type: '',
-  },
-});
-
-const checkAllList = [
-  { label: '自增ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: true, enabled: true },
-  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: '权限标识', value: 'permission', disabled: true, enabled: true },
-  { label: '令牌', value: 'token', disabled: true, enabled: true },
-  { label: '口令', value: 'passphrase', disabled: true, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: true },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableData = ref<UserApiToken[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<UserApiToken[]>([]);
-
-onBeforeMount(() => {
-  fetchUserApiTokenList();
-});
-
-// 获取令牌列表
-const fetchUserApiTokenList = async () => {
-  try {
-    const resp = (await getUserApiTokenList(listQuery.value))
-      .data as UserApiTokenListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: UserApiToken) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteUserApiToken(data);
-    fetchUserApiTokenList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: UserApiToken) => {
-  state.form.data = { ...row };
-  state.form.type = 'edit';
-  state.form.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.form.type = 'add';
-  state.form.visible = true;
-  state.form.data.status = 1;
-  state.form.data.permission = '';
-};
-// 多选事件
-const handleSelectionChange = (val: UserApiToken[]) => {
-  multipleSelection.value = val;
-};
-
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: UserApiToken) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteUserApiToken(data);
-    fetchUserApiTokenList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: UserApiToken) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateUserApiTokenStatus(data);
-    fetchUserApiTokenList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

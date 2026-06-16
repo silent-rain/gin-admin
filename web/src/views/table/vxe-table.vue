@@ -1,15 +1,11 @@
-<template>
-  <vxe-grid ref="xGrid" v-bind="gridOptions" />
-</template>
-
 <script setup lang="ts" name="vxeTable">
-import { ref, reactive, onMounted } from 'vue';
-import XEUtils from 'xe-utils';
-import { VXETable } from 'vxe-table';
+import { onMounted, reactive, ref } from 'vue'
+import { VXETable } from 'vxe-table'
+import XEUtils from 'xe-utils'
 
-const serveApiUrl = ref('https://api.vxetable.cn/demo');
+const serveApiUrl = ref('https://api.vxetable.cn/demo')
 
-const xGrid = ref();
+const xGrid = ref()
 
 const gridOptions = reactive({
   border: true,
@@ -29,9 +25,9 @@ const gridOptions = reactive({
     storage: true,
     checkMethod({ column }) {
       if (['nickname', 'role'].includes(column.field)) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
   },
   printConfig: {
@@ -179,24 +175,24 @@ const gridOptions = reactive({
     ajax: {
       // 当点击工具栏查询按钮或者手动提交指令 query或reload 时会被触发
       query: async ({ page, sorts, filters, form }) => {
-        const queryParams = { ...form };
+        const queryParams = { ...form }
         // 处理排序条件
-        const firstSort = sorts[0];
+        const firstSort = sorts[0]
         if (firstSort) {
-          queryParams.sort = firstSort.field;
-          queryParams.order = firstSort.order;
+          queryParams.sort = firstSort.field
+          queryParams.order = firstSort.order
         }
         // 处理筛选条件
         filters.forEach(({ field, values }) => {
-          queryParams[field] = values.join(',');
-        });
+          queryParams[field] = values.join(',')
+        })
         const response = await fetch(
           `${serveApiUrl.value}/api/pub/page/list/${page.pageSize}/${
             page.currentPage
           }?${XEUtils.serialize(queryParams)}`,
-        );
-        // eslint-disable-next-line no-return-await
-        return await response.json();
+        )
+
+        return await response.json()
       },
       // 当点击工具栏删除按钮或者手动提交指令 delete 时会被触发
       delete: async ({ body }) => {
@@ -204,9 +200,9 @@ const gridOptions = reactive({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-        });
-        // eslint-disable-next-line no-return-await
-        return await response.json();
+        })
+
+        return await response.json()
       },
       // 当点击工具栏保存按钮或者手动提交指令 save 时会被触发
       save: async ({ body }) => {
@@ -214,9 +210,9 @@ const gridOptions = reactive({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-        });
-        // eslint-disable-next-line no-return-await
-        return await response.json();
+        })
+
+        return await response.json()
       },
     },
   },
@@ -290,9 +286,9 @@ const gridOptions = reactive({
       formatter({ cellValue }) {
         return cellValue
           ? `￥${XEUtils.commafy(XEUtils.toNumber(cellValue), {
-              digits: 2,
-            })}`
-          : '';
+            digits: 2,
+          })}`
+          : ''
       },
       editRender: {
         name: '$input',
@@ -306,7 +302,7 @@ const gridOptions = reactive({
       visible: false,
       sortable: true,
       formatter({ cellValue }) {
-        return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:ss:mm');
+        return XEUtils.toDateString(cellValue, 'yyyy-MM-dd HH:ss:mm')
       },
     },
     {
@@ -316,7 +312,7 @@ const gridOptions = reactive({
       visible: false,
       sortable: true,
       formatter({ cellValue }) {
-        return XEUtils.toDateString(cellValue, 'yyyy-MM-dd');
+        return XEUtils.toDateString(cellValue, 'yyyy-MM-dd')
       },
     },
   ],
@@ -326,26 +322,27 @@ const gridOptions = reactive({
     modes: ['insert'],
     // 自定义服务端导入
     async importMethod({ file }) {
-      const $grid = xGrid.value;
-      const formBody = new FormData();
-      formBody.append('file', file);
+      const $grid = xGrid.value
+      const formBody = new FormData()
+      formBody.append('file', file)
       try {
         const response = await fetch(`${serveApiUrl.value}/api/pub/import`, {
           method: 'POST',
           body: formBody,
-        });
-        const data = await response.json();
+        })
+        const data = await response.json()
         VXETable.modal.message({
           content: `成功导入 ${data.result.insertRows} 条记录！`,
           status: 'success',
-        });
+        })
         // 导入完成，刷新表格
-        $grid.commitProxy('query');
-      } catch {
+        $grid.commitProxy('query')
+      }
+      catch {
         VXETable.modal.message({
           content: '导入失败，请检查数据是否正确！',
           status: 'error',
-        });
+        })
       }
     },
   },
@@ -355,8 +352,8 @@ const gridOptions = reactive({
     modes: ['current', 'selected', 'all'],
     // 自定义服务端导出
     async exportMethod({ options }) {
-      const $grid = xGrid.value;
-      const proxyInfo = $grid.getProxyInfo();
+      const $grid = xGrid.value
+      const proxyInfo = $grid.getProxyInfo()
       // 传给服务端的参数
       const body = {
         filename: options.filename,
@@ -367,28 +364,28 @@ const gridOptions = reactive({
         pager: proxyInfo ? proxyInfo.pager : null,
         ids:
           options.mode === 'selected'
-            ? options.data.map((item) => item.id)
+            ? options.data.map(item => item.id)
             : [],
         fields: options.columns.map((column) => {
           return {
             field: column.field,
             title: column.title,
-          };
+          }
         }),
-      };
+      }
       // 开始服务端导出
       try {
         const response = await fetch(`${serveApiUrl.value}/api/pub/export`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-        });
-        const data = await response.json();
+        })
+        const data = await response.json()
         if (data.id) {
           VXETable.modal.message({
             content: '导出成功，开始下载',
             status: 'success',
-          });
+          })
           // 读取路径，请求文件
           fetch(`${serveApiUrl.value}/api/pub/export/download/${data.id}`).then(
             (response) => {
@@ -398,16 +395,17 @@ const gridOptions = reactive({
                   filename: '导出数据',
                   type: 'xlsx',
                   content: blob,
-                });
-              });
+                })
+              })
             },
-          );
+          )
         }
-      } catch {
+      }
+      catch {
         VXETable.modal.message({
           content: '导出失败！',
           status: 'error',
-        });
+        })
       }
     },
   },
@@ -430,25 +428,29 @@ const gridOptions = reactive({
     mode: 'row',
     showStatus: true,
   },
-});
+})
 
 onMounted(() => {
   const sexList = [
     { label: '女', value: '0' },
     { label: '男', value: '1' },
-  ];
-  const { formConfig, columns } = gridOptions;
+  ]
+  const { formConfig, columns } = gridOptions
   if (columns) {
-    const sexColumn = columns[5];
+    const sexColumn = columns[5]
     if (sexColumn && sexColumn.editRender) {
-      sexColumn.editRender.options = sexList;
+      sexColumn.editRender.options = sexList
     }
   }
   if (formConfig && formConfig.items) {
-    const sexItem = formConfig.items[4];
+    const sexItem = formConfig.items[4]
     if (sexItem && sexItem.itemRender) {
-      sexItem.itemRender.options = sexList;
+      sexItem.itemRender.options = sexList
     }
   }
-});
+})
 </script>
+
+<template>
+  <vxe-grid ref="xGrid" v-bind="gridOptions" />
+</template>

@@ -1,3 +1,158 @@
+<script setup lang="ts">
+import type { SystemLog, SystemLogListRsp } from '@/typings/api/system/log'
+import { Delete, Search } from '@element-plus/icons-vue'
+import { storeToRefs } from 'pinia'
+import { onBeforeMount, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getSystemLogList } from '@/api/system/log'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import LogDrawer from './components/LogDrawer.vue'
+
+const { settings } = storeToRefs(useBasicStore())
+const route = useRoute()
+const router = useRouter()
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  user_id: null,
+  trace_id: null,
+  level: null,
+  error_code: null,
+  error_msg: null,
+  msg: null,
+})
+
+const state = reactive({
+  extend: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+  stack: {
+    visible: false,
+    data: '',
+    key: new Date().getMilliseconds(),
+  },
+})
+
+// 日志级别
+const levelOptions = [
+  {
+    lebal: '调试',
+    level: 'DEBUG',
+    type: 'info',
+  },
+  {
+    lebal: '信息',
+    level: 'INFO',
+    type: '',
+  },
+  {
+    lebal: '警告',
+    level: 'WARN',
+    type: 'warning',
+  },
+  {
+    lebal: '错误',
+    level: 'ERROR',
+    type: 'danger',
+  },
+  {
+    lebal: '恐慌',
+    level: 'PANIC',
+    type: 'danger',
+  },
+]
+
+// 过滤事件
+function handleFilter() {
+  router.push({
+    path: route.path,
+    query: listQuery.value,
+  })
+  fetchSystemLogList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {} as any
+}
+
+const checkAllList = [
+  { label: '日志ID', value: 'id', disabled: false, enabled: false },
+  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
+  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
+  { label: '日志级别', value: 'level', disabled: true, enabled: true },
+  { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
+  { label: '业务码', value: 'error_code', disabled: true, enabled: true },
+  {
+    label: '业务码信息',
+    value: 'error_msg',
+    disabled: true,
+    enabled: true,
+  },
+  { label: '日志消息', value: 'msg', disabled: false, enabled: true },
+  {
+    label: '堆栈信息',
+    value: 'stack',
+    disabled: false,
+    enabled: true,
+  },
+  { label: '扩展信息', value: 'extend', disabled: false, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: false },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+const tableSize = ref<string>(settings.value.defaultSize)
+const tableData = ref<SystemLog[]>([])
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  defaultQuery()
+  fetchSystemLogList()
+})
+
+// 默认请求参数
+function defaultQuery() {
+  listQuery.value.trace_id = route.query.trace_id
+}
+
+// 获取网络请求日志列表
+async function fetchSystemLogList() {
+  try {
+    const resp = (await getSystemLogList(listQuery.value))
+      .data as SystemLogListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 显示扩展信息
+function handleShowExtend(v: string) {
+  state.extend.key = new Date().getMilliseconds()
+  if (v) {
+    state.extend.data = JSON.stringify(JSON.parse(v), null, 2)
+  }
+  state.extend.visible = true
+}
+
+// 显示堆栈信息
+function handleShowStack(v: string) {
+  state.stack.key = new Date().getMilliseconds()
+  state.stack.data = v
+  state.stack.visible = true
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -66,14 +221,14 @@
 
     <!-- 表格全局按钮 -->
     <div class="operation-button">
-      <div class="left-button"></div>
+      <div class="left-button" />
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-role'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-role"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchSystemLogList"
+          @refresh-event="fetchSystemLogList"
         />
       </div>
     </div>
@@ -122,8 +277,8 @@
             v-for="(item, _) in levelOptions.filter(
               (v) => v.level === scope.row.level,
             )"
-            size="small"
             :key="item.level"
+            size="small"
             :type="item.type"
           >
             {{ scope.row.level }}
@@ -171,7 +326,7 @@
           >
             查看
           </el-button>
-          <span v-else></span>
+          <span v-else />
         </template>
       </el-table-column>
       <el-table-column
@@ -189,7 +344,7 @@
           >
             查看
           </el-button>
-          <span v-else></span>
+          <span v-else />
         </template>
       </el-table-column>
       <el-table-column
@@ -206,8 +361,8 @@
       />
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchSystemLogList"
     />
@@ -215,177 +370,23 @@
     <!-- 扩展信息 -->
     <LogDrawer
       v-if="state.extend.visible"
+      :key="state.extend.key"
       v-model="state.extend.visible"
       :data="state.extend.data"
-      :key="state.extend.key"
       language="json"
-    ></LogDrawer>
+    />
 
     <!-- 堆栈信息 -->
     <LogDrawer
       v-if="state.stack.visible"
+      :key="state.stack.key"
       v-model="state.stack.visible"
       :data="state.stack.data"
-      :key="state.stack.key"
       language="text"
       size="800px"
-    ></LogDrawer>
+    />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia/dist/pinia';
-import { Search, Delete } from '@element-plus/icons-vue';
-import { useBasicStore } from '@/store/basic';
-import { getSystemLogList } from '@/api/system/log';
-import { SystemLog, SystemLogListRsp } from '@/typings/api/system/log';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-import LogDrawer from './components/LogDrawer.vue';
-
-const { settings } = storeToRefs(useBasicStore());
-const route = useRoute();
-const router = useRouter();
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  user_id: null,
-  trace_id: null,
-  level: null,
-  error_code: null,
-  error_msg: null,
-  msg: null,
-});
-
-const state = reactive({
-  extend: {
-    visible: false,
-    data: '',
-    key: new Date().getMilliseconds(),
-  },
-  stack: {
-    visible: false,
-    data: '',
-    key: new Date().getMilliseconds(),
-  },
-});
-
-// 日志级别
-const levelOptions = [
-  {
-    lebal: '调试',
-    level: 'DEBUG',
-    type: 'info',
-  },
-  {
-    lebal: '信息',
-    level: 'INFO',
-    type: '',
-  },
-  {
-    lebal: '警告',
-    level: 'WARN',
-    type: 'warning',
-  },
-  {
-    lebal: '错误',
-    level: 'ERROR',
-    type: 'danger',
-  },
-  {
-    lebal: '恐慌',
-    level: 'PANIC',
-    type: 'danger',
-  },
-];
-
-// 过滤事件
-const handleFilter = () => {
-  router.push({
-    path: route.path,
-    query: listQuery.value,
-  });
-  fetchSystemLogList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {} as any;
-};
-
-const checkAllList = [
-  { label: '日志ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
-  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: 'Trace ID', value: 'trace_id', disabled: true, enabled: true },
-  { label: 'Span ID', value: 'span_id', disabled: true, enabled: true },
-  { label: '日志级别', value: 'level', disabled: true, enabled: true },
-  { label: '日志位置', value: 'caller_line', disabled: false, enabled: true },
-  { label: '业务码', value: 'error_code', disabled: true, enabled: true },
-  {
-    label: '业务码信息',
-    value: 'error_msg',
-    disabled: true,
-    enabled: true,
-  },
-  { label: '日志消息', value: 'msg', disabled: false, enabled: true },
-  {
-    label: '堆栈信息',
-    value: 'stack',
-    disabled: false,
-    enabled: true,
-  },
-  { label: '扩展信息', value: 'extend', disabled: false, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: false },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<SystemLog[]>([]);
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  defaultQuery();
-  fetchSystemLogList();
-});
-
-// 默认请求参数
-const defaultQuery = () => {
-  listQuery.value.trace_id = route.query.trace_id;
-};
-
-// 获取网络请求日志列表
-const fetchSystemLogList = async () => {
-  try {
-    const resp = (await getSystemLogList(listQuery.value))
-      .data as SystemLogListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 显示扩展信息
-const handleShowExtend = (v: string) => {
-  state.extend.key = new Date().getMilliseconds();
-  if (v) {
-    state.extend.data = JSON.stringify(JSON.parse(v), null, 2);
-  }
-  state.extend.visible = true;
-};
-
-// 显示堆栈信息
-const handleShowStack = (v: string) => {
-  state.stack.key = new Date().getMilliseconds();
-  state.stack.data = v;
-  state.stack.visible = true;
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

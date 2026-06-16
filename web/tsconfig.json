@@ -2,11 +2,27 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["src/*"],
-      "~/*": ["src/typings/*"]
+      "@/*": ["./src/*"],
+      "~/*": ["./src/typings/*"]
     },
-    "types": ["vite/client"]
+    "types": ["vite/client", "vitest/globals", "unplugin-vue-macros/macros-global"],
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
   },
-  "include": ["src", "src/typings"],
-  "exclude": ["node_modules", "**/dist"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/typings/**/*.d.ts",
+    "src/env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/dist",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

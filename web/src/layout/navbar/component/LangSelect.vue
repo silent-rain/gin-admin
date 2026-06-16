@@ -1,6 +1,30 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { reactive, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
+import SvgIcon from '@/icons/SvgIcon.vue'
+import { useConfigStore } from '@/store/config'
+
+const state = reactive({
+  langOptions: [
+    { label: '中文', value: 'zh' },
+    { label: 'English', value: 'en' },
+  ],
+})
+const configStore = useConfigStore()
+const { language } = storeToRefs(configStore)
+const route = useRoute()
+
+function handleSetLang(lang: string) {
+  // refresh i18n
+  configStore.setLanguage(lang, route.meta?.title)
+}
+const { langOptions } = toRefs(state)
+</script>
+
 <template>
   <el-dropdown trigger="click" type="primary" @command="handleSetLang">
-    <svg-icon
+    <SvgIcon
       icon-class="language"
       style="width: 20px; height: 20px"
       class="mr-20px"
@@ -21,29 +45,5 @@
     </template>
   </el-dropdown>
 </template>
-
-<script setup lang="ts">
-import { reactive, toRefs } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
-import { useRoute } from 'vue-router';
-import SvgIcon from '@/icons/SvgIcon.vue';
-import { useConfigStore } from '@/store/config';
-
-const state = reactive({
-  langOptions: [
-    { label: '中文', value: 'zh' },
-    { label: 'English', value: 'en' },
-  ],
-});
-const configStore = useConfigStore();
-const { language } = storeToRefs(configStore);
-const route = useRoute();
-
-const handleSetLang = (lang: string) => {
-  // refresh i18n
-  configStore.setLanguage(lang, route.meta?.title);
-};
-const { langOptions } = toRefs(state);
-</script>
 
 <style scoped lang="scss"></style>

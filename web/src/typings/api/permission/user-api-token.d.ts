@@ -2,21 +2,21 @@
  */
 
 export interface UserApiToken {
-  id: number;
-  user_id: number;
-  nickname: string;
-  permission: string;
-  token: string;
-  passphrase: string;
-  note: string;
-  status: number;
-  created_at: string;
-  updated_at: string;
+  id: number
+  user_id: number
+  nickname: string
+  permission: string
+  token: string
+  passphrase: string
+  note: string
+  status: number
+  created_at: string
+  updated_at: string
 }
 
 export interface UserApiTokenListRsp {
-  code: number;
-  msg: string;
-  data_list: UserApiToken[];
-  tatol: number;
+  code: number
+  msg: string
+  data_list: UserApiToken[]
+  tatol: number
 }

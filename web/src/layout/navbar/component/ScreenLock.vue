@@ -1,5 +1,84 @@
+<script setup lang="ts">
+import { ArrowRightBold, Unlock } from '@element-plus/icons-vue'
+import { computed, ref, watch } from 'vue'
+import SvgIcon from '@/icons/SvgIcon.vue'
+
+const open = ref<any>(false)
+const slider = ref<any>(null)
+const sliderButton = ref<any>(null)
+let startX = 0
+let distance = 0
+let maxDistance = 0
+let minDistance = 0
+const isTrigger = ref(false)
+
+function onMousedown(e) {
+  distance = 0
+  maxDistance = 0
+  minDistance = 0
+  isTrigger.value = false
+
+  sliderButton.value.style.transition = ''
+  startX = e.screenX
+  maxDistance = slider.value.clientWidth - sliderButton.value.clientWidth - 10
+  document.addEventListener('mousemove', onMousemove)
+  document.addEventListener('mouseup', onMouseup)
+}
+
+function onMousemove(e) {
+  distance = e.screenX - startX
+  if (isTrigger.value) {
+    distance = maxDistance
+  }
+  if (distance <= minDistance) {
+    distance = minDistance
+  }
+  if (distance >= maxDistance) {
+    distance = maxDistance
+    if (!isTrigger.value) {
+      isTrigger.value = true
+      setTimeout(() => {
+        open.value = false
+      }, 300)
+    }
+  }
+  if (open.value) {
+    sliderButton.value.style.transform = `translateX(${distance}px)`
+  }
+}
+
+function onMouseup() {
+  document.removeEventListener('mousemove', onMousemove)
+  document.removeEventListener('mouseup', onMouseup)
+
+  if (!isTrigger.value) {
+    // 恢复原始状态
+    distance = 0
+    maxDistance = 0
+    minDistance = 0
+    isTrigger.value = false
+
+    if (open.value) {
+      sliderButton.value.style.transition = 'all 0.4s'
+      sliderButton.value.style.transform = `translateX(${distance}px)`
+    }
+  }
+}
+watch(
+  () => open.value,
+  () => {
+    if (open.value) {
+      isTrigger.value = false
+    }
+  },
+)
+const icon = computed(() => {
+  return isTrigger.value ? Unlock : ArrowRightBold
+})
+</script>
+
 <template>
-  <svg-icon
+  <SvgIcon
     icon-class="lock"
     style="width: 18px; height: 19px"
     class="mr-12px"
@@ -16,10 +95,14 @@
           :size="128"
           src="https://github.jzfai.top/file/images/nav-right-logo.gif"
         />
-        <div class="screen-nickname">Vue3 Admin Plus</div>
+        <div class="screen-nickname">
+          Vue3 Admin Plus
+        </div>
       </div>
       <div ref="slider" class="screen-slider">
-        <div class="screen-locker-placeholder">滑动解锁</div>
+        <div class="screen-locker-placeholder">
+          滑动解锁
+        </div>
         <div
           ref="sliderButton"
           class="screen-slider-button"
@@ -33,85 +116,6 @@
     </div>
   </transition>
 </template>
-
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { ArrowRightBold, Unlock } from '@element-plus/icons-vue';
-import SvgIcon from '@/icons/SvgIcon.vue';
-
-const open = ref<any>(false);
-const slider = ref<any>(null);
-const sliderButton = ref<any>(null);
-let startX = 0;
-let distance = 0;
-let maxDistance = 0;
-let minDistance = 0;
-const isTrigger = ref(false);
-
-const onMousedown = (e) => {
-  distance = 0;
-  maxDistance = 0;
-  minDistance = 0;
-  isTrigger.value = false;
-
-  sliderButton.value.style.transition = '';
-  startX = e.screenX;
-  maxDistance = slider.value.clientWidth - sliderButton.value.clientWidth - 10;
-  document.addEventListener('mousemove', onMousemove);
-  document.addEventListener('mouseup', onMouseup);
-};
-
-const onMousemove = (e) => {
-  distance = e.screenX - startX;
-  if (isTrigger.value) {
-    distance = maxDistance;
-  }
-  if (distance <= minDistance) {
-    distance = minDistance;
-  }
-  if (distance >= maxDistance) {
-    distance = maxDistance;
-    if (!isTrigger.value) {
-      isTrigger.value = true;
-      setTimeout(() => {
-        open.value = false;
-      }, 300);
-    }
-  }
-  if (open.value) {
-    sliderButton.value.style.transform = `translateX(${distance}px)`;
-  }
-};
-
-const onMouseup = () => {
-  document.removeEventListener('mousemove', onMousemove);
-  document.removeEventListener('mouseup', onMouseup);
-
-  if (!isTrigger.value) {
-    // 恢复原始状态
-    distance = 0;
-    maxDistance = 0;
-    minDistance = 0;
-    isTrigger.value = false;
-
-    if (open.value) {
-      sliderButton.value.style.transition = 'all 0.4s';
-      sliderButton.value.style.transform = `translateX(${distance}px)`;
-    }
-  }
-};
-watch(
-  () => open.value,
-  () => {
-    if (open.value) {
-      isTrigger.value = false;
-    }
-  },
-);
-const icon = computed(() => {
-  return isTrigger.value ? Unlock : ArrowRightBold;
-});
-</script>
 
 <style scoped lang="scss">
 .screen-locker {

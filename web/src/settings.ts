@@ -1,4 +1,4 @@
-import type { SettingsConfig } from '~/settings';
+import type { SettingsConfig } from '~/settings'
 
 export const settings: SettingsConfig = {
   title: '后台管理系统',
@@ -80,7 +80,7 @@ export const settings: SettingsConfig = {
    */
   openProdMock: false,
   /**
-   * @type {string | array} 'dev' | ['prod','test','dev'] according to the .env file props of VITE_APP_ENV
+   * @type {string | Array} 'dev' | ['prod','test','dev'] according to the .env file props of VITE_APP_ENV
    * @description Need show err logs component.
    * The default is only used in the production env
    * If you want to also use it in dev, you can pass ['dev', 'test']
@@ -125,6 +125,6 @@ export const settings: SettingsConfig = {
    * setting default 密码
    * */
   defaultPassword: '888888',
-};
+}
 
-export default settings;
+export default settings

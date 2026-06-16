@@ -1,3 +1,110 @@
+<script setup lang="ts">
+import type { ConfigListRsp, WebsiteConfig } from '@/typings/api/data-center/config'
+import { ElMessage } from 'element-plus'
+import {
+  batchUpdateConfig,
+  getConfigChildrensByKey,
+} from '@/api/data-center/config'
+import PhotoWall from '@/components/Upload/PhotoWall.vue'
+import UploadLogo from '@/components/Upload/UploadLogo.vue'
+import { WebsiteSettings } from '@/constant/data-center/config'
+
+const configHash = ref<WebsiteConfig>({} as WebsiteConfig)
+const state = reactive({
+  websiteTags: [] as string[],
+  websiteKeywords: [] as string[],
+})
+const websiteTagsOptions = computed(() => {
+  if (!configHash.value.website_tags.value) {
+    return []
+  }
+  const tags = configHash.value.website_tags.value.split(',')
+  state.websiteTags = [...tags]
+  return tags.map((v) => {
+    return {
+      label: v,
+      value: v,
+    }
+  })
+})
+const websiteKeywordsOptions = computed(() => {
+  if (!configHash.value.website_keywords.value) {
+    return []
+  }
+  const keywords = configHash.value.website_keywords.value.split(',')
+  state.websiteKeywords = [...keywords]
+  return keywords.map((v) => {
+    return {
+      label: v,
+      value: v,
+    }
+  })
+})
+
+const websitePropagandas = computed({
+  get() {
+    if (!configHash.value.website_propaganda.value) {
+      return []
+    }
+    const list = JSON.parse(configHash.value.website_propaganda.value)
+    return list
+  },
+  set(val) {
+    configHash.value.website_propaganda.value = JSON.stringify(val)
+  },
+})
+
+onBeforeMount(() => {
+  fetchConfigChildrensByKey()
+})
+
+// 通过上级 key 获取子配置列表
+async function fetchConfigChildrensByKey() {
+  try {
+    const resp = (
+      await getConfigChildrensByKey({
+        key: WebsiteSettings,
+      })
+    ).data as ConfigListRsp
+    for (const item of resp.data_list) {
+      configHash.value[item.key] = item
+    }
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 提交
+async function submitForm() {
+  const data = [] as any[]
+  for (const k in configHash.value) {
+    let value = configHash.value[k].value
+    if (k == 'website_tags') {
+      value = state.websiteTags.join(',')
+    }
+    else if (k == 'website_keywords') {
+      value = state.websiteKeywords.join(',')
+    }
+    data.push({
+      id: configHash.value[k].id,
+      name: configHash.value[k].name,
+      key: k,
+      value,
+    })
+  }
+
+  try {
+    await batchUpdateConfig(data)
+    await fetchConfigChildrensByKey()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <el-form
     v-if="configHash.website_title"
@@ -23,13 +130,13 @@
     </el-form-item>
 
     <el-form-item :label="configHash.website_logo.name" prop="website_logo">
-      <UploadLogo v-model:url="configHash.website_logo.value"></UploadLogo>
+      <UploadLogo v-model:url="configHash.website_logo.value" />
     </el-form-item>
     <el-form-item
       :label="configHash.website_propaganda.name"
       prop="website_propaganda"
     >
-      <PhotoWall v-model:file-list="websitePropagandas"></PhotoWall>
+      <PhotoWall v-model:file-list="websitePropagandas" />
     </el-form-item>
 
     <el-divider />
@@ -156,113 +263,11 @@
     </el-form-item>
   </el-form>
   <div class="submit">
-    <el-button type="primary" @click="submitForm">保存变更</el-button>
+    <el-button type="primary" @click="submitForm">
+      保存变更
+    </el-button>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import {
-  getConfigChildrensByKey,
-  batchUpdateConfig,
-} from '@/api/data-center/config';
-import { ConfigListRsp, WebsiteConfig } from '@/typings/api/data-center/config';
-import { WebsiteSettings } from '@/constant/data-center/config';
-import UploadLogo from '@/components/Upload/UploadLogo.vue';
-import PhotoWall from '@/components/Upload/PhotoWall.vue';
-
-const configHash = ref<WebsiteConfig>({} as WebsiteConfig);
-const state = reactive({
-  websiteTags: [] as string[],
-  websiteKeywords: [] as string[],
-});
-const websiteTagsOptions = computed(() => {
-  if (!configHash.value.website_tags.value) {
-    return [];
-  }
-  const tags = configHash.value.website_tags.value.split(',');
-  state.websiteTags = [...tags];
-  return tags.map((v) => {
-    return {
-      label: v,
-      value: v,
-    };
-  });
-});
-const websiteKeywordsOptions = computed(() => {
-  if (!configHash.value.website_keywords.value) {
-    return [];
-  }
-  const keywords = configHash.value.website_keywords.value.split(',');
-  state.websiteKeywords = [...keywords];
-  return keywords.map((v) => {
-    return {
-      label: v,
-      value: v,
-    };
-  });
-});
-
-const websitePropagandas = computed({
-  get() {
-    if (!configHash.value.website_propaganda.value) {
-      return [];
-    }
-    const list = JSON.parse(configHash.value.website_propaganda.value);
-    return list;
-  },
-  set(val) {
-    configHash.value.website_propaganda.value = JSON.stringify(val);
-  },
-});
-
-onBeforeMount(() => {
-  fetchConfigChildrensByKey();
-});
-
-// 通过上级 key 获取子配置列表
-const fetchConfigChildrensByKey = async () => {
-  try {
-    const resp = (
-      await getConfigChildrensByKey({
-        key: WebsiteSettings,
-      })
-    ).data as ConfigListRsp;
-    for (const item of resp.data_list) {
-      configHash.value[item.key] = item;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 提交
-const submitForm = async () => {
-  const data = [] as any[];
-  for (const k in configHash.value) {
-    let value = configHash.value[k].value;
-    if (k == 'website_tags') {
-      value = state.websiteTags.join(',');
-    } else if (k == 'website_keywords') {
-      value = state.websiteKeywords.join(',');
-    }
-    data.push({
-      id: configHash.value[k].id,
-      name: configHash.value[k].name,
-      key: k,
-      value: value,
-    });
-  }
-
-  try {
-    await batchUpdateConfig(data);
-    await fetchConfigChildrensByKey();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .submit {

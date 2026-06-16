@@ -1,0 +1,10 @@
+import { RouteRawConfig } from '~/store/router';
+import { ButtonPermission, Menu } from '~/api/permission/menu';
+export declare const asyncRoutesByMenus: (menus: Menu[]) => RouteRawConfig[];
+export declare const filterAsyncRouter: (menus: Menu[]) => void;
+export declare const buttonPermissions: (permissions: ButtonPermission[]) => void;
+export declare const hasButtonPermission: (value: string) => boolean;
+export declare const isDisabledButton: (value: string) => boolean;
+export declare function resetRouter(): void;
+export declare function resetState(): void;
+export declare function freshRouter(data: any): void;

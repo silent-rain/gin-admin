@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const other = {
   path: '/other',
@@ -31,6 +31,6 @@ const other = {
       meta: { title: 'signboard' },
     },
   ],
-};
+}
 
-export default other;
+export default other

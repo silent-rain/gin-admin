@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { reactive, toRefs } from 'vue'
+import SvgIcon from '@/icons/SvgIcon.vue'
+import { useConfigStore } from '@/store/config'
+
+const state = reactive({
+  sizeOptions: [
+    { label: 'Large ', value: 'large' },
+    { label: 'Default ', value: 'default' },
+    { label: 'Small', value: 'small' },
+  ],
+})
+const configStore = useConfigStore()
+const { size } = storeToRefs(configStore)
+function handleSetSize(size) {
+  configStore.setSize(size)
+}
+const { sizeOptions } = toRefs(state)
+</script>
+
 <template>
   <el-dropdown
     id="size-select"
@@ -5,7 +26,7 @@
     type="primary"
     @command="handleSetSize"
   >
-    <svg-icon
+    <SvgIcon
       icon-class="size"
       style="width: 18px; height: 18px"
       class="mr-12px"
@@ -26,26 +47,5 @@
     </template>
   </el-dropdown>
 </template>
-
-<script setup lang="ts">
-import { reactive, toRefs } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
-import SvgIcon from '@/icons/SvgIcon.vue';
-import { useConfigStore } from '@/store/config';
-
-const state = reactive({
-  sizeOptions: [
-    { label: 'Large ', value: 'large' },
-    { label: 'Default ', value: 'default' },
-    { label: 'Small', value: 'small' },
-  ],
-});
-const configStore = useConfigStore();
-const { size } = storeToRefs(configStore);
-const handleSetSize = (size) => {
-  configStore.setSize(size);
-};
-const { sizeOptions } = toRefs(state);
-</script>
 
 <style scoped lang="scss"></style>

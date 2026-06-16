@@ -1,25 +1,25 @@
-import { useBasicStore } from '@/store/basic';
+import { useUserStore } from '@/store/user'
 
 function checkPermission(el, { value }) {
   if (value && Array.isArray(value)) {
-    if (value.length > 0) {
-      const permissionRoles = value;
-      const hasPermission = useBasicStore().codes?.some((role) =>
+    if (value.length) {
+      const permissionRoles = value
+      const hasPermission = useUserStore().codes?.some(role =>
         permissionRoles.includes(role),
-      );
-      if (!hasPermission) el.parentNode && el.parentNode.removeChild(el);
+      )
+      if (!hasPermission)
+        el.parentNode && el.parentNode.removeChild(el)
     }
-  } else {
-    throw new Error(
-      "need codes! Like v-codes-permission=\"['admin','editor']\"",
-    );
+  }
+  else {
+    throw new Error('need roles! Like v-permission="[\'admin\',\'editor\']"')
   }
 }
 export default {
   mounted(el, binding) {
-    checkPermission(el, binding);
+    checkPermission(el, binding)
   },
   componentUpdated(el, binding) {
-    checkPermission(el, binding);
+    checkPermission(el, binding)
   },
-};
+}

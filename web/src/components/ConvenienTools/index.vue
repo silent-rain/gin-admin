@@ -1,3 +1,145 @@
+<script setup lang="ts">
+import {
+  Expand,
+  FullScreen,
+  RefreshRight,
+  Setting,
+} from '@element-plus/icons-vue'
+import defaultSettings from '@/settings'
+
+const props = withDefaults(
+  defineProps<{
+    size?: string // UI 尺寸
+    screenFullElement?: string // 全屏元素 class-name
+    checkAllList?: any[]
+    checkedDict?: any
+  }>(),
+  {
+    size: defaultSettings.defaultSize,
+    screenFullElement: '',
+    checkAllList: () => [],
+    checkedDict: {},
+  },
+)
+
+const emit = defineEmits(['refreshEvent', 'update:size', 'update:checkedDict'])
+
+onBeforeMount(() => {
+  checkedList.value = props.checkAllList
+    .filter((v: any) => {
+      if (v.enabled) {
+        return v
+      }
+    })
+    .map(v => v.value)
+  isIndeterminate.value = !(
+    checkedList.value.length === props.checkAllList.length
+  )
+  checkedListToMap()
+})
+
+// 刷新事件
+function refreshEvent() {
+  emit('refreshEvent', null)
+}
+
+// UI 尺寸列表
+const sizeOptions = [
+  {
+    label: '宽松',
+    value: 'large',
+  },
+  {
+    label: '默认',
+    value: 'default',
+  },
+  {
+    label: '紧凑',
+    value: 'small',
+  },
+]
+// 尺寸选择事件
+function handleSizeCommand(value: string) {
+  emit('update:size', value)
+}
+
+// 多选框组
+const checkAll = ref(true)
+const isIndeterminate = ref(true)
+const checkedList = ref<string[]>([])
+// 全选
+function handleCheckAllChange(val: boolean) {
+  checkedList.value = val
+    ? props.checkAllList.map(v => v.value)
+    : props.checkAllList
+        .filter((v: any) => {
+          if (v.disabled) {
+            return v
+          }
+        })
+        .map(v => v.value)
+
+  const checkedCount = checkedList.value.length
+  isIndeterminate.value
+    = checkedCount > 0 && checkedCount < props.checkAllList.length
+  checkedListToMap()
+}
+// 重置
+function handleCheckdReset() {
+  checkAll.value = true
+  checkedList.value = props.checkAllList
+    .filter(v => v.enabled)
+    .map(v => v.value)
+
+  const checkedCount = checkedList.value.length
+  isIndeterminate.value
+    = checkedCount > 0 && checkedCount < props.checkAllList.length
+  checkedListToMap()
+}
+// 多选框点击事件
+function handleCheckedChange(value: string[]) {
+  const checkedCount = value.length
+  checkAll.value = checkedCount === props.checkAllList.length
+  isIndeterminate.value
+    = checkedCount > 0 && checkedCount < props.checkAllList.length
+  checkedListToMap()
+}
+// 多选列表转map
+function checkedListToMap() {
+  const m = {}
+  checkedList.value.forEach((v) => {
+    m[v] = true
+  })
+  emit('update:checkedDict', m)
+}
+
+// 全屏
+const screenFullFlag = ref(false)
+function handleScreenFull() {
+  const element = document.getElementsByClassName(
+    props.screenFullElement as string,
+  )[0]
+  if (!element) {
+    return
+  }
+  // 不全屏是null,返回false,
+  screenFullFlag.value = document.fullscreenElement !== null
+  // false是进入全屏状态
+  if (screenFullFlag.value) {
+    // 退出全屏
+    if (document.exitFullscreen) {
+      document.exitFullscreen()
+    }
+  }
+  else {
+    // 全屏
+    element.requestFullscreen()
+  }
+  // 切换文本状态（只是用在文本上，文本不是动态可以忽略）
+  screenFullFlag.value = !screenFullFlag.value
+}
+</script>
+
 <template>
   <div class="convenient-tools">
     <el-tooltip content="刷新" placement="top">
@@ -70,147 +212,6 @@
     </el-tooltip>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  Setting,
-  RefreshRight,
-  Expand,
-  FullScreen,
-} from '@element-plus/icons-vue';
-import defaultSettings from '@/settings';
-
-const props = withDefaults(
-  defineProps<{
-    size?: string; // UI 尺寸
-    screenFullElement?: string; // 全屏元素 class-name
-    checkAllList?: any[];
-    checkedDict?: any;
-  }>(),
-  {
-    size: defaultSettings.defaultSize,
-    screenFullElement: '',
-    checkAllList: () => [],
-    checkedDict: {},
-  },
-);
-
-const emit = defineEmits(['refreshEvent', 'update:size', 'update:checkedDict']);
-
-onBeforeMount(() => {
-  checkedList.value = props.checkAllList
-    .filter((v: any) => {
-      if (v.enabled) {
-        return v;
-      }
-    })
-    .map((v) => v.value);
-  isIndeterminate.value = !(
-    checkedList.value.length === props.checkAllList.length
-  );
-  checkedListToMap();
-});
-
-// 刷新事件
-const refreshEvent = () => {
-  emit('refreshEvent', null);
-};
-
-// UI 尺寸列表
-const sizeOptions = [
-  {
-    label: '宽松',
-    value: 'large',
-  },
-  {
-    label: '默认',
-    value: 'default',
-  },
-  {
-    label: '紧凑',
-    value: 'small',
-  },
-];
-// 尺寸选择事件
-const handleSizeCommand = (value: string) => {
-  emit('update:size', value);
-};
-
-// 多选框组
-const checkAll = ref(true);
-const isIndeterminate = ref(true);
-const checkedList = ref<string[]>([]);
-// 全选
-const handleCheckAllChange = (val: boolean) => {
-  checkedList.value = val
-    ? props.checkAllList.map((v) => v.value)
-    : props.checkAllList
-        .filter((v: any) => {
-          if (v.disabled) {
-            return v;
-          }
-        })
-        .map((v) => v.value);
-
-  const checkedCount = checkedList.value.length;
-  isIndeterminate.value =
-    checkedCount > 0 && checkedCount < props.checkAllList.length;
-  checkedListToMap();
-};
-// 重置
-const handleCheckdReset = () => {
-  checkAll.value = true;
-  checkedList.value = props.checkAllList
-    .filter((v) => v.enabled)
-    .map((v) => v.value);
-
-  const checkedCount = checkedList.value.length;
-  isIndeterminate.value =
-    checkedCount > 0 && checkedCount < props.checkAllList.length;
-  checkedListToMap();
-};
-// 多选框点击事件
-const handleCheckedChange = (value: string[]) => {
-  const checkedCount = value.length;
-  checkAll.value = checkedCount === props.checkAllList.length;
-  isIndeterminate.value =
-    checkedCount > 0 && checkedCount < props.checkAllList.length;
-  checkedListToMap();
-};
-// 多选列表转map
-const checkedListToMap = () => {
-  const m = {};
-  checkedList.value.forEach((v) => {
-    m[v] = true;
-  });
-  emit('update:checkedDict', m);
-};
-
-// 全屏
-const screenFullFlag = ref(false);
-const handleScreenFull = () => {
-  const element = document.getElementsByClassName(
-    props.screenFullElement as string,
-  )[0];
-  if (!element) {
-    return;
-  }
-  // 不全屏是null,返回false,
-  screenFullFlag.value = document.fullscreenElement !== null;
-  // false是进入全屏状态
-  if (screenFullFlag.value) {
-    // 退出全屏
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  } else {
-    // 全屏
-    element.requestFullscreen();
-  }
-  // 切换文本状态（只是用在文本上，文本不是动态可以忽略）
-  screenFullFlag.value = !screenFullFlag.value;
-};
-</script>
 
 <style scoped lang="scss">
 :deep(.operation-settings-show) {

@@ -1,3 +1,87 @@
+<script setup lang="ts">
+import type { UserLogin, UserLoginListRsp } from '~/api/system/user-login'
+import { Delete, Search } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { onBeforeMount, ref } from 'vue'
+import {
+  getUserLoginList,
+  updateUserLoginStatus,
+} from '@/api/system/user-login'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+
+const { settings } = storeToRefs(useBasicStore())
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  nickname: '',
+  remote_addr: '',
+})
+// 过滤事件
+function handleFilter() {
+  fetchUserLoginList()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {}
+}
+
+const checkAllList = [
+  { label: '自增ID', value: 'id', disabled: false, enabled: false },
+  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
+  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
+  { label: '登录IP', value: 'remote_addr', disabled: false, enabled: true },
+  { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
+  { label: '登录状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(settings.value.defaultSize)
+const tableData = ref<UserLogin[]>()
+const tableDataTotal = ref<number>(0)
+
+onBeforeMount(() => {
+  fetchUserLoginList()
+})
+
+// 获取用户登录信息列表
+async function fetchUserLoginList() {
+  try {
+    const resp = (await getUserLoginList(listQuery.value))
+      .data as UserLoginListRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 状态变更
+async function handleStatusChange(row: UserLogin) {
+  const data = {
+    id: row.id,
+    user_id: row.user_id,
+    status: row.status,
+  }
+  try {
+    await updateUserLoginStatus(data)
+    fetchUserLoginList()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -31,14 +115,14 @@
 
     <!-- 表格全局按钮 -->
     <div class="operation-button">
-      <div class="left-button"></div>
+      <div class="left-button" />
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-full'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-full"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchUserLoginList"
+          @refresh-event="fetchUserLoginList"
         />
       </div>
     </div>
@@ -112,95 +196,13 @@
       />
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchUserLoginList"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
-import { storeToRefs } from 'pinia/dist/pinia';
-import { Search, Delete } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getUserLoginList,
-  updateUserLoginStatus,
-} from '@/api/system/user-login';
-import { UserLoginListRsp, UserLogin } from '~/api/system/user-login';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const { settings } = storeToRefs(useBasicStore());
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  nickname: '',
-  remote_addr: '',
-});
-// 过滤事件
-const handleFilter = () => {
-  fetchUserLoginList();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {};
-};
-
-const checkAllList = [
-  { label: '自增ID', value: 'id', disabled: false, enabled: false },
-  { label: '用户ID', value: 'user_id', disabled: false, enabled: false },
-  { label: '用户昵称', value: 'nickname', disabled: true, enabled: true },
-  { label: '登录IP', value: 'remote_addr', disabled: false, enabled: true },
-  { label: '用户代理', value: 'user_agent', disabled: false, enabled: true },
-  { label: '登录状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: true },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(settings.value.defaultSize);
-const tableData = ref<UserLogin[]>();
-const tableDataTotal = ref<number>(0);
-
-onBeforeMount(() => {
-  fetchUserLoginList();
-});
-
-// 获取用户登录信息列表
-const fetchUserLoginList = async () => {
-  try {
-    const resp = (await getUserLoginList(listQuery.value))
-      .data as UserLoginListRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 状态变更
-const handleStatusChange = async (row: UserLogin) => {
-  const data = {
-    id: row.id,
-    user_id: row.user_id,
-    status: row.status,
-  };
-  try {
-    await updateUserLoginStatus(data);
-    fetchUserLoginList();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

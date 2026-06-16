@@ -1,3 +1,199 @@
+<script setup lang="ts">
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import type { RouterTypes } from '~/store/router'
+import { Close } from '@element-plus/icons-vue'
+import { resolve } from 'path-browserify'
+import { storeToRefs } from 'pinia'
+import {
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  reactive,
+  toRefs,
+  watch,
+} from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { langTitle } from '@/hooks/use-common'
+import { useBasicStore } from '@/store/basic'
+import { usePermissionStore } from '@/store/permission'
+import { useTagsViewStore } from '@/store/tags-view'
+
+const route = useRoute()
+const router = useRouter()
+const basicStore = useBasicStore()
+const { visitedViews } = storeToRefs(useTagsViewStore())
+
+const state = reactive({
+  visible: false,
+  top: 0,
+  left: 0,
+  selectedTag: {} as RouteLocationNormalizedLoaded,
+  affixTags: [] as RouterTypes,
+})
+
+watch(
+  () => route.path,
+  () => {
+    addTags()
+  },
+)
+
+watch(
+  () => state.visible,
+  (value) => {
+    if (value) {
+      document.body.addEventListener('click', closeMenu)
+    }
+    else {
+      document.body.removeEventListener('click', closeMenu)
+    }
+  },
+)
+
+onMounted(() => {
+  initTags()
+  addTags()
+})
+
+// 判断当前点击的item项，是不是当前显示的路由项，如果是则高亮
+function isActive(param) {
+  return route.path === param.path
+}
+// 当路由设置meta.affix=true,关闭按钮消失
+function isAffix(tag) {
+  return tag.meta && tag.meta.affix
+}
+
+function filterAffixTags(routes, basePath = '/') {
+  let tags: RouterTypes = []
+  routes.forEach((route) => {
+    if (route.meta && route.meta.affix) {
+      const tagPath = resolve(basePath, route.path)
+      tags.push({
+        fullPath: tagPath,
+        path: tagPath,
+        name: route.name,
+        meta: { ...route.meta },
+      })
+    }
+    if (route.children) {
+      const tempTags = filterAffixTags(route.children, route.path)
+      if (tempTags.length >= 1) {
+        tags = [...tags, ...tempTags]
+      }
+    }
+  })
+  return tags
+}
+
+// 初始
+const tagsViewStore = useTagsViewStore()
+const { allRoutes } = usePermissionStore()
+function initTags() {
+  // 过滤affix=true的tags数组并赋值给state.affixTags，挂载到页面上
+  const affixTags = (state.affixTags = filterAffixTags(allRoutes))
+  for (const tag of affixTags) {
+    // Must have tag name
+    if (tag.name) {
+      tagsViewStore.addVisitedView(tag)
+    }
+  }
+}
+// 添加标签
+function addTags() {
+  if (route?.name) {
+    tagsViewStore.addVisitedView(route)
+  }
+  return false
+}
+
+/* 右键菜单部分 */
+const vm = getCurrentInstance()?.proxy
+// 右键打开菜单
+function openMenu(tag, e) {
+  const menuMinWidth = 105
+  const offsetLeft = vm?.$el.getBoundingClientRect().left // container margin left
+  const offsetWidth = vm?.$el.offsetWidth // container width
+  const maxLeft = offsetWidth - menuMinWidth // left boundary
+  const left = e.clientX - offsetLeft + 230 // 15: margin right
+
+  if (left > maxLeft) {
+    state.left = maxLeft
+  }
+  else {
+    state.left = left
+  }
+  state.top = e.clientY
+  state.visible = true
+  state.selectedTag = tag
+}
+
+// 关闭当前标签
+async function closeSelectedTag(view: RouteLocationNormalizedLoaded) {
+  const visitedViews = await tagsViewStore.delVisitedView(view)
+
+  if (isActive(view)) {
+    toLastView(visitedViews, view)
+  }
+  // remove keep-alive by the closeTabRmCache
+  if (view.meta?.closeTabRmCache) {
+    const routerLevel = view.matched.length
+    if (routerLevel === 2) {
+      basicStore.delCachedView(view.name)
+    }
+    if (routerLevel === 3) {
+      basicStore.delCacheViewDeep(view.name)
+    }
+  }
+}
+
+// 刷新标签
+function refreshSelectedTag(view: RouteLocationNormalizedLoaded) {
+  const { fullPath } = view
+  nextTick(() => {
+    router.replace({
+      path: `/redirect${fullPath}`,
+    })
+  })
+}
+
+// 右键关闭菜单
+function closeMenu() {
+  state.visible = false
+}
+// 关闭其他标签
+async function closeOthersTags() {
+  router.push(state.selectedTag)
+  await tagsViewStore.delOthersVisitedViews(state.selectedTag)
+}
+// 关闭所有标签
+async function closeAllTags(view: RouteLocationNormalizedLoaded) {
+  const visitedViews = await tagsViewStore.delAllVisitedViews()
+  if (state.affixTags.some(tag => tag.path === view.path)) {
+    return
+  }
+  toLastView(visitedViews, view)
+}
+// 跳转最后一个标签
+function toLastView(visitedViews: RouteLocationNormalizedLoaded[], view: RouteLocationNormalizedLoaded) {
+  // visitedViews.at(-1) 获取数组最后一个元素
+  const latestView = visitedViews.at(-1)
+  if (latestView && latestView.fullPath) {
+    router.push(latestView.fullPath)
+  }
+  else if (view.name === 'Dashboard') {
+    // to reload home page
+    router.replace({ path: `/redirect${view.fullPath}` })
+  }
+  else {
+    router.push('/')
+  }
+}
+
+// export to page use
+const { visible, top, left, selectedTag } = toRefs(state)
+</script>
+
 <template>
   <div
     v-if="basicStore.device === 'desktop'"
@@ -34,7 +230,7 @@
     </div>
     <ul
       v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
+      :style="{ left: `${left}px`, top: `${top}px` }"
       class="contextmenu"
     >
       <li @click="refreshSelectedTag(selectedTag)">
@@ -43,207 +239,15 @@
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
         {{ langTitle('Close') }}
       </li>
-      <li @click="closeOthersTags">{{ langTitle('Close Others') }}</li>
+      <li @click="closeOthersTags">
+        {{ langTitle('Close Others') }}
+      </li>
       <li @click="closeAllTags(selectedTag)">
         {{ langTitle('Close All') }}
       </li>
     </ul>
   </div>
 </template>
-
-<script setup lang="ts">
-import {
-  getCurrentInstance,
-  nextTick,
-  onMounted,
-  reactive,
-  toRefs,
-  watch,
-} from 'vue';
-import { Close } from '@element-plus/icons-vue';
-import { resolve } from 'path-browserify';
-import { RouteLocationNormalizedLoaded, useRoute, useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia/dist/pinia';
-import type { RouterTypes } from '~/store/router';
-import { useBasicStore } from '@/store/basic';
-import { usePermissionStore } from '@/store/permission';
-import { useTagsViewStore } from '@/store/tags-view';
-import { langTitle } from '@/hooks/use-common';
-
-const route = useRoute();
-const router = useRouter();
-const basicStore = useBasicStore();
-const { visitedViews } = storeToRefs(useTagsViewStore());
-
-const state = reactive({
-  visible: false,
-  top: 0,
-  left: 0,
-  selectedTag: {} as RouteLocationNormalizedLoaded,
-  affixTags: [] as RouterTypes,
-});
-
-watch(
-  () => route.path,
-  () => {
-    addTags();
-  },
-);
-
-watch(
-  () => state.visible,
-  (value) => {
-    if (value) {
-      document.body.addEventListener('click', closeMenu);
-    } else {
-      document.body.removeEventListener('click', closeMenu);
-    }
-  },
-);
-
-onMounted(() => {
-  initTags();
-  addTags();
-});
-
-// 判断当前点击的item项，是不是当前显示的路由项，如果是则高亮
-const isActive = (param) => {
-  return route.path === param.path;
-};
-// 当路由设置meta.affix=true,关闭按钮消失
-const isAffix = (tag) => {
-  return tag.meta && tag.meta.affix;
-};
-
-const filterAffixTags = (routes, basePath = '/') => {
-  let tags: RouterTypes = [];
-  routes.forEach((route) => {
-    if (route.meta && route.meta.affix) {
-      const tagPath = resolve(basePath, route.path);
-      tags.push({
-        fullPath: tagPath,
-        path: tagPath,
-        name: route.name,
-        meta: { ...route.meta },
-      });
-    }
-    if (route.children) {
-      const tempTags = filterAffixTags(route.children, route.path);
-      if (tempTags.length >= 1) {
-        tags = [...tags, ...tempTags];
-      }
-    }
-  });
-  return tags;
-};
-
-// 初始
-const tagsViewStore = useTagsViewStore();
-const { allRoutes } = usePermissionStore();
-const initTags = () => {
-  // 过滤affix=true的tags数组并赋值给state.affixTags，挂载到页面上
-  const affixTags = (state.affixTags = filterAffixTags(allRoutes));
-  for (const tag of affixTags) {
-    // Must have tag name
-    if (tag.name) {
-      tagsViewStore.addVisitedView(tag);
-    }
-  }
-};
-// 添加标签
-const addTags = () => {
-  if (route?.name) {
-    tagsViewStore.addVisitedView(route);
-  }
-  return false;
-};
-
-/* 右键菜单部分 */
-const vm = getCurrentInstance()?.proxy;
-// 右键打开菜单
-const openMenu = (tag, e) => {
-  const menuMinWidth = 105;
-  const offsetLeft = vm?.$el.getBoundingClientRect().left; // container margin left
-  const offsetWidth = vm?.$el.offsetWidth; // container width
-  const maxLeft = offsetWidth - menuMinWidth; // left boundary
-  const left = e.clientX - offsetLeft + 230; // 15: margin right
-
-  if (left > maxLeft) {
-    state.left = maxLeft;
-  } else {
-    state.left = left;
-  }
-  state.top = e.clientY;
-  state.visible = true;
-  state.selectedTag = tag;
-};
-
-// 关闭当前标签
-const closeSelectedTag = async (view: RouteLocationNormalizedLoaded) => {
-  const visitedViews = await tagsViewStore.delVisitedView(view);
-
-  if (isActive(view)) {
-    toLastView(visitedViews, view);
-  }
-  // remove keep-alive by the closeTabRmCache
-  if (view.meta?.closeTabRmCache) {
-    const routerLevel = view.matched.length;
-    if (routerLevel === 2) {
-      basicStore.delCachedView(view.name);
-    }
-    if (routerLevel === 3) {
-      basicStore.delCacheViewDeep(view.name);
-    }
-  }
-};
-
-// 刷新标签
-const refreshSelectedTag = (view: RouteLocationNormalizedLoaded) => {
-  const { fullPath } = view;
-  nextTick(() => {
-    router.replace({
-      path: `/redirect${fullPath}`,
-    });
-  });
-};
-
-// 右键关闭菜单
-const closeMenu = () => {
-  state.visible = false;
-};
-// 关闭其他标签
-const closeOthersTags = async () => {
-  router.push(state.selectedTag);
-  await tagsViewStore.delOthersVisitedViews(state.selectedTag);
-};
-// 关闭所有标签
-const closeAllTags = async (view: RouteLocationNormalizedLoaded) => {
-  const visitedViews = await tagsViewStore.delAllVisitedViews();
-  if (state.affixTags.some((tag) => tag.path === view.path)) {
-    return;
-  }
-  toLastView(visitedViews, view);
-};
-// 跳转最后一个标签
-const toLastView = (
-  visitedViews: RouteLocationNormalizedLoaded[],
-  view: RouteLocationNormalizedLoaded,
-) => {
-  // visitedViews.at(-1) 获取数组最后一个元素
-  const latestView = visitedViews.at(-1);
-  if (latestView && latestView.fullPath) {
-    router.push(latestView.fullPath);
-  } else if (view.name === 'Dashboard') {
-    // to reload home page
-    router.replace({ path: `/redirect${view.fullPath}` });
-  } else {
-    router.push('/');
-  }
-};
-
-// export to page use
-const { visible, top, left, selectedTag } = toRefs(state);
-</script>
 
 <style lang="scss" scoped>
 .tags-view-container {

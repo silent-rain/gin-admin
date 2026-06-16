@@ -1,9 +1,5 @@
-<template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }" />
-</template>
-
 <script setup>
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
 const props = defineProps({
   className: {
@@ -22,31 +18,30 @@ const props = defineProps({
     type: String,
     default: '200px',
   },
-});
+})
 const state = reactive({
   chart: null,
-});
+})
 
 onMounted(() => {
-  initChart();
-});
+  initChart()
+})
 onBeforeUnmount(() => {
   if (!state.chart) {
-    return;
+    return
   }
-  state.chart.dispose();
-  state.chart = null;
-});
-const initChart = () => {
-  // eslint-disable-next-line unicorn/prefer-query-selector
-  state.chart = echarts.init(document.getElementById(props.id));
+  state.chart.dispose()
+  state.chart = null
+})
+function initChart() {
+  state.chart = echarts.init(document.getElementById(props.id))
   const xData = (function () {
-    const data = [];
+    const data = []
     for (let i = 1; i < 13; i++) {
-      data.push(`${i}month`);
+      data.push(`${i}month`)
     }
-    return data;
-  })();
+    return data
+  })()
   state.chart.setOption({
     backgroundColor: '#344b58',
     title: {
@@ -178,13 +173,24 @@ const initChart = () => {
               },
               position: 'insideTop',
               formatter(p) {
-                return p.value > 0 ? p.value : '';
+                return p.value > 0 ? p.value : ''
               },
             },
           },
         },
         data: [
-          709, 1917, 2455, 2610, 1719, 1433, 1544, 3285, 5208, 3372, 2484, 4078,
+          709,
+          1917,
+          2455,
+          2610,
+          1719,
+          1433,
+          1544,
+          3285,
+          5208,
+          3372,
+          2484,
+          4078,
         ],
       },
 
@@ -200,7 +206,7 @@ const initChart = () => {
               show: true,
               position: 'top',
               formatter(p) {
-                return p.value > 0 ? p.value : '';
+                return p.value > 0 ? p.value : ''
               },
             },
           },
@@ -221,17 +227,31 @@ const initChart = () => {
               show: true,
               position: 'top',
               formatter(p) {
-                return p.value > 0 ? p.value : '';
+                return p.value > 0 ? p.value : ''
               },
             },
           },
         },
         data: [
-          1036, 3693, 2962, 3810, 2519, 1915, 1748, 4675, 6209, 4323, 2865,
+          1036,
+          3693,
+          2962,
+          3810,
+          2519,
+          1915,
+          1748,
+          4675,
+          6209,
+          4323,
+          2865,
           4298,
         ],
       },
     ],
-  });
-};
+  })
+}
 </script>
+
+<template>
+  <div :id="id" :class="className" :style="{ height, width }" />
+</template>

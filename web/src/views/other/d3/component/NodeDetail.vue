@@ -1,5 +1,30 @@
+<script>
+export default {
+  name: 'NodeDetail',
+  props: {
+    detail: Object,
+    nodeType: Array,
+  },
+  emits: ['showLargeImage', 'showVideo'],
+  setup(props, { emit }) {
+    const state = props.detail
+    const showLargeImage = (e) => {
+      emit('showLargeImage', e)
+    }
+    const showVideo = (e) => {
+      emit('showVideo', e)
+    }
+    return {
+      state,
+      showLargeImage,
+      showVideo,
+    }
+  },
+}
+</script>
+
 <template>
-  <!--    抽屉-->
+  <!--    抽屉 -->
   <el-drawer v-model="state.drawer" :size="400" :title="state.data.id">
     <el-form ref="formRef" label-width="120px" label-position="left">
       <template v-for="(item, index) in nodeType" :key="index">
@@ -35,32 +60,6 @@
     </el-form>
   </el-drawer>
 </template>
-
-<script>
-export default {
-  name: 'NodeDetail',
-  props: {
-    detail: Object,
-    nodeType: Array,
-  },
-  emits: ['showLargeImage', 'showVideo'],
-  setup(props, { emit }) {
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    const state = props.detail;
-    const showLargeImage = (e) => {
-      emit('showLargeImage', e);
-    };
-    const showVideo = (e) => {
-      emit('showVideo', e);
-    };
-    return {
-      state,
-      showLargeImage,
-      showVideo,
-    };
-  },
-};
-</script>
 
 <style>
 .el-link--inner {

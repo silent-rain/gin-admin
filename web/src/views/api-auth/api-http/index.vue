@@ -1,3 +1,242 @@
+<script setup lang="ts">
+import type { TableInstance } from 'element-plus'
+import type { ApiHttp, ApiHttpTreeRsp } from '~/api/api-auth/api-http'
+import {
+  Delete,
+  DocumentCopy,
+  EditPen,
+  InfoFilled,
+  Plus,
+  Search,
+} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, reactive, ref } from 'vue'
+import {
+  batchDeleteApiHttp,
+  deleteApiHttp,
+  getApiHttpTree,
+  updateApiHttpStatus,
+} from '@/api/api-auth/api-http'
+import ButtonPermission from '@/components/ButtonPermission.vue'
+import ConvenienTools from '@/components/ConvenienTools/index.vue'
+import Pagination from '@/components/Pagination.vue'
+import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission'
+import { useBasicStore } from '@/store/basic'
+import ApiHttpForm from './components/ApiHttpForm.vue'
+
+const basicStore = useBasicStore()
+
+// 筛选过滤条件
+const listQuery = ref<any>({
+  page: 1,
+  page_size: 10,
+  name: null,
+  method: null,
+  uri: null,
+  status: null,
+})
+const statusOptions = [
+  {
+    label: '启用',
+    value: 1,
+  },
+  {
+    label: '禁用',
+    value: 0,
+  },
+]
+// 过滤事件
+function handleFilter() {
+  fetchApiHttpTree()
+}
+// 清空过滤条件
+function handleCleanFilter() {
+  listQuery.value = {}
+}
+// 状态变更事件-清空处理
+function handleChangeStatus(value: any) {
+  if (!value) {
+    listQuery.value.status = null
+  }
+  handleFilter()
+}
+
+const state = reactive({
+  form: {
+    data: {} as ApiHttp,
+    visible: false,
+    type: '',
+  },
+})
+
+// 请求类型列表
+const methodOptions = [
+  {
+    value: 'GET',
+    type: 'info',
+  },
+  {
+    value: 'POST',
+    type: '',
+  },
+  {
+    value: 'PUT',
+    type: 'warning',
+  },
+  {
+    value: 'DELETE',
+    type: 'danger',
+  },
+]
+
+const checkAllList = [
+  { label: '自增ID', value: 'id', disabled: false, enabled: false },
+  { label: '接口名称', value: 'name', disabled: true, enabled: true },
+  { label: '请求类型', value: 'method', disabled: true, enabled: true },
+  { label: 'URI资源', value: 'uri', disabled: true, enabled: true },
+  { label: '备注', value: 'note', disabled: false, enabled: true },
+  { label: '状态', value: 'status', disabled: true, enabled: true },
+  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
+  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
+  { label: '操作', value: 'operation', disabled: false, enabled: true },
+]
+const checkedDict = ref<any>({})
+
+const tableSize = ref<string>(basicStore.settings.defaultSize)
+const tableData = ref<ApiHttp[]>()
+const tableDataTotal = ref<number>(0)
+const multipleSelection = ref<ApiHttp[]>([])
+const tableRef = ref<TableInstance>()
+const tableExpandAll = ref<boolean>(false)
+
+onBeforeMount(() => {
+  fetchApiHttpTree()
+})
+
+// 获取Http协议接口信息树
+async function fetchApiHttpTree() {
+  try {
+    const resp = (await getApiHttpTree(listQuery.value)).data as ApiHttpTreeRsp
+    tableData.value = resp.data_list
+    tableDataTotal.value = resp.tatol
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 删除
+async function handleDelete(row: ApiHttp) {
+  const data = {
+    id: row.id,
+  }
+  try {
+    await deleteApiHttp(data)
+    fetchApiHttpTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 编辑
+async function handleEdit(row: ApiHttp) {
+  state.form.data = { ...row }
+  state.form.type = 'edit'
+  state.form.visible = true
+}
+// 添加
+async function handleAdd() {
+  state.form.type = 'add'
+  state.form.visible = true
+  state.form.data.status = 1
+}
+
+// 指定上级菜单添加
+async function handleAddById(row: ApiHttp) {
+  state.form.type = 'add'
+  state.form.visible = true
+
+  state.form.data.parent_id = row.id
+  state.form.data.status = 1
+  state.form.type = 'add'
+}
+// 拷贝当前菜单
+async function handleCopy(row: ApiHttp) {
+  state.form.type = 'add'
+  state.form.visible = true
+
+  state.form.data = { ...row }
+}
+
+// 多选事件
+function handleSelectionChange(val: ApiHttp[]) {
+  multipleSelection.value = val
+}
+// 批量删除
+async function handleBatchDelete() {
+  if (multipleSelection.value.length === 0) {
+    ElMessage.warning('请选择要删除的数据')
+    return
+  }
+  const data = {
+    ids: multipleSelection.value.map((v: ApiHttp) => {
+      return v.id
+    }),
+  }
+  try {
+    await batchDeleteApiHttp(data)
+    fetchApiHttpTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 取消批量删除事件
+function handleBatchDeleteCancel() {
+  ElMessage.warning('取消操作')
+}
+
+// 删除取消事件
+function handleCancelEvent() {
+  ElMessage.warning('取消操作')
+}
+
+// 状态变更
+async function handleStatusChange(row: ApiHttp) {
+  const data = {
+    id: row.id,
+    status: row.status,
+  }
+  try {
+    await updateApiHttpStatus(data)
+    fetchApiHttpTree()
+    ElMessage.success('操作成功')
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+// 全部展开/全部折叠 事件
+function handleExpandAllEvent(value: boolean) {
+  toggleRowExpansionAll(tableData.value, value)
+}
+
+// 全部展开/全部折叠
+function toggleRowExpansionAll(dataList: ApiHttp[] | undefined, value: boolean) {
+  if (!dataList) {
+    return
+  }
+  dataList.forEach((v) => {
+    tableRef.value?.toggleRowExpansion(v, value)
+    if (v.children !== undefined && v.children !== null) {
+      toggleRowExpansionAll(v.children, value)
+    }
+  })
+}
+</script>
+
 <template>
   <el-card>
     <!-- 过滤条件 -->
@@ -105,10 +344,10 @@
       <div class="right-button">
         <ConvenienTools
           v-model:size="tableSize"
-          v-model:checkedDict="checkedDict"
-          :screen-full-element="'el-table-full'"
+          v-model:checked-dict="checkedDict"
+          screen-full-element="el-table-full"
           :check-all-list="checkAllList"
-          @refreshEvent="fetchApiHttpTree"
+          @refresh-event="fetchApiHttpTree"
         />
       </div>
     </div>
@@ -159,8 +398,8 @@
             v-for="(item, _) in methodOptions.filter(
               (v) => v.value === scope.row.method,
             )"
-            size="small"
             :key="item.value"
+            size="small"
             :type="item.type"
           >
             {{ scope.row.method }}
@@ -271,250 +510,13 @@
       </el-table-column>
     </el-table>
     <Pagination
-      v-model:currentPage="listQuery.page"
-      v-model:pageSize="listQuery.page_size"
+      v-model:current-page="listQuery.page"
+      v-model:page-size="listQuery.page_size"
       :total="tableDataTotal"
       @pagination="fetchApiHttpTree"
     />
   </el-card>
 </template>
-
-<script setup lang="ts">
-import { reactive, ref, onBeforeMount } from 'vue';
-import {
-  EditPen,
-  Search,
-  Delete,
-  DocumentCopy,
-  InfoFilled,
-  Plus,
-} from '@element-plus/icons-vue';
-import { ElMessage, TableInstance } from 'element-plus';
-import { useBasicStore } from '@/store/basic';
-import {
-  getApiHttpTree,
-  updateApiHttpStatus,
-  deleteApiHttp,
-  batchDeleteApiHttp,
-} from '@/api/api-auth/api-http';
-import { ApiHttpTreeRsp, ApiHttp } from '~/api/api-auth/api-http';
-import Pagination from '@/components/Pagination.vue';
-import ConvenienTools from '@/components/ConvenienTools/index.vue';
-import ButtonPermission from '@/components/ButtonPermission.vue';
-import ApiHttpForm from './components/ApiHttpForm.vue';
-import { hasButtonPermission, isDisabledButton } from '@/hooks/use-permission';
-
-const basicStore = useBasicStore();
-
-// 筛选过滤条件
-const listQuery = ref<any>({
-  page: 1,
-  page_size: 10,
-  name: null,
-  method: null,
-  uri: null,
-  status: null,
-});
-const statusOptions = [
-  {
-    label: '启用',
-    value: 1,
-  },
-  {
-    label: '禁用',
-    value: 0,
-  },
-];
-// 过滤事件
-const handleFilter = () => {
-  fetchApiHttpTree();
-};
-// 清空过滤条件
-const handleCleanFilter = () => {
-  listQuery.value = {};
-};
-// 状态变更事件-清空处理
-const handleChangeStatus = (value: any) => {
-  if (!value) {
-    listQuery.value.status = null;
-  }
-  handleFilter();
-};
-
-const state = reactive({
-  form: {
-    data: {} as ApiHttp,
-    visible: false,
-    type: '',
-  },
-});
-
-// 请求类型列表
-const methodOptions = [
-  {
-    value: 'GET',
-    type: 'info',
-  },
-  {
-    value: 'POST',
-    type: '',
-  },
-  {
-    value: 'PUT',
-    type: 'warning',
-  },
-  {
-    value: 'DELETE',
-    type: 'danger',
-  },
-];
-
-const checkAllList = [
-  { label: '自增ID', value: 'id', disabled: false, enabled: false },
-  { label: '接口名称', value: 'name', disabled: true, enabled: true },
-  { label: '请求类型', value: 'method', disabled: true, enabled: true },
-  { label: 'URI资源', value: 'uri', disabled: true, enabled: true },
-  { label: '备注', value: 'note', disabled: false, enabled: true },
-  { label: '状态', value: 'status', disabled: true, enabled: true },
-  { label: '创建时间', value: 'created_at', disabled: false, enabled: false },
-  { label: '更新时间', value: 'updated_at', disabled: false, enabled: true },
-  { label: '操作', value: 'operation', disabled: false, enabled: true },
-];
-const checkedDict = ref<any>({});
-
-const tableSize = ref<string>(basicStore.settings.defaultSize);
-const tableData = ref<ApiHttp[]>();
-const tableDataTotal = ref<number>(0);
-const multipleSelection = ref<ApiHttp[]>([]);
-const tableRef = ref<TableInstance>();
-const tableExpandAll = ref<boolean>(false);
-
-onBeforeMount(() => {
-  fetchApiHttpTree();
-});
-
-// 获取Http协议接口信息树
-const fetchApiHttpTree = async () => {
-  try {
-    const resp = (await getApiHttpTree(listQuery.value)).data as ApiHttpTreeRsp;
-    tableData.value = resp.data_list;
-    tableDataTotal.value = resp.tatol;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 删除
-const handleDelete = async (row: ApiHttp) => {
-  const data = {
-    id: row.id,
-  };
-  try {
-    await deleteApiHttp(data);
-    fetchApiHttpTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 编辑
-const handleEdit = async (row: ApiHttp) => {
-  state.form.data = { ...row };
-  state.form.type = 'edit';
-  state.form.visible = true;
-};
-// 添加
-const handleAdd = async () => {
-  state.form.type = 'add';
-  state.form.visible = true;
-  state.form.data.status = 1;
-};
-
-// 指定上级菜单添加
-const handleAddById = async (row: ApiHttp) => {
-  state.form.type = 'add';
-  state.form.visible = true;
-
-  state.form.data.parent_id = row.id;
-  state.form.data.status = 1;
-  state.form.type = 'add';
-};
-// 拷贝当前菜单
-const handleCopy = async (row: ApiHttp) => {
-  state.form.type = 'add';
-  state.form.visible = true;
-
-  state.form.data = { ...row };
-};
-
-// 多选事件
-const handleSelectionChange = (val: ApiHttp[]) => {
-  multipleSelection.value = val;
-};
-// 批量删除
-const handleBatchDelete = async () => {
-  if (multipleSelection.value.length === 0) {
-    ElMessage.warning('请选择要删除的数据');
-    return;
-  }
-  const data = {
-    ids: multipleSelection.value.map((v: ApiHttp) => {
-      return v.id;
-    }),
-  };
-  try {
-    await batchDeleteApiHttp(data);
-    fetchApiHttpTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 取消批量删除事件
-const handleBatchDeleteCancel = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 删除取消事件
-const handleCancelEvent = () => {
-  ElMessage.warning('取消操作');
-};
-
-// 状态变更
-const handleStatusChange = async (row: ApiHttp) => {
-  const data = {
-    id: row.id,
-    status: row.status,
-  };
-  try {
-    await updateApiHttpStatus(data);
-    fetchApiHttpTree();
-    ElMessage.success('操作成功');
-  } catch (error) {
-    console.log(error);
-  }
-};
-// 全部展开/全部折叠 事件
-const handleExpandAllEvent = (value: boolean) => {
-  toggleRowExpansionAll(tableData.value, value);
-};
-
-// 全部展开/全部折叠
-const toggleRowExpansionAll = (
-  dataList: ApiHttp[] | undefined,
-  value: boolean,
-) => {
-  if (!dataList) {
-    return;
-  }
-  dataList.forEach((v) => {
-    tableRef.value?.toggleRowExpansion(v, value);
-    if (v.children !== undefined && v.children !== null) {
-      toggleRowExpansionAll(v.children, value);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss">
 .filter {

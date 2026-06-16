@@ -1,7 +1,3 @@
-<template>
-  <div>TestUnit.vue</div>
-</template>
-
 <script setup lang="ts">
 const props = defineProps({
   msg: {
@@ -9,7 +5,11 @@ const props = defineProps({
     default: 'fai',
     type: String,
   },
-});
+})
 </script>
+
+<template>
+  <div>TestUnit.vue</div>
+</template>
 
 <style scoped lang="scss"></style>

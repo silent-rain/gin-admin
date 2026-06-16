@@ -1,3 +1,137 @@
+<script setup lang="ts">
+import type { FormInstance, FormRules } from 'element-plus'
+import type { User, UserListRsp } from '~/api/permission/user'
+import type { UserApiToken } from '~/api/permission/user-api-token'
+import { ElMessage } from 'element-plus'
+import {
+  addUserApiToken,
+  updateUserApiToken,
+} from '@/api/permission/user-api-token'
+
+const props = withDefaults(
+  defineProps<{
+    data: UserApiToken
+    visible: boolean
+    type: string // add/edit
+    width?: string
+  }>(),
+  {
+    width: '500px',
+  },
+)
+
+const emit = defineEmits(['update:data', 'update:visible', 'refresh'])
+
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules>({
+  user_id: [{ required: true, message: '请选择用户', trigger: 'change' }],
+  passphrase: [{ required: true, message: '请输入口令', trigger: 'blur' }],
+  status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
+})
+
+const permissionOptions = ['GET', 'POST', 'PUT', 'DELETE']
+const permission = ref<string[]>([])
+const userOptions = ref<User[]>([])
+const userInfo = ref<User>({} as User)
+const loading = ref(false)
+
+onBeforeMount(() => {
+  fetchUserList()
+})
+
+// 获取用户列表
+async function fetchUserList() {
+  // 默认显示200个用户
+  const data = {
+    page: 1,
+    page_size: 200,
+  }
+  try {
+    const resp = (await getUserList(data)).data as UserListRsp
+    userOptions.value = resp.data_list
+    userInfo.value.id = props.data.user_id
+    userInfo.value.id = 21
+    permission.value = props.data.permission
+      ? props.data.permission.split(';')
+      : []
+  }
+  catch (error) {
+    console.log(error)
+  }
+}
+
+// 获取用户列表
+async function remoteMethod(query: string) {
+  if (!query) {
+    return
+  }
+
+  // 远程搜索
+  try {
+    loading.value = true
+    const data = {
+      nickname: query,
+      page: 1,
+      page_size: 50,
+    }
+    const resp = (await getUserList(data)).data as UserListRsp
+    userOptions.value = resp.data_list
+    loading.value = false
+  }
+  catch (error) {
+    console.log(error)
+    loading.value = false
+  }
+}
+
+// 切换用户
+function handleChangeUser(value: User) {
+  emit('update:data', { ...props.data, user_id: value.id })
+}
+// 切换访问权限
+function handleChangePermission(value: string[]) {
+  emit('update:data', { ...props.data, permission: value.join(';') })
+}
+
+// 关闭
+function handleClose() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+
+// 取消
+function handleCancel() {
+  emit('update:visible', false)
+  emit('update:data', {})
+}
+// 提交
+async function submitForm(formEl: FormInstance | undefined) {
+  if (!formEl)
+    return
+  await formEl.validate(async (valid, fields) => {
+    if (!valid) {
+      console.log('error submit!', fields)
+      return
+    }
+    try {
+      if (props.type === 'add') {
+        await addUserApiToken(props.data)
+      }
+      else {
+        await updateUserApiToken(props.data)
+      }
+      emit('update:visible', false)
+      emit('update:data', {})
+      emit('refresh')
+      ElMessage.success('操作成功')
+    }
+    catch (error) {
+      console.log(error)
+    }
+  })
+}
+</script>
+
 <template>
   <el-dialog
     :model-value="props.visible"
@@ -79,133 +213,5 @@
     </template>
   </el-dialog>
 </template>
-
-<script setup lang="ts">
-import { ElMessage, FormInstance, FormRules } from 'element-plus';
-import {
-  updateUserApiToken,
-  addUserApiToken,
-} from '@/api/permission/user-api-token';
-import { UserApiToken } from '~/api/permission/user-api-token';
-import { User, UserListRsp } from '~/api/permission/user';
-
-const emit = defineEmits(['update:data', 'update:visible', 'refresh']);
-
-const props = withDefaults(
-  defineProps<{
-    data: UserApiToken;
-    visible: boolean;
-    type: string; // add/edit
-    width?: string;
-  }>(),
-  {
-    width: '500px',
-  },
-);
-
-const ruleFormRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
-  user_id: [{ required: true, message: '请选择用户', trigger: 'change' }],
-  passphrase: [{ required: true, message: '请输入口令', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择启用状态', trigger: 'change' }],
-});
-
-const permissionOptions = ['GET', 'POST', 'PUT', 'DELETE'];
-const permission = ref<string[]>([]);
-const userOptions = ref<User[]>([]);
-const userInfo = ref<User>({} as User);
-const loading = ref(false);
-
-onBeforeMount(() => {
-  fetchUserList();
-});
-
-// 获取用户列表
-const fetchUserList = async () => {
-  // 默认显示200个用户
-  const data = {
-    page: 1,
-    page_size: 200,
-  };
-  try {
-    const resp = (await getUserList(data)).data as UserListRsp;
-    userOptions.value = resp.data_list;
-    userInfo.value.id = props.data.user_id;
-    userInfo.value.id = 21;
-    permission.value = props.data.permission
-      ? props.data.permission.split(';')
-      : [];
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-// 获取用户列表
-const remoteMethod = async (query: string) => {
-  if (!query) {
-    return;
-  }
-
-  // 远程搜索
-  try {
-    loading.value = true;
-    const data = {
-      nickname: query,
-      page: 1,
-      page_size: 50,
-    };
-    const resp = (await getUserList(data)).data as UserListRsp;
-    userOptions.value = resp.data_list;
-    loading.value = false;
-  } catch (error) {
-    console.log(error);
-    loading.value = false;
-  }
-};
-
-// 切换用户
-const handleChangeUser = (value: User) => {
-  emit('update:data', { ...props.data, user_id: value.id });
-};
-// 切换访问权限
-const handleChangePermission = (value: string[]) => {
-  emit('update:data', { ...props.data, permission: value.join(';') });
-};
-
-// 关闭
-const handleClose = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-
-// 取消
-const handleCancel = () => {
-  emit('update:visible', false);
-  emit('update:data', {});
-};
-// 提交
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (!valid) {
-      console.log('error submit!', fields);
-      return;
-    }
-    try {
-      if (props.type === 'add') {
-        await addUserApiToken(props.data);
-      } else {
-        await updateUserApiToken(props.data);
-      }
-      emit('update:visible', false);
-      emit('update:data', {});
-      emit('refresh');
-      ElMessage.success('操作成功');
-    } catch (error) {
-      console.log(error);
-    }
-  });
-};
-</script>
 
 <style scoped lang="scss"></style>

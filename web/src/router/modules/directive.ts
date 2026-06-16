@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue';
+import Layout from '@/layout/index.vue'
 
 const directive = {
   path: '/directive',
@@ -43,6 +43,6 @@ const directive = {
       meta: { title: 'v-clickoutside' },
     },
   ],
-};
+}
 
-export default directive;
+export default directive

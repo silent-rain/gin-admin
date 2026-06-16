@@ -1,8 +1,10 @@
-<template>
-  <div v-watermark class="container">我是一个水印页面</div>
-</template>
-
 <script setup></script>
+
+<template>
+  <div v-watermark class="container">
+    我是一个水印页面
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .container {

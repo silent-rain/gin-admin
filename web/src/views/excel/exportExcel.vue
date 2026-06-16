@@ -1,3 +1,63 @@
+<script setup>
+import { Download } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onBeforeMount, toRefs } from 'vue'
+import { transactionList } from '@/api/remote-search'
+import { aoaToSheetXlsx } from '@/utils/excel'
+
+function statusFilter(status) {
+  const statusMap = {
+    published: 'success',
+    draft: 'info',
+    deleted: 'danger',
+  }
+  return statusMap[status]
+}
+const state = reactive({
+  list: null,
+  listLoading: true,
+})
+
+onBeforeMount(() => {
+  fetchData()
+})
+
+function fetchData() {
+  state.listLoading = true
+  transactionList().then((response) => {
+    state.list = response.data?.items
+    state.listLoading = false
+  })
+}
+// 导出Excel表格
+const fileName = ref('')
+function handleExportExcel() {
+  if (!unref(fileName).trim()) {
+    ElMessage({
+      showClose: true,
+      message: '请输入文件名',
+      type: 'warning',
+    })
+    return
+  }
+  const table = unref(state.list)
+  const header = ['ID', '订单号', '价格', '用户名']
+  const data = table.map((item, index) => {
+    const { id, order_no, price, username } = item
+
+    return [index, order_no, price, username]
+  })
+  aoaToSheetXlsx({
+    data,
+    header,
+    filename: `${unref(fileName)}.xlsx`,
+  })
+}
+
+// 导出属性到页面中使用
+const { list, listLoading } = toRefs(state)
+</script>
+
 <template>
   <div class="app-container scroll-y">
     <div class="mb-10px rowSS">
@@ -41,66 +101,5 @@
     </el-table>
   </div>
 </template>
-
-<script setup>
-import { Download } from '@element-plus/icons-vue';
-import { onBeforeMount, toRefs } from 'vue';
-import { ElMessage } from 'element-plus';
-import { transactionList } from '@/api/remote-search';
-import { aoaToSheetXlsx } from '@/utils/excel';
-
-const statusFilter = (status) => {
-  const statusMap = {
-    published: 'success',
-    draft: 'info',
-    deleted: 'danger',
-  };
-  return statusMap[status];
-};
-const state = reactive({
-  list: null,
-  listLoading: true,
-});
-
-onBeforeMount(() => {
-  fetchData();
-});
-
-const fetchData = () => {
-  state.listLoading = true;
-  transactionList().then((response) => {
-    state.list = response.data?.items;
-    state.listLoading = false;
-  });
-};
-// 导出Excel表格
-const fileName = ref('');
-const handleExportExcel = () => {
-  if (!unref(fileName).trim()) {
-    ElMessage({
-      showClose: true,
-      message: '请输入文件名',
-      type: 'warning',
-    });
-    return;
-  }
-  const table = unref(state.list);
-  const header = ['ID', '订单号', '价格', '用户名'];
-  const data = table.map((item, index) => {
-    // eslint-disable-next-line camelcase
-    const { id, order_no, price, username } = item;
-    // eslint-disable-next-line camelcase
-    return [index, order_no, price, username];
-  });
-  aoaToSheetXlsx({
-    data,
-    header,
-    filename: `${unref(fileName)}.xlsx`,
-  });
-};
-
-// 导出属性到页面中使用
-const { list, listLoading } = toRefs(state);
-</script>
 
 <style scoped lang="scss"></style>

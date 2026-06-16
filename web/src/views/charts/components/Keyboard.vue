@@ -1,9 +1,5 @@
-<template>
-  <div :id="id" :class="className" :style="{ height: height, width: width }" />
-</template>
-
 <script setup lang="ts">
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
 const props = defineProps({
   className: {
@@ -22,31 +18,31 @@ const props = defineProps({
     type: String,
     default: '200px',
   },
-});
+})
 const state = reactive({
   chart: null,
-});
+})
 onMounted(() => {
-  initChart();
-});
+  initChart()
+})
 
 onBeforeUnmount(() => {
   if (!state.chart) {
-    return;
+    return
   }
-  state.chart.dispose();
-  state.chart = null;
-});
+  state.chart.dispose()
+  state.chart = null
+})
 
-const initChart = () => {
-  state.chart = echarts.init(document.getElementById(props.id));
-  const xAxisData = [];
-  const data = [];
-  const data2 = [];
+function initChart() {
+  state.chart = echarts.init(document.getElementById(props.id))
+  const xAxisData = []
+  const data = []
+  const data2 = []
   for (let i = 0; i < 50; i++) {
-    xAxisData.push(i);
-    data.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5);
-    data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3);
+    xAxisData.push(i)
+    data.push((Math.sin(i / 5) * (i / 5 - 10) + i / 6) * 5)
+    data2.push((Math.sin(i / 5) * (i / 5 + 10) + i / 6) * 3)
   }
   state.chart.setOption({
     backgroundColor: '#08263a',
@@ -152,13 +148,17 @@ const initChart = () => {
     animationEasing: 'elasticOut',
     animationEasingUpdate: 'elasticOut',
     animationDelay(idx) {
-      return idx * 20;
+      return idx * 20
     },
     animationDelayUpdate(idx) {
-      return idx * 20;
+      return idx * 20
     },
-  });
-};
+  })
+}
 </script>
+
+<template>
+  <div :id="id" :class="className" :style="{ height, width }" />
+</template>
 
 <style scoped lang="scss"></style>
