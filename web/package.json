@@ -3,7 +3,7 @@
   "version": "2.0.2",
   "license": "MIT",
   "author": "silent-rain",
-  "packageManager": "pnpm@7.22.0",
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "vite --mode serve-dev",
     "test": "vite --mode serve-test",
@@ -131,7 +131,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": ">= 18 <=20",
-    "pnpm": ">= 6 <9"
+    "node": ">= 18 <=26",
+    "pnpm": ">= 10"
   }
 }
